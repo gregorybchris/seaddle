@@ -181,6 +181,9 @@ body {
 /* Mapbox draws its popup white with a white arrow. The site is dark, and a
    popup has to belong to the panel it explains rather than to the library. */
 .pin-popup .mapboxgl-popup-content {
+  /* Mapbox sets a font on the map and the popup inherits it, so without this
+     the note comes out in Helvetica while everything around it does not. */
+  font-family: var(--font-sans);
   background: var(--color-forest-deep);
   border: 1px solid color-mix(in srgb, var(--color-sand) 20%, transparent);
   border-radius: 0.5rem;
