@@ -18,7 +18,6 @@ export type Detent = "peek" | "half" | "full";
  */
 const DETENT_VH: Record<Detent, number> = { peek: 22, half: 52, full: 88 };
 const ORDER: Detent[] = ["peek", "half", "full"];
-const SHEET_VH = DETENT_VH.full;
 
 /**
  * The width at which the sheet becomes a static sidebar, matching the
@@ -120,9 +119,11 @@ export function Sheet({
     if (!drag.current) return;
     const moved =
       ((drag.current.startY - event.clientY) / window.innerHeight) * 100;
+    // Never past the outer resting heights: a drag that could leave the panel
+    // taller than `full` or shorter than `peek` would only snap back.
     setDragVh(
       Math.min(
-        SHEET_VH,
+        DETENT_VH.full,
         Math.max(DETENT_VH.peek, drag.current.startVh + moved),
       ),
     );
@@ -164,15 +165,12 @@ export function Sheet({
         "sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-10 flex flex-col rounded-t-2xl",
         "shadow-[0_-8px_32px_rgba(18,48,31,0.28)]",
         "md:static md:w-[22rem] md:rounded-none md:shadow-none lg:w-96",
+        // Only between resting heights. Under the thumb it tracks the drag
+        // directly, and a transition there would lag behind it.
         dragVh === null &&
-          "transition-transform duration-300 ease-[var(--ease-settle)]",
+          "transition-[height] duration-300 ease-[var(--ease-settle)]",
       )}
-      style={
-        {
-          "--sheet-height": SHEET_VH,
-          "--sheet-visible": visibleVh,
-        } as React.CSSProperties
-      }
+      style={{ "--sheet-visible": visibleVh } as React.CSSProperties}
     >
       <div
         role="separator"
