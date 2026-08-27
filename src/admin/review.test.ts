@@ -28,13 +28,13 @@ describe("applyAttributes", () => {
 
   it("leaves everything it was not given alone", () => {
     // Bulk editing is the normal case: a whole trail shares a surface without
-    // sharing a difficulty, so one attribute must not overwrite the rest.
+    // sharing a steepness, so one attribute must not overwrite the rest.
     const reviewed = applyAttributes(THREE, ["s001"], {
-      difficultyForward: "hard",
+      steepness: "steep",
       laneQuality: "great",
     });
     const after = applyAttributes(reviewed, ["s001"], { surface: "dirt" });
-    expect(after.segments[0].difficulty.forward).toBe("hard");
+    expect(after.segments[0].steepness).toBe("steep");
     expect(after.segments[0].laneQuality).toBe("great");
   });
 
@@ -120,7 +120,7 @@ describe("swapSegmentDirection", () => {
   const one = emptyGraph({
     segments: [
       segment("s001", "nA", "nB", {
-        difficulty: { forward: "hard", backward: "easy" },
+        steepness: "steep",
         recommendedDirection: "forward",
         source: { track: "ride", startIndex: 10, endIndex: 90 },
       }),
@@ -142,10 +142,11 @@ describe("swapSegmentDirection", () => {
     expect([after.from, after.to]).toEqual(["nB", "nA"]);
   });
 
-  it("turns the per-direction difficulty around with it", () => {
-    // The hill does not care which way the segment is stored.
+  it("leaves steepness alone, which is the point of it being undirected", () => {
+    // The hill is the same hill whichever way the segment is stored, so there
+    // is nothing here left to turn around and get wrong.
     const after = swapSegmentDirection(one, "s001").segments[0];
-    expect(after.difficulty).toEqual({ forward: "easy", backward: "hard" });
+    expect(after.steepness).toBe("steep");
   });
 
   it("turns the source indices around, so a rebuild redraws the new direction", () => {

@@ -1,12 +1,11 @@
 import {
-  DIFFICULTIES,
-  harderDifficulty,
   LANE_QUALITIES,
   SCENICS,
+  STEEPNESSES,
   SURFACES,
-  type Difficulty,
   type LaneQuality,
   type Scenic,
+  type Steepness,
   type Surface,
 } from "@/lib/models/graph";
 import type { SiteSegment } from "./graph-data";
@@ -14,21 +13,21 @@ import type { SiteSegment } from "./graph-data";
 /**
  * What a rider will put up with.
  *
- * Difficulty, bike lane and scenic value are ordered scales, so they are
- * thresholds — "nothing harder than medium", "at least a decent bike lane" —
+ * Steepness, bike lane and scenic value are ordered scales, so they are
+ * thresholds — "nothing steeper than hilly", "at least a decent bike lane" —
  * which is how the constraint is actually held in someone's head. Surface is a
  * set of things, not a scale, so it is a set here too. A row of checkboxes for
- * the ordered ones would permit nonsense like easy and hard but not medium.
+ * the ordered ones would permit nonsense like flat and steep but not hilly.
  */
 export type Filters = {
-  hardestDifficulty: Difficulty;
+  steepest: Steepness;
   leastLaneQuality: LaneQuality;
   leastScenic: Scenic;
   surfaces: Surface[];
 };
 
 export const NO_FILTERS: Filters = {
-  hardestDifficulty: "hard",
+  steepest: "steep",
   leastLaneQuality: "poor",
   leastScenic: "low",
   surfaces: [...SURFACES],
@@ -36,26 +35,18 @@ export const NO_FILTERS: Filters = {
 
 export function isFiltering(filters: Filters): boolean {
   return (
-    filters.hardestDifficulty !== NO_FILTERS.hardestDifficulty ||
+    filters.steepest !== NO_FILTERS.steepest ||
     filters.leastLaneQuality !== NO_FILTERS.leastLaneQuality ||
     filters.leastScenic !== NO_FILTERS.leastScenic ||
     filters.surfaces.length !== SURFACES.length
   );
 }
 
-/**
- * Whether a segment clears the bar, in the easier of its two directions.
- *
- * A hill that is brutal one way and gentle the other is not excluded by
- * someone avoiding hills — they will ride it downhill.
- */
+/** Whether a segment clears every bar the rider set. */
 export function passes(segment: SiteSegment, filters: Filters): boolean {
-  const easier = Math.min(
-    DIFFICULTIES.indexOf(segment.difficulty.forward),
-    DIFFICULTIES.indexOf(segment.difficulty.backward),
-  );
   return (
-    easier <= DIFFICULTIES.indexOf(filters.hardestDifficulty) &&
+    STEEPNESSES.indexOf(segment.steepness) <=
+      STEEPNESSES.indexOf(filters.steepest) &&
     LANE_QUALITIES.indexOf(segment.laneQuality) >=
       LANE_QUALITIES.indexOf(filters.leastLaneQuality) &&
     SCENICS.indexOf(segment.scenic) >= SCENICS.indexOf(filters.leastScenic) &&
@@ -64,7 +55,7 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
 }
 
 /** What the map colors segments by. */
-export type Encoding = "difficulty" | "laneQuality" | "scenic" | "surface";
+export type Encoding = "steepness" | "laneQuality" | "scenic" | "surface";
 
 /**
  * In the order they are offered. No labels: they are read through `humanize`,
@@ -73,13 +64,13 @@ export type Encoding = "difficulty" | "laneQuality" | "scenic" | "surface";
  */
 export const ENCODINGS: Encoding[] = [
   "laneQuality",
-  "difficulty",
+  "steepness",
   "scenic",
   "surface",
 ];
 
 export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {
-  difficulty: DIFFICULTIES,
+  steepness: STEEPNESSES,
   laneQuality: LANE_QUALITIES,
   scenic: SCENICS,
   surface: SURFACES,
@@ -100,7 +91,7 @@ export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {
  * instead of a ramp, reinforced by a dash pattern that does not rely on color.
  */
 export const RAMPS: Record<Encoding, Record<string, string>> = {
-  difficulty: { easy: "#86b06a", medium: "#c98a2e", hard: "#9c3b25" },
+  steepness: { flat: "#86b06a", hilly: "#c98a2e", steep: "#9c3b25" },
   laneQuality: {
     poor: "#cf9b57",
     fair: "#a8a24e",
@@ -148,7 +139,5 @@ export function breakdown(
 }
 
 function valueOf(segment: SiteSegment, encoding: Encoding): string {
-  return encoding === "difficulty"
-    ? harderDifficulty(segment.difficulty.forward, segment.difficulty.backward)
-    : segment[encoding];
+  return segment[encoding];
 }

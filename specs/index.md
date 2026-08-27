@@ -103,7 +103,7 @@ type Node = {
   coord: Coord;
 };
 
-type Difficulty = "easy" | "medium" | "hard";
+type Steepness = "flat" | "hilly" | "steep";
 type LaneQuality = "poor" | "fair" | "good" | "great";
 type Scenic = "low" | "medium" | "high";
 type Surface = "asphalt" | "gravel" | "dirt";
@@ -118,7 +118,7 @@ type Segment = {
   source: { track: string; startIndex: number; endIndex: number };
 
   // authored attributes
-  difficulty: { forward: Difficulty; backward: Difficulty };
+  steepness: Steepness; // undirected: the same hill whichever way you meet it
   laneQuality: LaneQuality;
   scenic: Scenic;
   surface: Surface;
@@ -145,7 +145,7 @@ type Pin = {
 
 ### Authoring defaults
 
-A new segment is born with defaults — `medium` difficulty both ways, `fair` lane, `medium` scenic,
+A new segment is born with defaults — `flat` steepness, `fair` lane, `medium` scenic,
 `asphalt`, no recommended direction — and `reviewed: false`. Attributes are therefore never
 `null`, the site never renders an "unknown" state, and the admin can still tell the difference
 between _"asphalt because I checked"_ and _"asphalt because nobody has looked at this yet."_
@@ -153,10 +153,16 @@ Extracting a segment stays a fast, low-friction action; judging it is a separate
 
 ### Directionality
 
-Segments are **bidirectional with per-direction difficulty**. One geometry, traversable either
-way, but `difficulty.forward` and `difficulty.backward` differ where they should — Seattle's
-hills make this non-negotiable. Lane quality, scenic value, and surface are shared across
-directions.
+Segments are **bidirectional**, and no authored attribute is per-direction. One geometry,
+traversable either way, described the same way each way.
+
+Steepness was the one attribute that argued otherwise — Seattle's hills are brutal one way and
+free the other — and it lost the argument. A two-sided field has to be swapped in step every time
+a segment is turned around, kept honest against geometry that already knows the answer, and read
+by asking which side to believe; every one of those was a place to get it wrong. Steepness is now
+the climb in whichever direction climbs more, seeded from the elevation data by
+`pnpm attributes:seed`. Which way a hill is nicer to ride is a routing question, and the elevation
+profile answers it better than a label could.
 
 `recommendedDirection` is nullable and usually null. It exists for the minority of segments where
 one direction is clearly correct (a one-way contraflow lane, a descent that's miserable to climb,
@@ -279,19 +285,19 @@ visually, by the highlight on the map.
 present and clickable. Hiding would fragment the graph and strand a user in a disconnected island
 with no way to see why.
 
-Difficulty, lane quality, and scenic value are ordered scales, so they are **threshold** controls —
-"at most medium difficulty," "at least good bike lane" — which is how the constraint is actually
+Steepness, lane quality, and scenic value are ordered scales, so they are **threshold** controls —
+"nothing steeper than hilly," "at least good bike lane" — which is how the constraint is actually
 held in someone's head. Surface is categorical and gets a **multi-select** toggle group. A set of
-checkboxes for the ordinals would permit nonsense states like _easy and hard but not medium_.
+checkboxes for the ordinals would permit nonsense states like _flat and steep but not hilly_.
 
 ```
-Difficulty     easy ──●── hard   (at most: medium)
+Steepness      flat ──●── steep  (at most: hilly)
 Bike lane      poor ──●── great  (at least: good)
 Scenic         low  ●──── high   (any)
 Surface        [asphalt] [gravel] [dirt]
 ```
 
-**Color encoding** is user-selectable: difficulty, bike-lane quality, scenic value, or surface.
+**Color encoding** is user-selectable: steepness, bike-lane quality, scenic value, or surface.
 Surface additionally uses a dash pattern (solid asphalt, dashed gravel, dotted dirt) so it reads
 without relying on color.
 
@@ -402,7 +408,7 @@ instead.
 node coordinates** (otherwise segments meeting at one junction end a few meters apart and render
 with visible hairline gaps), simplified, rounded, and written to `geometry/<id>.json`.
 
-**Step 5 — Metadata.** A keyboard-friendly form: the four attributes, per-direction difficulty,
+**Step 5 — Metadata.** A keyboard-friendly form: the four attributes, steepness,
 recommended direction, optional name. Saving it sets `reviewed: true`. Autosaves.
 
 Judging ~200 segments one form at a time is the real cost of this project, so the admin also
@@ -451,7 +457,7 @@ onto the polyline, and the pin can then be dragged off the line to its true posi
   which is a licensing violation and must not be ported. It renders as the compact control,
   styled to sit quietly in the corner.
 - **Segment color ramps** are per attribute and chosen for contrast against the muted basemap:
-  difficulty runs green → amber → rust with distinct lightness steps (so it survives deuteranopia,
+  steepness runs green → amber → rust with distinct lightness steps (so it survives deuteranopia,
   not just hue); lane quality is a single-hue sequential ramp across four steps; scenic is a
   three-step sequential ramp; surface is categorical, reinforced by dash pattern.
 

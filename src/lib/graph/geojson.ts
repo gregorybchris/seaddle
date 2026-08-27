@@ -1,7 +1,6 @@
 import type { Feature, FeatureCollection, LineString, Point } from "geojson";
 import type { ElevCoord } from "@/lib/models/geo";
 import { deriveSegment } from "./derive";
-import { harderDifficulty } from "../models/graph";
 import type { GraphFile, SegmentId } from "@/lib/models/graph";
 
 /**
@@ -30,13 +29,7 @@ export function buildGraphGeoJson(
         id: segment.id,
         from: segment.from,
         to: segment.to,
-        difficultyForward: segment.difficulty.forward,
-        difficultyBackward: segment.difficulty.backward,
-        // One label to color by, since a line can only be one color.
-        difficulty: harderDifficulty(
-          segment.difficulty.forward,
-          segment.difficulty.backward,
-        ),
+        steepness: segment.steepness,
         laneQuality: segment.laneQuality,
         scenic: segment.scenic,
         surface: segment.surface,

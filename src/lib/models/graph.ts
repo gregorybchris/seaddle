@@ -4,32 +4,16 @@ export type NodeId = string; // "n017"
 export type SegmentId = string; // "s042"
 export type PinId = string; // "p003"
 
-export type Difficulty = "easy" | "medium" | "hard";
+export type Steepness = "flat" | "hilly" | "steep";
 export type LaneQuality = "poor" | "fair" | "good" | "great";
 export type Scenic = "low" | "medium" | "high";
 export type Surface = "asphalt" | "gravel" | "dirt";
 export type Direction = "forward" | "backward";
 
-export const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
+export const STEEPNESSES: Steepness[] = ["flat", "hilly", "steep"];
 export const LANE_QUALITIES: LaneQuality[] = ["poor", "fair", "good", "great"];
 export const SCENICS: Scenic[] = ["low", "medium", "high"];
 export const SURFACES: Surface[] = ["asphalt", "gravel", "dirt"];
-
-/**
- * One label for a segment that has two answers.
- *
- * The harder way, because that is what decides whether a rider can manage the
- * segment at all — a road that is brutal uphill is a hard road, even though
- * coming down it is easy.
- */
-export function harderDifficulty(
-  forward: Difficulty,
-  backward: Difficulty,
-): Difficulty {
-  return DIFFICULTIES.indexOf(forward) >= DIFFICULTIES.indexOf(backward)
-    ? forward
-    : backward;
-}
 
 export type GraphNode = {
   id: NodeId;
@@ -56,7 +40,8 @@ export type SegmentRecord = {
   /** Which source track this geometry was cropped from, and where. */
   source: { track: string; startIndex: number; endIndex: number };
 
-  difficulty: { forward: Difficulty; backward: Difficulty };
+  /** How much climbing it involves, ridden either way. */
+  steepness: Steepness;
   laneQuality: LaneQuality;
   scenic: Scenic;
   surface: Surface;
@@ -123,7 +108,7 @@ export type GraphFile = {
  */
 export const SEGMENT_DEFAULTS = {
   name: null,
-  difficulty: { forward: "medium", backward: "medium" },
+  steepness: "flat",
   laneQuality: "fair",
   scenic: "medium",
   surface: "asphalt",

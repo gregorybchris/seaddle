@@ -91,7 +91,7 @@ worse than the hand-judged segments next to it.
 This is the part that matters, and it's a design problem rather than a technical one.
 
 `index.md` opens by rejecting "an opaque line on a map." A routed connector is exactly that. The
-router knows nothing about lane quality, difficulty, or surface, and the connector is precisely
+router knows nothing about lane quality, steepness, or surface, and the connector is precisely
 where a beginner is most likely to be pushed onto an arterial — it's the leg nobody has ridden and
 judged.
 

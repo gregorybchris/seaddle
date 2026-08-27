@@ -14,7 +14,7 @@ import type { FeatureCollection, LineString } from "geojson";
 import { centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
-import { harderDifficulty, type SegmentId } from "@/lib/models/graph";
+import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import { PinMark } from "@/widgets/pin-mark";
@@ -159,10 +159,7 @@ export function SiteMap({
         // matching against nothing and every road drawn in the fallback.
         properties: {
           id: segment.id,
-          difficulty: harderDifficulty(
-            segment.difficulty.forward,
-            segment.difficulty.backward,
-          ),
+          steepness: segment.steepness,
           laneQuality: segment.laneQuality,
           scenic: segment.scenic,
           surface: segment.surface,

@@ -1,11 +1,11 @@
 import type {
-  Difficulty,
   Direction,
   GraphFile,
   LaneQuality,
   Scenic,
   SegmentId,
   SegmentRecord,
+  Steepness,
   Surface,
 } from "@/lib/models/graph";
 
@@ -13,12 +13,11 @@ import type {
  * What a review pass can change about a segment.
  *
  * Every field optional, because bulk editing is the normal case: whole trails
- * share a surface without sharing a difficulty, and applying one attribute
+ * share a surface without sharing a steepness, and applying one attribute
  * across forty segments must not overwrite the other five.
  */
 export type AttributePatch = {
-  difficultyForward?: Difficulty;
-  difficultyBackward?: Difficulty;
+  steepness?: Steepness;
   laneQuality?: LaneQuality;
   scenic?: Scenic;
   surface?: Surface;
@@ -51,10 +50,7 @@ export function applyAttributes(
 function patched(segment: SegmentRecord, patch: AttributePatch): SegmentRecord {
   return {
     ...segment,
-    difficulty: {
-      forward: patch.difficultyForward ?? segment.difficulty.forward,
-      backward: patch.difficultyBackward ?? segment.difficulty.backward,
-    },
+    steepness: patch.steepness ?? segment.steepness,
     laneQuality: patch.laneQuality ?? segment.laneQuality,
     scenic: patch.scenic ?? segment.scenic,
     surface: patch.surface ?? segment.surface,
@@ -114,9 +110,10 @@ export function reviewProgress(segments: SegmentRecord[]): {
  * the recommended way is always simply forward.
  *
  * Everything that means "which way" has to turn with it: the junctions, the
- * per-direction difficulty, the pins measured along it, and the source indices
- * — without those last two, `geometry:rebuild` would redraw the old direction
- * and put every pin on the wrong half of the road.
+ * pins measured along it, and the source indices — without those last two,
+ * `geometry:rebuild` would redraw the old direction and put every pin on the
+ * wrong half of the road. Steepness is not in that list: it describes the
+ * segment ridden either way, so turning it around leaves it untouched.
  */
 export function swapSegmentDirection(
   graph: GraphFile,
@@ -134,10 +131,6 @@ export function swapSegmentDirection(
               track: segment.source.track,
               startIndex: segment.source.endIndex,
               endIndex: segment.source.startIndex,
-            },
-            difficulty: {
-              forward: segment.difficulty.backward,
-              backward: segment.difficulty.forward,
             },
           }
         : segment,

@@ -56,7 +56,7 @@ function segment(
     meters: 1000,
     gainForward: Math.max(0, elevations[1] - elevations[0]),
     gainBackward: Math.max(0, elevations[0] - elevations[1]),
-    difficulty: { forward: "medium", backward: "medium" },
+    steepness: "flat",
     laneQuality: "fair",
     scenic: "medium",
     surface: "asphalt",

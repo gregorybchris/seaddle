@@ -195,10 +195,7 @@ describe("addSegment", () => {
     const { segment } = addSegment(base, candidate, nodeA, nodeB);
     expect(segment.reviewed).toBe(false);
     expect(segment.surface).toBe("asphalt");
-    expect(segment.difficulty).toEqual({
-      forward: "medium",
-      backward: "medium",
-    });
+    expect(segment.steepness).toBe("flat");
   });
 
   it("numbers segments in sequence and leaves the input alone", () => {

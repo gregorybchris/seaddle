@@ -26,7 +26,9 @@ describe("buildGraphGeoJson", () => {
       { id: "nA", name: null, coord: [-122.35, 47.65] },
       { id: "nB", name: null, coord: [-122.348, 47.65] },
     ],
-    segments: [segment("s1", "nA", "nB", { laneQuality: "great" })],
+    segments: [
+      segment("s1", "nA", "nB", { laneQuality: "great", steepness: "hilly" }),
+    ],
   });
   const geometry = new Map<string, ElevCoord[]>([["s1", line()]]);
 
@@ -34,7 +36,7 @@ describe("buildGraphGeoJson", () => {
     const collection = buildGraphGeoJson(g, geometry);
     const properties = collection.features[0].properties!;
     expect(properties.laneQuality).toBe("great");
-    expect(properties.difficultyForward).toBe("medium");
+    expect(properties.steepness).toBe("hilly");
     expect(properties.surface).toBe("asphalt");
     expect(properties.reviewed).toBe(false);
   });

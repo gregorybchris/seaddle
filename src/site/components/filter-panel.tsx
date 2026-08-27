@@ -1,9 +1,9 @@
 import {
-  DIFFICULTIES,
   LANE_QUALITIES,
   SCENICS,
+  STEEPNESSES,
   SURFACES,
-  type Difficulty,
+  type Steepness,
   type LaneQuality,
   type Scenic,
 } from "@/lib/models/graph";
@@ -76,11 +76,11 @@ export function FilterPanel({
 
         <div className="border-sand/10 flex flex-col gap-3 border-t pt-3">
           <ChipGroup
-            label="Nothing harder than"
-            options={DIFFICULTIES}
-            value={filters.hardestDifficulty}
-            onChange={(hardestDifficulty: Difficulty) =>
-              onFilters({ ...filters, hardestDifficulty })
+            label="Nothing steeper than"
+            options={STEEPNESSES}
+            value={filters.steepest}
+            onChange={(steepest: Steepness) =>
+              onFilters({ ...filters, steepest })
             }
           />
           <ChipGroup

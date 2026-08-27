@@ -23,7 +23,7 @@ function segment(over: Partial<SiteSegment> = {}): SiteSegment {
     meters: 1000,
     gainForward: 0,
     gainBackward: 0,
-    difficulty: { forward: "medium", backward: "medium" },
+    steepness: "flat",
     laneQuality: "fair",
     scenic: "medium",
     surface: "asphalt",
@@ -36,30 +36,16 @@ const only = (over: Partial<Filters>): Filters => ({ ...NO_FILTERS, ...over });
 
 describe("passes", () => {
   it("lets everything through when nothing is set", () => {
-    expect(
-      passes(
-        segment({ difficulty: { forward: "hard", backward: "hard" } }),
-        NO_FILTERS,
-      ),
-    ).toBe(true);
+    expect(passes(segment({ steepness: "steep" }), NO_FILTERS)).toBe(true);
     expect(
       passes(segment({ laneQuality: "poor", surface: "dirt" }), NO_FILTERS),
     ).toBe(true);
   });
 
-  it("keeps out what is harder than asked for", () => {
-    const hard = segment({ difficulty: { forward: "hard", backward: "hard" } });
-    expect(passes(hard, only({ hardestDifficulty: "medium" }))).toBe(false);
-    expect(passes(hard, only({ hardestDifficulty: "hard" }))).toBe(true);
-  });
-
-  it("judges a hill by its easier direction", () => {
-    // Brutal one way and gentle the other is not a hill someone avoiding hills
-    // has to avoid — they will ride it downhill.
-    const oneWayHill = segment({
-      difficulty: { forward: "hard", backward: "easy" },
-    });
-    expect(passes(oneWayHill, only({ hardestDifficulty: "easy" }))).toBe(true);
+  it("keeps out what is steeper than asked for", () => {
+    const steep = segment({ steepness: "steep" });
+    expect(passes(steep, only({ steepest: "hilly" }))).toBe(false);
+    expect(passes(steep, only({ steepest: "steep" }))).toBe(true);
   });
 
   it("treats bike lane and scenic as floors rather than ceilings", () => {
@@ -105,7 +91,7 @@ describe("isFiltering", () => {
   });
 
   it("notices any one bar being raised", () => {
-    expect(isFiltering(only({ hardestDifficulty: "easy" }))).toBe(true);
+    expect(isFiltering(only({ steepest: "flat" }))).toBe(true);
     expect(isFiltering(only({ leastLaneQuality: "good" }))).toBe(true);
     expect(isFiltering(only({ leastScenic: "high" }))).toBe(true);
     expect(isFiltering(only({ surfaces: ["asphalt"] }))).toBe(true);
@@ -138,12 +124,10 @@ describe("breakdown", () => {
     ]);
   });
 
-  it("labels a two-directional hill by its harder way", () => {
-    // Which is what decides whether a rider can manage it at all.
-    const route = [
-      segment({ difficulty: { forward: "hard", backward: "easy" } }),
-    ];
-    expect(breakdown(route, "difficulty")[0].value).toBe("hard");
+  it("reports the steepness a segment carries", () => {
+    expect(
+      breakdown([segment({ steepness: "steep" })], "steepness")[0].value,
+    ).toBe("steep");
   });
 
   it("has nothing to divide up for an empty route", () => {
@@ -153,10 +137,10 @@ describe("breakdown", () => {
 
 describe("the color ramps", () => {
   it("cover every value each scale can take", () => {
-    expect(Object.keys(RAMPS.difficulty).sort()).toEqual([
-      "easy",
-      "hard",
-      "medium",
+    expect(Object.keys(RAMPS.steepness).sort()).toEqual([
+      "flat",
+      "hilly",
+      "steep",
     ]);
     expect(Object.keys(RAMPS.laneQuality).sort()).toEqual([
       "fair",
@@ -173,7 +157,7 @@ describe("the color ramps", () => {
   });
 
   it("order the ordered scales by lightness, so the order survives color blindness", () => {
-    for (const scale of ["difficulty", "laneQuality", "scenic"] as const) {
+    for (const scale of ["steepness", "laneQuality", "scenic"] as const) {
       const steps = Object.values(RAMPS[scale]).map(lightnessOf);
       const descending = steps.every((v, i) => i === 0 || v < steps[i - 1]);
       expect(descending).toBe(true);

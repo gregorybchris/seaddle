@@ -5,11 +5,11 @@ import {
 } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import {
-  DIFFICULTIES,
   LANE_QUALITIES,
   SCENICS,
+  STEEPNESSES,
   SURFACES,
-  type Difficulty,
+  type Steepness,
   type Direction,
   type SegmentRecord,
 } from "@/lib/models/graph";
@@ -110,22 +110,11 @@ export function SegmentEditor({
 
       <div className="flex flex-col gap-3">
         <ChipGroup
-          label="Difficulty out"
-          options={DIFFICULTIES}
-          value={shared((s) => s.difficulty.forward)}
-          mixed={disagree((s) => s.difficulty.forward)}
-          onChange={(value: Difficulty) =>
-            onPatch({ difficultyForward: value })
-          }
-        />
-        <ChipGroup
-          label="Difficulty back"
-          options={DIFFICULTIES}
-          value={shared((s) => s.difficulty.backward)}
-          mixed={disagree((s) => s.difficulty.backward)}
-          onChange={(value: Difficulty) =>
-            onPatch({ difficultyBackward: value })
-          }
+          label="Steepness"
+          options={STEEPNESSES}
+          value={shared((s) => s.steepness)}
+          mixed={disagree((s) => s.steepness)}
+          onChange={(steepness: Steepness) => onPatch({ steepness })}
         />
         <ChipGroup
           label="Bike lane"
