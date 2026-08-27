@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { cn } from "@/lib/utilities/style-utils";
 
 /**
@@ -33,9 +34,7 @@ export function ScrollList({ count, children }: ScrollListProps) {
     // Newest is last, so the bottom is where the work is. Sliding there on a
     // fresh row points the eye at it; on first render there is nothing to
     // point at yet, so it just starts in the right place.
-    const reduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const reduced = prefersReducedMotion();
     list.scrollTo({
       top: list.scrollHeight,
       behavior: first || reduced ? "auto" : "smooth",

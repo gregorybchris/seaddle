@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { coordAtFraction } from "@/lib/geo/polyline";
+import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
@@ -19,6 +20,8 @@ import {
   startRoute,
 } from "@/site/route";
 import { pinsAlong } from "@/lib/graph/pins";
+import { SHOW_TURNINGS } from "@/site/flags";
+import { turnings } from "@/site/turnings";
 import { useGraph } from "@/site/use-graph";
 import { useRouteHistory } from "@/site/use-route-history";
 
@@ -43,6 +46,24 @@ export function MapPage() {
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const [encoding, setEncoding] = useState<Encoding>("grade");
+  /**
+   * The road the panel is pointing at, and where the map is looking.
+   *
+   * Both exist so the list of roads in the panel and the lines on the map are
+   * the same conversation: the map says which part of the city the list is
+   * about, and the list says which road on it is under the reader's attention.
+   */
+  const [highlighted, setHighlighted] = useState<SegmentId | null>(null);
+  const [center, setCenter] = useState<Coord | null>(null);
+
+  /**
+   * Only the list of roads reads where the map is looking, and this fires every
+   * time the map settles — so with the list off there is a re-render here for
+   * every pan and nothing on the other end of it.
+   */
+  const noteCenter = useCallback((coord: Coord) => {
+    if (SHOW_TURNINGS) setCenter(coord);
+  }, []);
 
   const pick = useCallback(
     (id: SegmentId) => {
@@ -84,6 +105,18 @@ export function MapPage() {
     [pins, route, graph],
   );
 
+  /**
+   * The roads that can be taken next, in words, for whoever is not clicking.
+   *
+   * Not worked out at all while the list is off: before a ride starts it means
+   * measuring the distance from the middle of the map to every road in the
+   * network, every time the map settles, for something nobody is going to see.
+   */
+  const choices = useMemo(
+    () => (SHOW_TURNINGS && graph ? turnings(route, graph, center) : []),
+    [route, graph, center],
+  );
+
   const dimmed = useMemo(
     () =>
       graph
@@ -118,6 +151,9 @@ export function MapPage() {
         // on wherever it could still go.
         onLoad={load}
         onScrub={setScrub}
+        turnings={choices}
+        onPick={pick}
+        onHighlight={setHighlighted}
       />
       <main className="h-full md:min-w-0 md:flex-1">
         <SiteMap
@@ -129,7 +165,9 @@ export function MapPage() {
           allPins={pins}
           pins={routePins}
           framing={framing}
+          highlighted={highlighted}
           onPick={pick}
+          onCenter={noteCenter}
         />
       </main>
     </div>

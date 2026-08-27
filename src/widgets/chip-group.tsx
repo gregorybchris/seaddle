@@ -53,7 +53,10 @@ export function ChipGroup<T extends string>({
                 aria-checked={active}
                 onClick={() => onChange(option)}
                 className={cn(
-                  "focus-visible:ring-blaze mx-0.5 mb-1 inline-block rounded-md border px-2 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                  // Inline-flex rather than inline-block: still inline-level,
+                  // so the balancing above still sees a line of words, but the
+                  // label centres in a box tall enough for a fingertip.
+                  "focus-visible:ring-blaze mx-0.5 mb-1 inline-flex min-h-11 items-center rounded-md border px-3 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
                   active
                     ? "border-blaze-deep bg-blaze text-forest-deep"
                     : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",

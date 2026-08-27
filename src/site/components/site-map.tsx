@@ -15,10 +15,11 @@ import { centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
-import { MapTheme } from "@/widgets/map-theme";
 import type { SiteGraph } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
+import { MapTheme } from "@/widgets/map-theme";
 import { PinMark } from "@/widgets/pin-mark";
+import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
 import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../filters";
@@ -100,7 +101,17 @@ type SiteMapProps = {
    * at — arriving on a shared link, or opening a saved ride.
    */
   framing: { mode: "choices" | "route"; at: number };
+  /** The road the panel is pointing at, drawn so a keyboard can see where it is. */
+  highlighted: SegmentId | null;
   onPick: (id: SegmentId) => void;
+  /**
+   * Where the map is looking, once it has settled.
+   *
+   * Before a ride starts every road is a legal first pick, and this is what
+   * says which handful of them the panel should offer — panning is how a
+   * reader who is not clicking says "around here".
+   */
+  onCenter: (coord: Coord) => void;
 };
 
 /**
@@ -152,13 +163,17 @@ export function SiteMap({
   pins,
   scrubbed,
   framing,
+  highlighted,
   onPick,
+  onCenter,
 }: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const [overRoad, setOverRoad] = useState(false);
   const [hovered, setHovered] = useState<Hovered | null>(null);
   const [zoom, setZoom] = useState(10);
+  /** Whether the map exists yet, which is not the same as this having rendered. */
+  const [ready, setReady] = useState(false);
   const [openPin, setOpenPin] = useState<string | null>(null);
 
   /**
@@ -262,8 +277,13 @@ export function SiteMap({
 
   // Frame the whole network on arrival. There is no geolocation, so this is
   // the only thing that tells a first-time visitor what is covered.
+  //
+  // Waits for the map to say it is there rather than trusting the ref to be
+  // populated by the time this runs — it is not, reliably, and the version
+  // that only checked for null quietly did nothing at all on a cold load,
+  // leaving the opening view wherever `initialViewState` had put it.
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !ready) return;
     mapRef.current.fitBounds(
       [
         [graph.bounds.minLon, graph.bounds.minLat],
@@ -271,7 +291,9 @@ export function SiteMap({
       ],
       { padding: 48, duration: 0 },
     );
-  }, [graph]);
+    const middle = mapRef.current.getCenter();
+    onCenter([middle.lng, middle.lat]);
+  }, [graph, ready, onCenter]);
 
   // Frame where the route can go next, not where it has been.
   //
@@ -301,9 +323,16 @@ export function SiteMap({
         [bounds.minLon, bounds.minLat],
         [bounds.maxLon, bounds.maxLat],
       ],
-      // Generous padding so the road just ridden stays partly in frame and the
-      // choices do not sit against the edge of the screen.
-      { padding: 140, duration: 700, maxZoom: 15 },
+      {
+        // Generous padding so the road just ridden stays partly in frame and
+        // the choices do not sit against the edge of the screen.
+        padding: 140,
+        // The flight is what says the camera moved rather than cut; for a
+        // reader who has asked for less of that, it arrives instead. Where it
+        // ends up is identical either way.
+        duration: prefersReducedMotion() ? 0 : 700,
+        maxZoom: 15,
+      },
     );
   }, [framing, route, graph]);
 
@@ -356,6 +385,7 @@ export function SiteMap({
         // Only a road is clickable, so only a road says so. Claiming every pixel
         // is clickable teaches a beginner nothing about where they may go.
         cursor={overRoad ? "pointer" : "grab"}
+        onLoad={() => setReady(true)}
         interactiveLayerIds={[CLICKABLE]}
         onMouseMove={(event: MapLayerMouseEvent) => {
           setOverRoad(Boolean(event.features?.length));
@@ -371,6 +401,11 @@ export function SiteMap({
           setZoom(event.viewState.zoom);
           setHovered(null);
         }}
+        // On settling rather than on every frame: the panel's list of nearby
+        // roads is read, and a list that reshuffles mid-pan is not.
+        onMoveEnd={(event) =>
+          onCenter([event.viewState.longitude, event.viewState.latitude])
+        }
         onClick={(event: MapLayerMouseEvent) => {
           setOpenPin(null);
           // A tap fires this without ever hovering, and the label would then sit
@@ -441,6 +476,24 @@ export function SiteMap({
               "line-color": "#d97b2e",
               "line-opacity": 1,
               "line-width": 6,
+            }}
+            layout={{ "line-cap": "round", "line-join": "round" }}
+          />
+
+          {/* The road the panel is pointing at, drawn like a highlighter over
+            the top rather than as another color of line: it has to be findable
+            without hiding what the road already says about itself, and a
+            keyboard has no cursor to follow. Pale and soft-edged so it reads
+            as attention rather than as a fourth state of the network. */}
+          <Layer
+            id="segments-highlighted"
+            type="line"
+            filter={["==", ["get", "id"], highlighted ?? ""]}
+            paint={{
+              "line-color": "#e9e0d0",
+              "line-opacity": 0.5,
+              "line-width": 14,
+              "line-blur": 2,
             }}
             layout={{ "line-cap": "round", "line-join": "round" }}
           />

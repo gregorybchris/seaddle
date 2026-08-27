@@ -67,6 +67,14 @@ type SheetProps = {
    * to be shown where something is, only for the panel to be covering it.
    */
   lowerOn?: unknown;
+  /**
+   * What this panel is, for a reader moving between landmarks.
+   *
+   * The heading inside it names the site rather than the panel, so without
+   * this the one region holding every control is announced as "complementary"
+   * and nothing else.
+   */
+  label?: string;
   children: ReactNode;
 };
 
@@ -85,6 +93,7 @@ export function Sheet({
   raisedTo = "full",
   restingAt = "half",
   lowerOn,
+  label,
   children,
 }: SheetProps) {
   const [detent, setDetent] = useState<Detent>(restingAt);
@@ -161,6 +170,7 @@ export function Sheet({
 
   return (
     <aside
+      aria-label={label}
       className={cn(
         "sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-10 flex flex-col rounded-t-2xl",
         "shadow-[0_-8px_32px_rgba(18,48,31,0.28)]",

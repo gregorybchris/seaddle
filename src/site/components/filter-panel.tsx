@@ -50,7 +50,7 @@ export function FilterPanel({
   const on = isFiltering(filters);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="border-sand/10 flex flex-col gap-4 border-t pt-3">
       <ChipGroup
         label="Color the map by"
         options={ENCODINGS}
@@ -93,7 +93,7 @@ export function FilterPanel({
           </span>
           <Button
             variant="quiet"
-            className="min-h-0 px-2 py-1 text-xs"
+            className="px-2 text-xs"
             onClick={() => onFilters(NO_FILTERS)}
           >
             Clear
