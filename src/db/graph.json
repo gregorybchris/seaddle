@@ -565,11 +565,6 @@
       "id": "n123",
       "name": null,
       "coord": [-122.317943, 47.655621]
-    },
-    {
-      "id": "n124",
-      "name": null,
-      "coord": [-122.200525, 47.579127]
     }
   ],
   "segments": [
@@ -3666,6 +3661,142 @@
       "note": "Water fountain over by the sports fields",
       "at": 0.9616579099909595,
       "coord": [-122.127487, 47.550048]
+    },
+    {
+      "id": "p005",
+      "segment": "s029",
+      "kind": "water",
+      "note": "Press the button for the water to flow",
+      "at": 0.4860624714396265,
+      "coord": [-122.146296, 47.735127]
+    },
+    {
+      "id": "p006",
+      "segment": "s029",
+      "kind": "bathroom",
+      "note": null,
+      "at": 0.4863657905448772,
+      "coord": [-122.14625, 47.735099]
+    },
+    {
+      "id": "p007",
+      "segment": "s029",
+      "kind": "rest",
+      "note": "A couple of picnic benches here",
+      "at": 0.48622064991296293,
+      "coord": [-122.146273, 47.735111]
+    },
+    {
+      "id": "p008",
+      "segment": "s029",
+      "kind": "rest",
+      "note": null,
+      "at": 0.3142800423730459,
+      "coord": [-122.16615, 47.753042]
+    },
+    {
+      "id": "p009",
+      "segment": "s029",
+      "kind": "bathroom",
+      "note": "Not sure how often these are open",
+      "at": 0.3104531059055119,
+      "coord": [-122.166797, 47.75329]
+    },
+    {
+      "id": "p010",
+      "segment": "s062",
+      "kind": "bathroom",
+      "note": "Very nice new bathrooms. Thanks, Melinda and MacKenzie!",
+      "at": 0.5092831674185818,
+      "coord": [-122.371942, 47.625583]
+    },
+    {
+      "id": "p011",
+      "segment": "s062",
+      "kind": "rest",
+      "note": "A good place to get a snack",
+      "at": 0.5116351505035209,
+      "coord": [-122.372079, 47.625651]
+    },
+    {
+      "id": "p012",
+      "segment": "s065",
+      "kind": "photo",
+      "note": null,
+      "at": 0.40399333475852,
+      "coord": [-122.404972, 47.581472]
+    },
+    {
+      "id": "p013",
+      "segment": "s059",
+      "kind": "rest",
+      "note": "Get some ice cream with a view",
+      "at": 0.9810268932846078,
+      "coord": [-122.336094, 47.600933]
+    },
+    {
+      "id": "p014",
+      "segment": "s069",
+      "kind": "bathroom",
+      "note": "Turn off here for bathrooms at Montlake Playfield",
+      "at": 0.5007720872353347,
+      "coord": [-122.309009, 47.63958]
+    },
+    {
+      "id": "p015",
+      "segment": "s008",
+      "kind": "bathroom",
+      "note": null,
+      "at": 0.9803215310537635,
+      "coord": [-122.326052, 47.785058]
+    },
+    {
+      "id": "p016",
+      "segment": "s008",
+      "kind": "rest",
+      "note": "Couple of picnic tables and a nice view of the lake",
+      "at": 0.9922675743641137,
+      "coord": [-122.3261, 47.78495]
+    },
+    {
+      "id": "p017",
+      "segment": "s028",
+      "kind": "rest",
+      "note": "A couple benches and picnic tables",
+      "at": 0.8388549530845876,
+      "coord": [-122.206344, 47.660139]
+    },
+    {
+      "id": "p018",
+      "segment": "s047",
+      "kind": "photo",
+      "note": null,
+      "at": 0.35727839375526554,
+      "coord": [-122.374759, 47.758563]
+    },
+    {
+      "id": "p019",
+      "segment": "s028",
+      "kind": "photo",
+      "note": "Slow down for pedestrians and take in the view",
+      "at": 0.4521305315628603,
+      "coord": [-122.210363, 47.700964]
+    },
+    {
+      "id": "p020",
+      "segment": "s131",
+      "kind": "rest",
+      "note": "There are a few benches overlooking 520 bridge",
+      "at": 0.99888773598794,
+      "coord": [-122.23848, 47.637586]
+    },
+    {
+      "id": "p021",
+      "segment": "s027",
+      "kind": "water",
+      "note": "This fountain could be cleaner, but it does have water",
+      "at": 0.9408194572509971,
+      "coord": [-122.276573, 47.753283]
     }
   ]
 }
