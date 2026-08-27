@@ -18,6 +18,7 @@ import type {
 } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import { cn } from "@/lib/utilities/style-utils";
+import { MapTheme } from "@/widgets/map-theme";
 import { PinMark } from "@/widgets/pin-mark";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import {
@@ -313,6 +314,9 @@ export function AdminMap({
         )}
         <AttributionControl compact />
       </Map>
+
+      {/* A row below the labels toggle, which already holds the top corner. */}
+      <MapTheme mapRef={mapRef} className="top-13" />
 
       <button
         type="button"

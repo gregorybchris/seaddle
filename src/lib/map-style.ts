@@ -1,11 +1,13 @@
 /**
- * Which basemap to draw under everything.
+ * Which basemap the themes are drawn on top of.
  *
- * Set `VITE_MAP_STYLE` to a Mapbox Studio style URL and both maps pick it up —
- * designing that style is work in Studio rather than in this repository, and it
- * should not need a code change to land. The stock light style is the stand-in
- * until then: muted enough that green route lines read against it, which is the
- * only thing the site actually asks of it.
+ * `light-v11` is not a placeholder any more: the grounds in `basemap.ts` are
+ * re-tints of *its* layers, addressed by name, so this is load-bearing rather
+ * than a default. Pointing `VITE_MAP_STYLE` at a Mapbox Studio style still
+ * works and still needs no code change — but a style built on anything other
+ * than the classic Streets layer names will not match those layer ids, and the
+ * re-tint quietly does nothing rather than failing. Themes and a custom Studio
+ * style are alternatives to each other, not a stack.
  */
 export const MAP_STYLE =
   import.meta.env.VITE_MAP_STYLE || "mapbox://styles/mapbox/light-v11";

@@ -15,6 +15,7 @@ import { centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
+import { MapTheme } from "@/widgets/map-theme";
 import type { SiteGraph } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import { PinMark } from "@/widgets/pin-mark";
@@ -574,6 +575,8 @@ export function SiteMap({
         )}
         <AttributionControl compact />
       </Map>
+
+      <MapTheme mapRef={mapRef} />
 
       {/* Offset off the cursor so the label never sits under the pointer, and
           thrown to the other side near an edge so it cannot run off the map —

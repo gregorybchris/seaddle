@@ -129,6 +129,50 @@ body {
   animation: collapsible-close 200ms var(--ease-settle);
 }
 
+/* A menu arriving under the control that opened it. Radix hands us the side it
+   chose, so the panel always grows away from its trigger rather than through
+   it. Same settle curve as everything else that moves on this site. */
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes menu-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+.menu-panel {
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+}
+
+.menu-panel[data-state="open"] {
+  animation: menu-in 160ms var(--ease-settle);
+}
+
+.menu-panel[data-state="closed"] {
+  animation: menu-out 120ms var(--ease-settle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel[data-state="open"],
+  .menu-panel[data-state="closed"] {
+    animation: none;
+  }
+}
+
 /* Fades the first and last few pixels of a scrolling list, so a row cut off at
    the edge looks deliberately cut off rather than simply ending. */
 .scroll-faded {
@@ -178,6 +222,42 @@ body {
     0 0,
     0.21875rem 0.21875rem;
   box-shadow: 0 1px 3px rgb(18 48 31 / 0.4);
+}
+
+/* Mapbox's compact attribution swaps the credit between `display: none` and
+   `display: block`, which cannot animate — the panel simply appears. Given as a
+   width the pill can travel, it grows out from under its own button instead,
+   which is the same movement the map theme switch makes in the other corner. */
+.mapboxgl-ctrl-attrib.mapboxgl-compact,
+.mapboxgl-ctrl-attrib.mapboxgl-compact-show {
+  transition: padding 300ms var(--ease-settle);
+}
+
+.mapboxgl-ctrl-attrib.mapboxgl-compact .mapboxgl-ctrl-attrib-inner {
+  display: block;
+  /* The credit is one line of text; without this it reflows to two mid-travel
+     and the pill jumps a row taller on the way past. */
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transition:
+    max-width 300ms var(--ease-settle),
+    opacity 200ms var(--ease-settle);
+}
+
+.mapboxgl-ctrl-attrib.mapboxgl-compact-show .mapboxgl-ctrl-attrib-inner {
+  /* A ceiling rather than a measurement — the credit is shorter than this, so
+     the pill stops when the text does and the number never shows. */
+  max-width: 22rem;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapboxgl-ctrl-attrib.mapboxgl-compact,
+  .mapboxgl-ctrl-attrib.mapboxgl-compact .mapboxgl-ctrl-attrib-inner {
+    transition: none;
+  }
 }
 
 /* Mapbox draws its popup white with a white arrow. The site is dark, and a
