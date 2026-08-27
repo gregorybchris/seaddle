@@ -19,17 +19,23 @@ character is the sum of its parts rather than an opaque line on a map.
 
 ## 1. Source data
 
-`src-gpx/` holds 21 GPX files (~50,000 track points, 8.7 MB raw), exported from Mapometer.
-Coverage spans Seattle proper, the Eastside (Mercer Island, Sammamish, May Valley), and outlying
-tracks in Everett, Edmonds, and Burien.
+`src-gpx/` holds 43 GPX files (~109,000 track points, ~2,000 km, 23 MB raw). Coverage spans
+Seattle proper, the Eastside (Mercer Island, Sammamish, May Valley), and outlying tracks in
+Everett, Edmonds, Burien, and Bainbridge.
 
 **The sources are mixed, and nothing downstream may assume otherwise.** Twelve rides are drawn in
-Mapometer and snapped to roads; nine are recorded by Strava off a GPS. Measured across both:
+Mapometer and snapped to roads; thirty-one are recorded by Strava off a GPS. Measured across both:
 
 | | vertex spacing | spacing variability | 6 m simplify loss | raw ↑ vs filtered ↑ |
 | --- | --- | --- | --- | --- |
-| Strava (9) | 15–20 m | cv 0.71–1.96 | 0.33–0.58% | 1021 m → 679 m |
+| Strava (31) | 8–22 m | cv 0.69–12.17 | 0.24–4.44% | 437 m → 296 m |
 | Mapometer (12) | 14–156 m | cv 1.06–3.07 | 0.06–0.83% | 723 m → 546 m |
+
+Spacing is the mean between neighboring vertices on a ride, and the climb is the median ride in
+the group. The top of each Strava range is one outlier, and neither is about sampling: both are
+rides whose recorder stopped, which leaves a single enormous straight leg that inflates the
+spread and survives simplification when nothing else in the ride does — the subject of two
+paragraphs down.
 
 Two of those numbers are the opposite of the intuition. **Drawn routes are the unevenly spaced
 ones** — Mapometer emits a vertex only where the road turns, while Strava samples on a timer — so
@@ -372,7 +378,7 @@ approach, and it's better: junctions become real objects placed where intersecti
 segment geometry gets _chosen_ rather than inherited from whichever GPX happened to be cut, and
 junction dedup falls out by construction instead of being a cleanup pass.
 
-**Step 1 — Heatmap.** Render all 21 source tracks as a single line layer at low opacity. Overlaps
+**Step 1 — Heatmap.** Render all 43 source tracks as a single line layer at low opacity. Overlaps
 accumulate, so heavily-ridden roads glow and the shape of the network becomes obvious. Line width
 scales with zoom.
 
@@ -431,12 +437,13 @@ onto the polyline, and the pin can then be dragged off the line to its true posi
 - **Manual connect** — force-join two node endpoints farther apart than the snap tolerance (a
   bridge deck, a trail gap), merge two nodes into one, or reassign a segment endpoint to a
   different node. Auto-snapping handles ~95%; this covers the rest.
-- **Coverage view** — dims heatmap track mileage already covered by a segment, and shows a
-  counter ("142 of ~380 track-miles covered"). Answers "what's left" and "am I done" visually.
-- **Validation panel** — orphan nodes, segments referencing missing nodes, duplicate segments
-  between the same node pair, unsnapped endpoints, an **unreviewed count** (`reviewed: false`), and
-  a list of **connected components** with their sizes, so the Everett/Burien islands are a known
-  fact rather than a surprise.
+
+There were two more here — a **coverage view** dimming heatmap mileage already cut into segments,
+and a **validation panel** listing orphan nodes, missing references, duplicate node pairs and
+connected components. Neither is being built. The graph is sliced, so "what's left" is a question
+that has been answered once and will not be asked again; and `graph:build` already prints every
+check the panel would have shown, on the one occasion that matters — the step that writes what the
+site loads. A screen in the admin would be a second place to look for the same facts.
 
 ---
 
@@ -514,9 +521,10 @@ typecheck, lint, and tests.
 2. ~~**Admin core**~~ — heatmap, node placement with snapping, candidate finder, extraction, crop
    and write-back.
 3. ~~**Site core**~~ — map, segment chaining, sidebar, distance/gain/profile stats.
-4. **Admin completion** — ~~metadata editor~~, ~~slicing the rides into a full graph~~ (153
-   segments, 261 miles). Still open: **pin editor**, **manual connect**, **coverage view**,
-   **validation panel** — the last only exists as warnings printed by `graph:build`.
+4. **Admin completion** — ~~metadata editor~~, ~~slicing the rides into a full graph~~ (158
+   segments), ~~pin editor~~. Still open: **manual connect** — merging two nodes is built, forcing
+   a join across the snap tolerance and reassigning a segment endpoint are not. The coverage view
+   and validation panel that stood here are dropped, for the reasons in §5.
 5. ~~**Site completion**~~ — filters, color encoding, attribute summary, out-and-back, URL
    sharing, localStorage saves, GPX export.
 6. **Polish** — ~~mobile bottom sheet~~. Still open: **custom Studio basemap** (both maps are
@@ -543,8 +551,8 @@ complete dataset.
   click-only design. Deferred, not rejected.
 - **Duplicate geometry.** Where two source tracks cover the same road, the extraction workflow
   picks the cleaner one — but nothing prevents creating two segments for the same stretch between
-  different node pairs. The validation panel should probably detect near-parallel duplicate
-  geometry, not just identical node pairs.
+  different node pairs. Detecting near-parallel duplicate geometry would want to live in
+  `graph:build` alongside the checks that are already there.
 - **Segment granularity.** How long should a typical segment be? Too fine and route building is
   tedious; too coarse and the metadata stops being meaningful. Worth deciding empirically after
   the first ten.
