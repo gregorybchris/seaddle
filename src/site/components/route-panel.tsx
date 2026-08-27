@@ -1,5 +1,6 @@
 import {
   ArrowUUpLeft,
+  ArrowUUpRight,
   ArrowsLeftRight,
   DownloadSimple,
   Trash,
@@ -28,6 +29,12 @@ import { useSavedRides, type SavedRide } from "../use-saved-rides";
 import { FilterPanel } from "./filter-panel";
 import { RouteBreakdown } from "./route-breakdown";
 
+/** What the undo keys are called on this machine, for the button tooltips. */
+const MOD =
+  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+    ? "\u2318"
+    : "Ctrl+";
+
 type RoutePanelProps = {
   graph: SiteGraph;
   route: Route;
@@ -38,6 +45,9 @@ type RoutePanelProps = {
   passing: number;
   total: number;
   onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
   onClear: () => void;
   onOutAndBack: () => void;
   onLoad: (encoded: string) => void;
@@ -54,6 +64,9 @@ export function RoutePanel({
   passing,
   total,
   onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
   onClear,
   onOutAndBack,
   onLoad,
@@ -124,37 +137,67 @@ export function RoutePanel({
                 turn.
               </p>
             )}
-
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="flex-1" onClick={onUndo}>
-                <ArrowUUpLeft weight="bold" className="h-4 w-4" />
-                Undo
-              </Button>
-              <Button
-                variant="outline"
-                onClick={onOutAndBack}
-                title="Ride the same way home"
-              >
-                <ArrowsLeftRight weight="bold" className="h-4 w-4" />
-                And back
-              </Button>
-              <Button variant="quiet" onClick={onClear} aria-label="Start over">
-                <Trash weight="bold" className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <SaveRide
-              route={route}
-              meters={meters}
-              graph={graph}
-              onSave={saved.save}
-            />
           </>
         ) : (
           <p className="text-sand/75 text-sm leading-relaxed">
             Tap any road to start a ride. Keep tapping to add on new segments.
             Then save or export your route.
           </p>
+        )}
+
+        {/* Still here once a route has been undone away to nothing, because
+            that is exactly the moment Redo is the thing being reached for. */}
+        {(started || canRedo) && (
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={onUndo}
+              disabled={!canUndo}
+              title={`Undo (${MOD}Z)`}
+            >
+              <ArrowUUpLeft weight="bold" className="h-4 w-4" />
+              Undo
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={onRedo}
+              disabled={!canRedo}
+              title={`Redo (${MOD}\u21e7Z)`}
+            >
+              <ArrowUUpRight weight="bold" className="h-4 w-4" />
+              Redo
+            </Button>
+            {started && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={onOutAndBack}
+                  title="Ride the same way home"
+                >
+                  <ArrowsLeftRight weight="bold" className="h-4 w-4" />
+                  And back
+                </Button>
+                <Button
+                  variant="quiet"
+                  onClick={onClear}
+                  aria-label="Start over"
+                >
+                  <Trash weight="bold" className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+
+        {started && (
+          <SaveRide
+            route={route}
+            meters={meters}
+            graph={graph}
+            onSave={saved.save}
+          />
         )}
 
         <FilterPanel

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { coordAtFraction } from "@/lib/geo/polyline";
 import type { SegmentId } from "@/lib/models/graph";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
@@ -12,73 +12,37 @@ import {
 } from "@/site/filters";
 import {
   append,
-  decodeRoute,
   EMPTY_ROUTE,
-  encodeRoute,
   isEmpty,
   outAndBack,
   routePoints,
   startRoute,
-  undo,
-  type Route,
 } from "@/site/route";
 import { pinsAlong } from "@/lib/graph/pins";
 import { useGraph } from "@/site/use-graph";
-
-/** The route lives in the address bar, so a link is the whole ride. */
-function routeFromUrl(): string {
-  return new URLSearchParams(window.location.search).get("r") ?? "";
-}
+import { useRouteHistory } from "@/site/use-route-history";
 
 export function MapPage() {
   const { graph, pins, error } = useGraph();
-  const [route, setRouteState] = useState<Route>(EMPTY_ROUTE);
+  /**
+   * The route, and every route it was on the way here.
+   *
+   * Each move leaves a history entry too, so the back button keeps undoing —
+   * free on a desktop, and where an Android thumb already is.
+   */
+  const {
+    route,
+    framing,
+    change: changeRoute,
+    load,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const [encoding, setEncoding] = useState<Encoding>("protection");
-  /**
-   * What the map should frame next.
-   *
-   * Building a route and looking at one want different views: mid-build the
-   * question is where to turn, but a ride opened from a link or from the saved
-   * list is finished, and the answer is what it looks like end to end.
-   */
-  const [framing, setFraming] = useState<{
-    mode: "choices" | "route";
-    at: number;
-  }>({ mode: "route", at: 0 });
-
-  // Read the link once the graph is there to make sense of it, and again
-  // whenever the back button moves through the history we have been writing.
-  useEffect(() => {
-    if (!graph) return;
-    const fromUrl = () => {
-      setRouteState(decodeRoute(routeFromUrl(), graph));
-      setFraming({ mode: "route", at: Date.now() });
-    };
-    fromUrl();
-    window.addEventListener("popstate", fromUrl);
-    return () => window.removeEventListener("popstate", fromUrl);
-  }, [graph]);
-
-  /**
-   * Every change goes through here and leaves a history entry, which is what
-   * makes the back button undo — free on a desktop, and where an Android
-   * thumb already is.
-   */
-  const changeRoute = useCallback(
-    (next: Route, mode: "choices" | "route" = "choices") => {
-      setRouteState(next);
-      setFraming({ mode, at: Date.now() });
-      const encoded = encodeRoute(next);
-      window.history.pushState(
-        null,
-        "",
-        encoded ? `?r=${encoded}` : window.location.pathname,
-      );
-    },
-    [],
-  );
 
   const pick = useCallback(
     (id: SegmentId) => {
@@ -144,12 +108,15 @@ export function MapPage() {
         onFilters={setFilters}
         passing={graph.segments.size - dimmed.length}
         total={graph.segments.size}
-        onUndo={() => changeRoute(undo(route))}
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
         onClear={() => changeRoute(EMPTY_ROUTE)}
         onOutAndBack={() => changeRoute(outAndBack(route))}
         // A saved ride is finished, so it is shown whole rather than framed
         // on wherever it could still go.
-        onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph), "route")}
+        onLoad={load}
         onScrub={setScrub}
       />
       <main className="h-full md:min-w-0 md:flex-1">

@@ -9,6 +9,7 @@ import {
   choiceBounds,
   continuations,
   decodeRoute,
+  decodeStages,
   EMPTY_ROUTE,
   encodeRoute,
   focusAnchor,
@@ -21,7 +22,6 @@ import {
   routePoints,
   routeProfile,
   startRoute,
-  undo,
 } from "./route";
 
 /**
@@ -206,27 +206,39 @@ describe("junctions with nothing to decide", () => {
   });
 });
 
-describe("undo", () => {
-  it("takes back one decision, not one segment", () => {
-    // s3 came along with the choice of s2, so it goes back with it — otherwise
-    // one click would need two presses to undo.
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(ids(undo(route))).toEqual(["s1"]);
+describe("the history a link carries", () => {
+  it("hands back the route as it stood after each decision", () => {
+    const stages = decodeStages("s1,s4", G);
+    expect(stages.map(ids)).toEqual([[], ["s1"], ["s1", "s4"]]);
   });
 
-  it("pops a single segment where nothing was run through", () => {
-    const route = append(startRoute(seg("s1")), seg("s4"), G);
-    expect(ids(undo(route))).toEqual(["s1"]);
+  it("steps back one decision, not one segment", () => {
+    // s3 came along with the choice of s2, so it goes back with it — otherwise
+    // one click would need two presses to undo.
+    const stages = decodeStages("s1,s2", G);
+    expect(ids(stages[stages.length - 1])).toEqual(["s1", "s2", "s3"]);
+    expect(ids(stages[stages.length - 2])).toEqual(["s1"]);
+  });
+
+  it("starts at nothing, so the opening segment can be taken back too", () => {
+    expect(isEmpty(decodeStages("s1", G)[0])).toBe(true);
+    expect(decodeStages("", G)).toEqual([EMPTY_ROUTE]);
   });
 
   it("makes both ends live again on the way back to one segment", () => {
-    const route = undo(append(startRoute(seg("s1")), seg("s4"), G));
-    expect(route.ambiguous).toBe(true);
-    expect(liveEnds(route).sort()).toEqual(["nA", "nB"]);
+    const [, single] = decodeStages("s1,s4", G);
+    expect(single.ambiguous).toBe(true);
+    expect(liveEnds(single).sort()).toEqual(["nA", "nB"]);
   });
 
-  it("empties out", () => {
-    expect(isEmpty(undo(startRoute(seg("s1"))))).toBe(true);
+  it("leaves out a token that changed nothing", () => {
+    // A segment a recut has since removed would otherwise sit in the history
+    // as a step that undoes nothing.
+    expect(decodeStages("s1,s404,s4", G).map(ids)).toEqual([
+      [],
+      ["s1"],
+      ["s1", "s4"],
+    ]);
   });
 });
 
@@ -322,8 +334,9 @@ describe("out and back", () => {
   });
 
   it("comes off in one press, because turning round was one decision", () => {
-    const route = append(startRoute(seg("s1")), seg("s4"), G);
-    expect(ids(undo(outAndBack(route)))).toEqual(["s1", "s4"]);
+    const stages = decodeStages("s1,s4,~", G);
+    expect(ids(stages[stages.length - 1])).toEqual(["s1", "s4", "s4", "s1"]);
+    expect(ids(stages[stages.length - 2])).toEqual(["s1", "s4"]);
   });
 
   it("has nothing to mirror when no route has started", () => {

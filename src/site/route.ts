@@ -183,20 +183,6 @@ function runOn(route: Route, graph: SiteGraph): Route {
   return current;
 }
 
-/**
- * Undo one decision, not one segment.
- *
- * Whatever the route ran on through by itself comes off with the choice that
- * caused it — stepping back through a bend the rider never chose would make
- * them press the button twice to undo one click.
- */
-export function undo(route: Route): Route {
-  const steps = [...route.steps];
-  while (steps.length > 0 && steps[steps.length - 1].auto) steps.pop();
-  steps.pop();
-  return { steps, ambiguous: steps.length === 1 };
-}
-
 function touches(segment: SiteSegment, node: NodeId): boolean {
   return segment.from === node || segment.to === node;
 }
@@ -259,19 +245,38 @@ export function encodeRoute(route: Route): string {
  * should give back as much of the ride as still exists.
  */
 export function decodeRoute(encoded: string, graph: SiteGraph): Route {
-  let route = EMPTY_ROUTE;
+  const stages = decodeStages(encoded, graph);
+  return stages[stages.length - 1];
+}
+
+/**
+ * Every route the link passed through on the way to the one it names.
+ *
+ * A list of decisions is also a history, so replaying it a token at a time says
+ * what the route was after each of them. That is what lets Undo work on a ride
+ * that arrived from a link or the saved list: it was built out of decisions
+ * like any other, just not in this browser, and they are all still here.
+ *
+ * Starts at the empty route, so the first decision can be taken back too, and
+ * drops tokens that changed nothing — a segment a recut has since removed
+ * should not leave behind a step that undoes nothing.
+ */
+export function decodeStages(encoded: string, graph: SiteGraph): Route[] {
+  const stages: Route[] = [EMPTY_ROUTE];
   for (const token of encoded.split(",").filter(Boolean)) {
-    if (token === TURN) {
-      route = outAndBack(route);
-      continue;
-    }
-    const segment = graph.segments.get(token);
-    if (!segment) continue;
-    route = isEmpty(route)
-      ? startRoute(segment)
-      : append(route, segment, graph);
+    const current = stages[stages.length - 1];
+    const next = replay(current, token, graph);
+    if (next !== current) stages.push(next);
   }
-  return route;
+  return stages;
+}
+
+/** One token of a link, applied by the same rules a rider's click goes through. */
+function replay(route: Route, token: string, graph: SiteGraph): Route {
+  if (token === TURN) return outAndBack(route);
+  const segment = graph.segments.get(token);
+  if (!segment) return route;
+  return isEmpty(route) ? startRoute(segment) : append(route, segment, graph);
 }
 
 export function routeMeters(route: Route, graph: SiteGraph): number {
