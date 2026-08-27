@@ -34,6 +34,16 @@ type SheetProps = {
    */
   raisedWhen?: boolean;
   /**
+   * How far up it goes, and where it sits otherwise.
+   *
+   * Different for a panel being worked in and one being glanced at: the admin
+   * wants candidates fully in view, while the site is a map first — throwing
+   * the panel over most of it the instant a road is picked hides the very
+   * change the pick just made.
+   */
+  raisedTo?: Detent;
+  restingAt?: Detent;
+  /**
    * Drop the sheet out of the way whenever this changes.
    *
    * For the moments the answer is on the map rather than in the panel — asking
@@ -54,18 +64,20 @@ type SheetProps = {
 export function Sheet({
   peek,
   raisedWhen = false,
+  raisedTo = "full",
+  restingAt = "half",
   lowerOn,
   children,
 }: SheetProps) {
-  const [detent, setDetent] = useState<Detent>("half");
+  const [detent, setDetent] = useState<Detent>(restingAt);
   const [dragVh, setDragVh] = useState<number | null>(null);
   const drag = useRef<{ startY: number; startVh: number } | null>(null);
 
   const visibleVh = dragVh ?? DETENT_VH[detent];
 
   useEffect(() => {
-    setDetent(raisedWhen ? "full" : "half");
-  }, [raisedWhen]);
+    setDetent(raisedWhen ? raisedTo : restingAt);
+  }, [raisedWhen, raisedTo, restingAt]);
 
   const firstRun = useRef(true);
   useEffect(() => {

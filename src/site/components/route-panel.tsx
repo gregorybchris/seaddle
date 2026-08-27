@@ -10,6 +10,7 @@ import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
+import { InfoPopover } from "@/widgets/info-popover";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding, Filters } from "../filters";
@@ -18,7 +19,6 @@ import {
   continuations,
   encodeRoute,
   isEmpty,
-  legs,
   routeGain,
   routeMeters,
   routePoints,
@@ -73,6 +73,11 @@ export function RoutePanel({
   return (
     <Sheet
       raisedWhen={started}
+      // The map is the thing here. Resting low keeps it in view while a start
+      // is chosen, and rising only to half leaves the change a pick just made
+      // visible instead of covering it.
+      raisedTo="half"
+      restingAt="peek"
       peek={
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
@@ -122,15 +127,15 @@ export function RoutePanel({
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
-                This is as far as the map goes that way. Step back and try
-                another turn.
+                This is as far as the map goes that way. Undo and try another
+                turn.
               </p>
             )}
 
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" className="flex-1" onClick={onUndo}>
                 <ArrowUUpLeft weight="bold" className="h-4 w-4" />
-                Step back
+                Undo
               </Button>
               <Button
                 variant="outline"
@@ -151,25 +156,6 @@ export function RoutePanel({
               graph={graph}
               onSave={saved.save}
             />
-
-            <ol className="flex flex-col">
-              {legs(route, graph).map((leg, index) => (
-                <li
-                  key={`${leg.steps[0].segment}-${index}`}
-                  className="border-sand/10 flex items-baseline gap-3 border-b py-2 last:border-b-0"
-                >
-                  <span className="tabular text-sand/30 w-4 text-[0.625rem]">
-                    {index + 1}
-                  </span>
-                  <span className="tabular text-sand flex-1 text-xs">
-                    {formatMiles(leg.meters)}
-                  </span>
-                  <span className="tabular text-sand/45 text-[0.6875rem]">
-                    ↑{formatFeet(leg.gain)}
-                  </span>
-                </li>
-              ))}
-            </ol>
           </>
         ) : (
           <p className="text-sand/75 text-sm leading-relaxed">
@@ -276,7 +262,14 @@ function SavedRides({
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="eyebrow text-sand/40">Your rides</h2>
+      <h2 className="eyebrow text-sand/40 flex items-center gap-1.5">
+        Your rides
+        <InfoPopover label="About saved rides">
+          These live in this browser only — not in an account. Clearing your
+          site data, or opening Seaddle somewhere else, will not bring them with
+          you. Download a ride as GPX to keep it for good.
+        </InfoPopover>
+      </h2>
       <ul className="flex flex-col">
         {rides.map((ride) => (
           <li
