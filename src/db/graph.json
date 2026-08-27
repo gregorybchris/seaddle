@@ -2884,9 +2884,9 @@
       },
       "name": "Bainbridge SE",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s166",
@@ -2899,9 +2899,9 @@
       },
       "name": "Bainbridge NE",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s167",
@@ -2914,9 +2914,9 @@
       },
       "name": "Bainbridge West",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s168",
@@ -2929,9 +2929,9 @@
       },
       "name": "Bainbridge SW",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s169",
@@ -2977,7 +2977,7 @@
       "id": "p002",
       "segment": "s131",
       "kind": "viewpoint",
-      "note": null,
+      "note": "Very nice park overlooking the lake",
       "at": 0.4587875904013089,
       "coord": [-122.210417, 47.611773]
     },
@@ -2985,7 +2985,7 @@
       "id": "p003",
       "segment": "s131",
       "kind": "viewpoint",
-      "note": null,
+      "note": "This park has some nice colors and flowers in the spring and summer",
       "at": 0.7754169503930755,
       "coord": [-122.238876, 47.616241]
     },
@@ -3009,7 +3009,7 @@
       "id": "p006",
       "segment": "s029",
       "kind": "restroom",
-      "note": null,
+      "note": "Very convenient bathroom stop between Bothell and Redmond",
       "at": 0.4863657905448772,
       "coord": [-122.14625, 47.735099]
     },
