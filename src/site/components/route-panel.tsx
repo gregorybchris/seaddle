@@ -11,8 +11,8 @@ import {
   isEmpty,
   routeGain,
   routeMeters,
+  legs,
   routePoints,
-  stepGain,
   type Route,
 } from "../route";
 
@@ -21,9 +21,16 @@ type RoutePanelProps = {
   route: Route;
   onUndo: () => void;
   onClear: () => void;
+  onScrub: (fraction: number | null) => void;
 };
 
-export function RoutePanel({ graph, route, onUndo, onClear }: RoutePanelProps) {
+export function RoutePanel({
+  graph,
+  route,
+  onUndo,
+  onClear,
+  onScrub,
+}: RoutePanelProps) {
   const meters = routeMeters(route, graph);
   const gain = routeGain(route, graph);
   const started = !isEmpty(route);
@@ -67,7 +74,10 @@ export function RoutePanel({ graph, route, onUndo, onClear }: RoutePanelProps) {
       <div className="flex flex-col gap-5">
         {started ? (
           <>
-            <ElevationProfile points={routePoints(route, graph)} />
+            <ElevationProfile
+              points={routePoints(route, graph)}
+              onScrub={onScrub}
+            />
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
@@ -86,27 +96,25 @@ export function RoutePanel({ graph, route, onUndo, onClear }: RoutePanelProps) {
               </Button>
             </div>
 
+            {/* One row per decision, not per segment: Step back removes one
+                of these, and a row that vanishes in threes would not match. */}
             <ol className="flex flex-col">
-              {route.steps.map((step, index) => {
-                const segment = graph.segments.get(step.segment);
-                if (!segment) return null;
-                return (
-                  <li
-                    key={`${step.segment}-${index}`}
-                    className="border-sand/10 flex items-baseline gap-3 border-b py-2 last:border-b-0"
-                  >
-                    <span className="tabular text-sand/30 w-4 text-[0.625rem]">
-                      {index + 1}
-                    </span>
-                    <span className="tabular text-sand flex-1 text-xs">
-                      {formatMiles(segment.meters)}
-                    </span>
-                    <span className="tabular text-sand/45 text-[0.6875rem]">
-                      ↑{formatFeet(stepGain(step, segment))}
-                    </span>
-                  </li>
-                );
-              })}
+              {legs(route, graph).map((leg, index) => (
+                <li
+                  key={`${leg.steps[0].segment}-${index}`}
+                  className="border-sand/10 flex items-baseline gap-3 border-b py-2 last:border-b-0"
+                >
+                  <span className="tabular text-sand/30 w-4 text-[0.625rem]">
+                    {index + 1}
+                  </span>
+                  <span className="tabular text-sand flex-1 text-xs">
+                    {formatMiles(leg.meters)}
+                  </span>
+                  <span className="tabular text-sand/45 text-[0.6875rem]">
+                    ↑{formatFeet(leg.gain)}
+                  </span>
+                </li>
+              ))}
             </ol>
           </>
         ) : (

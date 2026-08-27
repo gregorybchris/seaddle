@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { coordAtFraction } from "@/lib/geo/polyline";
 import type { SegmentId } from "@/lib/models/graph";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
@@ -6,6 +7,7 @@ import { SiteMap } from "@/site/components/site-map";
 import {
   append,
   EMPTY_ROUTE,
+  routePoints,
   isEmpty,
   startRoute,
   undo,
@@ -16,6 +18,21 @@ import { useGraph } from "@/site/use-graph";
 export function MapPage() {
   const { graph, error } = useGraph();
   const [route, setRoute] = useState<Route>(EMPTY_ROUTE);
+  const [scrub, setScrub] = useState<number | null>(null);
+
+  const points = useMemo(
+    () => (graph ? routePoints(route, graph) : []),
+    [route, graph],
+  );
+
+  /** The place on the map the reader is pointing at on the elevation chart. */
+  const scrubbed = useMemo(
+    () =>
+      scrub === null || points.length < 2
+        ? null
+        : coordAtFraction(points, scrub),
+    [scrub, points],
+  );
 
   const pick = useCallback(
     (id: SegmentId) => {
@@ -42,9 +59,15 @@ export function MapPage() {
         route={route}
         onUndo={() => setRoute(undo)}
         onClear={() => setRoute(EMPTY_ROUTE)}
+        onScrub={setScrub}
       />
       <main className="h-full md:min-w-0 md:flex-1">
-        <SiteMap graph={graph} route={route} onPick={pick} />
+        <SiteMap
+          graph={graph}
+          route={route}
+          scrubbed={scrubbed}
+          onPick={pick}
+        />
       </main>
     </div>
   );

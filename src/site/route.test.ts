@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { ElevCoord } from "@/lib/models/geo";
 import { boundsOf } from "@/lib/geo/bounds";
 import { buildAdjacency } from "@/lib/graph/adjacency";
+import type { ElevCoord } from "@/lib/models/geo";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import {
   append,
@@ -10,6 +10,7 @@ import {
   continuations,
   EMPTY_ROUTE,
   isEmpty,
+  legs,
   liveEnds,
   routeGain,
   routeMeters,
@@ -20,13 +21,17 @@ import {
 } from "./route";
 
 /**
- * A line of three segments with a spur, so there is somewhere to branch:
+ * A graph with both kinds of junction in it:
  *
- *   nA --s1-- nB --s2-- nC --s3-- nD
- *              |
- *             s4
- *              |
- *             nE
+ *                        s5 — nF
+ *   nA —s1— nB —s2— nC —s3— nD
+ *            |           \  s6 — nG
+ *           s4
+ *            |
+ *           nE
+ *
+ * nB and nD are forks. nC carries exactly two segments, so arriving there
+ * leaves nothing to decide — it is a bend in the road, not a choice.
  */
 function segment(
   id: string,
@@ -61,6 +66,8 @@ function graph(): SiteGraph {
     segment("s2", "nB", "nC", [50, 60]),
     segment("s3", "nC", "nD", [60, 20]),
     segment("s4", "nB", "nE", [50, 90]),
+    segment("s5", "nD", "nF", [20, 30]),
+    segment("s6", "nD", "nG", [20, 10]),
   ];
   return {
     segments: new Map(all.map((s) => [s.id, s])),
@@ -71,6 +78,8 @@ function graph(): SiteGraph {
 
 const G = graph();
 const seg = (id: string) => G.segments.get(id)!;
+const ids = (route: { steps: { segment: string }[] }) =>
+  route.steps.map((step) => step.segment);
 
 describe("starting a route", () => {
   it("begins with nothing chosen", () => {
@@ -79,7 +88,7 @@ describe("starting a route", () => {
   });
 
   it("offers every segment before anything is picked", () => {
-    expect(continuations(EMPTY_ROUTE, G).size).toBe(4);
+    expect(continuations(EMPTY_ROUTE, G).size).toBe(6);
   });
 
   it("leaves both ends live after the first segment", () => {
@@ -87,6 +96,12 @@ describe("starting a route", () => {
     const route = startRoute(seg("s1"));
     expect(route.ambiguous).toBe(true);
     expect(liveEnds(route).sort()).toEqual(["nA", "nB"]);
+  });
+
+  it("does not run on from the opening segment", () => {
+    // Both ends are still live, so the choice on offer is which way to ride —
+    // a real one, even where each end has a single road leading off it.
+    expect(ids(startRoute(seg("s2")))).toEqual(["s2"]);
   });
 
   it("offers the neighbours of both ends while undecided", () => {
@@ -97,60 +112,111 @@ describe("starting a route", () => {
 
 describe("growing a route", () => {
   it("resolves direction on the second segment", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
     expect(route.ambiguous).toBe(false);
-    expect(route.steps.map((s) => s.segment)).toEqual(["s1", "s2"]);
-    expect(liveEnds(route)).toEqual(["nC"]);
+    expect(ids(route)).toEqual(["s1", "s4"]);
+    expect(liveEnds(route)).toEqual(["nE"]);
   });
 
   it("flips the first segment when the second is behind it", () => {
     // Clicking the neighbour behind you means you meant to ride the other way,
     // not that you made a mistake.
     const route = append(startRoute(seg("s2")), seg("s1"), G);
-    expect(route.steps[0]).toEqual({ segment: "s2", from: "nC", to: "nB" });
-    expect(route.steps[1]).toEqual({ segment: "s1", from: "nB", to: "nA" });
-  });
-
-  it("only offers what touches the live end once direction is settled", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect([...continuations(route, G)]).toEqual(["s3"]);
+    expect(route.steps[0]).toEqual({
+      segment: "s2",
+      from: "nC",
+      to: "nB",
+      auto: false,
+    });
+    expect(route.steps[1]).toEqual({
+      segment: "s1",
+      from: "nB",
+      to: "nA",
+      auto: false,
+    });
   });
 
   it("will not attach a segment that touches nothing live", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(canAppend(route, seg("s4"), G)).toBe(false);
-    expect(append(route, seg("s4"), G)).toEqual(route);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(canAppend(route, seg("s2"), G)).toBe(false);
+    expect(append(route, seg("s2"), G)).toEqual(route);
   });
 
   it("refuses to double back down the road it arrived on", () => {
     // The highlighting says this is not allowed, so the model must agree —
     // otherwise the two disagree the moment a caller forgets to check.
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    const back = append(route, seg("s2"), G);
-    expect(back).toEqual(route);
-  });
-
-  it("never offers the segment just ridden, so a route cannot double back in place", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(continuations(route, G).has("s2")).toBe(false);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(append(route, seg("s4"), G)).toEqual(route);
   });
 
   it("reports a dead end as nothing to offer", () => {
-    let route = append(startRoute(seg("s1")), seg("s2"), G);
-    route = append(route, seg("s3"), G);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
     expect(continuations(route, G).size).toBe(0);
   });
 });
 
+describe("junctions with nothing to decide", () => {
+  it("runs on through a two-segment junction", () => {
+    // Picking s2 from nB lands at nC, where s3 is the only way on, so the
+    // route carries through rather than asking for a click to confirm it.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(ids(route)).toEqual(["s1", "s2", "s3"]);
+    expect(liveEnds(route)).toEqual(["nD"]);
+  });
+
+  it("marks what it added itself, and what was chosen", () => {
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(route.steps.map((step) => step.auto)).toEqual([false, false, true]);
+  });
+
+  it("stops at the next real fork", () => {
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect([...continuations(route, G)].sort()).toEqual(["s5", "s6"]);
+  });
+
+  it("counts the distance and climb of everything it ran through", () => {
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(routeMeters(route, G)).toBe(3000);
+    expect(routeGain(route, G)).toEqual({ min: 60, max: 60 });
+  });
+
+  it("does not circle forever around a ring with no forks", () => {
+    // Every junction on a loop can carry exactly two segments, in which case
+    // there is never a fork to stop at.
+    const ring = [
+      segment("r1", "n1", "n2", [0, 0]),
+      segment("r2", "n2", "n3", [0, 0]),
+      segment("r3", "n3", "n1", [0, 0]),
+    ];
+    const looped: SiteGraph = {
+      segments: new Map(ring.map((s) => [s.id, s])),
+      adjacency: buildAdjacency(ring),
+      bounds: G.bounds,
+    };
+    const route = append(
+      startRoute(looped.segments.get("r1")!),
+      looped.segments.get("r2")!,
+      looped,
+    );
+    expect(ids(route)).toEqual(["r1", "r2", "r3"]);
+  });
+});
+
 describe("undo", () => {
-  it("pops the last segment", () => {
-    let route = append(startRoute(seg("s1")), seg("s2"), G);
-    route = append(route, seg("s3"), G);
-    expect(undo(route).steps.map((s) => s.segment)).toEqual(["s1", "s2"]);
+  it("takes back one decision, not one segment", () => {
+    // s3 came along with the choice of s2, so it goes back with it — otherwise
+    // one click would need two presses to undo.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(ids(undo(route))).toEqual(["s1"]);
+  });
+
+  it("pops a single segment where nothing was run through", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(ids(undo(route))).toEqual(["s1"]);
   });
 
   it("makes both ends live again on the way back to one segment", () => {
-    const route = undo(append(startRoute(seg("s1")), seg("s2"), G));
+    const route = undo(append(startRoute(seg("s1")), seg("s4"), G));
     expect(route.ambiguous).toBe(true);
     expect(liveEnds(route).sort()).toEqual(["nA", "nB"]);
   });
@@ -162,8 +228,9 @@ describe("undo", () => {
 
 describe("what the route measures", () => {
   it("adds up distance", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(routeMeters(route, G)).toBe(2000);
+    expect(routeMeters(append(startRoute(seg("s1")), seg("s4"), G), G)).toBe(
+      2000,
+    );
   });
 
   it("gives a range while the direction is undecided", () => {
@@ -172,35 +239,30 @@ describe("what the route measures", () => {
     expect(routeGain(startRoute(seg("s3")), G)).toEqual({ min: 0, max: 40 });
   });
 
-  it("collapses to one number once direction is settled", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(routeGain(route, G)).toEqual({ min: 60, max: 60 });
-  });
-
   it("counts the climb of the direction actually ridden", () => {
-    const downhill = append(startRoute(seg("s2")), seg("s1"), G);
+    const downhill = append(startRoute(seg("s4")), seg("s1"), G);
     expect(routeGain(downhill, G)).toEqual({ min: 0, max: 0 });
   });
 });
 
 describe("route geometry", () => {
   it("joins the segments without repeating the junction between them", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
     expect(routePoints(route, G)).toHaveLength(5);
   });
 
   it("reverses a segment ridden backwards", () => {
-    const route = append(startRoute(seg("s2")), seg("s1"), G);
+    const route = append(startRoute(seg("s4")), seg("s1"), G);
     const points = routePoints(route, G);
-    expect(points[0][2]).toBe(60);
+    expect(points[0][2]).toBe(90);
     expect(points[points.length - 1][2]).toBe(0);
   });
 
   it("profiles the whole route, not each segment", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
     const profile = routeProfile(route, G);
     expect(profile.samples[0]).toBeCloseTo(0, 6);
-    expect(profile.samples[profile.samples.length - 1]).toBeCloseTo(60, 6);
+    expect(profile.samples[profile.samples.length - 1]).toBeCloseTo(90, 6);
   });
 
   it("has nothing to draw for an empty route", () => {
@@ -210,16 +272,14 @@ describe("route geometry", () => {
 
 describe("what the map should be framing", () => {
   it("frames the choices, not the road already ridden", () => {
-    // Riding nA→nB→nC leaves s3 as the only way on, so s1 and s2 have no
-    // business deciding the view.
+    // Standing at nD after running through nC, the choices are s5 and s6.
     const route = append(startRoute(seg("s1")), seg("s2"), G);
-    expect(choiceBounds(route, G)).toEqual(boundsOf(seg("s3").points));
+    const covering = boundsOf([...seg("s5").points, ...seg("s6").points]);
+    expect(choiceBounds(route, G)).toEqual(covering);
   });
 
   it("covers every branch when there is more than one way on", () => {
-    // From nB both s2 and s4 are open, so both have to be in view.
-    const route = startRoute(seg("s1"));
-    const bounds = choiceBounds(route, G)!;
+    const bounds = choiceBounds(startRoute(seg("s1")), G)!;
     const covering = boundsOf([...seg("s2").points, ...seg("s4").points]);
     expect(bounds.minLon).toBeCloseTo(covering.minLon, 9);
     expect(bounds.maxLon).toBeCloseTo(covering.maxLon, 9);
@@ -230,8 +290,34 @@ describe("what the map should be framing", () => {
   });
 
   it("has nothing to frame at a dead end, so the view is left alone", () => {
-    let route = append(startRoute(seg("s1")), seg("s2"), G);
-    route = append(route, seg("s3"), G);
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
     expect(choiceBounds(route, G)).toBeNull();
+  });
+});
+
+describe("the route as decisions", () => {
+  it("groups what was run through with the choice that caused it", () => {
+    // One press of Step back removes one of these, so one of these is what a
+    // row in the list has to be.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const grouped = legs(route, G);
+    expect(grouped).toHaveLength(2);
+    expect(grouped[1].steps.map((step) => step.segment)).toEqual(["s2", "s3"]);
+  });
+
+  it("adds up the distance and climb of a whole leg", () => {
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const [, second] = legs(route, G);
+    expect(second.meters).toBe(2000);
+    expect(second.gain).toBe(10);
+  });
+
+  it("gives one leg per segment where nothing was run through", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(legs(route, G)).toHaveLength(2);
+  });
+
+  it("has no legs before a route starts", () => {
+    expect(legs(EMPTY_ROUTE, G)).toEqual([]);
   });
 });

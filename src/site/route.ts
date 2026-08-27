@@ -6,7 +6,19 @@ import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 
 /** One segment, oriented the way it is ridden. */
-export type Step = { segment: SegmentId; from: NodeId; to: NodeId };
+export type Step = {
+  segment: SegmentId;
+  from: NodeId;
+  to: NodeId;
+  /**
+   * Added by following the road rather than by being picked.
+   *
+   * Recorded rather than worked out later, because whether a segment was a
+   * choice depends on the state of the route when it was added, not on the
+   * shape of the graph now.
+   */
+  auto: boolean;
+};
 
 export type Route = {
   steps: Step[];
@@ -25,7 +37,9 @@ export function isEmpty(route: Route): boolean {
 
 export function startRoute(segment: SiteSegment): Route {
   return {
-    steps: [{ segment: segment.id, from: segment.from, to: segment.to }],
+    steps: [
+      { segment: segment.id, from: segment.from, to: segment.to, auto: false },
+    ],
     ambiguous: true,
   };
 }
@@ -100,10 +114,10 @@ export function append(
   const last = route.steps[route.steps.length - 1];
 
   if (touches(segment, last.to)) {
-    return {
-      steps: [...route.steps, orient(segment, last.to)],
-      ambiguous: false,
-    };
+    return runOn(
+      { steps: [...route.steps, orient(segment, last.to)], ambiguous: false },
+      graph,
+    );
   }
 
   if (route.ambiguous && touches(segment, first.from)) {
@@ -111,16 +125,66 @@ export function append(
       segment: first.segment,
       from: first.to,
       to: first.from,
+      auto: false,
     };
-    return { steps: [flipped, orient(segment, first.from)], ambiguous: false };
+    return runOn(
+      { steps: [flipped, orient(segment, first.from)], ambiguous: false },
+      graph,
+    );
   }
 
   return route;
 }
 
-/** Drop the last segment. Back at one, both ends go live again. */
+/**
+ * Carry on through junctions that offer nothing to decide.
+ *
+ * A junction where two segments meet is a bend in the road, not a fork, and
+ * asking someone to click through it is asking them to confirm the only thing
+ * they could have done. So the route runs on by itself until it reaches
+ * somewhere with a real choice, or nowhere left to go.
+ *
+ * Not done from the opening segment: while both its ends are still live the
+ * choice on offer is which way to ride, which is a real one even where each end
+ * has a single road leading off it.
+ *
+ * Stops on a segment already ridden. A ring of two-segment junctions has no
+ * fork to arrive at, and without this it would circle forever.
+ */
+function runOn(route: Route, graph: SiteGraph): Route {
+  let current = route;
+  const ridden = new Set(current.steps.map((step) => step.segment));
+
+  for (;;) {
+    if (current.ambiguous) break;
+    const onward = [...continuations(current, graph)];
+    if (onward.length !== 1) break;
+
+    const segment = graph.segments.get(onward[0]);
+    if (!segment || ridden.has(segment.id)) break;
+    ridden.add(segment.id);
+
+    const last = current.steps[current.steps.length - 1];
+    current = {
+      steps: [...current.steps, { ...orient(segment, last.to), auto: true }],
+      ambiguous: false,
+    };
+  }
+
+  return current;
+}
+
+/**
+ * Undo one decision, not one segment.
+ *
+ * Whatever the route ran on through by itself comes off with the choice that
+ * caused it — stepping back through a bend the rider never chose would make
+ * them press the button twice to undo one click.
+ */
 export function undo(route: Route): Route {
-  const steps = route.steps.slice(0, -1);
+  const steps = [...route.steps];
+  while (steps.length > 0 && steps[steps.length - 1].auto) steps.pop();
+  steps.pop();
   return { steps, ambiguous: steps.length === 1 };
 }
 
@@ -133,7 +197,41 @@ function orient(segment: SiteSegment, from: NodeId): Step {
     segment: segment.id,
     from,
     to: otherEnd(segment, from),
+    auto: false,
   };
+}
+
+export type Leg = {
+  /** The steps added by one decision: the chosen segment and anything run through after it. */
+  steps: Step[];
+  meters: number;
+  gain: number;
+};
+
+/**
+ * The route as a list of decisions rather than a list of segments.
+ *
+ * What a rider chose is a turn, not the three bends that followed it, and Step
+ * back takes one of these off — so a list of segments would show three rows
+ * disappearing for one press.
+ */
+export function legs(route: Route, graph: SiteGraph): Leg[] {
+  const out: Leg[] = [];
+  for (const step of route.steps) {
+    const segment = graph.segments.get(step.segment);
+    const meters = segment?.meters ?? 0;
+    const gain = segment ? stepGain(step, segment) : 0;
+
+    const current = out[out.length - 1];
+    if (step.auto && current) {
+      current.steps.push(step);
+      current.meters += meters;
+      current.gain += gain;
+    } else {
+      out.push({ steps: [step], meters, gain });
+    }
+  }
+  return out;
 }
 
 export function routeMeters(route: Route, graph: SiteGraph): number {
