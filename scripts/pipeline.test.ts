@@ -21,9 +21,9 @@ import type { ElevCoord } from "@/lib/models/geo";
  * with real GPS scatter.
  *
  * The fixture is synthetic on purpose. Actual rides start and end at home, so
- * they stay out of the repo. This one is calibrated to match them — ~15 m point
- * spacing and very little scatter, because the real files are drawn in
- * Mapometer and snapped to roads rather than recorded off a GPS.
+ * they stay out of the repo. This one is calibrated to the measured middle of
+ * both source kinds — the real set is half drawn in Mapometer and half recorded
+ * by Strava, and after import both are resampled to the same 15 m spacing.
  */
 const TRACK = path.resolve("test-fixtures/sample-loop.gpx");
 
@@ -70,8 +70,8 @@ describe("segment extraction pipeline", () => {
     const before = polylineMeters(cropped);
     const after = polylineMeters(simplified);
     // Shorter, because simplifying cuts corners — but barely. Measured across
-    // the real rides, 6 m of tolerance drops ~88% of the points and costs
-    // between 0.06% and 0.83% of the length.
+    // the real rides, drawn and recorded alike, 6 m of tolerance costs between
+    // 0.06% and 0.83% of the length.
     expect(after).toBeLessThanOrEqual(before);
     expect(before - after).toBeLessThan(before * 0.02);
   });

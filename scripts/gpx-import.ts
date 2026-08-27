@@ -9,8 +9,9 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { densify } from "../src/lib/geo/polyline";
 import { parseGpx } from "../src/lib/gpx/parse-gpx";
-import type { Track } from "../src/lib/models/track";
+import { MAX_TRACK_SPACING_METERS, type Track } from "../src/lib/models/track";
 
 const SOURCE_DIR = path.resolve("src-gpx");
 const OUT_DIR = path.resolve("src/db/tracks");
@@ -52,7 +53,9 @@ async function main() {
     const track: Track = {
       slug,
       name: parsed.name ?? slug,
-      points: parsed.points,
+      // Resampled so the admin's junction search works the same on a Strava
+      // recording and on a route drawn with a vertex every 150 m.
+      points: densify(parsed.points, MAX_TRACK_SPACING_METERS),
     };
     if (track.points.length === 0) {
       console.warn(`  ! ${slug} has no track points — skipped`);
@@ -63,8 +66,11 @@ async function main() {
       JSON.stringify(track) + "\n",
     );
     totalPoints += track.points.length;
+    const added = track.points.length - parsed.points.length;
     console.log(
-      `  ${slug.padEnd(36)} ${String(track.points.length).padStart(6)} pts  ${track.name}`,
+      `  ${slug.padEnd(32)} ${String(parsed.points.length).padStart(5)} → ` +
+        `${String(track.points.length).padStart(5)} pts` +
+        `${added > 0 ? ` (+${added})` : ""}  ${track.name}`,
     );
   }
 

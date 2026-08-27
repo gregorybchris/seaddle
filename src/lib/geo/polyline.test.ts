@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { ElevCoord } from "@/lib/models/geo";
+import { haversineMeters } from "@/lib/geo/distance";
 import {
   coordAtFraction,
   crop,
+  densify,
   cumulativeMeters,
   elevationGain,
   polylineMeters,
@@ -143,3 +145,45 @@ describe("snapEnds", () => {
 function pts(elevations: number[]): ElevCoord[] {
   return elevations.map((ele, i) => [-122.35 + i * 0.001, 47.65, ele]);
 }
+
+describe("densify", () => {
+  const sparse: ElevCoord[] = [
+    [-122.35, 47.65, 0],
+    [-122.34, 47.65, 60],
+  ];
+
+  it("leaves a line that is already dense enough alone", () => {
+    expect(densify(LINE, 2000)).toEqual(LINE);
+  });
+
+  it("breaks up a gap wider than the limit", () => {
+    const dense = densify(sparse, 100);
+    expect(dense.length).toBeGreaterThan(2);
+    for (let i = 1; i < dense.length; i++) {
+      expect(
+        haversineMeters(
+          [dense[i - 1][0], dense[i - 1][1]],
+          [dense[i][0], dense[i][1]],
+        ),
+      ).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it("keeps the original points, so nothing moves", () => {
+    const dense = densify(sparse, 100);
+    expect(dense[0]).toEqual(sparse[0]);
+    expect(dense[dense.length - 1]).toEqual(sparse[1]);
+    expect(polylineMeters(dense)).toBeCloseTo(polylineMeters(sparse), 3);
+  });
+
+  it("interpolates elevation along the way", () => {
+    const dense = densify(sparse, 400);
+    expect(dense).toHaveLength(3);
+    expect(dense[1][2]).toBeCloseTo(30, 6);
+  });
+
+  it("passes through lines too short to have a gap", () => {
+    expect(densify([], 15)).toEqual([]);
+    expect(densify([sparse[0]], 15)).toEqual([sparse[0]]);
+  });
+});

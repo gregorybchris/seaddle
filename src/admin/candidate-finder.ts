@@ -7,9 +7,9 @@ import type { Track } from "@/lib/models/track";
 export type TrackPointRef = { track: string; index: number };
 
 /**
- * Two source rides that cover the same road are 15 m apart at most, and a click
- * on a junction lands within a few metres of one of them. 25 m of radius finds
- * every track through an intersection without reaching the next one over.
+ * Import guarantees a vertex every 15 m or better, so a click anywhere on a
+ * road is within ~7.5 m of one. 25 m finds every ride through an intersection
+ * without reaching the next street over.
  */
 export const DEFAULT_RADIUS_METERS = 25;
 
@@ -22,9 +22,11 @@ export const DEFAULT_RADIUS_METERS = 25;
 export const DEFAULT_MAX_DETOUR_RATIO = 3;
 
 /**
- * Consecutive hits are one pass through a junction. At 15 m spacing a 25 m
- * radius catches three or four points in a row, so a gap of five indices
- * (~75 m of riding) means the track left and came back — a separate pass.
+ * Consecutive hits are one pass through a junction. At the guaranteed 15 m
+ * spacing a 25 m radius catches three or four vertices in a row, so a gap of
+ * five indices (~75 m of riding) means the ride left and came back — a separate
+ * pass. A GPS track stopped at the light will bunch more vertices into the
+ * radius, which is still one run and still one pass.
  */
 const PASS_GAP_INDICES = 5;
 
@@ -48,7 +50,12 @@ export type Candidate = {
   detourRatio: number;
   /** How far the track passed from the two junctions, added together. */
   endpointMeters: number;
-  /** Spread of the point spacing. High means uneven, hand-drawn geometry. */
+  /**
+   * Spread of the vertex spacing. Measured on the real set, drawn routes run
+   * 1.06–3.07 and recorded ones 0.71–1.96, so this leans towards recorded
+   * geometry — which renders more smoothly, though it is not automatically the
+   * more accurate line. Hence a tiebreaker, weighted well below directness.
+   */
   spacingCv: number;
   pointCount: number;
   score: number;

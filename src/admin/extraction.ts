@@ -9,7 +9,7 @@ import { SEGMENT_DEFAULTS } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import type { Candidate, TrackPointRef } from "./candidate-finder";
 
-/** Enough to drop ~88% of the points at under 1% of the length, measured on the real rides. */
+/** Costs under 1% of the length on every real ride, drawn or recorded. */
 export const SIMPLIFY_TOLERANCE_METERS = 6;
 
 /** Click within this of an existing junction and you meant that junction. */
@@ -54,11 +54,13 @@ export function snapToNodes(
 }
 
 /**
- * Pull a click onto the nearest track point.
+ * Pull a click onto the nearest track vertex.
  *
- * Nearest point rather than nearest position along the line: at 15 m spacing
- * that is at most ~7 m of slack, which is well inside the radius the candidate
- * finder searches, and it keeps junctions sitting on real recorded points.
+ * Nearest vertex rather than nearest position along the line, which is only
+ * safe because import bounds vertex spacing at 15 m: the slack is at most half
+ * of that, well inside the radius the candidate finder searches, and junctions
+ * end up sitting on real points from a real ride. On the raw files this would
+ * not hold — the sparsest ones put vertices 156 m apart.
  */
 export function snapToTracks(
   index: SpatialIndex<TrackPointRef>,

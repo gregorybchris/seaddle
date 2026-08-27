@@ -57,6 +57,39 @@ export function reversed(points: ElevCoord[]): ElevCoord[] {
   return [...points].reverse();
 }
 
+/**
+ * Insert points so no two neighbours are further apart than `maxSpacingMeters`.
+ *
+ * Drawn routes place a vertex only where the road changes direction, so a
+ * straight mile of trail can be two points. The line between them already *is*
+ * the route, so interpolating along it adds no error — it just gives the
+ * junction-finding tools something to hit.
+ */
+export function densify(
+  points: ElevCoord[],
+  maxSpacingMeters: number,
+): ElevCoord[] {
+  if (points.length < 2) return [...points];
+  const out: ElevCoord[] = [points[0]];
+  for (let i = 1; i < points.length; i++) {
+    const from = points[i - 1];
+    const to = points[i];
+    const steps = Math.ceil(
+      haversineMeters(flat(from), flat(to)) / maxSpacingMeters,
+    );
+    for (let step = 1; step < steps; step++) {
+      const t = step / steps;
+      out.push([
+        from[0] + (to[0] - from[0]) * t,
+        from[1] + (to[1] - from[1]) * t,
+        from[2] + (to[2] - from[2]) * t,
+      ]);
+    }
+    out.push(to);
+  }
+  return out;
+}
+
 export type Projection = {
   /** Index of the vertex starting the sub-segment the point landed on. */
   index: number;

@@ -19,11 +19,16 @@ stay on the machine that made them; put your own GPX files there before running
 `gpx:import`. Tests use a synthetic fixture instead, so a fresh clone still
 passes without them.
 
+Both drawn routes (Mapometer) and GPS recordings (Strava) go in. Nothing
+downstream distinguishes them: import resamples every ride to the same maximum
+vertex spacing, and elevation is filtered unconditionally because a sampled
+terrain model is noisy in much the same way a GPS is.
+
 ## How the data flows
 
 ```
 src-gpx/*.gpx           source rides — LOCAL ONLY, gitignored, ~50k points
-  │  pnpm gpx:import
+  │  pnpm gpx:import     parse, then resample to a 15 m max vertex spacing
   ▼
 src/db/tracks/*.json    full resolution, gitignored, DEV ONLY — never bundled
   │  admin: place nodes, pick and crop the cleanest geometry between them

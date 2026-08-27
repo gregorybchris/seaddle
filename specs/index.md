@@ -23,10 +23,26 @@ character is the sum of its parts rather than an opaque line on a map.
 Coverage spans Seattle proper, the Eastside (Mercer Island, Sammamish, May Valley), and outlying
 tracks in Everett, Edmonds, and Burien.
 
-**These are drawn routes, not GPS recordings.** Mapometer snaps to roads, so the geometry is
-already clean: measured point spacing is 15–18 m (one sparse file sits near 156 m) and there is
-almost no scatter. That is better raw material than a pile of recorded rides — the extraction
-tooling can trust the shape it is given, and simplification is close to free.
+**The sources are mixed, and nothing downstream may assume otherwise.** Twelve rides are drawn in
+Mapometer and snapped to roads; nine are recorded by Strava off a GPS. Measured across both:
+
+| | vertex spacing | spacing variability | 6 m simplify loss | raw ↑ vs filtered ↑ |
+| --- | --- | --- | --- | --- |
+| Strava (9) | 15–20 m | cv 0.71–1.96 | 0.33–0.58% | 1021 m → 679 m |
+| Mapometer (12) | 14–156 m | cv 1.06–3.07 | 0.06–0.83% | 723 m → 546 m |
+
+Two of those numbers are the opposite of the intuition. **Drawn routes are the unevenly spaced
+ones** — Mapometer emits a vertex only where the road turns, while Strava samples on a timer — so
+the sparsest geometry in the set is hand-drawn, not recorded. And **drawn elevation is noisy too**,
+because Mapometer samples a terrain model rather than measuring; filtering is not a GPS
+accommodation, it is unconditional.
+
+Import therefore normalises both: every ride is **resampled to a maximum 15 m vertex spacing**. On
+a drawn route the line between two vertices already is the route, so interpolating along it adds
+no error — it just gives the junction-finding tools something to hit. Without it the two sparsest
+rides (156 m and 145 m between vertices, 106 km of riding) are invisible to a 25 m junction
+search, because the nearest vertex can be 78 m away with the road running directly under the
+cursor.
 
 **The rides are not committed.** They start and end at home, so they stay on the machine that made
 them and `src-gpx/` is gitignored. Tests run against a synthetic fixture calibrated to the same
