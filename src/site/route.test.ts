@@ -8,10 +8,13 @@ import {
   canAppend,
   choiceBounds,
   continuations,
+  decodeRoute,
   EMPTY_ROUTE,
+  encodeRoute,
   isEmpty,
   legs,
   liveEnds,
+  outAndBack,
   routeGain,
   routeMeters,
   routePoints,
@@ -319,5 +322,73 @@ describe("the route as decisions", () => {
 
   it("has no legs before a route starts", () => {
     expect(legs(EMPTY_ROUTE, G)).toEqual([]);
+  });
+});
+
+describe("out and back", () => {
+  it("rides the chain home again", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    const there = outAndBack(route);
+    expect(ids(there)).toEqual(["s1", "s4", "s4", "s1"]);
+  });
+
+  it("ends where it started", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    const there = outAndBack(route);
+    expect(liveEnds(there)).toEqual([route.steps[0].from]);
+  });
+
+  it("doubles the distance and counts the climb of the way home", () => {
+    // s1 climbs 50 and s4 climbs 40, so coming back down them climbs nothing;
+    // the return leg's climb is whatever the outbound descended.
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    const there = outAndBack(route);
+    expect(routeMeters(there, G)).toBe(routeMeters(route, G) * 2);
+    expect(routeGain(there, G)).toEqual({ min: 90, max: 90 });
+  });
+
+  it("comes off in one press, because turning round was one decision", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(ids(undo(outAndBack(route)))).toEqual(["s1", "s4"]);
+  });
+
+  it("has nothing to mirror when no route has started", () => {
+    expect(outAndBack(EMPTY_ROUTE)).toEqual(EMPTY_ROUTE);
+  });
+});
+
+describe("carrying a route in a link", () => {
+  it("stores the choices and not what followed from them", () => {
+    // s3 came along by itself, so the graph can supply it again.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(encodeRoute(route)).toBe("s1,s2");
+  });
+
+  it("comes back as the same ride", () => {
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(decodeRoute(encodeRoute(route), G)).toEqual(route);
+  });
+
+  it("says 'and back' rather than naming the road twice", () => {
+    // Riding back down the road you arrived on is the one thing append
+    // refuses, so a link cannot describe it as another segment.
+    const there = outAndBack(append(startRoute(seg("s1")), seg("s4"), G));
+    expect(encodeRoute(there)).toBe("s1,s4,~");
+    expect(decodeRoute(encodeRoute(there), G)).toEqual(there);
+  });
+
+  it("keeps the direction a flipped opening segment settled on", () => {
+    const flipped = append(startRoute(seg("s2")), seg("s1"), G);
+    expect(decodeRoute(encodeRoute(flipped), G)).toEqual(flipped);
+  });
+
+  it("gives back what still exists when a link has gone stale", () => {
+    // Segments get recut, and half a remembered ride beats an error.
+    expect(ids(decodeRoute("s1,s404,s4", G))).toEqual(["s1", "s4"]);
+  });
+
+  it("reads an empty link as no route at all", () => {
+    expect(decodeRoute("", G)).toEqual(EMPTY_ROUTE);
+    expect(encodeRoute(EMPTY_ROUTE)).toBe("");
   });
 });

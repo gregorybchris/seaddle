@@ -1,40 +1,74 @@
-import { ArrowUUpLeft, Trash } from "@phosphor-icons/react";
+import {
+  ArrowUUpLeft,
+  ArrowsLeftRight,
+  DownloadSimple,
+  Trash,
+} from "@phosphor-icons/react";
+import { useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
-import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { ElevationProfile } from "@/widgets/elevation-profile";
+import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
+import { downloadGpx } from "../download-gpx";
+import type { Encoding, Filters } from "../filters";
 import type { SiteGraph } from "../graph-data";
 import {
   continuations,
+  encodeRoute,
   isEmpty,
+  legs,
   routeGain,
   routeMeters,
-  legs,
   routePoints,
   type Route,
 } from "../route";
+import { useSavedRides, type SavedRide } from "../use-saved-rides";
+import { FilterPanel } from "./filter-panel";
+import { RouteBreakdown } from "./route-breakdown";
 
 type RoutePanelProps = {
   graph: SiteGraph;
   route: Route;
+  encoding: Encoding;
+  onEncoding: (encoding: Encoding) => void;
+  filters: Filters;
+  onFilters: (filters: Filters) => void;
+  passing: number;
+  total: number;
   onUndo: () => void;
   onClear: () => void;
+  onOutAndBack: () => void;
+  onLoad: (encoded: string) => void;
   onScrub: (fraction: number | null) => void;
 };
 
 export function RoutePanel({
   graph,
   route,
+  encoding,
+  onEncoding,
+  filters,
+  onFilters,
+  passing,
+  total,
   onUndo,
   onClear,
+  onOutAndBack,
+  onLoad,
   onScrub,
 }: RoutePanelProps) {
+  // One owner for the saved list: a copy per component would let saving in one
+  // place leave the other showing a stale list.
+  const saved = useSavedRides();
   const meters = routeMeters(route, graph);
   const gain = routeGain(route, graph);
   const started = !isEmpty(route);
   const stuck = started && continuations(route, graph).size === 0;
+  const ridden = route.steps
+    .map((step) => graph.segments.get(step.segment))
+    .filter((segment): segment is NonNullable<typeof segment> => !!segment);
 
   return (
     <Sheet
@@ -79,6 +113,8 @@ export function RoutePanel({
               onScrub={onScrub}
             />
 
+            <RouteBreakdown segments={ridden} encoding={encoding} />
+
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
                 This is as far as the map goes that way. Step back and try
@@ -86,18 +122,31 @@ export function RoutePanel({
               </p>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" className="flex-1" onClick={onUndo}>
                 <ArrowUUpLeft weight="bold" className="h-4 w-4" />
                 Step back
+              </Button>
+              <Button
+                variant="outline"
+                onClick={onOutAndBack}
+                title="Ride the same way home"
+              >
+                <ArrowsLeftRight weight="bold" className="h-4 w-4" />
+                And back
               </Button>
               <Button variant="quiet" onClick={onClear} aria-label="Start over">
                 <Trash weight="bold" className="h-4 w-4" />
               </Button>
             </div>
 
-            {/* One row per decision, not per segment: Step back removes one
-                of these, and a row that vanishes in threes would not match. */}
+            <SaveRide
+              route={route}
+              meters={meters}
+              graph={graph}
+              onSave={saved.save}
+            />
+
             <ol className="flex flex-col">
               {legs(route, graph).map((leg, index) => (
                 <li
@@ -123,14 +172,140 @@ export function RoutePanel({
             to stay lit — keep tapping to build a route as long as you want it.
           </p>
         )}
+
+        <FilterPanel
+          filters={filters}
+          onFilters={onFilters}
+          encoding={encoding}
+          onEncoding={onEncoding}
+          passing={passing}
+          total={total}
+        />
+
+        <SavedRides
+          rides={saved.rides}
+          onForget={saved.remove}
+          onLoad={onLoad}
+          current={encodeRoute(route)}
+        />
       </div>
     </Sheet>
   );
 }
 
+/**
+ * Keep this ride, and take it away as a file.
+ *
+ * Both are the same act from a rider's side — "I want this later" — so they sit
+ * together rather than being scattered around the panel.
+ */
+function SaveRide({
+  route,
+  meters,
+  graph,
+  onSave,
+}: {
+  route: Route;
+  meters: number;
+  graph: SiteGraph;
+  onSave: (name: string, route: string) => void;
+}) {
+  const [name, setName] = useState("");
+
+  return (
+    <div className="flex gap-2">
+      <input
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter") return;
+          onSave(name, encodeRoute(route));
+          setName("");
+        }}
+        placeholder="Name this ride"
+        aria-label="Name this ride"
+        className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/30 focus:border-blaze/60 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:outline-none"
+      />
+      <Button
+        variant="outline"
+        className="min-h-9 px-2 text-xs"
+        onClick={() => {
+          onSave(name, encodeRoute(route));
+          setName("");
+        }}
+      >
+        Save
+      </Button>
+      <Button
+        variant="primary"
+        className="min-h-9 px-2 text-xs"
+        aria-label="Download as GPX"
+        title="Download as GPX"
+        onClick={() =>
+          downloadGpx(
+            routePoints(route, graph),
+            name.trim() || `Seaddle ${formatMiles(meters)}`,
+          )
+        }
+      >
+        <DownloadSimple weight="bold" className="h-4 w-4" />
+        GPX
+      </Button>
+    </div>
+  );
+}
+
+/** Rides kept in this browser, newest first. */
+function SavedRides({
+  rides,
+  onForget,
+  onLoad,
+  current,
+}: {
+  rides: SavedRide[];
+  onForget: (id: string) => void;
+  onLoad: (encoded: string) => void;
+  current: string;
+}) {
+  if (rides.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-2">
+      <h2 className="eyebrow text-sand/40">Your rides</h2>
+      <ul className="flex flex-col">
+        {rides.map((ride) => (
+          <li
+            key={ride.id}
+            className="border-sand/10 group flex items-center gap-2 border-b py-1.5 last:border-b-0"
+          >
+            <button
+              type="button"
+              onClick={() => onLoad(ride.route)}
+              className={cn(
+                "hover:text-blaze min-w-0 flex-1 truncate text-left text-xs transition-colors",
+                ride.route === current ? "text-blaze" : "text-sand",
+              )}
+            >
+              {ride.name}
+            </button>
+            <button
+              type="button"
+              onClick={() => onForget(ride.id)}
+              aria-label={`Forget ${ride.name}`}
+              className="text-sand/0 hover:text-blaze group-hover:text-sand/40 shrink-0 px-1 text-xs transition-colors"
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function Figure({ label, value }: { label: string; value: string }) {
   return (
-    <div className={cn("flex flex-col gap-0.5")}>
+    <div className="flex flex-col gap-0.5">
       <span className="tabular text-sand text-xl leading-none">{value}</span>
       <span className="eyebrow text-sand/45">{label}</span>
     </div>

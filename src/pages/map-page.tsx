@@ -1,24 +1,78 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { coordAtFraction } from "@/lib/geo/polyline";
 import type { SegmentId } from "@/lib/models/graph";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
 import {
+  NO_FILTERS,
+  passes,
+  type Encoding,
+  type Filters,
+} from "@/site/filters";
+import {
   append,
+  decodeRoute,
   EMPTY_ROUTE,
-  routePoints,
+  encodeRoute,
   isEmpty,
+  outAndBack,
+  routePoints,
   startRoute,
   undo,
   type Route,
 } from "@/site/route";
 import { useGraph } from "@/site/use-graph";
 
+/** The route lives in the address bar, so a link is the whole ride. */
+function routeFromUrl(): string {
+  return new URLSearchParams(window.location.search).get("r") ?? "";
+}
+
 export function MapPage() {
   const { graph, error } = useGraph();
-  const [route, setRoute] = useState<Route>(EMPTY_ROUTE);
+  const [route, setRouteState] = useState<Route>(EMPTY_ROUTE);
   const [scrub, setScrub] = useState<number | null>(null);
+  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  const [encoding, setEncoding] = useState<Encoding>("laneQuality");
+
+  // Read the link once the graph is there to make sense of it, and again
+  // whenever the back button moves through the history we have been writing.
+  useEffect(() => {
+    if (!graph) return;
+    const fromUrl = () => setRouteState(decodeRoute(routeFromUrl(), graph));
+    fromUrl();
+    window.addEventListener("popstate", fromUrl);
+    return () => window.removeEventListener("popstate", fromUrl);
+  }, [graph]);
+
+  /**
+   * Every change goes through here and leaves a history entry, which is what
+   * makes the back button undo — free on a desktop, and where an Android
+   * thumb already is.
+   */
+  const changeRoute = useCallback((next: Route) => {
+    setRouteState(next);
+    const encoded = encodeRoute(next);
+    window.history.pushState(
+      null,
+      "",
+      encoded ? `?r=${encoded}` : window.location.pathname,
+    );
+  }, []);
+
+  const pick = useCallback(
+    (id: SegmentId) => {
+      if (!graph) return;
+      const segment = graph.segments.get(id);
+      if (!segment) return;
+      // `append` enforces the rules itself, so there is nothing to check here.
+      changeRoute(
+        isEmpty(route) ? startRoute(segment) : append(route, segment, graph),
+      );
+    },
+    [graph, route, changeRoute],
+  );
 
   const points = useMemo(
     () => (graph ? routePoints(route, graph) : []),
@@ -34,19 +88,14 @@ export function MapPage() {
     [scrub, points],
   );
 
-  const pick = useCallback(
-    (id: SegmentId) => {
-      if (!graph) return;
-      const segment = graph.segments.get(id);
-      if (!segment) return;
-      // `append` enforces the rules itself, so there is nothing to check here.
-      setRoute((current) =>
-        isEmpty(current)
-          ? startRoute(segment)
-          : append(current, segment, graph),
-      );
-    },
-    [graph],
+  const dimmed = useMemo(
+    () =>
+      graph
+        ? [...graph.segments.values()]
+            .filter((segment) => !passes(segment, filters))
+            .map((segment) => segment.id)
+        : [],
+    [graph, filters],
   );
 
   if (error) return <Splash title="Map unavailable">{error}</Splash>;
@@ -57,14 +106,24 @@ export function MapPage() {
       <RoutePanel
         graph={graph}
         route={route}
-        onUndo={() => setRoute(undo)}
-        onClear={() => setRoute(EMPTY_ROUTE)}
+        encoding={encoding}
+        onEncoding={setEncoding}
+        filters={filters}
+        onFilters={setFilters}
+        passing={graph.segments.size - dimmed.length}
+        total={graph.segments.size}
+        onUndo={() => changeRoute(undo(route))}
+        onClear={() => changeRoute(EMPTY_ROUTE)}
+        onOutAndBack={() => changeRoute(outAndBack(route))}
+        onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph))}
         onScrub={setScrub}
       />
       <main className="h-full md:min-w-0 md:flex-1">
         <SiteMap
           graph={graph}
           route={route}
+          encoding={encoding}
+          dimmed={dimmed}
           scrubbed={scrubbed}
           onPick={pick}
         />

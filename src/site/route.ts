@@ -18,6 +18,14 @@ export type Step = {
    * shape of the graph now.
    */
   auto: boolean;
+  /**
+   * The step that turned the route around.
+   *
+   * Riding back down the road you arrived on is the one thing `append` refuses,
+   * so a link cannot describe an out-and-back as another segment — it has to
+   * say "and back", and this is what remembers that it did.
+   */
+  turn?: boolean;
 };
 
 export type Route = {
@@ -199,6 +207,70 @@ function orient(segment: SiteSegment, from: NodeId): Step {
     to: otherEnd(segment, from),
     auto: false,
   };
+}
+
+/**
+ * Ride back the way you came.
+ *
+ * Nothing else needs to know about it: mirroring the chain is just more steps,
+ * so the distance, the climb and the profile all come out right without a
+ * special case. The climb does change — a descent ridden home is a climb — and
+ * because each mirrored step is oriented the other way, that falls out too.
+ *
+ * The turn itself counts as the decision, so Step back takes the whole return
+ * leg off in one press rather than unpicking it a segment at a time.
+ */
+export function outAndBack(route: Route): Route {
+  if (isEmpty(route)) return route;
+  const mirrored = [...route.steps].reverse().map((step, index) => ({
+    segment: step.segment,
+    from: step.to,
+    to: step.from,
+    auto: index > 0,
+    ...(index === 0 ? { turn: true } : {}),
+  }));
+  return { steps: [...route.steps, ...mirrored], ambiguous: false };
+}
+
+/**
+ * The route as the decisions that made it, which is all a link has to carry.
+ *
+ * Only what was chosen: everything the route ran through by itself comes back
+ * on its own when the choices are replayed, so storing it would be storing
+ * something the graph already knows.
+ */
+export const TURN = "~";
+
+export function encodeRoute(route: Route): string {
+  return route.steps
+    .filter((step) => !step.auto)
+    .map((step) => (step.turn ? TURN : step.segment))
+    .join(",");
+}
+
+/**
+ * Rebuild a route from the choices in a link.
+ *
+ * Replayed through the same append that a rider's clicks go through, so a
+ * shared route is put together by exactly the rules that built it — including
+ * running on through junctions with nothing to decide. Anything that no longer
+ * fits is dropped rather than throwing: segments get recut, and a stale link
+ * should give back as much of the ride as still exists.
+ */
+export function decodeRoute(encoded: string, graph: SiteGraph): Route {
+  let route = EMPTY_ROUTE;
+  for (const token of encoded.split(",").filter(Boolean)) {
+    if (token === TURN) {
+      route = outAndBack(route);
+      continue;
+    }
+    const segment = graph.segments.get(token);
+    if (!segment) continue;
+    route = isEmpty(route)
+      ? startRoute(segment)
+      : append(route, segment, graph);
+  }
+  return route;
 }
 
 export type Leg = {

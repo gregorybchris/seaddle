@@ -15,6 +15,22 @@ export const LANE_QUALITIES: LaneQuality[] = ["poor", "fair", "good", "great"];
 export const SCENICS: Scenic[] = ["low", "medium", "high"];
 export const SURFACES: Surface[] = ["asphalt", "gravel", "dirt"];
 
+/**
+ * One label for a segment that has two answers.
+ *
+ * The harder way, because that is what decides whether a rider can manage the
+ * segment at all — a road that is brutal uphill is a hard road, even though
+ * coming down it is easy.
+ */
+export function harderDifficulty(
+  forward: Difficulty,
+  backward: Difficulty,
+): Difficulty {
+  return DIFFICULTIES.indexOf(forward) >= DIFFICULTIES.indexOf(backward)
+    ? forward
+    : backward;
+}
+
 export type GraphNode = {
   id: NodeId;
   /** Admin-only audit label. Never shown to users. */

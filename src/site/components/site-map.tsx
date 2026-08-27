@@ -10,8 +10,9 @@ import Map, {
 import type { FeatureCollection, LineString } from "geojson";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
-import type { SegmentId } from "@/lib/models/graph";
+import { harderDifficulty, type SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
+import { RAMPS, type Encoding } from "../filters";
 import { choiceBounds, continuations, isEmpty, type Route } from "../route";
 
 const CLICKABLE = "segments-hit";
@@ -29,6 +30,9 @@ const HIT_WIDTH = 22;
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
+  encoding: Encoding;
+  /** Roads that fail the filters: dimmed, never hidden. */
+  dimmed: SegmentId[];
   /** Where the reader is pointing on the elevation chart, if anywhere. */
   scrubbed: Coord | null;
   onPick: (id: SegmentId) => void;
@@ -74,7 +78,14 @@ function nearestOf(
  * clickable is what is bright, and what is not is visibly out of play rather
  * than merely unresponsive.
  */
-export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
+export function SiteMap({
+  graph,
+  route,
+  encoding,
+  dimmed,
+  scrubbed,
+  onPick,
+}: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
   const [overRoad, setOverRoad] = useState(false);
 
@@ -84,7 +95,20 @@ export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
       features: [...graph.segments.values()].map((segment) => ({
         type: "Feature",
         id: segment.id,
-        properties: { id: segment.id },
+        // The attributes travel with the feature, because the colour of a road
+        // is decided by a style expression on the GPU rather than in React.
+        // Carrying only the id — which this did — left every expression
+        // matching against nothing and every road drawn in the fallback.
+        properties: {
+          id: segment.id,
+          difficulty: harderDifficulty(
+            segment.difficulty.forward,
+            segment.difficulty.backward,
+          ),
+          laneQuality: segment.laneQuality,
+          scenic: segment.scenic,
+          surface: segment.surface,
+        },
         geometry: {
           type: "LineString",
           coordinates: segment.points as number[][],
@@ -92,6 +116,17 @@ export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
       })),
     }),
     [graph],
+  );
+
+  // A road is drawn in the colour of whatever the map is currently about.
+  const colour = useMemo(
+    () => [
+      "match",
+      ["get", encoding],
+      ...Object.entries(RAMPS[encoding]).flat(),
+      "#1c4632",
+    ],
+    [encoding],
   );
 
   const open = useMemo(() => [...continuations(route, graph)], [route, graph]);
@@ -158,12 +193,21 @@ export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
       <Source id="graph" type="geojson" data={data}>
         {/* Out of play: still drawn, so the shape of the network stays
             readable and a dead end is visibly a dead end. */}
+        {/* Out of play: still drawn, so the shape of the network stays
+            readable and a dead end is visibly a dead end. Roads that fail a
+            filter fade further, but are never removed — hiding them would
+            break the network into islands with no visible reason. */}
         <Layer
           id="segments-closed"
           type="line"
           paint={{
-            "line-color": "#1c4632",
-            "line-opacity": 0.16,
+            "line-color": colour as never,
+            "line-opacity": [
+              "case",
+              ["in", ["get", "id"], ["literal", dimmed]],
+              0.08,
+              0.45,
+            ],
             "line-width": 3,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
@@ -173,11 +217,33 @@ export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
           type="line"
           filter={["in", ["get", "id"], ["literal", open]]}
           paint={{
-            "line-color": "#2f6b48",
-            "line-opacity": 0.9,
+            "line-color": colour as never,
+            "line-opacity": [
+              "case",
+              ["in", ["get", "id"], ["literal", dimmed]],
+              0.25,
+              1,
+            ],
             "line-width": isEmpty(route) ? 3.5 : 4.5,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
+        />
+        {/* Surface reads as a set of materials rather than a scale, so it is
+            reinforced with a pattern that does not rely on colour at all. */}
+        <Layer
+          id="segments-surface"
+          type="line"
+          filter={
+            encoding === "surface"
+              ? ["!=", ["get", "surface"], "asphalt"]
+              : ["==", ["get", "id"], ""]
+          }
+          paint={{
+            "line-color": "#faf7f1",
+            "line-opacity": 0.85,
+            "line-width": 1.5,
+            "line-dasharray": [1, 2],
+          }}
         />
         {/* Invisible and wide: the thing a finger actually has to hit. Only
             what may be picked is in it, so a fat target cannot catch a road
@@ -198,6 +264,8 @@ export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
           type="line"
           filter={["in", ["get", "id"], ["literal", chosen]]}
           paint={{
+            // The route wins over the encoding: it is the subject, and a
+            // chosen road has to be findable at a glance.
             "line-color": "#d97b2e",
             "line-opacity": 1,
             "line-width": 6,
