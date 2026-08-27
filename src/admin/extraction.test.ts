@@ -160,7 +160,9 @@ describe("removeSegment", () => {
   const nodeA = node("n001", A);
   const nodeB = node("n002", B);
 
-  it("takes its unnamed junctions with it", () => {
+  it("leaves the junctions where they are", () => {
+    // Deleting a segment is usually the first half of re-cutting it with
+    // better geometry, so its junctions are exactly what the next step needs.
     const { graph } = addSegment(
       emptyGraph({ nodes: [nodeA, nodeB] }),
       candidate,
@@ -169,10 +171,10 @@ describe("removeSegment", () => {
     );
     const after = removeSegment(graph, "s001");
     expect(after.segments).toEqual([]);
-    expect(after.nodes).toEqual([]);
+    expect(after.nodes.map((n) => n.id)).toEqual(["n001", "n002"]);
   });
 
-  it("keeps a junction that is still holding another segment up", () => {
+  it("leaves the other segments alone", () => {
     const first = addSegment(
       emptyGraph({ nodes: [nodeA, nodeB, node("n003", at(1000, 0))] }),
       candidate,
@@ -185,20 +187,8 @@ describe("removeSegment", () => {
       coord: at(1000, 0),
     });
     const after = removeSegment(second.graph, "s001");
-    expect(after.nodes.map((n) => n.id).sort()).toEqual(["n002", "n003"]);
-  });
-
-  it("keeps a named junction, which was deliberate", () => {
-    const named = { id: "n001", name: "Fremont Bridge", coord: A };
-    const { graph } = addSegment(
-      emptyGraph({ nodes: [named, nodeB] }),
-      candidate,
-      named,
-      nodeB,
-    );
-    expect(removeSegment(graph, "s001").nodes.map((n) => n.id)).toEqual([
-      "n001",
-    ]);
+    expect(after.segments.map((s) => s.id)).toEqual(["s002"]);
+    expect(after.nodes).toHaveLength(3);
   });
 
   it("drops the pins that lived on it", () => {

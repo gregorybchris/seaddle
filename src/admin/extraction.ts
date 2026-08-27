@@ -231,19 +231,19 @@ export function removeNode(graph: GraphFile, id: NodeId): NodeRemoval {
   };
 }
 
-/** Remove a segment, and any junction that was only there to hold it up. */
-export function removeSegment(graph: GraphFile, id: string): GraphFile {
-  const segments = graph.segments.filter((s) => s.id !== id);
-  const stillUsed = new Set(segments.flatMap((s) => [s.from, s.to]));
+/**
+ * Remove a segment and the pins that lived on it. Junctions are left alone.
+ *
+ * Every junction was placed deliberately, at a crossing someone found and
+ * clicked, and it is the expensive half of the work. Deleting a segment is
+ * usually the first half of re-cutting it with better geometry, so taking its
+ * junctions along would destroy exactly what the next step needs. Junctions are
+ * removed on their own terms, by `removeNode`.
+ */
+export function removeSegment(graph: GraphFile, id: SegmentId): GraphFile {
   return {
     ...graph,
-    segments,
-    nodes: graph.nodes.filter((n) => stillUsed.has(n.id) || isNamed(n)),
-    pins: graph.pins.filter((p) => p.segment !== id),
+    segments: graph.segments.filter((segment) => segment.id !== id),
+    pins: graph.pins.filter((pin) => pin.segment !== id),
   };
-}
-
-/** A named junction was deliberate, so it outlives the segments that used it. */
-function isNamed(node: GraphNode): boolean {
-  return node.name !== null && node.name.trim() !== "";
 }

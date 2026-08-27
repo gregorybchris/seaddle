@@ -161,3 +161,38 @@ describe("serializeGraph formatting", () => {
     expect(JSON.parse(serializeGraph(original))).toEqual(sortGraph(original));
   });
 });
+
+describe("unused junction reporting", () => {
+  it("counts them on one line instead of one warning each", () => {
+    // Junctions are placed before the segments between them, so mid-session
+    // most of them are legitimately unused.
+    const problems = validateGraph(
+      graph({
+        nodes: Array.from({ length: 12 }, (_, i) => ({
+          id: `n${String(i + 1).padStart(3, "0")}`,
+          name: null,
+          coord: [-122.35, 47.65] as [number, number],
+        })),
+      }),
+    );
+    const unused = problems.filter((p) =>
+      /not used by any segment/.test(p.message),
+    );
+    expect(unused).toHaveLength(1);
+    expect(unused[0].message).toContain("12 junction(s)");
+    expect(unused[0].message).toContain("and 6 more");
+  });
+
+  it("says nothing when every junction carries a segment", () => {
+    const problems = validateGraph(
+      graph({
+        nodes: [
+          { id: "nA", name: null, coord: [-122.35, 47.65] },
+          { id: "nB", name: null, coord: [-122.34, 47.65] },
+        ],
+        segments: [segment("s1", "nA", "nB", { reviewed: true })],
+      }),
+    );
+    expect(problems).toEqual([]);
+  });
+});

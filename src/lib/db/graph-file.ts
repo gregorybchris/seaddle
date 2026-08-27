@@ -43,6 +43,11 @@ export type GraphProblem = { level: "error" | "warning"; message: string };
  * Reported rather than thrown, because the admin needs to show a list of
  * problems while you work rather than refusing to load.
  */
+function summarize(ids: string[], limit = 6): string {
+  if (ids.length <= limit) return ids.join(", ");
+  return `${ids.slice(0, limit).join(", ")} and ${ids.length - limit} more`;
+}
+
 export function validateGraph(graph: GraphFile): GraphProblem[] {
   const problems: GraphProblem[] = [];
   const nodeIds = new Set(graph.nodes.map((n) => n.id));
@@ -80,13 +85,17 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
     }
   }
 
-  for (const node of graph.nodes) {
-    if (!referencedNodes.has(node.id)) {
-      problems.push({
-        level: "warning",
-        message: `Node ${node.id} is not used by any segment`,
-      });
-    }
+  // Counted rather than listed one per line. Junctions are placed before the
+  // segments between them, so during a mapping session most of them are
+  // legitimately unused and a warning each would bury everything else.
+  const unused = graph.nodes
+    .filter((node) => !referencedNodes.has(node.id))
+    .map((node) => node.id);
+  if (unused.length > 0) {
+    problems.push({
+      level: "warning",
+      message: `${unused.length} junction(s) not used by any segment: ${summarize(unused)}`,
+    });
   }
 
   for (const pin of graph.pins) {
