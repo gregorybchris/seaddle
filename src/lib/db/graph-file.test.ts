@@ -68,18 +68,23 @@ describe("validateGraph", () => {
         ],
       }),
     );
-    expect(problems.some((p) => /share the node pair/.test(p.message))).toBe(
-      true,
+    const duplicate = problems.find((p) =>
+      /segments run between/.test(p.message),
     );
+    expect(duplicate).toBeDefined();
+    // Naming them is the point: a warning about a duplicate is only useful if
+    // the duplicate can be found.
+    expect(duplicate?.segments).toEqual(["s1", "s2"]);
   });
 
   it("flags an orphan node", () => {
     const problems = validateGraph(
       graph({ nodes: [{ id: "nLost", name: null, coord: [-122.35, 47.65] }] }),
     );
-    expect(
-      problems.some((p) => /not used by any segment/.test(p.message)),
-    ).toBe(true);
+    const orphan = problems.find((p) => /carry no segment/.test(p.message));
+    // Naming it is the point: a warning is only useful if the thing it names
+    // can be found.
+    expect(orphan?.nodes).toEqual(["nLost"]);
   });
 
   it("flags a pin positioned off the end of its segment", () => {
@@ -175,12 +180,10 @@ describe("unused junction reporting", () => {
         })),
       }),
     );
-    const unused = problems.filter((p) =>
-      /not used by any segment/.test(p.message),
-    );
+    const unused = problems.filter((p) => /carry no segment/.test(p.message));
     expect(unused).toHaveLength(1);
     expect(unused[0].message).toContain("12 junction(s)");
-    expect(unused[0].message).toContain("and 6 more");
+    expect(unused[0].nodes).toHaveLength(12);
   });
 
   it("says nothing when every junction carries a segment", () => {

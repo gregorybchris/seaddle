@@ -264,6 +264,45 @@ export function removeNode(graph: GraphFile, id: NodeId): NodeRemoval {
 }
 
 /**
+ * Fold one junction into another.
+ *
+ * For the crossings auto-snapping cannot see: a bridge deck where two rides
+ * pass ten meters apart and never meet, or a trail that resumes across a gap.
+ * Everything hanging off the junction being dropped moves to the one being
+ * kept, and the caller re-pins the geometry of those segments — without that
+ * they would still end where the old junction was and draw a gap at the very
+ * crossing this was meant to close.
+ */
+export function mergeNodes(
+  graph: GraphFile,
+  keep: NodeId,
+  drop: NodeId,
+): { graph: GraphFile; moved: SegmentId[] } {
+  if (keep === drop) return { graph, moved: [] };
+
+  const moved = graph.segments
+    .filter((segment) => segment.from === drop || segment.to === drop)
+    .map((segment) => segment.id);
+
+  return {
+    graph: {
+      ...graph,
+      nodes: graph.nodes.filter((node) => node.id !== drop),
+      segments: graph.segments.map((segment) =>
+        segment.from === drop || segment.to === drop
+          ? {
+              ...segment,
+              from: segment.from === drop ? keep : segment.from,
+              to: segment.to === drop ? keep : segment.to,
+            }
+          : segment,
+      ),
+    },
+    moved,
+  };
+}
+
+/**
  * Remove a segment and the pins that lived on it. Junctions are left alone.
  *
  * Every junction was placed deliberately, at a crossing someone found and

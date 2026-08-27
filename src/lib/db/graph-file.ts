@@ -1,4 +1,4 @@
-import type { GraphFile } from "@/lib/models/graph";
+import type { GraphFile, NodeId, SegmentId } from "@/lib/models/graph";
 
 /**
  * Sort every collection by id.
@@ -35,7 +35,19 @@ export function serializeGraph(graph: GraphFile): string {
   );
 }
 
-export type GraphProblem = { level: "error" | "warning"; message: string };
+/**
+ * Something worth looking at, and enough to go and look.
+ *
+ * The ids matter as much as the message: a warning that names a duplicate is
+ * only useful if the thing it names can be found, and hunting an id through a
+ * list of a hundred and fifty is how a warning gets ignored.
+ */
+export type GraphProblem = {
+  level: "error" | "warning";
+  message: string;
+  nodes?: NodeId[];
+  segments?: SegmentId[];
+};
 
 /**
  * Everything that can be checked without looking at the geometry files.
@@ -43,11 +55,6 @@ export type GraphProblem = { level: "error" | "warning"; message: string };
  * Reported rather than thrown, because the admin needs to show a list of
  * problems while you work rather than refusing to load.
  */
-function summarize(ids: string[], limit = 6): string {
-  if (ids.length <= limit) return ids.join(", ");
-  return `${ids.slice(0, limit).join(", ")} and ${ids.length - limit} more`;
-}
-
 export function validateGraph(graph: GraphFile): GraphProblem[] {
   const problems: GraphProblem[] = [];
   const nodeIds = new Set(graph.nodes.map((n) => n.id));
@@ -61,7 +68,8 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
       if (!nodeIds.has(end)) {
         problems.push({
           level: "error",
-          message: `Segment ${segment.id} references missing node ${end}`,
+          message: `Segment ${segment.id} references missing junction ${end}`,
+          segments: [segment.id],
         });
       }
     }
@@ -69,6 +77,8 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
       problems.push({
         level: "warning",
         message: `Segment ${segment.id} starts and ends at ${segment.from}`,
+        segments: [segment.id],
+        nodes: [segment.from],
       });
     }
     // Direction-independent, so an A→B and a B→A segment count as duplicates.
@@ -80,7 +90,9 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
     if (ids.length > 1) {
       problems.push({
         level: "warning",
-        message: `${ids.length} segments share the node pair ${pair}: ${ids.join(", ")}`,
+        message: `${ids.length} segments run between ${pair.replace("~", " and ")}`,
+        segments: ids,
+        nodes: pair.split("~"),
       });
     }
   }
@@ -94,7 +106,8 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
   if (unused.length > 0) {
     problems.push({
       level: "warning",
-      message: `${unused.length} junction(s) not used by any segment: ${summarize(unused)}`,
+      message: `${unused.length} junction(s) carry no segment`,
+      nodes: unused,
     });
   }
 
@@ -118,6 +131,7 @@ export function validateGraph(graph: GraphFile): GraphProblem[] {
     problems.push({
       level: "warning",
       message: `${unreviewed} segment(s) still have default attributes`,
+      segments: graph.segments.filter((s) => !s.reviewed).map((s) => s.id),
     });
   }
 

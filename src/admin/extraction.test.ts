@@ -10,6 +10,7 @@ import {
   addSegment,
   buildGeometry,
   extractGeometry,
+  mergeNodes,
   placeNode,
   removeNode,
   removeSegment,
@@ -329,5 +330,55 @@ describe("removeNode", () => {
   it("does nothing for a junction that is not there", () => {
     const graph = emptyGraph({ nodes: [node("n001", A)] });
     expect(removeNode(graph, "n404").graph.nodes).toHaveLength(1);
+  });
+});
+
+describe("mergeNodes", () => {
+  const candidate = findCandidates([TRACK], INDEX, A, B)[0];
+  const nodeA = node("n001", A);
+  const nodeB = node("n002", B);
+  const stray = node("n003", at(505, 3));
+
+  /** Two segments meeting at a crossing auto-snapping was too tight to see. */
+  function twoSided() {
+    const first = addSegment(
+      emptyGraph({ nodes: [nodeA, nodeB, stray] }),
+      candidate,
+      nodeA,
+      nodeB,
+    );
+    return addSegment(first.graph, candidate, stray, nodeA).graph;
+  }
+
+  it("moves everything hanging off the dropped junction", () => {
+    const { graph, moved } = mergeNodes(twoSided(), "n002", "n003");
+    expect(moved).toEqual(["s002"]);
+    expect(graph.segments[1].from).toBe("n002");
+  });
+
+  it("takes the dropped junction with it", () => {
+    const { graph } = mergeNodes(twoSided(), "n002", "n003");
+    expect(graph.nodes.map((node) => node.id)).toEqual(["n001", "n002"]);
+  });
+
+  it("names what moved, since their geometry has to be re-pinned", () => {
+    // Without that they would still end where the old junction was and draw a
+    // gap at the very crossing this was meant to close.
+    const { moved } = mergeNodes(twoSided(), "n001", "n002");
+    expect(moved.sort()).toEqual(["s001"]);
+  });
+
+  it("refuses to merge a junction into itself", () => {
+    const before = twoSided();
+    expect(mergeNodes(before, "n001", "n001")).toEqual({
+      graph: before,
+      moved: [],
+    });
+  });
+
+  it("leaves the input alone", () => {
+    const before = twoSided();
+    mergeNodes(before, "n002", "n003");
+    expect(before.nodes).toHaveLength(3);
   });
 });

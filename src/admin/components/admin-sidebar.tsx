@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ElevCoord } from "@/lib/models/geo";
-import type { GraphNode, SegmentRecord } from "@/lib/models/graph";
+import type { GraphNode, Pin, SegmentRecord } from "@/lib/models/graph";
 import { polylineMeters } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
 import { formatMiles } from "@/lib/utilities/units";
@@ -8,7 +8,10 @@ import { Button } from "@/widgets/button";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Segmented } from "@/widgets/segmented";
 import { Sheet } from "@/widgets/sheet";
+import { validateGraph } from "@/lib/db/graph-file";
+import { connectedComponents } from "@/lib/graph/adjacency";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
+import { ValidationPanel } from "./validation-panel";
 import { SegmentEditor } from "./segment-editor";
 import type { AttributePatch } from "../review";
 import { nextUnreviewed, reviewProgress } from "../review";
@@ -27,6 +30,7 @@ type AdminSidebarProps = {
   trackCount: number;
   nodes: GraphNode[];
   segments: SegmentRecord[];
+  pins: Pin[];
   geometry: Map<string, ElevCoord[]>;
   from: GraphNode | null;
   to: GraphNode | null;
@@ -56,6 +60,11 @@ type AdminSidebarProps = {
   onLocateSegment: (id: string) => void;
   /** Changes whenever the map is sent somewhere, so the sheet can get out of the way. */
   focusedAt: unknown;
+  onShowNodes: (ids: string[]) => void;
+  onShowSegments: (ids: string[]) => void;
+  /** The junction a merge will fold the next click into, if one is armed. */
+  merging: GraphNode | null;
+  onArmMerge: (node: GraphNode | null) => void;
 };
 
 export function AdminSidebar(props: AdminSidebarProps) {
@@ -67,6 +76,13 @@ export function AdminSidebar(props: AdminSidebarProps) {
   const picked = new Set(props.selectedSegments);
   const chosen = props.segments.filter((segment) => picked.has(segment.id));
   const progress = reviewProgress(props.segments);
+  const problems = validateGraph({
+    version: 1,
+    nodes: props.nodes,
+    segments: props.segments,
+    pins: props.pins,
+  });
+  const components = connectedComponents(props.segments).map((c) => c.length);
   // Only meaningful for a single selection; the editor hides it otherwise.
   const derived = deriveSegment(
     (chosen.length === 1 && props.geometry.get(chosen[0].id)) || [],
@@ -140,6 +156,29 @@ export function AdminSidebar(props: AdminSidebarProps) {
               the same intersection twice gives you one junction, not two that
               never connect. Click a junction again to select it.
             </p>
+            {props.selectedNode && (
+              <div className="border-sand/15 bg-forest-deep/30 flex items-center gap-2 rounded-lg border p-2.5">
+                <span className="tabular text-blaze text-xs">
+                  {props.selectedNode.id}
+                </span>
+                <span className="text-sand/50 flex-1 text-[0.6875rem]">
+                  {props.merging
+                    ? "Now click the junction to fold into it."
+                    : "Selected"}
+                </span>
+                <Button
+                  variant={props.merging ? "primary" : "outline"}
+                  className="min-h-0 px-2 py-1 text-xs"
+                  onClick={() =>
+                    props.onArmMerge(props.merging ? null : props.selectedNode)
+                  }
+                  title="Join two junctions that should have been one"
+                >
+                  {props.merging ? "Cancel" : "Merge"}
+                </Button>
+              </div>
+            )}
+
             <JunctionInventory
               nodes={props.nodes}
               segments={props.segments}
@@ -153,6 +192,13 @@ export function AdminSidebar(props: AdminSidebarProps) {
         ) : (
           <SegmentBuilder {...props} />
         )}
+
+        <ValidationPanel
+          problems={problems}
+          components={components}
+          onShowNodes={props.onShowNodes}
+          onShowSegments={props.onShowSegments}
+        />
 
         <SegmentInventory
           segments={props.segments}

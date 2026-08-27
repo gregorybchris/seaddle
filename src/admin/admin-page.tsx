@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { boundsOf, padBounds } from "@/lib/geo/bounds";
+import { snapEnds } from "@/lib/geo/polyline";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
@@ -20,6 +21,7 @@ import {
 } from "./review";
 import {
   addSegment,
+  mergeNodes,
   NODE_SNAP_METERS,
   placeNode,
   removeNode,
@@ -42,6 +44,8 @@ export default function AdminPage() {
   const [preview, setPreview] = useState<ElevCoord[] | null>(null);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
+  /** A junction waiting to swallow the next one clicked. */
+  const [merging, setMerging] = useState<GraphNode | null>(null);
   const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
   const [maxDetourRatio, setMaxDetourRatio] = useState(
     DEFAULT_MAX_DETOUR_RATIO,
@@ -82,6 +86,13 @@ export default function AdminPage() {
       // Within the dedup radius the click means the junction already there, so
       // select it rather than silently doing nothing.
       const existing = snapToNodes(data.graph.nodes, coord, NODE_SNAP_METERS);
+
+      // A merge is armed: the next junction clicked folds into the armed one.
+      if (merging && existing && existing.id !== merging.id) {
+        void foldInto(merging, existing);
+        return;
+      }
+
       if (existing) {
         setSelectedNode(existing.id === selectedNode?.id ? null : existing);
         return;
@@ -157,6 +168,33 @@ export default function AdminPage() {
   function patchSelected(patch: AttributePatch) {
     if (selectedSegments.length === 0) return;
     void data.save(applyAttributes(data.graph, selectedSegments, patch));
+  }
+
+  /**
+   * Fold one junction into another, and re-pin what moved.
+   *
+   * The records alone are not enough: a segment moved to a new junction still
+   * ends where the old one was, and would draw a gap at the very crossing the
+   * merge was meant to close.
+   */
+  async function foldInto(keep: GraphNode, drop: GraphNode) {
+    const { graph, moved } = mergeNodes(data.graph, keep.id, drop.id);
+    setMerging(null);
+    setSelectedNode(keep);
+    for (const id of moved) {
+      const segment = graph.segments.find((one) => one.id === id);
+      const points = data.geometry.get(id);
+      if (!segment || !points) continue;
+      const from = graph.nodes.find((one) => one.id === segment.from);
+      const to = graph.nodes.find((one) => one.id === segment.to);
+      if (!from || !to) continue;
+      await data.save(graph, {
+        id,
+        points: snapEnds(points, from.coord, to.coord),
+      });
+    }
+    if (moved.length === 0) await data.save(graph);
+    setHint(`Folded ${drop.id} into ${keep.id}.`);
   }
 
   /**
@@ -257,6 +295,27 @@ export default function AdminPage() {
         onRenameSegment={(id, name) =>
           void data.save(renameSegment(data.graph, id, name))
         }
+        pins={data.graph.pins}
+        merging={merging}
+        onArmMerge={setMerging}
+        onShowNodes={(ids) => {
+          setMode("nodes");
+          const found = data.graph.nodes.filter((node) =>
+            ids.includes(node.id),
+          );
+          if (found.length === 0) return;
+          setSelectedNode(found[0]);
+          setFocus({
+            bounds: padBounds(boundsOf(found.map((node) => node.coord)), 150),
+            maxZoom: 17,
+          });
+        }}
+        onShowSegments={(ids) => {
+          setMode("segments");
+          setSelectedSegments(ids);
+          const points = ids.flatMap((id) => data.geometry.get(id) ?? []);
+          if (points.length > 0) setFocus({ bounds: boundsOf(points) });
+        }}
         selectedSegments={selectedSegments}
         onSelectSegments={setSelectedSegments}
         onPatchSelected={patchSelected}
