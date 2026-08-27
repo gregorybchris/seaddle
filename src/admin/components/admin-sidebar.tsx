@@ -467,6 +467,7 @@ function JunctionInventory({
             detail={load.get(node.id) ? `${load.get(node.id)} seg` : "unused"}
             selected={node.id === selectedId}
             revealOnSelect
+            focusNameOnSelect
             onSelect={() => onSelect(node.id === selectedId ? null : node)}
             onRename={(name) => onRename(node.id, name)}
             onRemove={() => onRemove(node.id)}

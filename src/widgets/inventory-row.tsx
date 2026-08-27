@@ -13,11 +13,20 @@ type InventoryRowProps = {
   onSelect?: () => void;
   onLocate?: () => void;
   /**
-   * When this row becomes the selected one, bring it into view and put the
-   * cursor in its name — so picking something off the map lands you ready to
-   * name it rather than ready to go looking for it.
+   * When this row becomes the selected one, bring it into view within its own
+   * list — so picking something off the map shows you which row it was rather
+   * than leaving you to go looking for it.
    */
   revealOnSelect?: boolean;
+  /**
+   * Also put the cursor in the name.
+   *
+   * Only where naming is the next thing anyone does, which is junctions: one
+   * is placed in order to be labeled. Segments are not — their next step is
+   * the attributes below, and stealing the caret up into the list meant
+   * arriving at each one with the panel scrolled away from the work.
+   */
+  focusNameOnSelect?: boolean;
 };
 
 /**
@@ -39,6 +48,7 @@ export function InventoryRow({
   onSelect,
   onLocate,
   revealOnSelect = false,
+  focusNameOnSelect = false,
 }: InventoryRowProps) {
   const [draft, setDraft] = useState(name ?? "");
   const row = useRef<HTMLLIElement>(null);
@@ -52,11 +62,25 @@ export function InventoryRow({
 
   useEffect(() => {
     if (!selected || !revealOnSelect) return;
-    row.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const element = row.current;
+    const list = element?.parentElement;
+    if (!element || !list) return;
+
+    // Scrolls the list and nothing above it. `scrollIntoView` walks every
+    // scrollable ancestor, so revealing a row this far down the sidebar also
+    // scrolled the sidebar — carrying whatever was being edited off screen.
+    const rowBox = element.getBoundingClientRect();
+    const listBox = list.getBoundingClientRect();
+    if (rowBox.top < listBox.top) {
+      list.scrollTop -= listBox.top - rowBox.top;
+    } else if (rowBox.bottom > listBox.bottom) {
+      list.scrollTop += rowBox.bottom - listBox.bottom;
+    }
+
     // Focus without selecting: the caret lands in an existing name rather than
     // replacing it, so this is safe when the click was only to identify.
-    field.current?.focus({ preventScroll: true });
-  }, [selected, revealOnSelect]);
+    if (focusNameOnSelect) field.current?.focus({ preventScroll: true });
+  }, [selected, revealOnSelect, focusNameOnSelect]);
 
   function commit() {
     if (draft.trim() !== (name ?? "")) onRename(draft);
