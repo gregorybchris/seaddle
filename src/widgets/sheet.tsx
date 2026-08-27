@@ -20,6 +20,15 @@ const DETENT_VH: Record<Detent, number> = { peek: 22, half: 52, full: 88 };
 const ORDER: Detent[] = ["peek", "half", "full"];
 
 /**
+ * How far a thumb may travel and still have meant a tap, in pixels.
+ *
+ * A finger never lands and lifts on exactly one pixel, so without a margin
+ * every tap would register as a one-pixel drag, snap back to the height it
+ * started at, and look like nothing happened.
+ */
+const TAP_SLOP = 8;
+
+/**
  * The width at which the sheet becomes a static sidebar, matching the
  * breakpoint `.sheet` is written against in the stylesheet.
  *
@@ -98,7 +107,12 @@ export function Sheet({
 }: SheetProps) {
   const [detent, setDetent] = useState<Detent>(restingAt);
   const [dragVh, setDragVh] = useState<number | null>(null);
-  const drag = useRef<{ startY: number; startVh: number } | null>(null);
+  const drag = useRef<{
+    startY: number;
+    startVh: number;
+    /** The furthest from the start this gesture has been, in pixels. */
+    moved: number;
+  } | null>(null);
 
   const visibleVh = dragVh ?? DETENT_VH[detent];
 
@@ -119,13 +133,25 @@ export function Sheet({
     (event: React.PointerEvent) => {
       if (window.matchMedia(SIDEBAR_WIDTH).matches) return;
       event.currentTarget.setPointerCapture(event.pointerId);
-      drag.current = { startY: event.clientY, startVh: DETENT_VH[detent] };
+      drag.current = {
+        startY: event.clientY,
+        startVh: DETENT_VH[detent],
+        moved: 0,
+      };
     },
     [detent],
   );
 
   const onPointerMove = useCallback((event: React.PointerEvent) => {
     if (!drag.current) return;
+    drag.current.moved = Math.max(
+      drag.current.moved,
+      Math.abs(event.clientY - drag.current.startY),
+    );
+    // Below the slop the panel does not move at all, so a tap never leaves the
+    // height it started at looking nudged before it settles back.
+    if (drag.current.moved < TAP_SLOP) return;
+
     const moved =
       ((drag.current.startY - event.clientY) / window.innerHeight) * 100;
     // Never past the outer resting heights: a drag that could leave the panel
@@ -138,27 +164,63 @@ export function Sheet({
     );
   }, []);
 
-  const onPointerUp = useCallback(() => {
-    if (!drag.current) return;
-    const settled = dragVh;
-    drag.current = null;
-    setDragVh(null);
-    if (settled === null) return;
-    // Snap to whichever resting height the drag ended nearest.
-    const nearest = ORDER.reduce((best, option) =>
-      Math.abs(DETENT_VH[option] - settled) <
-      Math.abs(DETENT_VH[best] - settled)
-        ? option
-        : best,
-    );
-    setDetent(nearest);
-  }, [dragVh]);
+  /**
+   * The end of a gesture, which is either a drag or a tap.
+   *
+   * Which one is decided by how far the thumb went, not by how long it was
+   * down: a slow, deliberate press that never moves is still someone asking
+   * for the panel, and a flick that covers half the screen in 80ms is still a
+   * drag. `onTap` is passed only where a tap means something — a cancelled
+   * gesture is not a tap, and neither is one on a surface that only drags.
+   */
+  const endGesture = useCallback(
+    (onTap?: () => void) => {
+      const gesture = drag.current;
+      if (!gesture) return;
+      const settled = dragVh;
+      drag.current = null;
+      setDragVh(null);
 
+      if (gesture.moved < TAP_SLOP) {
+        onTap?.();
+        return;
+      }
+      if (settled === null) return;
+      // Snap to whichever resting height the drag ended nearest.
+      const nearest = ORDER.reduce((best, option) =>
+        Math.abs(DETENT_VH[option] - settled) <
+        Math.abs(DETENT_VH[best] - settled)
+          ? option
+          : best,
+      );
+      setDetent(nearest);
+    },
+    [dragVh],
+  );
+
+  /**
+   * All the way up, or all the way down.
+   *
+   * Dragging is how you ask for a height in between; a tap is for the two
+   * answers worth reaching in one gesture, and from anywhere short of the top
+   * the one being asked for is the top.
+   */
+  const toggle = useCallback(() => {
+    setDetent((current) => (current === "full" ? "peek" : "full"));
+  }, []);
+
+  /** Drag only — the header, where a tap would fire on the title. */
   const dragHandlers = {
     onPointerDown,
     onPointerMove,
-    onPointerUp,
-    onPointerCancel: onPointerUp,
+    onPointerUp: () => endGesture(),
+    onPointerCancel: () => endGesture(),
+  };
+
+  /** Drag or tap — the bar, which is nothing but a handle. */
+  const handleHandlers = {
+    ...dragHandlers,
+    onPointerUp: () => endGesture(toggle),
   };
 
   const step = useCallback((direction: 1 | -1) => {
@@ -182,19 +244,29 @@ export function Sheet({
       )}
       style={{ "--sheet-visible": visibleVh } as React.CSSProperties}
     >
+      {/* The bar is four pixels of it and the rest is padding, because what has
+          to be 44px is the thing a thumb aims at, not the thing it can see. */}
       <div
         role="separator"
         aria-label="Resize panel"
         aria-orientation="horizontal"
         tabIndex={0}
-        {...dragHandlers}
+        {...handleHandlers}
         onKeyDown={(event) => {
           if (event.key === "ArrowUp") step(1);
-          if (event.key === "ArrowDown") step(-1);
+          else if (event.key === "ArrowDown") step(-1);
+          // The same shortcut the tap is: the keyboard should not be the one
+          // input that has to ask for the top a step at a time.
+          else if (event.key === "Enter" || event.key === " ") toggle();
+          else return;
+          event.preventDefault();
         }}
-        className="focus-visible:ring-blaze flex cursor-grab touch-none justify-center py-3 focus-visible:ring-2 focus-visible:outline-none active:cursor-grabbing md:hidden"
+        className="group flex cursor-grab touch-none justify-center py-5 outline-none active:cursor-grabbing md:hidden"
       >
-        <span className="bg-sand/30 h-1 w-10 rounded-full" />
+        {/* The ring goes on the bar, not on the 44px box around it — the box is
+            the full width of the panel, and a ring on that reads as two rules
+            across the panel rather than as a control being focused. */}
+        <span className="bg-sand/30 group-active:bg-sand/60 group-focus-visible:ring-blaze h-1 w-10 rounded-full transition-colors group-focus-visible:ring-2 group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-[var(--color-forest)]" />
       </div>
 
       {/* Draggable alongside the grab bar rather than instead of it: the bar
