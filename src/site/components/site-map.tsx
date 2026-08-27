@@ -163,7 +163,6 @@ export function SiteMap({
           steepness: segment.steepness,
           protection: segment.protection,
           surroundings: segment.surroundings,
-          surface: segment.surface,
         },
         geometry: {
           type: "LineString",
@@ -338,23 +337,6 @@ export function SiteMap({
             "line-width": isEmpty(route) ? 3.5 : 4.5,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
-        />
-        {/* Surface reads as a set of materials rather than a scale, so it is
-            reinforced with a pattern that does not rely on color at all. */}
-        <Layer
-          id="segments-surface"
-          type="line"
-          filter={
-            encoding === "surface"
-              ? ["!=", ["get", "surface"], "asphalt"]
-              : ["==", ["get", "id"], ""]
-          }
-          paint={{
-            "line-color": "#faf7f1",
-            "line-opacity": 0.85,
-            "line-width": 1.5,
-            "line-dasharray": [1, 2],
-          }}
         />
         {/* Invisible and wide: the thing a finger actually has to hit. Only
             what may be picked is in it, so a fat target cannot catch a road

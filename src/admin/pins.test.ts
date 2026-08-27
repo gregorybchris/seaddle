@@ -32,25 +32,39 @@ describe("addPin", () => {
   it("stores where it is on the road and where the thing stands", () => {
     // A fountain sits in the park beside the trail, not on the center line.
     const beside = at(500, 12);
-    const { pin } = addPin(emptyGraph(), "s001", 0.5, "water", beside);
+    const { pin } = addPin(emptyGraph(), "s001", 0.5, "drinkingWater", beside);
     expect(pin.at).toBe(0.5);
     expect(pin.coord[0]).toBeCloseTo(beside[0], 5);
-    expect(pin.kind).toBe("water");
+    expect(pin.kind).toBe("drinkingWater");
   });
 
   it("numbers pins in sequence", () => {
-    const first = addPin(emptyGraph(), "s001", 0.2, "water", at(200, 0));
-    const second = addPin(first.graph, "s001", 0.8, "rest", at(800, 0));
+    const first = addPin(
+      emptyGraph(),
+      "s001",
+      0.2,
+      "drinkingWater",
+      at(200, 0),
+    );
+    const second = addPin(first.graph, "s001", 0.8, "restStop", at(800, 0));
     expect([first.pin.id, second.pin.id]).toEqual(["p001", "p002"]);
   });
 
   it("keeps a position on the road even from a click past its end", () => {
-    expect(addPin(emptyGraph(), "s001", 1.4, "photo", at(0, 0)).pin.at).toBe(1);
+    expect(
+      addPin(emptyGraph(), "s001", 1.4, "viewpoint", at(0, 0)).pin.at,
+    ).toBe(1);
   });
 });
 
 describe("updatePin", () => {
-  const one = addPin(emptyGraph(), "s001", 0.5, "water", at(500, 0)).graph;
+  const one = addPin(
+    emptyGraph(),
+    "s001",
+    0.5,
+    "drinkingWater",
+    at(500, 0),
+  ).graph;
 
   it("changes what it is", () => {
     expect(updatePin(one, "p001", { kind: "restroom" }).pins[0].kind).toBe(
@@ -64,7 +78,7 @@ describe("updatePin", () => {
 
   it("leaves what it was not given alone", () => {
     const noted = updatePin(one, "p001", { note: "by the shelter" });
-    expect(updatePin(noted, "p001", { kind: "rest" }).pins[0].note).toBe(
+    expect(updatePin(noted, "p001", { kind: "restStop" }).pins[0].note).toBe(
       "by the shelter",
     );
   });
@@ -72,7 +86,13 @@ describe("updatePin", () => {
 
 describe("removePin", () => {
   it("takes one away", () => {
-    const one = addPin(emptyGraph(), "s001", 0.5, "water", at(500, 0)).graph;
+    const one = addPin(
+      emptyGraph(),
+      "s001",
+      0.5,
+      "drinkingWater",
+      at(500, 0),
+    ).graph;
     expect(removePin(one, "p001").pins).toEqual([]);
   });
 });

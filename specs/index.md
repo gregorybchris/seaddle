@@ -103,9 +103,9 @@ type Node = {
   coord: Coord;
 };
 
-type Steepness = "flat" | "hilly" | "steep";
-type Protection = "unprotected" | "roadBikeLane" | "fullBikePath";
-type Surroundings = "plain" | "nice" | "scenic";
+type Steepness = "flat" | "rolling" | "steep";
+type Protection = "unprotected" | "bikeLane" | "bikePath";
+type Surroundings = "plain" | "pleasant" | "scenic";
 type Surface = "asphalt" | "gravel" | "dirt";
 
 type Segment = {
@@ -286,22 +286,24 @@ present and clickable. Hiding would fragment the graph and strand a user in a di
 with no way to see why.
 
 Steepness, protection, and surroundings are ordered scales, so they are **threshold** controls —
-"nothing steeper than hilly," "at least a painted bike lane" — which is how the constraint is actually
+"nothing steeper than rolling," "at least a bike lane" — which is how the constraint is actually
 held in someone's head. Surface is categorical and gets a **multi-select** toggle group. A set of
-checkboxes for the ordinals would permit nonsense states like _flat and steep but not hilly_.
+checkboxes for the ordinals would permit nonsense states like _flat and steep but not rolling_.
 
 ```
-Steepness      flat ──●── steep  (at most: hilly)
-Protection     unprotected ──●── full bike path  (at least: road bike lane)
-Surroundings   plain       ●──── scenic          (any)
-Surface        [asphalt] [gravel] [dirt]
+Nothing steeper than    flat ──●── steep       (rolling)
+At least this protected unprotected ──●── bike path  (bike lane)
+At least this pretty    plain       ●──── scenic     (any)
 ```
 
-**Color encoding** is user-selectable: steepness, protection, surroundings, surface, or elevation.
-Elevation is the one that is not a segment attribute: it is read from the recorded elevation point
-by point and colors *within* a segment, which is also why it is the one you cannot filter on.
-Surface additionally uses a dash pattern (solid asphalt, dashed gravel, dotted dirt) so it reads
-without relying on color.
+**Color encoding** is user-selectable: steepness, protection, surroundings, or grade. Grade is the
+one that is not a segment attribute: it is read from the recorded elevation point by point and
+colors *within* a segment, which is also why it is the one you cannot filter on.
+
+Surface is still recorded and still editable in the admin, but it is no longer offered to riders,
+as a filter or as a color. Every road in the network is asphalt, so both controls only ever had
+one honest answer.
+
 
 ### Sharing and saving
 

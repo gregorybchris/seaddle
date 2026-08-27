@@ -5,7 +5,7 @@
  * segment climbs — so it is seeded rather than reviewed by hand. It is also
  * undirected: one value describing the segment however it is ridden, taking
  * whichever direction climbs more. A road that is a wall going up and a coast
- * coming down is a hilly road, and calling it flat because you happened to
+ * coming down is a steep road, and calling it flat because you happened to
  * store the downhill direction first was the trap the old two-sided field kept
  * walking into.
  *
@@ -39,14 +39,14 @@ const GEOMETRY_DIR = path.resolve("src/db/geometry");
  * segment that is flat on average with one wall in the middle reads as flat.
  * That is exactly the case a person has to fix by hand.
  */
-const HILLY = { grade: 1.5, gain: 10 };
+const ROLLING = { grade: 1.5, gain: 10 };
 const STEEP = { grade: 3, gain: 25 };
 
 function steepnessFor(climbMeters: number, meters: number): Steepness {
   if (meters < 1) return "flat";
   const grade = (climbMeters / meters) * 100;
   if (grade >= STEEP.grade && climbMeters >= STEEP.gain) return "steep";
-  if (grade >= HILLY.grade && climbMeters >= HILLY.gain) return "hilly";
+  if (grade >= ROLLING.grade && climbMeters >= ROLLING.gain) return "rolling";
   return "flat";
 }
 
@@ -63,7 +63,7 @@ async function main() {
     );
   }
 
-  const tally: Record<Steepness, number> = { flat: 0, hilly: 0, steep: 0 };
+  const tally: Record<Steepness, number> = { flat: 0, rolling: 0, steep: 0 };
   const missing: string[] = [];
 
   const segments = graph.segments.map((segment) => {
@@ -76,14 +76,14 @@ async function main() {
     // The bigger of the two climbs: the same hill either way you meet it.
     const steepness = steepnessFor(Math.max(gainForward, gainBackward), meters);
     tally[steepness]++;
-    return { ...segment, steepness, protection: "roadBikeLane" as const };
+    return { ...segment, steepness, protection: "bikeLane" as const };
   });
 
   await writeFile(GRAPH_FILE, serializeGraph({ ...graph, segments }));
 
   console.log(`Seeded ${segments.length - missing.length} segment(s).`);
   console.log(
-    `  steepness: flat ${tally.flat} · hilly ${tally.hilly} · steep ${tally.steep}`,
+    `  steepness: flat ${tally.flat} · rolling ${tally.rolling} · steep ${tally.steep}`,
   );
   if (missing.length) {
     console.log(`  no geometry, untouched: ${missing.join(", ")}`);

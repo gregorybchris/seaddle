@@ -58,7 +58,7 @@ function segment(
     gainBackward: Math.max(0, elevations[0] - elevations[1]),
     steepness: "flat",
     protection: "unprotected",
-    surroundings: "nice",
+    surroundings: "pleasant",
     surface: "asphalt",
     recommendedDirection: null,
   };

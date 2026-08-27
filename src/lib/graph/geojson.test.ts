@@ -28,8 +28,8 @@ describe("buildGraphGeoJson", () => {
     ],
     segments: [
       segment("s1", "nA", "nB", {
-        protection: "fullBikePath",
-        steepness: "hilly",
+        protection: "bikePath",
+        steepness: "rolling",
       }),
     ],
   });
@@ -38,8 +38,8 @@ describe("buildGraphGeoJson", () => {
   it("flattens every attribute into properties a Mapbox expression can read", () => {
     const collection = buildGraphGeoJson(g, geometry);
     const properties = collection.features[0].properties!;
-    expect(properties.protection).toBe("fullBikePath");
-    expect(properties.steepness).toBe("hilly");
+    expect(properties.protection).toBe("bikePath");
+    expect(properties.steepness).toBe("rolling");
     expect(properties.surface).toBe("asphalt");
     expect(properties.reviewed).toBe(false);
   });
@@ -73,7 +73,7 @@ describe("buildPinsGeoJson", () => {
         {
           id: "p1",
           segment: "s1",
-          kind: "water",
+          kind: "drinkingWater",
           note: "north end of the lot",
           at: 0.25,
           coord: [-122.349, 47.6502],
@@ -81,7 +81,7 @@ describe("buildPinsGeoJson", () => {
       ],
     });
     const properties = buildPinsGeoJson(g).features[0].properties!;
-    expect(properties.kind).toBe("water");
+    expect(properties.kind).toBe("drinkingWater");
     expect(properties.at).toBe(0.25);
   });
 
@@ -91,7 +91,7 @@ describe("buildPinsGeoJson", () => {
         {
           id: "p1",
           segment: "gone",
-          kind: "water",
+          kind: "drinkingWater",
           note: null,
           at: 0.5,
           coord: [-122.35, 47.65],

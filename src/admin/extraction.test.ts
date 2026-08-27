@@ -255,7 +255,7 @@ describe("removeSegment", () => {
         {
           id: "p001",
           segment: "s001",
-          kind: "water" as const,
+          kind: "drinkingWater" as const,
           note: null,
           at: 0.5,
           coord: A,

@@ -1,44 +1,42 @@
 import {
   PROTECTIONS,
-  SURROUNDINGS,
   STEEPNESSES,
-  SURFACES,
+  SURROUNDINGS,
   type Protection,
-  type Surroundings,
   type Steepness,
-  type Surface,
+  type Surroundings,
 } from "@/lib/models/graph";
 import type { SiteSegment } from "./graph-data";
 
 /**
  * What a rider will put up with.
  *
- * Steepness, bike lane and surroundings value are ordered scales, so they are
- * thresholds — "nothing steeper than hilly", "at least a painted bike lane" —
- * which is how the constraint is actually held in someone's head. Surface is a
- * set of things, not a scale, so it is a set here too. A row of checkboxes for
- * the ordered ones would permit nonsense like flat and steep but not hilly.
+ * All three are ordered scales, so all three are thresholds — "nothing steeper
+ * than rolling", "at least a bike lane" — which is how the constraint is
+ * actually held in someone's head. A row of checkboxes would permit nonsense
+ * like flat and steep but not rolling.
+ *
+ * Surface used to be here as a set rather than a scale. Every road in the
+ * network is asphalt, so the control only ever had one honest answer and asked
+ * the rider to consider a choice that was not one.
  */
 export type Filters = {
   steepest: Steepness;
   leastProtection: Protection;
   leastSurroundings: Surroundings;
-  surfaces: Surface[];
 };
 
 export const NO_FILTERS: Filters = {
   steepest: "steep",
   leastProtection: "unprotected",
   leastSurroundings: "plain",
-  surfaces: [...SURFACES],
 };
 
 export function isFiltering(filters: Filters): boolean {
   return (
     filters.steepest !== NO_FILTERS.steepest ||
     filters.leastProtection !== NO_FILTERS.leastProtection ||
-    filters.leastSurroundings !== NO_FILTERS.leastSurroundings ||
-    filters.surfaces.length !== SURFACES.length
+    filters.leastSurroundings !== NO_FILTERS.leastSurroundings
   );
 }
 
@@ -50,8 +48,7 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
     PROTECTIONS.indexOf(segment.protection) >=
       PROTECTIONS.indexOf(filters.leastProtection) &&
     SURROUNDINGS.indexOf(segment.surroundings) >=
-      SURROUNDINGS.indexOf(filters.leastSurroundings) &&
-    filters.surfaces.includes(segment.surface)
+      SURROUNDINGS.indexOf(filters.leastSurroundings)
   );
 }
 
@@ -61,19 +58,19 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
  * Every one of these is a small ordered or unordered set, which is what lets a
  * route be broken down by it and a legend list what the colors mean.
  */
-export type Attribute = "steepness" | "protection" | "surroundings" | "surface";
+export type Attribute = "steepness" | "protection" | "surroundings";
 
 /**
  * What the map colors roads by.
  *
- * Elevation is the odd one and deliberately so: it is not an attribute of a
+ * Grade is the odd one and deliberately so: it is not an attribute of a
  * segment at all but of the ground under it, read off the recorded elevation
  * point by point, so it colors *within* a segment rather than coloring the
  * whole of one. That also makes it the only encoding you cannot filter on —
  * there is no set of values to pick from, and half a road passing a filter
  * would mean nothing.
  */
-export type Encoding = Attribute | "elevation";
+export type Encoding = Attribute | "grade";
 
 /**
  * In the order they are offered. No labels: they are read through `humanize`,
@@ -83,21 +80,19 @@ export type Encoding = Attribute | "elevation";
 export const ENCODINGS: Encoding[] = [
   "protection",
   "steepness",
-  "elevation",
+  "grade",
   "surroundings",
-  "surface",
 ];
 
 /** Whether an encoding is something a segment carries, rather than terrain. */
 export function isAttribute(encoding: Encoding): encoding is Attribute {
-  return encoding !== "elevation";
+  return encoding !== "grade";
 }
 
 export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
   steepness: STEEPNESSES,
   protection: PROTECTIONS,
   surroundings: SURROUNDINGS,
-  surface: SURFACES,
 };
 
 /**
@@ -110,23 +105,20 @@ export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
  * attempt whose lightest step sat around 203 simply vanished into it, which
  * looked from a distance like the coloring not working at all. Nothing here
  * goes above LIGHTEST_STEP.
- *
- * Surface is a set of materials rather than a scale, so it gets separate hues
- * instead of a ramp, reinforced by a dash pattern that does not rely on color.
+
  */
 export const RAMPS: Record<Attribute, Record<string, string>> = {
-  steepness: { flat: "#86b06a", hilly: "#c98a2e", steep: "#9c3b25" },
+  steepness: { flat: "#86b06a", rolling: "#c98a2e", steep: "#9c3b25" },
   protection: {
     unprotected: "#cf9b57",
-    roadBikeLane: "#5f9358",
-    fullBikePath: "#1c4632",
+    bikeLane: "#5f9358",
+    bikePath: "#1c4632",
   },
-  surroundings: { plain: "#97967f", nice: "#6d9464", scenic: "#2f6b48" },
-  surface: { asphalt: "#4a6b7c", gravel: "#b98a4b", dirt: "#8a5a3b" },
+  surroundings: { plain: "#97967f", pleasant: "#6d9464", scenic: "#2f6b48" },
 };
 
 /**
- * The ramp elevation is drawn on, as [percent grade, color] stops.
+ * The ramp grade is drawn on, as [percent grade, color] stops.
  *
  * Continuous rather than stepped, because the thing being shown is continuous:
  * a hill easing off partway up should look like it is easing off, not hold one

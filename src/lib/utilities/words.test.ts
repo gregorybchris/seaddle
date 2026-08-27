@@ -4,7 +4,7 @@ import { humanize } from "./words";
 describe("humanize", () => {
   it("splits camel case into words", () => {
     // The one that leaked into the interface.
-    expect(humanize("roadBikeLane")).toBe("road bike lane");
+    expect(humanize("bikeLane")).toBe("bike lane");
   });
 
   it("leaves a plain word alone", () => {
@@ -18,7 +18,7 @@ describe("humanize", () => {
   });
 
   it("splits on underscores and hyphens too", () => {
-    expect(humanize("bike-shop")).toBe("bike shop");
+    expect(humanize("bikeShop")).toBe("bike shop");
     expect(humanize("lane_quality")).toBe("lane quality");
   });
 

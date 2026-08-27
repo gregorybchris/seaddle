@@ -4,17 +4,18 @@ import {
   Drop,
   PicnicTable,
   Toilet,
+  type Icon,
 } from "@phosphor-icons/react";
 import { PIN_LABELS, type PinKind } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
 
-const ICONS = {
-  water: Drop,
+const ICONS: Record<PinKind, Icon> = {
+  drinkingWater: Drop,
   restroom: Toilet,
-  photo: Camera,
-  rest: PicnicTable,
-  "bike-shop": Bicycle,
-} as const;
+  viewpoint: Camera,
+  restStop: PicnicTable,
+  bikeShop: Bicycle,
+};
 
 /**
  * A point of interest, drawn as the thing it is.

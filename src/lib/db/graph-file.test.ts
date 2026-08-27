@@ -99,7 +99,7 @@ describe("validateGraph", () => {
           {
             id: "p1",
             segment: "s1",
-            kind: "water",
+            kind: "drinkingWater",
             note: null,
             at: 1.4,
             coord: [-122.34, 47.65],

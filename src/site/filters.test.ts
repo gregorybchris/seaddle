@@ -25,7 +25,7 @@ function segment(over: Partial<SiteSegment> = {}): SiteSegment {
     gainBackward: 0,
     steepness: "flat",
     protection: "unprotected",
-    surroundings: "nice",
+    surroundings: "pleasant",
     surface: "asphalt",
     recommendedDirection: null,
     ...over,
@@ -47,7 +47,7 @@ describe("passes", () => {
 
   it("keeps out what is steeper than asked for", () => {
     const steep = segment({ steepness: "steep" });
-    expect(passes(steep, only({ steepest: "hilly" }))).toBe(false);
+    expect(passes(steep, only({ steepest: "rolling" }))).toBe(false);
     expect(passes(steep, only({ steepest: "steep" }))).toBe(true);
   });
 
@@ -55,13 +55,13 @@ describe("passes", () => {
     expect(
       passes(
         segment({ protection: "unprotected" }),
-        only({ leastProtection: "roadBikeLane" }),
+        only({ leastProtection: "bikeLane" }),
       ),
     ).toBe(false);
     expect(
       passes(
-        segment({ protection: "fullBikePath" }),
-        only({ leastProtection: "roadBikeLane" }),
+        segment({ protection: "bikePath" }),
+        only({ leastProtection: "bikeLane" }),
       ),
     ).toBe(true);
     expect(
@@ -78,21 +78,10 @@ describe("passes", () => {
     ).toBe(true);
   });
 
-  it("treats surface as a set of things, not a scale", () => {
-    const gravel = segment({ surface: "gravel" });
-    expect(passes(gravel, only({ surfaces: ["asphalt"] }))).toBe(false);
-    expect(passes(gravel, only({ surfaces: ["asphalt", "gravel"] }))).toBe(
-      true,
-    );
-  });
-
   it("needs every bar cleared, not just one", () => {
-    const rough = segment({ protection: "fullBikePath", surface: "dirt" });
+    const rough = segment({ protection: "bikePath", steepness: "steep" });
     expect(
-      passes(
-        rough,
-        only({ leastProtection: "fullBikePath", surfaces: ["asphalt"] }),
-      ),
+      passes(rough, only({ leastProtection: "bikePath", steepest: "flat" })),
     ).toBe(false);
   });
 });
@@ -104,9 +93,8 @@ describe("isFiltering", () => {
 
   it("notices any one bar being raised", () => {
     expect(isFiltering(only({ steepest: "flat" }))).toBe(true);
-    expect(isFiltering(only({ leastProtection: "roadBikeLane" }))).toBe(true);
+    expect(isFiltering(only({ leastProtection: "bikeLane" }))).toBe(true);
     expect(isFiltering(only({ leastSurroundings: "scenic" }))).toBe(true);
-    expect(isFiltering(only({ surfaces: ["asphalt"] }))).toBe(true);
   });
 });
 
@@ -115,24 +103,24 @@ describe("breakdown", () => {
     // Nine tenths good bike lane is nine tenths whether that is one long
     // segment or twelve short ones.
     const route = [
-      segment({ protection: "fullBikePath", meters: 9000 }),
+      segment({ protection: "bikePath", meters: 9000 }),
       segment({ protection: "unprotected", meters: 500 }),
       segment({ protection: "unprotected", meters: 500 }),
     ];
     const [first, second] = breakdown(route, "protection");
-    expect(first).toEqual({ value: "fullBikePath", meters: 9000, share: 0.9 });
+    expect(first).toEqual({ value: "bikePath", meters: 9000, share: 0.9 });
     expect(second.value).toBe("unprotected");
     expect(second.share).toBeCloseTo(0.1, 9);
   });
 
   it("puts the biggest share first", () => {
     const route = [
-      segment({ surface: "gravel", meters: 100 }),
-      segment({ surface: "asphalt", meters: 900 }),
+      segment({ steepness: "steep", meters: 100 }),
+      segment({ steepness: "flat", meters: 900 }),
     ];
-    expect(breakdown(route, "surface").map((s) => s.value)).toEqual([
-      "asphalt",
-      "gravel",
+    expect(breakdown(route, "steepness").map((s) => s.value)).toEqual([
+      "flat",
+      "steep",
     ]);
   });
 
@@ -143,7 +131,7 @@ describe("breakdown", () => {
   });
 
   it("has nothing to divide up for an empty route", () => {
-    expect(breakdown([], "surface")).toEqual([]);
+    expect(breakdown([], "steepness")).toEqual([]);
   });
 });
 
@@ -151,23 +139,18 @@ describe("the color ramps", () => {
   it("cover every value each scale can take", () => {
     expect(Object.keys(RAMPS.steepness).sort()).toEqual([
       "flat",
-      "hilly",
+      "rolling",
       "steep",
     ]);
     expect(Object.keys(RAMPS.protection).sort()).toEqual([
-      "fullBikePath",
-      "roadBikeLane",
+      "bikeLane",
+      "bikePath",
       "unprotected",
     ]);
     expect(Object.keys(RAMPS.surroundings).sort()).toEqual([
-      "nice",
       "plain",
+      "pleasant",
       "scenic",
-    ]);
-    expect(Object.keys(RAMPS.surface).sort()).toEqual([
-      "asphalt",
-      "dirt",
-      "gravel",
     ]);
   });
 

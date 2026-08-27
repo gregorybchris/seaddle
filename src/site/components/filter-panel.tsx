@@ -2,7 +2,6 @@ import {
   PROTECTIONS,
   SURROUNDINGS,
   STEEPNESSES,
-  SURFACES,
   type Steepness,
   type Protection,
   type Surroundings,
@@ -12,7 +11,6 @@ import { cn } from "@/lib/utilities/style-utils";
 import { humanize } from "@/lib/utilities/words";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
-import { ChipToggles } from "@/widgets/chip-toggles";
 import { STEEPEST_GRADE } from "../grade";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
 import {
@@ -87,7 +85,7 @@ export function FilterPanel({
             }
           />
           <ChipGroup
-            label="Protection at least"
+            label="At least this protected"
             options={PROTECTIONS}
             value={filters.leastProtection}
             onChange={(leastProtection: Protection) =>
@@ -95,18 +93,12 @@ export function FilterPanel({
             }
           />
           <ChipGroup
-            label="Surroundings at least"
+            label="At least this pretty"
             options={SURROUNDINGS}
             value={filters.leastSurroundings}
             onChange={(leastSurroundings: Surroundings) =>
               onFilters({ ...filters, leastSurroundings })
             }
-          />
-          <ChipToggles
-            label="Surface"
-            options={SURFACES}
-            values={filters.surfaces}
-            onChange={(surfaces) => onFilters({ ...filters, surfaces })}
           />
         </div>
 

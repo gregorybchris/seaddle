@@ -603,9 +603,9 @@
         "endIndex": 758
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -621,8 +621,8 @@
       },
       "name": "Discovery Lower Path",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -638,8 +638,8 @@
       },
       "name": "Discovery Upper Path",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -655,8 +655,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -671,9 +671,9 @@
         "endIndex": 1260
       },
       "name": "Discovery to Interbay",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -689,8 +689,8 @@
       },
       "name": "Interbay to Gilman Crossing",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -706,8 +706,8 @@
       },
       "name": "Interurban to Lake Ballinger",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -723,8 +723,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -740,8 +740,8 @@
       },
       "name": "Ballard Locks to Golden Gardens",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -757,8 +757,8 @@
       },
       "name": "Golden Gardens Climb",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -774,8 +774,8 @@
       },
       "name": "From Locks Over Train Tracks",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -791,8 +791,8 @@
       },
       "name": "Discovery Climb",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -807,9 +807,9 @@
         "endIndex": 493
       },
       "name": "Gilman to Government",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -825,8 +825,8 @@
       },
       "name": "Commodore Way",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -842,8 +842,8 @@
       },
       "name": "Crossing Ballard Locks",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -859,8 +859,8 @@
       },
       "name": "Green Lake NE",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -876,8 +876,8 @@
       },
       "name": "Green Lake NW",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -893,8 +893,8 @@
       },
       "name": "Green Lake SW",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -910,8 +910,8 @@
       },
       "name": "Green Lake SE",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -926,9 +926,9 @@
         "endIndex": 1017
       },
       "name": "Green Lake to Ravenna",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -944,8 +944,8 @@
       },
       "name": "UW Burke Gilman to Ravenna",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -961,8 +961,8 @@
       },
       "name": "Ravenna Burke Gilman to Kenmore",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -978,8 +978,8 @@
       },
       "name": "Burke Gilman Through Kenmore",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -995,8 +995,8 @@
       },
       "name": "Bothell through Kirkland to Bellevue",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1012,8 +1012,8 @@
       },
       "name": "Sammamish River Trail",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1029,8 +1029,8 @@
       },
       "name": "Eastlake",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1046,8 +1046,8 @@
       },
       "name": "Zoo to Green Lake",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1063,8 +1063,8 @@
       },
       "name": "Fremont Bridge",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1080,8 +1080,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1097,8 +1097,8 @@
       },
       "name": "Gasworks to Brooks",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1114,8 +1114,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1131,8 +1131,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1148,8 +1148,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1165,8 +1165,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1182,8 +1182,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1199,8 +1199,8 @@
       },
       "name": "Westlake",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1216,8 +1216,8 @@
       },
       "name": "Loyal Way",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1232,9 +1232,9 @@
         "endIndex": 1390
       },
       "name": "Golden Gardens Ascent Alt",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1249,9 +1249,9 @@
         "endIndex": 8811
       },
       "name": "Interlaken",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1266,9 +1266,9 @@
         "endIndex": 373
       },
       "name": "Fremont Ave to Interurban",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1283,9 +1283,9 @@
         "endIndex": 792
       },
       "name": "N Green Lake to Fremont Ave",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1301,8 +1301,8 @@
       },
       "name": "Ballard to Edmonds",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1317,9 +1317,9 @@
         "endIndex": 5533
       },
       "name": "Perkins Connector",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1335,8 +1335,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1351,9 +1351,9 @@
         "endIndex": 5075
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1369,8 +1369,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1386,8 +1386,8 @@
       },
       "name": null,
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1403,8 +1403,8 @@
       },
       "name": "Interurban to Echo Lake",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1420,8 +1420,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1437,8 +1437,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1454,8 +1454,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1471,8 +1471,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1488,8 +1488,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1505,8 +1505,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1522,8 +1522,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1539,8 +1539,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": true
@@ -1555,9 +1555,9 @@
         "endIndex": 2514
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1572,9 +1572,9 @@
         "endIndex": 4234
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1590,8 +1590,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1606,9 +1606,9 @@
         "endIndex": 2586
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1624,8 +1624,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1641,8 +1641,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1657,9 +1657,9 @@
         "endIndex": 4071
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1675,8 +1675,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1692,8 +1692,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1709,8 +1709,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1726,8 +1726,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1742,9 +1742,9 @@
         "endIndex": 4000
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1760,8 +1760,8 @@
       },
       "name": "Mt Baker Ridge Tunnel",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1776,9 +1776,9 @@
         "endIndex": 1287
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1794,8 +1794,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1811,8 +1811,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1828,8 +1828,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1845,8 +1845,8 @@
       },
       "name": "I90 Bridge",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1861,9 +1861,9 @@
         "endIndex": 2849
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1879,8 +1879,8 @@
       },
       "name": "Zoo Hill",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1896,8 +1896,8 @@
       },
       "name": "Zoo Hill Extension",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1913,8 +1913,8 @@
       },
       "name": "Zoo Hill Descent Pt 1",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1930,8 +1930,8 @@
       },
       "name": "Zoo Hill Descent Pt 2",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1947,8 +1947,8 @@
       },
       "name": "West Lake Sammamish",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1964,8 +1964,8 @@
       },
       "name": "Mill Valley",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1981,8 +1981,8 @@
       },
       "name": "Zoo to Issaquah",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -1998,8 +1998,8 @@
       },
       "name": "East Lake Sammamish",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2015,8 +2015,8 @@
       },
       "name": "Marymoor West Entrance",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2032,8 +2032,8 @@
       },
       "name": "Redmond to Marymoor",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2049,8 +2049,8 @@
       },
       "name": "Marymoor Park West",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2066,8 +2066,8 @@
       },
       "name": "Marymoor Park East",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2083,8 +2083,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2099,9 +2099,9 @@
         "endIndex": 2950
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2117,8 +2117,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2134,8 +2134,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2151,8 +2151,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2168,8 +2168,8 @@
       },
       "name": "Loopy Road",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2185,8 +2185,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2201,9 +2201,9 @@
         "endIndex": 1287
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2219,8 +2219,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2235,9 +2235,9 @@
         "endIndex": 984
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2252,9 +2252,9 @@
         "endIndex": 771
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2270,8 +2270,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2287,8 +2287,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2304,8 +2304,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2321,8 +2321,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2338,8 +2338,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2355,8 +2355,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2372,8 +2372,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2389,8 +2389,8 @@
       },
       "name": "Montlake Bridge",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2406,8 +2406,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2423,8 +2423,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2440,8 +2440,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2457,8 +2457,8 @@
       },
       "name": "520 Bridge",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2474,8 +2474,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2491,8 +2491,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2507,9 +2507,9 @@
         "endIndex": 5877
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2525,8 +2525,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2542,8 +2542,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2559,8 +2559,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2576,8 +2576,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2593,8 +2593,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2610,8 +2610,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2627,8 +2627,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2643,9 +2643,9 @@
         "endIndex": 4375
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2660,9 +2660,9 @@
         "endIndex": 4571
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2678,8 +2678,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2695,8 +2695,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2711,9 +2711,9 @@
         "endIndex": 5255
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2729,8 +2729,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2746,8 +2746,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2763,8 +2763,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2779,9 +2779,9 @@
         "endIndex": 2455
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2797,8 +2797,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2814,8 +2814,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2831,8 +2831,8 @@
       },
       "name": "Bellevue N/S",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2847,9 +2847,9 @@
         "endIndex": 39
       },
       "name": "Fremont to Palatine",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2865,8 +2865,8 @@
       },
       "name": "QFC to Dinosaurs",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2882,8 +2882,8 @@
       },
       "name": "Lenin to QFC",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2899,8 +2899,8 @@
       },
       "name": "Bellevue to 520 Trail",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2916,8 +2916,8 @@
       },
       "name": "Palatine Climb Tippy Top",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2933,8 +2933,8 @@
       },
       "name": "Palatine Climb",
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2950,8 +2950,8 @@
       },
       "name": "8th to Greenwood",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2967,8 +2967,8 @@
       },
       "name": "Greenwood to Fremont",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -2984,8 +2984,8 @@
       },
       "name": "Phinney to Greenwood",
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3000,9 +3000,9 @@
         "endIndex": 114
       },
       "name": "Stone Way",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3017,9 +3017,9 @@
         "endIndex": 4425
       },
       "name": "Redmond to Bellevue",
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3034,9 +3034,9 @@
         "endIndex": 4571
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3051,9 +3051,9 @@
         "endIndex": 2172
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3069,8 +3069,8 @@
       },
       "name": null,
       "steepness": "steep",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3086,8 +3086,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3103,8 +3103,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3120,8 +3120,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3137,8 +3137,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3154,8 +3154,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3171,8 +3171,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3188,8 +3188,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3205,8 +3205,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3221,9 +3221,9 @@
         "endIndex": 2355
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3238,9 +3238,9 @@
         "endIndex": 6416
       },
       "name": null,
-      "steepness": "hilly",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "steepness": "rolling",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3256,8 +3256,8 @@
       },
       "name": null,
       "steepness": "flat",
-      "protection": "roadBikeLane",
-      "surroundings": "nice",
+      "protection": "bikeLane",
+      "surroundings": "pleasant",
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
@@ -3267,7 +3267,7 @@
     {
       "id": "p001",
       "segment": "s131",
-      "kind": "water",
+      "kind": "drinkingWater",
       "note": "There are a couple of water fountains if you head down closer to the water",
       "at": 0.45964076939527315,
       "coord": [-122.210509, 47.611827]
@@ -3275,7 +3275,7 @@
     {
       "id": "p002",
       "segment": "s131",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.4587875904013089,
       "coord": [-122.210417, 47.611773]
@@ -3283,7 +3283,7 @@
     {
       "id": "p003",
       "segment": "s131",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.7754169503930755,
       "coord": [-122.238876, 47.616241]
@@ -3291,7 +3291,7 @@
     {
       "id": "p004",
       "segment": "s085",
-      "kind": "water",
+      "kind": "drinkingWater",
       "note": "Water fountain over by the sports fields",
       "at": 0.9616579099909595,
       "coord": [-122.127487, 47.550048]
@@ -3299,7 +3299,7 @@
     {
       "id": "p005",
       "segment": "s029",
-      "kind": "water",
+      "kind": "drinkingWater",
       "note": "Press the button for the water to flow",
       "at": 0.4860624714396265,
       "coord": [-122.146296, 47.735127]
@@ -3315,7 +3315,7 @@
     {
       "id": "p007",
       "segment": "s029",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "A couple of picnic benches here",
       "at": 0.48622064991296293,
       "coord": [-122.146273, 47.735111]
@@ -3323,7 +3323,7 @@
     {
       "id": "p008",
       "segment": "s029",
-      "kind": "rest",
+      "kind": "restStop",
       "note": null,
       "at": 0.3142800423730459,
       "coord": [-122.16615, 47.753042]
@@ -3347,7 +3347,7 @@
     {
       "id": "p011",
       "segment": "s062",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "A good place to get a snack",
       "at": 0.5116351505035209,
       "coord": [-122.372079, 47.625651]
@@ -3355,7 +3355,7 @@
     {
       "id": "p012",
       "segment": "s065",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.40399333475852,
       "coord": [-122.404972, 47.581472]
@@ -3363,7 +3363,7 @@
     {
       "id": "p013",
       "segment": "s059",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "Get some ice cream with a view",
       "at": 0.9810268932846078,
       "coord": [-122.336094, 47.600933]
@@ -3387,7 +3387,7 @@
     {
       "id": "p016",
       "segment": "s008",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "Couple of picnic tables and a nice view of the lake",
       "at": 0.9922675743641137,
       "coord": [-122.3261, 47.78495]
@@ -3395,7 +3395,7 @@
     {
       "id": "p017",
       "segment": "s028",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "A couple benches and picnic tables",
       "at": 0.8388549530845876,
       "coord": [-122.206344, 47.660139]
@@ -3403,7 +3403,7 @@
     {
       "id": "p018",
       "segment": "s047",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.35727839375526554,
       "coord": [-122.374759, 47.758563]
@@ -3411,7 +3411,7 @@
     {
       "id": "p019",
       "segment": "s028",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": "Slow down for pedestrians and take in the view",
       "at": 0.4521305315628603,
       "coord": [-122.210363, 47.700964]
@@ -3419,7 +3419,7 @@
     {
       "id": "p020",
       "segment": "s131",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "There are a few benches overlooking 520 bridge",
       "at": 0.99888773598794,
       "coord": [-122.23848, 47.637586]
@@ -3427,7 +3427,7 @@
     {
       "id": "p021",
       "segment": "s027",
-      "kind": "water",
+      "kind": "drinkingWater",
       "note": "This fountain could be cleaner, but it does have water",
       "at": 0.9408194572509971,
       "coord": [-122.276573, 47.753283]
@@ -3435,7 +3435,7 @@
     {
       "id": "p022",
       "segment": "s040",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "There are often people sitting on the steps by the water",
       "at": 0.02032921211956469,
       "coord": [-122.33957, 47.627517]
@@ -3443,7 +3443,7 @@
     {
       "id": "p023",
       "segment": "s034",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": "Gas Works Park, classic photo op",
       "at": 0.080327770904929,
       "coord": [-122.334637, 47.646988]
@@ -3451,7 +3451,7 @@
     {
       "id": "p024",
       "segment": "s145",
-      "kind": "bike-shop",
+      "kind": "bikeShop",
       "note": "Free Range Cycles is on 35th and Phinney",
       "at": 0.13564748071502175,
       "coord": [-122.354574, 47.650491]
@@ -3459,7 +3459,7 @@
     {
       "id": "p025",
       "segment": "s073",
-      "kind": "bike-shop",
+      "kind": "bikeShop",
       "note": "20/20 Cycle is on Union and 20th",
       "at": 0.4872390959147874,
       "coord": [-122.307533, 47.612921]
@@ -3467,7 +3467,7 @@
     {
       "id": "p026",
       "segment": "s003",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.011219044233930565,
       "coord": [-122.412135, 47.660034]
@@ -3475,7 +3475,7 @@
     {
       "id": "p027",
       "segment": "s002",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": null,
       "at": 0.5935907563190902,
       "coord": [-122.41606, 47.657677]
@@ -3483,7 +3483,7 @@
     {
       "id": "p028",
       "segment": "s006",
-      "kind": "photo",
+      "kind": "viewpoint",
       "note": "A view of downtown",
       "at": 0.4316769311977036,
       "coord": [-122.405733, 47.636287]
@@ -3491,7 +3491,7 @@
     {
       "id": "p029",
       "segment": "s006",
-      "kind": "rest",
+      "kind": "restStop",
       "note": "A couple of benches overlooking the water",
       "at": 0.43713522197903937,
       "coord": [-122.405399, 47.636102]
@@ -3507,7 +3507,7 @@
     {
       "id": "p031",
       "segment": "s165",
-      "kind": "rest",
+      "kind": "restStop",
       "note": null,
       "at": 0.9996530084887466,
       "coord": [-122.547398, 47.60444]

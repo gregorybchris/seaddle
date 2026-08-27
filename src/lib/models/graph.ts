@@ -4,19 +4,19 @@ export type NodeId = string; // "n017"
 export type SegmentId = string; // "s042"
 export type PinId = string; // "p003"
 
-export type Steepness = "flat" | "hilly" | "steep";
-export type Protection = "unprotected" | "roadBikeLane" | "fullBikePath";
-export type Surroundings = "plain" | "nice" | "scenic";
+export type Steepness = "flat" | "rolling" | "steep";
+export type Protection = "unprotected" | "bikeLane" | "bikePath";
+export type Surroundings = "plain" | "pleasant" | "scenic";
 export type Surface = "asphalt" | "gravel" | "dirt";
 export type Direction = "forward" | "backward";
 
-export const STEEPNESSES: Steepness[] = ["flat", "hilly", "steep"];
+export const STEEPNESSES: Steepness[] = ["flat", "rolling", "steep"];
 export const PROTECTIONS: Protection[] = [
   "unprotected",
-  "roadBikeLane",
-  "fullBikePath",
+  "bikeLane",
+  "bikePath",
 ];
-export const SURROUNDINGS: Surroundings[] = ["plain", "nice", "scenic"];
+export const SURROUNDINGS: Surroundings[] = ["plain", "pleasant", "scenic"];
 export const SURFACES: Surface[] = ["asphalt", "gravel", "dirt"];
 
 export type GraphNode = {
@@ -65,23 +65,28 @@ export type SegmentDerived = {
 /** A segment as the app sees it: authored fields plus computed ones. */
 export type Segment = SegmentRecord & SegmentDerived;
 
-export type PinKind = "water" | "restroom" | "photo" | "rest" | "bike-shop";
+export type PinKind =
+  | "drinkingWater"
+  | "restroom"
+  | "viewpoint"
+  | "restStop"
+  | "bikeShop";
 
 export const PIN_KINDS: PinKind[] = [
-  "water",
+  "drinkingWater",
   "restroom",
-  "photo",
-  "rest",
-  "bike-shop",
+  "viewpoint",
+  "restStop",
+  "bikeShop",
 ];
 
 /** What each kind is called where a rider reads it. */
 export const PIN_LABELS: Record<PinKind, string> = {
-  water: "water",
+  drinkingWater: "drinking water",
   restroom: "restroom",
-  photo: "photo op",
-  rest: "rest stop",
-  "bike-shop": "bike shop",
+  viewpoint: "viewpoint",
+  restStop: "rest stop",
+  bikeShop: "bike shop",
 };
 
 export type Pin = {

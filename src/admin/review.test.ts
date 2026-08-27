@@ -31,11 +31,11 @@ describe("applyAttributes", () => {
     // sharing a steepness, so one attribute must not overwrite the rest.
     const reviewed = applyAttributes(THREE, ["s001"], {
       steepness: "steep",
-      protection: "fullBikePath",
+      protection: "bikePath",
     });
     const after = applyAttributes(reviewed, ["s001"], { surface: "dirt" });
     expect(after.segments[0].steepness).toBe("steep");
-    expect(after.segments[0].protection).toBe("fullBikePath");
+    expect(after.segments[0].protection).toBe("bikePath");
   });
 
   it("marks whatever it touches as reviewed", () => {
@@ -46,12 +46,12 @@ describe("applyAttributes", () => {
 
   it("applies across every segment named", () => {
     const after = applyAttributes(THREE, ["s001", "s003"], {
-      protection: "fullBikePath",
+      protection: "bikePath",
     });
     expect(after.segments.map((s) => s.protection)).toEqual([
-      "fullBikePath",
+      "bikePath",
       "unprotected",
-      "fullBikePath",
+      "bikePath",
     ]);
   });
 
@@ -129,7 +129,7 @@ describe("swapSegmentDirection", () => {
       {
         id: "p001",
         segment: "s001",
-        kind: "water",
+        kind: "drinkingWater",
         note: null,
         at: 0.25,
         coord: [-122.35, 47.65],
