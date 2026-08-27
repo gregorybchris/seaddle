@@ -67,12 +67,22 @@ export type SegmentDerived = {
 /** A segment as the app sees it: authored fields plus computed ones. */
 export type Segment = SegmentRecord & SegmentDerived;
 
+/**
+ * What a pin can be.
+ *
+ * All but the last are amenities — reasons to stop. `hazard` is the opposite: a
+ * reason to slow down, for a pothole, a bad seam, a crossing that has to be
+ * taken carefully. It shares the pin machinery because it is the same kind of
+ * fact about the same kind of place, and it is drawn differently because
+ * reading it as somewhere to stop for water would be worse than not seeing it.
+ */
 export type PinKind =
   | "drinkingWater"
   | "restroom"
   | "viewpoint"
   | "restStop"
-  | "bikeShop";
+  | "bikeShop"
+  | "hazard";
 
 export const PIN_KINDS: PinKind[] = [
   "drinkingWater",
@@ -80,6 +90,7 @@ export const PIN_KINDS: PinKind[] = [
   "viewpoint",
   "restStop",
   "bikeShop",
+  "hazard",
 ];
 
 /** What each kind is called where a rider reads it. */
@@ -89,7 +100,23 @@ export const PIN_LABELS: Record<PinKind, string> = {
   viewpoint: "viewpoint",
   restStop: "rest stop",
   bikeShop: "bike shop",
+  hazard: "hazard",
 };
+
+/**
+ * Whether a value off the wire is a kind this build knows.
+ *
+ * `pins.geojson` is fetched at runtime and cached on its own terms, so it can
+ * be newer than the bundle reading it — a browser holding yesterday's code can
+ * be handed today's pins. An unknown kind has no icon and no label, and drawing
+ * one would take the map down over a pothole.
+ */
+export function isPinKind(value: unknown): value is PinKind {
+  return typeof value === "string" && (PIN_KINDS as string[]).includes(value);
+}
+
+/** The kinds that warn rather than offer. Drawn to be read as a caution. */
+export const PIN_WARNINGS: ReadonlySet<PinKind> = new Set<PinKind>(["hazard"]);
 
 export type Pin = {
   id: PinId;

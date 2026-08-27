@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FeatureCollection } from "geojson";
 import type { Coord } from "@/lib/models/geo";
-import type { PinKind } from "@/lib/models/graph";
+import { isPinKind, type PinKind } from "@/lib/models/graph";
 import { parseGraph, type SiteGraph } from "./graph-data";
 
 /** A point of interest as the site holds it. */
@@ -61,11 +61,14 @@ export function useGraph() {
             const p = feature.properties;
             const where = feature.geometry;
             if (!p?.id || where.type !== "Point") return [];
+            // Dropping one pin the build cannot draw, rather than rendering an
+            // icon that does not exist and losing the map with it.
+            if (!isPinKind(p.kind)) return [];
             return [
               {
                 id: String(p.id),
                 segment: String(p.segment),
-                kind: p.kind as PinKind,
+                kind: p.kind,
                 note: p.note ? String(p.note) : null,
                 at: Number(p.at ?? 0),
                 coord: where.coordinates as Coord,

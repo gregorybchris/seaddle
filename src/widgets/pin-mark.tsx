@@ -4,9 +4,10 @@ import {
   Drop,
   PicnicTable,
   Toilet,
+  Warning,
   type Icon,
 } from "@phosphor-icons/react";
-import { PIN_LABELS, type PinKind } from "@/lib/models/graph";
+import { PIN_LABELS, PIN_WARNINGS, type PinKind } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
 
 const ICONS: Record<PinKind, Icon> = {
@@ -15,14 +16,19 @@ const ICONS: Record<PinKind, Icon> = {
   viewpoint: Camera,
   restStop: PicnicTable,
   bikeShop: Bicycle,
+  hazard: Warning,
 };
 
 /**
  * A point of interest, drawn as the thing it is.
  *
- * Icons rather than colored dots: five kinds is more than color can carry on
- * its own, and a tap is a poor way to find out that the dot you wanted was the
+ * Icons rather than colored dots: six kinds is more than color can carry on its
+ * own, and a tap is a poor way to find out that the dot you wanted was the
  * other one.
+ *
+ * A warning takes the edge and the icon in blaze while an amenity takes forest.
+ * That leaves the fill free to go on meaning selected, so the two readings sit
+ * on separate axes and a selected hazard is still legibly both.
  */
 export function PinMark({
   kind,
@@ -37,6 +43,7 @@ export function PinMark({
   decorative?: boolean;
 }) {
   const Icon = ICONS[kind];
+  const warning = PIN_WARNINGS.has(kind);
   return (
     <span
       // A bare span may not carry a label, so where nothing else names this
@@ -47,8 +54,11 @@ export function PinMark({
         ? { "aria-hidden": true }
         : { role: "img", "aria-label": PIN_LABELS[kind] })}
       className={cn(
-        "border-forest-deep flex h-5 w-5 items-center justify-center rounded-full border-2 shadow",
-        selected ? "bg-blaze text-forest-deep" : "bg-paper text-forest",
+        "flex h-5 w-5 items-center justify-center rounded-full border-2 shadow",
+        warning ? "border-blaze-deep" : "border-forest-deep",
+        selected && "bg-blaze text-forest-deep",
+        !selected &&
+          (warning ? "bg-paper text-blaze-deep" : "bg-paper text-forest"),
         className,
       )}
     >
