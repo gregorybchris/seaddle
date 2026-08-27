@@ -178,6 +178,22 @@ body {
   box-shadow: 0 1px 3px rgb(18 48 31 / 0.4);
 }
 
+/* Mapbox draws its popup white with a white arrow. The site is dark, and a
+   popup has to belong to the panel it explains rather than to the library. */
+.pin-popup .mapboxgl-popup-content {
+  background: var(--color-forest-deep);
+  border: 1px solid color-mix(in srgb, var(--color-sand) 20%, transparent);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  box-shadow: 0 4px 16px rgb(18 48 31 / 0.45);
+  max-width: 15rem;
+}
+
+.pin-popup .mapboxgl-popup-tip {
+  border-top-color: var(--color-forest-deep);
+  border-bottom-color: var(--color-forest-deep);
+}
+
 @keyframes rise {
   from {
     opacity: 0;

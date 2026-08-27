@@ -151,7 +151,6 @@ export function MapPage() {
         // on wherever it could still go.
         onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph), "route")}
         onScrub={setScrub}
-        pins={routePins}
       />
       <main className="h-full md:min-w-0 md:flex-1">
         <SiteMap

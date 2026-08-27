@@ -10,9 +10,7 @@ import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
-import { PIN_LABELS } from "@/lib/models/graph";
 import { InfoPopover } from "@/widgets/info-popover";
-import { PinMark } from "@/widgets/pin-mark";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding, Filters } from "../filters";
@@ -27,7 +25,6 @@ import {
   type Route,
 } from "../route";
 import { useSavedRides, type SavedRide } from "../use-saved-rides";
-import type { SitePin } from "../use-graph";
 import { FilterPanel } from "./filter-panel";
 import { RouteBreakdown } from "./route-breakdown";
 
@@ -45,7 +42,6 @@ type RoutePanelProps = {
   onOutAndBack: () => void;
   onLoad: (encoded: string) => void;
   onScrub: (fraction: number | null) => void;
-  pins: SitePin[];
 };
 
 export function RoutePanel({
@@ -62,7 +58,6 @@ export function RoutePanel({
   onOutAndBack,
   onLoad,
   onScrub,
-  pins,
 }: RoutePanelProps) {
   // One owner for the saved list: a copy per component would let saving in one
   // place leave the other showing a stale list.
@@ -126,25 +121,6 @@ export function RoutePanel({
             />
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
-
-            {pins.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {pins.map((pin) => (
-                  <li key={pin.id} className="flex items-start gap-2">
-                    <PinMark
-                      kind={pin.kind}
-                      className="mt-0.5 h-4 w-4 shrink-0"
-                    />
-                    {/* Wrapped, not truncated: the note is the whole point of
-                        the pin, and "water fountains if you head down clo…"
-                        answers nothing. */}
-                    <span className="text-sand/70 text-xs leading-relaxed">
-                      {pin.note ?? PIN_LABELS[pin.kind]}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">

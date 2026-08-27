@@ -5,6 +5,7 @@ import Map, {
   AttributionControl,
   Layer,
   Marker,
+  Popup,
   Source,
   type MapLayerMouseEvent,
   type MapRef,
@@ -15,6 +16,7 @@ import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import { harderDifficulty, type SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
+import { PIN_LABELS } from "@/lib/models/graph";
 import { PinMark } from "@/widgets/pin-mark";
 import { RAMPS, type Encoding } from "../filters";
 import type { SitePin } from "../use-graph";
@@ -124,6 +126,7 @@ export function SiteMap({
   const mapRef = useRef<MapRef>(null);
   const [overRoad, setOverRoad] = useState(false);
   const [zoom, setZoom] = useState(10);
+  const [openPin, setOpenPin] = useState<string | null>(null);
 
   /**
    * Which pins to draw.
@@ -237,6 +240,10 @@ export function SiteMap({
     );
   }, [framing, route, graph]);
 
+  const opened =
+    [...shown.nearby, ...shown.chosen].find((pin) => pin.id === openPin) ??
+    null;
+
   return (
     <Map
       ref={mapRef}
@@ -259,6 +266,7 @@ export function SiteMap({
       onMouseOut={() => setOverRoad(false)}
       onMove={(event) => setZoom(event.viewState.zoom)}
       onClick={(event: MapLayerMouseEvent) => {
+        setOpenPin(null);
         const id = nearestOf(event, graph);
         if (id) onPick(id);
       }}
@@ -347,17 +355,76 @@ export function SiteMap({
         />
       </Source>
 
-      {shown.nearby.map((pin) => (
+      {[...shown.nearby, ...shown.chosen].map((pin) => (
         <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
-          <PinMark kind={pin.kind} className="h-4 w-4 opacity-70" />
+          {/* Hover on a mouse, tap on a phone — and the two have to be told
+              apart. A tap fires the enter handler before the click, so a
+              toggle would close what the enter had just opened; hovering is
+              therefore limited to pointers that can actually hover. Clicking
+              must not fall through to the road underneath either. */}
+          <button
+            type="button"
+            // A button because it does something, and named because Mapbox's
+            // own marker wrapper is an image called "Map marker" — nesting an
+            // unnamed control inside that would leave a keyboard reader with
+            // no idea which pin they were on.
+            aria-label={pin.note ?? PIN_LABELS[pin.kind]}
+            aria-expanded={openPin === pin.id}
+            // Mapbox wraps every marker in a div it calls "Map marker" and
+            // gives the image role, which makes anything inside it
+            // presentational — so a control in there is both unreachable and
+            // invalid. The wrapper is a plain div; this button is the thing.
+            ref={(element) => {
+              const wrapper = element?.closest(".mapboxgl-marker");
+              wrapper?.removeAttribute("role");
+              wrapper?.removeAttribute("aria-label");
+            }}
+            className="focus-visible:ring-blaze block rounded-full focus-visible:ring-2 focus-visible:outline-none"
+            onPointerEnter={(event) => {
+              if (event.pointerType === "mouse") setOpenPin(pin.id);
+            }}
+            onPointerLeave={(event) => {
+              if (event.pointerType === "mouse") setOpenPin(null);
+            }}
+            onFocus={() => setOpenPin(pin.id)}
+            onBlur={() => setOpenPin(null)}
+            onClick={(event) => {
+              event.stopPropagation();
+              setOpenPin((current) => (current === pin.id ? null : pin.id));
+            }}
+          >
+            <PinMark
+              decorative
+              kind={pin.kind}
+              className={
+                shown.chosen.includes(pin) ? "h-5 w-5" : "h-4 w-4 opacity-70"
+              }
+            />
+          </button>
         </Marker>
       ))}
 
-      {shown.chosen.map((pin) => (
-        <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
-          <PinMark kind={pin.kind} className="h-5 w-5" />
-        </Marker>
-      ))}
+      {opened && (
+        <Popup
+          longitude={opened.coord[0]}
+          latitude={opened.coord[1]}
+          anchor="bottom"
+          offset={14}
+          closeButton={false}
+          closeOnClick={false}
+          className="pin-popup"
+          onClose={() => setOpenPin(null)}
+        >
+          <p className="text-sand text-xs leading-relaxed">
+            {opened.note ?? PIN_LABELS[opened.kind]}
+          </p>
+          {opened.note && (
+            <p className="eyebrow text-sand/70 mt-1">
+              {PIN_LABELS[opened.kind]}
+            </p>
+          )}
+        </Popup>
+      )}
 
       {/* The same place the chart is reporting, so a height on the graph has a
           somewhere on the map.
