@@ -9,6 +9,7 @@ import {
 } from "@/lib/models/graph";
 import { Funnel } from "@phosphor-icons/react";
 import { cn } from "@/lib/utilities/style-utils";
+import { humanize } from "@/lib/utilities/words";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import { ChipToggles } from "@/widgets/chip-toggles";
@@ -67,7 +68,7 @@ export function FilterPanel({
       <div className="flex flex-col gap-4">
         <ChipGroup
           label="Color the map by"
-          options={ENCODINGS.map((option) => option.value)}
+          options={ENCODINGS}
           value={encoding}
           onChange={onEncoding}
         />
@@ -138,7 +139,9 @@ function Legend({ encoding }: { encoding: Encoding }) {
             className="ring-sand/30 h-1.5 w-4 rounded-full ring-1"
             style={{ backgroundColor: RAMPS[encoding][value] }}
           />
-          <span className="text-sand/60 text-[0.6875rem]">{value}</span>
+          <span className="text-sand/60 text-[0.6875rem]">
+            {humanize(value)}
+          </span>
         </li>
       ))}
     </ul>

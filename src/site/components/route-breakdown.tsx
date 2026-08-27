@@ -1,4 +1,5 @@
 import { formatMiles } from "@/lib/utilities/units";
+import { humanize } from "@/lib/utilities/words";
 import { breakdown, RAMPS, type Encoding } from "../filters";
 import type { SiteSegment } from "../graph-data";
 
@@ -51,7 +52,9 @@ export function RouteBreakdown({
               className="ring-sand/30 h-1.5 w-1.5 shrink-0 rounded-full ring-1"
               style={{ backgroundColor: RAMPS[encoding][share.value] }}
             />
-            <span className="text-sand/70 text-[0.6875rem]">{share.value}</span>
+            <span className="text-sand/70 text-[0.6875rem]">
+              {humanize(share.value)}
+            </span>
             <span className="tabular text-sand/40 text-[0.6875rem]">
               {formatMiles(share.meters)}
             </span>

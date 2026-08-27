@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utilities/style-utils";
+import { humanize } from "@/lib/utilities/words";
 
 /**
  * A row of choices any number of which can be on.
@@ -45,7 +46,7 @@ export function ChipToggles<T extends string>({
                   : "border-sand/15 text-sand/50 hover:border-sand/40 hover:text-sand",
               )}
             >
-              {option}
+              {humanize(option)}
             </button>
           );
         })}

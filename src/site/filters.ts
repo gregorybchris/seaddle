@@ -66,11 +66,16 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
 /** What the map colors segments by. */
 export type Encoding = "difficulty" | "laneQuality" | "scenic" | "surface";
 
-export const ENCODINGS: { value: Encoding; label: string }[] = [
-  { value: "laneQuality", label: "Bike lane" },
-  { value: "difficulty", label: "Difficulty" },
-  { value: "scenic", label: "Scenic" },
-  { value: "surface", label: "Surface" },
+/**
+ * In the order they are offered. No labels: they are read through `humanize`,
+ * so there is no second list to keep in step with this one — which is how
+ * "laneQuality" came to be shown to riders in the first place.
+ */
+export const ENCODINGS: Encoding[] = [
+  "laneQuality",
+  "difficulty",
+  "scenic",
+  "surface",
 ];
 
 export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {

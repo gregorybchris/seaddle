@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utilities/style-utils";
+import { humanize } from "@/lib/utilities/words";
 
 type ChipGroupProps<T extends string> = {
   label: string;
@@ -50,7 +51,7 @@ export function ChipGroup<T extends string>({
                   : "border-sand/15 text-sand/60 hover:border-sand/40 hover:text-sand",
               )}
             >
-              {option}
+              {humanize(option)}
             </button>
           );
         })}
