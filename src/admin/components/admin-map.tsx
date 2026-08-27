@@ -69,7 +69,7 @@ export function AdminMap({
           id="tracks-heat"
           type="line"
           paint={{
-            "line-color": "#2f5d3f",
+            "line-color": "#1c4632",
             "line-opacity": 0.18,
             "line-width": [
               "interpolate",
@@ -119,8 +119,8 @@ export function AdminMap({
           type="circle"
           paint={{
             "circle-radius": ["case", ["get", "selected"], 8, 5],
-            "circle-color": ["case", ["get", "selected"], "#b4531f", "#faf7f1"],
-            "circle-stroke-color": "#1f4029",
+            "circle-color": ["case", ["get", "selected"], "#d97b2e", "#faf7f1"],
+            "circle-stroke-color": "#12301f",
             "circle-stroke-width": 2,
           }}
         />

@@ -8,6 +8,9 @@ dependencies:
   '@fontsource/didact-gothic':
     specifier: ^5.1.0
     version: 5.1.0
+  '@fontsource/ibm-plex-mono':
+    specifier: ^5.3.0
+    version: 5.3.0
   '@phosphor-icons/react':
     specifier: ^2.1.7
     version: 2.1.7(react-dom@19.0.0)(react@19.0.0)
@@ -779,6 +782,10 @@ packages:
 
   /@fontsource/didact-gothic@5.1.0:
     resolution: {integrity: sha512-A7zauKOWEtEIzNT83de8opiRiT/xZW1Xfey54PoVtWvoG6ZcRv37nkwh1f9urrpsA+38uahEpiOCJeohZf14ZQ==}
+    dev: false
+
+  /@fontsource/ibm-plex-mono@5.3.0:
+    resolution: {integrity: sha512-eTgnZjZEGk1QtD3ZstF+Vclo2HLAni8YMy34/DxllwZvyz1lR/1RF/xTiAquOBO7MvqBx8D2Ig2WCPMVfdZu7Q==}
     dev: false
 
   /@humanfs/core@0.19.2:

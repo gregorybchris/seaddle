@@ -1,20 +1,33 @@
 @import "@fontsource/didact-gothic/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
 @import "tailwindcss";
 
 /**
- * Forest green and earthy neutrals, in the spirit of wta.org. Outdoorsy and
- * friendly without tipping into childish.
+ * Evergreen and trail blaze.
+ *
+ * The map is the content, so it stays the brightest thing on screen and the
+ * panel beside it goes deep green — the way a trailhead sign frames the trail
+ * rather than competing with it. Amber is the one warm colour, reserved for
+ * whatever is live: the selected junction, the candidate under the cursor, the
+ * action you are about to take.
  */
 @theme {
   --font-sans: "Didact Gothic", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-forest: #2f5d3f;
-  --color-forest-deep: #1f4029;
-  --color-moss: #6b8f5e;
-  --color-bark: #6b563f;
-  --color-sand: #e8dfd0;
+  --color-forest: #1c4632;
+  --color-forest-deep: #12301f;
+  --color-forest-lift: #245a3f;
+  --color-moss: #86a874;
+  --color-blaze: #d97b2e;
+  --color-blaze-deep: #a85a1d;
+  --color-sand: #e9e0d0;
   --color-paper: #faf7f1;
-  --color-ink: #2a2724;
+  --color-ink: #22201d;
+
+  /* One easing everywhere: a quick start that settles, never bouncy. */
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 html,
@@ -29,4 +42,68 @@ body {
   font-family: var(--font-sans);
   /* The map owns the viewport; nothing behind it should ever scroll. */
   overscroll-behavior: none;
+}
+
+/* Numbers are read in columns — distances against distances, climbs against
+   climbs — so they get a monospace face and fixed-width digits. */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* An eyebrow labels the section under it and should never compete with it. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/**
+ * The sheet's resting height, driven by a custom property.
+ *
+ * The height and offset have to change at the breakpoint, and an inline style
+ * cannot be media-queried — nor can a utility class override one. So the
+ * component sets a number and the media query decides what to do with it.
+ */
+.sheet {
+  height: calc(var(--sheet-height, 88) * 1vh);
+  transform: translateY(
+    calc((var(--sheet-height, 88) - var(--sheet-visible, 52)) * 1vh)
+  );
+}
+
+@media (min-width: 48rem) {
+  .sheet {
+    height: 100%;
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Used on lists that replace their contents wholesale, so the new set reads as
+   arriving rather than as the old set having silently changed. */
+.rise {
+  animation: rise 260ms var(--ease-settle) both;
 }
