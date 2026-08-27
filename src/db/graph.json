@@ -3673,7 +3673,7 @@
     {
       "id": "p006",
       "segment": "s029",
-      "kind": "bathroom",
+      "kind": "restroom",
       "note": null,
       "at": 0.4863657905448772,
       "coord": [-122.14625, 47.735099]
@@ -3697,7 +3697,7 @@
     {
       "id": "p009",
       "segment": "s029",
-      "kind": "bathroom",
+      "kind": "restroom",
       "note": "Not sure how often these are open",
       "at": 0.3104531059055119,
       "coord": [-122.166797, 47.75329]
@@ -3705,8 +3705,8 @@
     {
       "id": "p010",
       "segment": "s062",
-      "kind": "bathroom",
-      "note": "Very nice new bathrooms. Thanks, Melinda and MacKenzie!",
+      "kind": "restroom",
+      "note": "Very nice new restrooms. Thanks, Melinda and MacKenzie!",
       "at": 0.5092831674185818,
       "coord": [-122.371942, 47.625583]
     },
@@ -3737,15 +3737,15 @@
     {
       "id": "p014",
       "segment": "s069",
-      "kind": "bathroom",
-      "note": "Turn off here for bathrooms at Montlake Playfield",
+      "kind": "restroom",
+      "note": "Turn off here for restrooms at Montlake Playfield",
       "at": 0.5007720872353347,
       "coord": [-122.309009, 47.63958]
     },
     {
       "id": "p015",
       "segment": "s008",
-      "kind": "bathroom",
+      "kind": "restroom",
       "note": null,
       "at": 0.9803215310537635,
       "coord": [-122.326052, 47.785058]
@@ -3797,6 +3797,78 @@
       "note": "This fountain could be cleaner, but it does have water",
       "at": 0.9408194572509971,
       "coord": [-122.276573, 47.753283]
+    },
+    {
+      "id": "p022",
+      "segment": "s040",
+      "kind": "rest",
+      "note": "There are often people sitting on the steps by the water",
+      "at": 0.02032921211956469,
+      "coord": [-122.33957, 47.627517]
+    },
+    {
+      "id": "p023",
+      "segment": "s034",
+      "kind": "photo",
+      "note": "Gas Works Park, classic photo op",
+      "at": 0.080327770904929,
+      "coord": [-122.334637, 47.646988]
+    },
+    {
+      "id": "p024",
+      "segment": "s145",
+      "kind": "bike-shop",
+      "note": "Free Range Cycles is on 35th and Phinney",
+      "at": 0.13564748071502175,
+      "coord": [-122.354574, 47.650491]
+    },
+    {
+      "id": "p025",
+      "segment": "s073",
+      "kind": "bike-shop",
+      "note": "20/20 Cycle is on Union and 20th",
+      "at": 0.4872390959147874,
+      "coord": [-122.307533, 47.612921]
+    },
+    {
+      "id": "p026",
+      "segment": "s003",
+      "kind": "photo",
+      "note": null,
+      "at": 0.011219044233930565,
+      "coord": [-122.412135, 47.660034]
+    },
+    {
+      "id": "p027",
+      "segment": "s002",
+      "kind": "photo",
+      "note": null,
+      "at": 0.5935907563190902,
+      "coord": [-122.41606, 47.657677]
+    },
+    {
+      "id": "p028",
+      "segment": "s006",
+      "kind": "photo",
+      "note": "A view of downtown",
+      "at": 0.4316769311977036,
+      "coord": [-122.405733, 47.636287]
+    },
+    {
+      "id": "p029",
+      "segment": "s006",
+      "kind": "rest",
+      "note": "A couple of benches overlooking the water",
+      "at": 0.43713522197903937,
+      "coord": [-122.405399, 47.636102]
+    },
+    {
+      "id": "p030",
+      "segment": "s020",
+      "kind": "restroom",
+      "note": "Restrooms in the community center",
+      "at": 0.15051430569839816,
+      "coord": [-122.32586, 47.680176]
     }
   ]
 }

@@ -111,6 +111,7 @@ export function PinEditor({
                 className="flex min-w-0 flex-1 items-center gap-2 text-left"
               >
                 <PinMark
+                  decorative
                   kind={pin.kind}
                   className="h-4 w-4 shrink-0"
                   selected={pin.id === selected?.id}

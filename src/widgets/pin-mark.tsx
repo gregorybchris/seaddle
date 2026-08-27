@@ -10,7 +10,7 @@ import { cn } from "@/lib/utilities/style-utils";
 
 const ICONS = {
   water: Drop,
-  bathroom: Toilet,
+  restroom: Toilet,
   photo: Camera,
   rest: PicnicTable,
   "bike-shop": Bicycle,
@@ -27,18 +27,24 @@ export function PinMark({
   kind,
   className,
   selected = false,
+  decorative = false,
 }: {
   kind: PinKind;
   className?: string;
   selected?: boolean;
+  /** For when something around it already carries the name. */
+  decorative?: boolean;
 }) {
   const Icon = ICONS[kind];
   return (
     <span
-      // A bare span may not carry a label. On the map there is no adjacent
-      // text to name it, so the mark itself has to be the image.
-      role="img"
-      aria-label={PIN_LABELS[kind]}
+      // A bare span may not carry a label, so where nothing else names this
+      // the mark itself has to be the image. Where something does — a button
+      // wrapping it, a row of text beside it — a second name would only be
+      // read out twice.
+      {...(decorative
+        ? { "aria-hidden": true }
+        : { role: "img", "aria-label": PIN_LABELS[kind] })}
       className={cn(
         "border-forest-deep flex h-5 w-5 items-center justify-center rounded-full border-2 shadow",
         selected ? "bg-blaze text-forest-deep" : "bg-paper text-forest",

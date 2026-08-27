@@ -76,11 +76,11 @@ export type SegmentDerived = {
 /** A segment as the app sees it: authored fields plus computed ones. */
 export type Segment = SegmentRecord & SegmentDerived;
 
-export type PinKind = "water" | "bathroom" | "photo" | "rest" | "bike-shop";
+export type PinKind = "water" | "restroom" | "photo" | "rest" | "bike-shop";
 
 export const PIN_KINDS: PinKind[] = [
   "water",
-  "bathroom",
+  "restroom",
   "photo",
   "rest",
   "bike-shop",
@@ -89,7 +89,7 @@ export const PIN_KINDS: PinKind[] = [
 /** What each kind is called where a rider reads it. */
 export const PIN_LABELS: Record<PinKind, string> = {
   water: "water",
-  bathroom: "bathroom",
+  restroom: "restroom",
   photo: "photo op",
   rest: "rest stop",
   "bike-shop": "bike shop",

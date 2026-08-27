@@ -53,8 +53,8 @@ describe("updatePin", () => {
   const one = addPin(emptyGraph(), "s001", 0.5, "water", at(500, 0)).graph;
 
   it("changes what it is", () => {
-    expect(updatePin(one, "p001", { kind: "bathroom" }).pins[0].kind).toBe(
-      "bathroom",
+    expect(updatePin(one, "p001", { kind: "restroom" }).pins[0].kind).toBe(
+      "restroom",
     );
   });
 

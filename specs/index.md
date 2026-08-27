@@ -131,7 +131,7 @@ type Segment = {
   gainBackward: number;
 };
 
-type PinKind = "water" | "bathroom" | "photo" | "rest" | "bike-shop";
+type PinKind = "water" | "restroom" | "photo" | "rest" | "bike-shop";
 
 type Pin = {
   id: string;
