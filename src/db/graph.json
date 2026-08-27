@@ -664,9 +664,9 @@
       },
       "name": "Discovery to Interbay",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s007",
@@ -680,8 +680,8 @@
       "name": "Interbay to Gilman Crossing",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s008",
@@ -694,9 +694,9 @@
       },
       "name": "Interurban to Lake Ballinger",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s009",
