@@ -3,7 +3,6 @@ import { boundsOf } from "@/lib/geo/bounds";
 import { buildAdjacency, type Adjacency } from "@/lib/graph/adjacency";
 import type { Bounds, ElevCoord } from "@/lib/models/geo";
 import type {
-  Direction,
   Protection,
   NodeId,
   Surroundings,
@@ -29,7 +28,6 @@ export type SiteSegment = {
   steepness: Steepness;
   protection: Protection;
   surroundings: Surroundings;
-  recommendedDirection: Direction | null;
 };
 
 export type SiteGraph = {
@@ -71,6 +69,5 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     steepness: p.steepness as Steepness,
     protection: p.protection as Protection,
     surroundings: p.surroundings as Surroundings,
-    recommendedDirection: (p.recommendedDirection as Direction | null) ?? null,
   };
 }

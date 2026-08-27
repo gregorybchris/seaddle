@@ -120,7 +120,6 @@ type Segment = {
   steepness: Steepness; // undirected: the same hill whichever way you meet it
   protection: Protection;
   surroundings: Surroundings;
-  recommendedDirection: "forward" | "backward" | null;
   reviewed: boolean; // false until the attributes above are deliberately set, not defaulted
 
   // derived at build time from the geometry
@@ -162,10 +161,11 @@ the climb in whichever direction climbs more, seeded from the elevation data by
 `pnpm attributes:seed`. Which way a hill is nicer to ride is a routing question, and the elevation
 profile answers it better than a label could.
 
-`recommendedDirection` is nullable and usually null. It exists for the minority of segments where
-one direction is clearly correct (a one-way contraflow lane, a descent that's miserable to climb,
-a trail that merges badly the other way). When a user's route traverses a segment against its
-recommended direction, the sidebar flags it quietly.
+There was a `recommendedDirection` here, for the minority of segments where one way is clearly
+the right way — a contraflow lane, a descent miserable to climb. It is gone. In 158 segments it
+was never once set, because the elevation profile already says which way the hill runs and the
+attributes are undirected on purpose; the field cost a control in the editor, a column in the
+data, and a trip through the compile step, and nothing on the site ever read it.
 
 ### Geometry storage
 

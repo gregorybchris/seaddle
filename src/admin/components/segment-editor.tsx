@@ -11,7 +11,6 @@ import {
   SURROUNDINGS,
   STEEPNESSES,
   type Steepness,
-  type Direction,
   type SegmentRecord,
 } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
@@ -19,13 +18,6 @@ import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import type { AttributePatch } from "../review";
-
-/**
- * Only two answers. "Backward" would ask a reader to hold two directions at
- * once — the way the segment is stored and the way it should be ridden — so a
- * segment that wants recommending the other way is turned around instead.
- */
-const DIRECTIONS = ["forward", "either"] as const;
 
 type SegmentEditorProps = {
   selected: SegmentRecord[];
@@ -133,18 +125,6 @@ export function SegmentEditor({
           value={shared((s) => s.surroundings)}
           mixed={disagree((s) => s.surroundings)}
           onChange={(surroundings) => onPatch({ surroundings })}
-        />
-        <ChipGroup
-          label="Ride it"
-          options={DIRECTIONS}
-          value={shared((s) => s.recommendedDirection ?? "either")}
-          mixed={disagree((s) => s.recommendedDirection)}
-          onChange={(choice) =>
-            onPatch({
-              recommendedDirection:
-                choice === "either" ? null : (choice as Direction),
-            })
-          }
         />
       </div>
 

@@ -60,7 +60,6 @@ function segment(
     steepness: "flat",
     protection: "unprotected",
     surroundings: "pleasant",
-    recommendedDirection: null,
   };
 }
 

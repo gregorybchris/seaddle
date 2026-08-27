@@ -1,5 +1,4 @@
 import type {
-  Direction,
   GraphFile,
   Protection,
   Surroundings,
@@ -19,7 +18,6 @@ export type AttributePatch = {
   steepness?: Steepness;
   protection?: Protection;
   surroundings?: Surroundings;
-  recommendedDirection?: Direction | null;
 };
 
 /**
@@ -51,10 +49,6 @@ function patched(segment: SegmentRecord, patch: AttributePatch): SegmentRecord {
     steepness: patch.steepness ?? segment.steepness,
     protection: patch.protection ?? segment.protection,
     surroundings: patch.surroundings ?? segment.surroundings,
-    recommendedDirection:
-      patch.recommendedDirection === undefined
-        ? segment.recommendedDirection
-        : patch.recommendedDirection,
     reviewed: true,
   };
 }

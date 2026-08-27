@@ -58,19 +58,6 @@ describe("applyAttributes", () => {
     ]);
   });
 
-  it("can clear a recommended direction, which is different from not saying", () => {
-    const set = applyAttributes(THREE, ["s001"], {
-      recommendedDirection: "forward",
-    });
-    expect(set.segments[0].recommendedDirection).toBe("forward");
-    const cleared = applyAttributes(set, ["s001"], {
-      recommendedDirection: null,
-    });
-    expect(cleared.segments[0].recommendedDirection).toBeNull();
-    const untouched = applyAttributes(set, ["s001"], { surroundings: "plain" });
-    expect(untouched.segments[0].recommendedDirection).toBe("forward");
-  });
-
   it("does nothing when nothing is selected", () => {
     expect(applyAttributes(THREE, [], { surroundings: "plain" })).toBe(THREE);
   });
@@ -160,7 +147,6 @@ describe("swapSegmentDirection", () => {
     segments: [
       segment("s001", "nA", "nB", {
         steepness: "steep",
-        recommendedDirection: "forward",
         source: { track: "ride", startIndex: 10, endIndex: 90 },
       }),
     ],
@@ -197,11 +183,6 @@ describe("swapSegmentDirection", () => {
 
   it("moves pins to the same place measured from the other end", () => {
     expect(swapSegmentDirection(one, "s001").pins[0].at).toBeCloseTo(0.75, 9);
-  });
-
-  it("leaves the recommendation saying forward, which now points the other way", () => {
-    const after = swapSegmentDirection(one, "s001").segments[0];
-    expect(after.recommendedDirection).toBe("forward");
   });
 
   it("comes back to where it started when done twice", () => {

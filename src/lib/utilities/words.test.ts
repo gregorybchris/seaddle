@@ -14,7 +14,7 @@ describe("humanize", () => {
 
   it("keeps everything lowercase, since these are choices and not headings", () => {
     expect(humanize("Surroundings")).toBe("surroundings");
-    expect(humanize("recommendedDirection")).toBe("recommended direction");
+    expect(humanize("bikeLane")).toBe("bike lane");
   });
 
   it("splits on underscores and hyphens too", () => {

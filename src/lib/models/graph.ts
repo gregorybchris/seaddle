@@ -7,7 +7,6 @@ export type PinId = string; // "p003"
 export type Steepness = "flat" | "rolling" | "steep";
 export type Protection = "unprotected" | "bikeLane" | "bikePath";
 export type Surroundings = "plain" | "pleasant" | "scenic";
-export type Direction = "forward" | "backward";
 
 export const STEEPNESSES: Steepness[] = ["flat", "rolling", "steep"];
 export const PROTECTIONS: Protection[] = [
@@ -53,7 +52,6 @@ export type SegmentRecord = {
   steepness: Steepness;
   protection: Protection;
   surroundings: Surroundings;
-  recommendedDirection: Direction | null;
 
   /** False until the attributes above are deliberately set rather than defaulted. */
   reviewed: boolean;
@@ -124,7 +122,6 @@ export const SEGMENT_DEFAULTS = {
   steepness: "flat",
   protection: "unprotected",
   surroundings: "plain",
-  recommendedDirection: null,
   reviewed: false,
 } satisfies Omit<SegmentRecord, "id" | "from" | "to" | "source">;
 

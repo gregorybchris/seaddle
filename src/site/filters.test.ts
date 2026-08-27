@@ -27,7 +27,6 @@ function segment(over: Partial<SiteSegment> = {}): SiteSegment {
     steepness: "flat",
     protection: "unprotected",
     surroundings: "pleasant",
-    recommendedDirection: null,
     ...over,
   };
 }

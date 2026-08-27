@@ -606,7 +606,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -622,7 +621,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -638,7 +636,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -654,7 +651,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -670,7 +666,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -686,7 +681,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -702,7 +696,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -718,7 +711,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -734,7 +726,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -750,7 +741,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -766,7 +756,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -782,7 +771,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -798,7 +786,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -814,7 +801,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -830,7 +816,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -846,7 +831,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -862,7 +846,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -878,7 +861,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -894,7 +876,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -910,7 +891,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -926,7 +906,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -942,7 +921,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -958,7 +936,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -974,7 +951,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -990,7 +966,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1006,7 +981,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1022,7 +996,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1038,7 +1011,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1054,7 +1026,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1070,7 +1041,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1086,7 +1056,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1102,7 +1071,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1118,7 +1086,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1134,7 +1101,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1150,7 +1116,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1166,7 +1131,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1182,7 +1146,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1198,7 +1161,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "scenic",
-      "recommendedDirection": null,
       "reviewed": true
     },
     {
@@ -1214,7 +1176,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1230,7 +1191,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1246,7 +1206,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1262,7 +1221,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1278,7 +1236,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1294,7 +1251,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1310,7 +1266,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1326,7 +1281,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1342,7 +1296,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1358,7 +1311,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1374,7 +1326,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1390,7 +1341,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1406,7 +1356,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1422,7 +1371,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1438,7 +1386,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1454,7 +1401,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1470,7 +1416,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": true
     },
     {
@@ -1486,7 +1431,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1502,7 +1446,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1518,7 +1461,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1534,7 +1476,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1550,7 +1491,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1566,7 +1506,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1582,7 +1521,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1598,7 +1536,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1614,7 +1551,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1630,7 +1566,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1646,7 +1581,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1662,7 +1596,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1678,7 +1611,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1694,7 +1626,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1710,7 +1641,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1726,7 +1656,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1742,7 +1671,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1758,7 +1686,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1774,7 +1701,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1790,7 +1716,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1806,7 +1731,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1822,7 +1746,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1838,7 +1761,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1854,7 +1776,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1870,7 +1791,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1886,7 +1806,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1902,7 +1821,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1918,7 +1836,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1934,7 +1851,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1950,7 +1866,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1966,7 +1881,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1982,7 +1896,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -1998,7 +1911,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2014,7 +1926,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2030,7 +1941,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2046,7 +1956,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2062,7 +1971,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2078,7 +1986,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2094,7 +2001,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2110,7 +2016,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2126,7 +2031,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2142,7 +2046,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2158,7 +2061,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2174,7 +2076,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2190,7 +2091,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2206,7 +2106,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2222,7 +2121,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2238,7 +2136,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2254,7 +2151,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2270,7 +2166,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2286,7 +2181,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2302,7 +2196,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2318,7 +2211,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2334,7 +2226,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2350,7 +2241,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2366,7 +2256,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2382,7 +2271,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2398,7 +2286,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2414,7 +2301,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2430,7 +2316,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2446,7 +2331,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2462,7 +2346,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2478,7 +2361,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2494,7 +2376,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2510,7 +2391,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2526,7 +2406,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2542,7 +2421,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2558,7 +2436,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2574,7 +2451,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2590,7 +2466,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2606,7 +2481,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2622,7 +2496,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2638,7 +2511,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2654,7 +2526,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2670,7 +2541,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2686,7 +2556,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2702,7 +2571,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2718,7 +2586,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2734,7 +2601,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2750,7 +2616,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2766,7 +2631,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2782,7 +2646,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2798,7 +2661,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2814,7 +2676,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2830,7 +2691,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2846,7 +2706,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2862,7 +2721,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2878,7 +2736,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2894,7 +2751,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2910,7 +2766,6 @@
       "steepness": "steep",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2926,7 +2781,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2942,7 +2796,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2958,7 +2811,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2974,7 +2826,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -2990,7 +2841,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3006,7 +2856,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3022,7 +2871,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3038,7 +2886,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3054,7 +2901,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3070,7 +2916,6 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3086,7 +2931,6 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3102,7 +2946,6 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "recommendedDirection": null,
       "reviewed": false
     },
     {
@@ -3118,7 +2961,6 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "recommendedDirection": null,
       "reviewed": false
     }
   ],
