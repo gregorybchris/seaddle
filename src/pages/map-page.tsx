@@ -42,7 +42,7 @@ export function MapPage() {
   } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
-  const [encoding, setEncoding] = useState<Encoding>("protection");
+  const [encoding, setEncoding] = useState<Encoding>("grade");
 
   const pick = useCallback(
     (id: SegmentId) => {

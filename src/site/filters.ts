@@ -75,9 +75,9 @@ export type Encoding = Attribute | "grade";
  * "protection" came to be shown to riders in the first place.
  */
 export const ENCODINGS: Encoding[] = [
-  "protection",
-  "steepness",
   "grade",
+  "steepness",
+  "protection",
   "surroundings",
 ];
 
