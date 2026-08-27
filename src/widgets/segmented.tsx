@@ -50,7 +50,7 @@ export function Segmented<T extends string>({
             "focus-visible:ring-sand relative flex-1 rounded-md px-3 py-1.5 text-sm transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none",
             option.value === value
               ? "text-forest-deep"
-              : "text-sand/60 hover:text-sand",
+              : "text-sand/70 hover:text-sand",
           )}
         >
           {option.label}

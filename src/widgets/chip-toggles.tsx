@@ -21,7 +21,7 @@ export function ChipToggles<T extends string>({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="eyebrow text-sand/40">{label}</span>
+      <span className="eyebrow text-sand/70">{label}</span>
       <div className="flex flex-wrap gap-1">
         {options.map((option) => {
           const on = values.includes(option);
@@ -43,7 +43,7 @@ export function ChipToggles<T extends string>({
                 "focus-visible:ring-blaze rounded-md border px-2 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
                 on
                   ? "border-blaze-deep bg-blaze text-forest-deep"
-                  : "border-sand/15 text-sand/50 hover:border-sand/40 hover:text-sand",
+                  : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",
               )}
             >
               {humanize(option)}

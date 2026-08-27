@@ -169,10 +169,10 @@ export function ElevationProfile({
           </>
         ) : (
           <>
-            <span className="text-sand/40">
+            <span className="text-sand/70">
               {formatFeet(profile.minMeters)}
             </span>
-            <span className="text-sand/40">
+            <span className="text-sand/70">
               {formatFeet(profile.maxMeters)}
             </span>
           </>

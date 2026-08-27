@@ -10,7 +10,9 @@ import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
+import { PIN_LABELS } from "@/lib/models/graph";
 import { InfoPopover } from "@/widgets/info-popover";
+import { PinMark } from "@/widgets/pin-mark";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding, Filters } from "../filters";
@@ -25,6 +27,7 @@ import {
   type Route,
 } from "../route";
 import { useSavedRides, type SavedRide } from "../use-saved-rides";
+import type { SitePin } from "../use-graph";
 import { FilterPanel } from "./filter-panel";
 import { RouteBreakdown } from "./route-breakdown";
 
@@ -42,6 +45,7 @@ type RoutePanelProps = {
   onOutAndBack: () => void;
   onLoad: (encoded: string) => void;
   onScrub: (fraction: number | null) => void;
+  pins: SitePin[];
 };
 
 export function RoutePanel({
@@ -58,6 +62,7 @@ export function RoutePanel({
   onOutAndBack,
   onLoad,
   onScrub,
+  pins,
 }: RoutePanelProps) {
   // One owner for the saved list: a copy per component would let saving in one
   // place leave the other showing a stale list.
@@ -86,20 +91,17 @@ export function RoutePanel({
               <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
                 Seaddle
               </h1>
-              <p className="eyebrow text-sand/40 mt-1">
+              <p className="eyebrow text-sand/70 mt-1">
                 Seattle cycling routes
               </p>
             </div>
           </div>
 
-          {/* Dimmed until there is a ride, so the zeros read as "not yet"
-              rather than as a measurement. */}
-          <div
-            className={cn(
-              "border-sand/10 flex items-end gap-6 border-t pt-3 transition-opacity duration-300",
-              started ? "opacity-100" : "opacity-40",
-            )}
-          >
+          {/* Not dimmed before a ride starts. Fading a block of already-muted
+              text compounds: 70% type inside a 70% wrapper lands near half
+              strength and stops being readable. "0.0 mi" says "not yet" by
+              itself. */}
+          <div className="border-sand/10 flex items-end gap-6 border-t pt-3">
             <Figure label="distance" value={formatMiles(meters)} />
             <Figure
               label="climbing"
@@ -124,6 +126,19 @@ export function RoutePanel({
             />
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
+
+            {pins.length > 0 && (
+              <ul className="flex flex-col gap-1">
+                {pins.map((pin) => (
+                  <li key={pin.id} className="flex items-center gap-2">
+                    <PinMark kind={pin.kind} className="h-4 w-4 shrink-0" />
+                    <span className="text-sand/70 truncate text-xs">
+                      {pin.note ?? PIN_LABELS[pin.kind]}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
@@ -159,8 +174,8 @@ export function RoutePanel({
           </>
         ) : (
           <p className="text-sand/75 text-sm leading-relaxed">
-            Tap any road to start a ride. From there, only the roads it connects
-            to stay lit — keep tapping to build a route as long as you want it.
+            Tap any road to start a ride. Keep tapping to add on new segments.
+            Then save or export your route.
           </p>
         )}
 
@@ -215,7 +230,7 @@ function SaveRide({
         }}
         placeholder="Name this ride"
         aria-label="Name this ride"
-        className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/30 focus:border-blaze/60 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:outline-none"
+        className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:outline-none"
       />
       <Button
         variant="outline"
@@ -262,7 +277,7 @@ function SavedRides({
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="eyebrow text-sand/40 flex items-center gap-1.5">
+      <h2 className="eyebrow text-sand/70 flex items-center gap-1.5">
         Your rides
         <InfoPopover label="About saved rides">
           These live in this browser only — not in an account. Clearing your
@@ -290,7 +305,7 @@ function SavedRides({
               type="button"
               onClick={() => onForget(ride.id)}
               aria-label={`Forget ${ride.name}`}
-              className="text-sand/0 hover:text-blaze group-hover:text-sand/40 shrink-0 px-1 text-xs transition-colors"
+              className="text-sand/70 hover:text-blaze group-hover:text-sand/70 shrink-0 px-1 text-xs transition-colors"
             >
               ✕
             </button>
@@ -305,7 +320,7 @@ function Figure({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
       <span className="tabular text-sand text-xl leading-none">{value}</span>
-      <span className="eyebrow text-sand/45">{label}</span>
+      <span className="eyebrow text-sand/70">{label}</span>
     </div>
   );
 }

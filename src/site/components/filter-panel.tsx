@@ -60,7 +60,7 @@ export function FilterPanel({
         <Funnel
           weight={on ? "fill" : "bold"}
           aria-hidden
-          className={cn("h-3 w-3", on ? "text-blaze" : "text-sand/40")}
+          className={cn("h-3 w-3", on ? "text-blaze" : "text-sand/70")}
         />
       }
       count={on ? passing : total}
@@ -109,7 +109,7 @@ export function FilterPanel({
 
         {on && (
           <div className="flex items-center gap-2">
-            <span className="tabular text-sand/45 flex-1 text-[0.6875rem]">
+            <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
               {passing} of {total} roads
             </span>
             <Button
@@ -139,7 +139,7 @@ function Legend({ encoding }: { encoding: Encoding }) {
             className="ring-sand/30 h-1.5 w-4 rounded-full ring-1"
             style={{ backgroundColor: RAMPS[encoding][value] }}
           />
-          <span className="text-sand/60 text-[0.6875rem]">
+          <span className="text-sand/70 text-[0.6875rem]">
             {humanize(value)}
           </span>
         </li>

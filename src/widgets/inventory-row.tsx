@@ -98,13 +98,13 @@ export function InventoryRow({
         aria-label={`Name for ${id}`}
         className={cn(
           "text-sand min-w-0 flex-1 rounded border border-transparent bg-transparent px-1.5 py-0.5 text-xs",
-          "group-hover:placeholder:text-sand/30 focus:placeholder:text-sand/30 placeholder:text-transparent",
+          "group-hover:placeholder:text-sand/70 focus:placeholder:text-sand/70 placeholder:text-transparent",
           "hover:border-sand/15 focus:border-blaze/60 focus:bg-forest-deep/40 focus:outline-none",
           "transition-colors",
         )}
       />
 
-      <span className="tabular text-sand/45 shrink-0 text-[0.6875rem]">
+      <span className="tabular text-sand/70 shrink-0 text-[0.6875rem]">
         {detail}
       </span>
 
@@ -114,7 +114,7 @@ export function InventoryRow({
           onClick={onLocate}
           aria-label={`Show ${id} on the map`}
           title="Show on the map"
-          className="text-sand/0 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/40 shrink-0 p-1 transition-colors focus-visible:outline-none"
+          className="text-sand/70 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/70 shrink-0 p-1 transition-colors focus-visible:outline-none"
         >
           <Crosshair weight="bold" className="h-3.5 w-3.5" />
         </button>
@@ -124,7 +124,7 @@ export function InventoryRow({
         type="button"
         onClick={onRemove}
         aria-label={`Delete ${id}`}
-        className="text-sand/0 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/40 shrink-0 px-1 text-xs transition-colors focus-visible:outline-none"
+        className="text-sand/70 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/70 shrink-0 px-1 text-xs transition-colors focus-visible:outline-none"
       >
         ✕
       </button>

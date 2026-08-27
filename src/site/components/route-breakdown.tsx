@@ -55,7 +55,7 @@ export function RouteBreakdown({
             <span className="text-sand/70 text-[0.6875rem]">
               {humanize(share.value)}
             </span>
-            <span className="tabular text-sand/40 text-[0.6875rem]">
+            <span className="tabular text-sand/70 text-[0.6875rem]">
               {formatMiles(share.meters)}
             </span>
           </li>

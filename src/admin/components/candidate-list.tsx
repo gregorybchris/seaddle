@@ -21,7 +21,7 @@ export function CandidateList({
 
   if (candidates.length === 0) {
     return (
-      <p className="border-sand/15 text-sand/60 rounded-lg border border-dashed px-3 py-4 text-xs leading-relaxed">
+      <p className="border-sand/15 text-sand/70 rounded-lg border border-dashed px-3 py-4 text-xs leading-relaxed">
         No ride runs between these two junctions without wandering. Widen the
         detour allowance, or put a junction where the roads actually connect.
       </p>
@@ -91,7 +91,7 @@ function CandidateCard({
 
       <div className="flex flex-col gap-1.5 p-2.5 pl-2">
         <div className="flex items-baseline gap-2">
-          <span className="tabular text-sand/30 text-[0.625rem]">{rank}</span>
+          <span className="tabular text-sand/70 text-[0.625rem]">{rank}</span>
           {/* Strava names every ride "Afternoon Ride", so when there is a date
               it is the thing that tells one candidate from another and leads.
               A drawn route has no date but was named by hand, so its name does
@@ -106,7 +106,7 @@ function CandidateCard({
           </span>
         </div>
         {candidate.trackDate && (
-          <span className="text-sand/40 -mt-1 truncate text-[0.6875rem]">
+          <span className="text-sand/70 -mt-1 truncate text-[0.6875rem]">
             {candidate.trackName}
           </span>
         )}
@@ -116,7 +116,7 @@ function CandidateCard({
           className="text-moss group-hover:text-blaze h-5 transition-colors duration-200"
         />
 
-        <dl className="tabular text-sand/50 flex flex-wrap gap-x-3 text-[0.6875rem]">
+        <dl className="tabular text-sand/70 flex flex-wrap gap-x-3 text-[0.6875rem]">
           <span>↑{formatFeet(candidate.gainForward)}</span>
           <span>×{candidate.detourRatio.toFixed(2)}</span>
           <span>{candidate.pointCount}pt</span>
@@ -154,7 +154,7 @@ function CandidateCard({
                 onMouseEnter={() => onHover(alternate)}
                 className="flex items-center gap-2"
               >
-                <span className="tabular text-sand/50 flex-1 text-[0.6875rem]">
+                <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
                   {formatMiles(alternate.meters)} · ×
                   {alternate.detourRatio.toFixed(2)}
                 </span>

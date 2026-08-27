@@ -1,4 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
+import { MAP_STYLE } from "@/lib/map-style";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   AttributionControl,
@@ -9,9 +10,15 @@ import Map, {
   type MapRef,
 } from "react-map-gl";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
-import type { GraphNode, SegmentId, SegmentRecord } from "@/lib/models/graph";
+import type {
+  GraphNode,
+  Pin,
+  SegmentId,
+  SegmentRecord,
+} from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import { cn } from "@/lib/utilities/style-utils";
+import { PinMark } from "@/widgets/pin-mark";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import {
   EMPTY_LINES,
@@ -47,6 +54,8 @@ type AdminMapProps = {
   geometry: Map<SegmentId, ElevCoord[]>;
   preview: ElevCoord[] | null;
   selectedSegmentIds: string[];
+  pins: Pin[];
+  selectedPinId: string | null;
   /** Somewhere to fly to. A fresh object each time, so asking twice works. */
   focus: { bounds: Bounds; maxZoom?: number } | null;
   onMapClick: (
@@ -71,6 +80,8 @@ export function AdminMap({
   geometry,
   preview,
   selectedSegmentIds,
+  pins,
+  selectedPinId,
   focus,
   onMapClick,
 }: AdminMapProps) {
@@ -152,7 +163,7 @@ export function AdminMap({
         ref={mapRef}
         initialViewState={{ longitude: -122.33, latitude: 47.62, zoom: 11 }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/light-v11"
+        mapStyle={MAP_STYLE}
         style={{ width: "100%", height: "100%" }}
         // Collapsed to a single mark rather than removed. Mapbox's terms and
         // OpenStreetMap's licence both require the credit to be shown, and
@@ -281,6 +292,12 @@ export function AdminMap({
             }}
           />
         </Source>
+        {pins.map((pin) => (
+          <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
+            <PinMark kind={pin.kind} selected={pin.id === selectedPinId} />
+          </Marker>
+        ))}
+
         {ends && (
           <>
             <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
@@ -331,7 +348,7 @@ export function AdminMap({
               {hovered.name ?? "unnamed"}
             </span>
           </p>
-          <p className="tabular text-sand/50 text-[0.6875rem] whitespace-nowrap">
+          <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
             {formatMiles(hovered.meters)} · ↑{formatFeet(hovered.gain)}
           </p>
         </div>

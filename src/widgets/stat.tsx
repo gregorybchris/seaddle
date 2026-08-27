@@ -18,7 +18,7 @@ export function Stat({
   return (
     <div className={cn("flex flex-col gap-0.5", className)}>
       <span className="tabular text-sand text-lg leading-none">{value}</span>
-      <span className="eyebrow text-sand/45">{label}</span>
+      <span className="eyebrow text-sand/70">{label}</span>
     </div>
   );
 }

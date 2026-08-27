@@ -86,6 +86,15 @@ export const PIN_KINDS: PinKind[] = [
   "bike-shop",
 ];
 
+/** What each kind is called where a rider reads it. */
+export const PIN_LABELS: Record<PinKind, string> = {
+  water: "water",
+  bathroom: "bathroom",
+  photo: "photo op",
+  rest: "rest stop",
+  "bike-shop": "bike shop",
+};
+
 export type Pin = {
   id: PinId;
   segment: SegmentId;

@@ -59,15 +59,15 @@ export function CollapsibleSection({
           weight="bold"
           aria-hidden
           className={cn(
-            "text-sand/40 group-hover:text-sand/70 h-3 w-3 transition-transform duration-200 ease-[var(--ease-settle)]",
+            "text-sand/70 group-hover:text-sand/70 h-3 w-3 transition-transform duration-200 ease-[var(--ease-settle)]",
             !open && "-rotate-90",
           )}
         />
         {icon}
-        <span className="eyebrow text-sand/40 group-hover:text-sand/70 transition-colors">
+        <span className="eyebrow text-sand/70 group-hover:text-sand/70 transition-colors">
           {title}
         </span>
-        <span className="tabular text-sand/30 text-[0.625rem]">{count}</span>
+        <span className="tabular text-sand/70 text-[0.625rem]">{count}</span>
       </Collapsible.Trigger>
 
       <Collapsible.Content className="collapsible-panel">

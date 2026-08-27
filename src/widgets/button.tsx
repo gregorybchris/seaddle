@@ -19,7 +19,7 @@ const VARIANTS: Record<Variant, string> = {
     "border-blaze-deep bg-blaze text-forest-deep shadow-[2px_2px_0_0_var(--color-blaze-deep)] hover:brightness-110",
   outline:
     "border-sand/25 bg-forest-lift/40 text-sand shadow-[2px_2px_0_0_var(--color-forest-deep)] hover:bg-forest-lift/70",
-  quiet: "border-transparent text-sand/60 hover:bg-sand/10 hover:text-sand",
+  quiet: "border-transparent text-sand/70 hover:bg-sand/10 hover:text-sand",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

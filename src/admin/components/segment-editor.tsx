@@ -81,7 +81,7 @@ export function SegmentEditor({
         <span
           className={cn(
             "eyebrow ml-auto shrink-0",
-            allReviewed ? "text-moss" : "text-sand/30",
+            allReviewed ? "text-moss" : "text-sand/70",
           )}
         >
           {allReviewed ? "reviewed" : "defaults"}
@@ -92,7 +92,7 @@ export function SegmentEditor({
 
       {one && (
         <div className="-mt-2 flex items-center gap-2">
-          <p className="tabular text-sand/45 flex-1 text-[0.6875rem] whitespace-nowrap">
+          <p className="tabular text-sand/70 flex-1 text-[0.6875rem] whitespace-nowrap">
             {formatMiles(meters)} · ↑{formatFeet(gainForward)} out · ↑
             {formatFeet(gainBackward)} back
           </p>
@@ -163,7 +163,7 @@ export function SegmentEditor({
       </div>
 
       <div className="border-sand/10 flex items-center gap-2 border-t pt-3">
-        <span className="tabular text-sand/40 flex-1 text-[0.6875rem]">
+        <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
           {reviewed} of {total} reviewed
         </span>
         <Button
@@ -217,7 +217,7 @@ function NameField({
       }}
       placeholder="Name this segment"
       aria-label="Segment name"
-      className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/30 focus:border-blaze/60 -mt-1 w-full rounded-md border px-2 py-1.5 text-sm transition-colors focus:outline-none"
+      className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 -mt-1 w-full rounded-md border px-2 py-1.5 text-sm transition-colors focus:outline-none"
     />
   );
 }

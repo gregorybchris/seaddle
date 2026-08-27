@@ -26,7 +26,7 @@ export function ChipGroup<T extends string>({
 }: ChipGroupProps<T>) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="eyebrow text-sand/40">
+      <span className="eyebrow text-sand/70">
         {label}
         {mixed && <span className="text-blaze/70 ml-2 normal-case">mixed</span>}
       </span>
@@ -48,7 +48,7 @@ export function ChipGroup<T extends string>({
                 "focus-visible:ring-blaze rounded-md border px-2 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
                 active
                   ? "border-blaze-deep bg-blaze text-forest-deep"
-                  : "border-sand/15 text-sand/60 hover:border-sand/40 hover:text-sand",
+                  : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",
               )}
             >
               {humanize(option)}

@@ -1,5 +1,4 @@
 import { Suspense, lazy } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { MapPage } from "./pages/map-page";
 
 /**
@@ -14,22 +13,20 @@ const AdminPage = import.meta.env.DEV
   ? lazy(() => import("./admin/admin-page"))
   : null;
 
+/**
+ * Two pages, one of which is not shipped, so there is no router.
+ *
+ * A routing library was 80 kB of the bundle to answer a question one
+ * comparison answers. The route a rider builds lives in the query string and is
+ * read by the page itself, so nothing here needs to watch it either.
+ */
 export function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MapPage />} />
-        {AdminPage && (
-          <Route
-            path="/admin"
-            element={
-              <Suspense fallback={null}>
-                <AdminPage />
-              </Suspense>
-            }
-          />
-        )}
-      </Routes>
-    </BrowserRouter>
-  );
+  if (AdminPage && window.location.pathname.startsWith("/admin")) {
+    return (
+      <Suspense fallback={null}>
+        <AdminPage />
+      </Suspense>
+    );
+  }
+  return <MapPage />;
 }

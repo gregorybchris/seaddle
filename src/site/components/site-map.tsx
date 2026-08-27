@@ -1,4 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
+import { MAP_STYLE } from "@/lib/map-style";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   AttributionControl,
@@ -14,7 +15,9 @@ import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import { harderDifficulty, type SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
+import { PinMark } from "@/widgets/pin-mark";
 import { RAMPS, type Encoding } from "../filters";
+import type { SitePin } from "../use-graph";
 import {
   choiceBounds,
   continuations,
@@ -42,6 +45,13 @@ type SiteMapProps = {
   encoding: Encoding;
   /** Roads that fail the filters: dimmed, never hidden. */
   dimmed: SegmentId[];
+  /**
+   * Points of interest on the roads already chosen.
+   *
+   * Only those: every fountain in the city at once would bury the map, and
+   * what a rider wants to know is what is on the ride they are building.
+   */
+  pins: SitePin[];
   /** Where the reader is pointing on the elevation chart, if anywhere. */
   scrubbed: Coord | null;
   /**
@@ -99,6 +109,7 @@ export function SiteMap({
   route,
   encoding,
   dimmed,
+  pins,
   scrubbed,
   framing,
   onPick,
@@ -204,7 +215,7 @@ export function SiteMap({
       ref={mapRef}
       initialViewState={{ longitude: -122.33, latitude: 47.62, zoom: 10 }}
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-      mapStyle="mapbox://styles/mapbox/light-v11"
+      mapStyle={MAP_STYLE}
       style={{ width: "100%", height: "100%" }}
       // Collapsed to a single mark rather than removed. Mapbox's terms and
       // OpenStreetMap's licence both require the credit to be shown, and
@@ -307,6 +318,12 @@ export function SiteMap({
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
       </Source>
+
+      {pins.map((pin) => (
+        <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
+          <PinMark kind={pin.kind} className="h-4 w-4" />
+        </Marker>
+      ))}
 
       {/* The same place the chart is reporting, so a height on the graph has a
           somewhere on the map.

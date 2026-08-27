@@ -22,6 +22,7 @@ import {
   undo,
   type Route,
 } from "@/site/route";
+import { pinsAlong } from "@/lib/graph/pins";
 import { useGraph } from "@/site/use-graph";
 
 /** The route lives in the address bar, so a link is the whole ride. */
@@ -30,7 +31,7 @@ function routeFromUrl(): string {
 }
 
 export function MapPage() {
-  const { graph, error } = useGraph();
+  const { graph, pins, error } = useGraph();
   const [route, setRouteState] = useState<Route>(EMPTY_ROUTE);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
@@ -106,6 +107,19 @@ export function MapPage() {
     [scrub, points],
   );
 
+  /** The pins on the roads chosen so far, in the order they are ridden past. */
+  const routePins = useMemo(
+    () =>
+      pinsAlong(
+        pins,
+        route.steps.map((step) => ({
+          segment: step.segment,
+          reversed: graph?.segments.get(step.segment)?.from !== step.from,
+        })),
+      ),
+    [pins, route, graph],
+  );
+
   const dimmed = useMemo(
     () =>
       graph
@@ -137,6 +151,7 @@ export function MapPage() {
         // on wherever it could still go.
         onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph), "route")}
         onScrub={setScrub}
+        pins={routePins}
       />
       <main className="h-full md:min-w-0 md:flex-1">
         <SiteMap
@@ -145,6 +160,7 @@ export function MapPage() {
           encoding={encoding}
           dimmed={dimmed}
           scrubbed={scrubbed}
+          pins={routePins}
           framing={framing}
           onPick={pick}
         />

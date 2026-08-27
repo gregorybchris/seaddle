@@ -1,6 +1,11 @@
 import { useMemo, useState } from "react";
 import type { ElevCoord } from "@/lib/models/geo";
-import type { GraphNode, Pin, SegmentRecord } from "@/lib/models/graph";
+import type {
+  GraphNode,
+  Pin,
+  PinKind,
+  SegmentRecord,
+} from "@/lib/models/graph";
 import { polylineMeters } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
 import { formatMiles } from "@/lib/utilities/units";
@@ -8,10 +13,8 @@ import { Button } from "@/widgets/button";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Segmented } from "@/widgets/segmented";
 import { Sheet } from "@/widgets/sheet";
-import { validateGraph } from "@/lib/db/graph-file";
-import { connectedComponents } from "@/lib/graph/adjacency";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
-import { ValidationPanel } from "./validation-panel";
+import { PinEditor } from "./pin-editor";
 import { SegmentEditor } from "./segment-editor";
 import type { AttributePatch } from "../review";
 import { nextUnreviewed, reviewProgress } from "../review";
@@ -60,11 +63,17 @@ type AdminSidebarProps = {
   onLocateSegment: (id: string) => void;
   /** Changes whenever the map is sent somewhere, so the sheet can get out of the way. */
   focusedAt: unknown;
-  onShowNodes: (ids: string[]) => void;
-  onShowSegments: (ids: string[]) => void;
   /** The junction a merge will fold the next click into, if one is armed. */
   merging: GraphNode | null;
   onArmMerge: (node: GraphNode | null) => void;
+  selectedPin: Pin | null;
+  onSelectPin: (id: string | null) => void;
+  dropping: PinKind | null;
+  onDropping: (kind: PinKind | null) => void;
+  onPinKind: (kind: PinKind) => void;
+  onPinNote: (note: string) => void;
+  onRemovePin: () => void;
+  onLocatePin: (pin: Pin) => void;
 };
 
 export function AdminSidebar(props: AdminSidebarProps) {
@@ -76,13 +85,6 @@ export function AdminSidebar(props: AdminSidebarProps) {
   const picked = new Set(props.selectedSegments);
   const chosen = props.segments.filter((segment) => picked.has(segment.id));
   const progress = reviewProgress(props.segments);
-  const problems = validateGraph({
-    version: 1,
-    nodes: props.nodes,
-    segments: props.segments,
-    pins: props.pins,
-  });
-  const components = connectedComponents(props.segments).map((c) => c.length);
   // Only meaningful for a single selection; the editor hides it otherwise.
   const derived = deriveSegment(
     (chosen.length === 1 && props.geometry.get(chosen[0].id)) || [],
@@ -100,7 +102,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
               <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
                 Seaddle
               </h1>
-              <p className="eyebrow text-sand/40 mt-1">Route builder</p>
+              <p className="eyebrow text-sand/70 mt-1">Route builder</p>
             </div>
             <SaveState saving={props.saving} />
           </div>
@@ -161,7 +163,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                 <span className="tabular text-blaze text-xs">
                   {props.selectedNode.id}
                 </span>
-                <span className="text-sand/50 flex-1 text-[0.6875rem]">
+                <span className="text-sand/70 flex-1 text-[0.6875rem]">
                   {props.merging
                     ? "Now click the junction to fold into it."
                     : "Selected"}
@@ -193,12 +195,19 @@ export function AdminSidebar(props: AdminSidebarProps) {
           <SegmentBuilder {...props} />
         )}
 
-        <ValidationPanel
-          problems={problems}
-          components={components}
-          onShowNodes={props.onShowNodes}
-          onShowSegments={props.onShowSegments}
-        />
+        <CollapsibleSection title="Pins" count={props.pins.length}>
+          <PinEditor
+            pins={props.pins}
+            selected={props.selectedPin}
+            onSelect={props.onSelectPin}
+            onKind={props.onPinKind}
+            onNote={props.onPinNote}
+            onRemove={props.onRemovePin}
+            onLocate={props.onLocatePin}
+            dropping={props.dropping}
+            onDropping={props.onDropping}
+          />
+        </CollapsibleSection>
 
         <SegmentInventory
           segments={props.segments}
@@ -254,7 +263,7 @@ function SegmentBuilder({
       )}
 
       <details className="group">
-        <summary className="eyebrow text-sand/40 hover:text-sand/70 cursor-pointer list-none transition-colors">
+        <summary className="eyebrow text-sand/70 hover:text-sand/70 cursor-pointer list-none transition-colors">
           Search settings
         </summary>
         <div className="mt-3 flex flex-col gap-3">
@@ -468,7 +477,7 @@ function JunctionInventory({
 
 function NoMatches({ query }: { query: string }) {
   return (
-    <p className="text-sand/40 px-1 py-2 text-xs">
+    <p className="text-sand/70 px-1 py-2 text-xs">
       Nothing matching “{query.trim()}”.
     </p>
   );

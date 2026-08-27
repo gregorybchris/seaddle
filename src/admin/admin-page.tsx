@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { boundsOf, padBounds } from "@/lib/geo/bounds";
 import { snapEnds } from "@/lib/geo/polyline";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
-import type { GraphNode } from "@/lib/models/graph";
+import type { GraphNode, PinKind } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import {
@@ -13,6 +13,7 @@ import {
 } from "./candidate-finder";
 import { AdminMap } from "./components/admin-map";
 import { AdminSidebar, type Mode } from "./components/admin-sidebar";
+import { addPin, pinTarget, removePin, updatePin } from "./pins";
 import {
   applyAttributes,
   nextUnreviewed,
@@ -46,6 +47,8 @@ export default function AdminPage() {
   const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
   /** A junction waiting to swallow the next one clicked. */
   const [merging, setMerging] = useState<GraphNode | null>(null);
+  const [dropping, setDropping] = useState<PinKind | null>(null);
+  const [selectedPin, setSelectedPin] = useState<string | null>(null);
   const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
   const [maxDetourRatio, setMaxDetourRatio] = useState(
     DEFAULT_MAX_DETOUR_RATIO,
@@ -81,6 +84,27 @@ export default function AdminPage() {
   ) {
     if (!index) return;
     setHint(null);
+
+    // Dropping a pin asks which road and how far along at once, so it comes
+    // before anything that only wants the coordinate.
+    if (dropping) {
+      const target = pinTarget(data.geometry, coord);
+      if (!target) {
+        setHint("Pins go on a mapped segment. Click closer to one.");
+        return;
+      }
+      const added = addPin(
+        data.graph,
+        target.segment,
+        target.at,
+        dropping,
+        coord,
+      );
+      setDropping(null);
+      setSelectedPin(added.pin.id);
+      void data.save(added.graph);
+      return;
+    }
 
     if (mode === "nodes") {
       // Within the dedup radius the click means the junction already there, so
@@ -296,26 +320,33 @@ export default function AdminPage() {
           void data.save(renameSegment(data.graph, id, name))
         }
         pins={data.graph.pins}
+        selectedPin={
+          data.graph.pins.find((pin) => pin.id === selectedPin) ?? null
+        }
+        onSelectPin={setSelectedPin}
+        dropping={dropping}
+        onDropping={setDropping}
+        onPinKind={(kind) =>
+          selectedPin &&
+          void data.save(updatePin(data.graph, selectedPin, { kind }))
+        }
+        onPinNote={(note) =>
+          selectedPin &&
+          void data.save(updatePin(data.graph, selectedPin, { note }))
+        }
+        onRemovePin={() => {
+          if (!selectedPin) return;
+          void data.save(removePin(data.graph, selectedPin));
+          setSelectedPin(null);
+        }}
+        onLocatePin={(pin) =>
+          setFocus({
+            bounds: padBounds(boundsOf([pin.coord]), 120),
+            maxZoom: 18,
+          })
+        }
         merging={merging}
         onArmMerge={setMerging}
-        onShowNodes={(ids) => {
-          setMode("nodes");
-          const found = data.graph.nodes.filter((node) =>
-            ids.includes(node.id),
-          );
-          if (found.length === 0) return;
-          setSelectedNode(found[0]);
-          setFocus({
-            bounds: padBounds(boundsOf(found.map((node) => node.coord)), 150),
-            maxZoom: 17,
-          });
-        }}
-        onShowSegments={(ids) => {
-          setMode("segments");
-          setSelectedSegments(ids);
-          const points = ids.flatMap((id) => data.geometry.get(id) ?? []);
-          if (points.length > 0) setFocus({ bounds: boundsOf(points) });
-        }}
         selectedSegments={selectedSegments}
         onSelectSegments={setSelectedSegments}
         onPatchSelected={patchSelected}
@@ -338,6 +369,8 @@ export default function AdminPage() {
           segments={data.graph.segments}
           geometry={data.geometry}
           selectedSegmentIds={selectedSegments}
+          pins={data.graph.pins}
+          selectedPinId={selectedPin}
           preview={preview}
           focus={focus}
           onMapClick={handleMapClick}
