@@ -20,7 +20,25 @@ const DETENT_VH: Record<Detent, number> = { peek: 22, half: 52, full: 88 };
 const ORDER: Detent[] = ["peek", "half", "full"];
 const SHEET_VH = DETENT_VH.full;
 
+/**
+ * The width at which the sheet becomes a static sidebar, matching the
+ * breakpoint `.sheet` is written against in the stylesheet.
+ *
+ * The header is a drag surface only below it: on a wide screen there is
+ * nothing to drag, and a title that swallows a mouse drag is just a title you
+ * cannot select.
+ */
+const SIDEBAR_WIDTH = "(min-width: 48rem)";
+
 type SheetProps = {
+  /**
+   * The panel's identity — mark, name, what it is for.
+   *
+   * Kept apart from `peek` because on a phone it doubles as drag surface: a
+   * grab bar alone is a small target for a thumb, and the block above the
+   * first control is the one place nothing is lost by dragging from it.
+   */
+  header?: ReactNode;
   /**
    * Pinned above the scrolling area and visible at every resting height.
    * Whatever decides the meaning of what is below it belongs here.
@@ -62,6 +80,7 @@ type SheetProps = {
  * wherever your thumb left it never looks deliberate.
  */
 export function Sheet({
+  header,
   peek,
   raisedWhen = false,
   raisedTo = "full",
@@ -90,6 +109,7 @@ export function Sheet({
 
   const onPointerDown = useCallback(
     (event: React.PointerEvent) => {
+      if (window.matchMedia(SIDEBAR_WIDTH).matches) return;
       event.currentTarget.setPointerCapture(event.pointerId);
       drag.current = { startY: event.clientY, startVh: DETENT_VH[detent] };
     },
@@ -124,6 +144,13 @@ export function Sheet({
     setDetent(nearest);
   }, [dragVh]);
 
+  const dragHandlers = {
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel: onPointerUp,
+  };
+
   const step = useCallback((direction: 1 | -1) => {
     setDetent((current) => {
       const next = ORDER.indexOf(current) + direction;
@@ -152,10 +179,7 @@ export function Sheet({
         aria-label="Resize panel"
         aria-orientation="horizontal"
         tabIndex={0}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        {...dragHandlers}
         onKeyDown={(event) => {
           if (event.key === "ArrowUp") step(1);
           if (event.key === "ArrowDown") step(-1);
@@ -165,7 +189,22 @@ export function Sheet({
         <span className="bg-sand/30 h-1 w-10 rounded-full" />
       </div>
 
-      <div className="shrink-0 px-5 pb-3 md:pt-5">{peek}</div>
+      {/* Draggable alongside the grab bar rather than instead of it: the bar
+          says the panel moves, and the block under it gives a thumb somewhere
+          big enough to say so to. The keyboard control stays on the bar, which
+          is the part that is only a handle. */}
+      {header && (
+        <div
+          {...dragHandlers}
+          className="shrink-0 px-5 pb-4 max-md:cursor-grab max-md:touch-none max-md:select-none max-md:active:cursor-grabbing md:pt-5"
+        >
+          {header}
+        </div>
+      )}
+
+      <div className={cn("shrink-0 px-5 pb-3", !header && "md:pt-5")}>
+        {peek}
+      </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6">
         {children}
