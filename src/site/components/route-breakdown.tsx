@@ -1,6 +1,6 @@
 import { formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
-import { breakdown, RAMPS, type Encoding } from "../filters";
+import { breakdown, isAttribute, RAMPS, type Encoding } from "../filters";
 import type { SiteSegment } from "../graph-data";
 
 /**
@@ -11,6 +11,10 @@ import type { SiteSegment } from "../graph-data";
  * bike lane, or that the gravel is a mile of it and not a token stretch. Read
  * in distance, not in segments — a route is nine tenths good bike lane whether
  * that is one long segment or twelve short ones.
+ *
+ * Elevation has no shares to divide up — it is measured along a road rather
+ * than assigned to one — so a map colored by it breaks the route down by
+ * steepness instead, which is the same question asked of the whole segment.
  */
 export function RouteBreakdown({
   segments,
@@ -19,7 +23,8 @@ export function RouteBreakdown({
   segments: SiteSegment[];
   encoding: Encoding;
 }) {
-  const shares = breakdown(segments, encoding);
+  const attribute = isAttribute(encoding) ? encoding : "steepness";
+  const shares = breakdown(segments, attribute);
   if (shares.length === 0) return null;
 
   return (
@@ -39,7 +44,7 @@ export function RouteBreakdown({
             key={share.value}
             style={{
               width: `${share.share * 100}%`,
-              backgroundColor: RAMPS[encoding][share.value],
+              backgroundColor: RAMPS[attribute][share.value],
             }}
           />
         ))}
@@ -50,7 +55,7 @@ export function RouteBreakdown({
             <span
               aria-hidden
               className="ring-sand/30 h-1.5 w-1.5 shrink-0 rounded-full ring-1"
-              style={{ backgroundColor: RAMPS[encoding][share.value] }}
+              style={{ backgroundColor: RAMPS[attribute][share.value] }}
             />
             <span className="text-sand/70 text-[0.6875rem]">
               {humanize(share.value)}

@@ -54,8 +54,25 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
   );
 }
 
-/** What the map colors segments by. */
-export type Encoding = "steepness" | "laneQuality" | "scenic" | "surface";
+/**
+ * An attribute someone wrote down about a road.
+ *
+ * Every one of these is a small ordered or unordered set, which is what lets a
+ * route be broken down by it and a legend list what the colors mean.
+ */
+export type Attribute = "steepness" | "laneQuality" | "scenic" | "surface";
+
+/**
+ * What the map colors roads by.
+ *
+ * Elevation is the odd one and deliberately so: it is not an attribute of a
+ * segment at all but of the ground under it, read off the recorded elevation
+ * point by point, so it colors *within* a segment rather than coloring the
+ * whole of one. That also makes it the only encoding you cannot filter on —
+ * there is no set of values to pick from, and half a road passing a filter
+ * would mean nothing.
+ */
+export type Encoding = Attribute | "elevation";
 
 /**
  * In the order they are offered. No labels: they are read through `humanize`,
@@ -65,11 +82,17 @@ export type Encoding = "steepness" | "laneQuality" | "scenic" | "surface";
 export const ENCODINGS: Encoding[] = [
   "laneQuality",
   "steepness",
+  "elevation",
   "scenic",
   "surface",
 ];
 
-export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {
+/** Whether an encoding is something a segment carries, rather than terrain. */
+export function isAttribute(encoding: Encoding): encoding is Attribute {
+  return encoding !== "elevation";
+}
+
+export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
   steepness: STEEPNESSES,
   laneQuality: LANE_QUALITIES,
   scenic: SCENICS,
@@ -90,7 +113,7 @@ export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {
  * Surface is a set of materials rather than a scale, so it gets separate hues
  * instead of a ramp, reinforced by a dash pattern that does not rely on color.
  */
-export const RAMPS: Record<Encoding, Record<string, string>> = {
+export const RAMPS: Record<Attribute, Record<string, string>> = {
   steepness: { flat: "#86b06a", hilly: "#c98a2e", steep: "#9c3b25" },
   laneQuality: {
     poor: "#cf9b57",
@@ -101,6 +124,24 @@ export const RAMPS: Record<Encoding, Record<string, string>> = {
   scenic: { low: "#97967f", medium: "#6d9464", high: "#2f6b48" },
   surface: { asphalt: "#4a6b7c", gravel: "#b98a4b", dirt: "#8a5a3b" },
 };
+
+/**
+ * The ramp elevation is drawn on, as [percent grade, color] stops.
+ *
+ * Continuous rather than stepped, because the thing being shown is continuous:
+ * a hill easing off partway up should look like it is easing off, not hold one
+ * color and then change its mind. It starts at the same green the flat end of
+ * every other ramp uses and finishes past the same rust, so the map reads the
+ * same way whichever encoding is on — pale and cool is easy going, dark and
+ * hot is not.
+ */
+export const GRADE_STOPS: [number, string][] = [
+  [0, "#86b06a"],
+  [2, "#b3a94f"],
+  [4, "#c98a2e"],
+  [7, "#a85228"],
+  [12, "#7d2b1c"],
+];
 
 /** Anything lighter than this disappears into the basemap. */
 export const LIGHTEST_STEP = 170;
@@ -122,12 +163,12 @@ export type Breakdown = { value: string; meters: number; share: number }[];
  */
 export function breakdown(
   segments: SiteSegment[],
-  encoding: Encoding,
+  attribute: Attribute,
 ): Breakdown {
   const totals = new Map<string, number>();
   let total = 0;
   for (const segment of segments) {
-    const value = valueOf(segment, encoding);
+    const value = segment[attribute];
     totals.set(value, (totals.get(value) ?? 0) + segment.meters);
     total += segment.meters;
   }
@@ -136,8 +177,4 @@ export function breakdown(
   return [...totals.entries()]
     .map(([value, meters]) => ({ value, meters, share: meters / total }))
     .sort((a, b) => b.meters - a.meters);
-}
-
-function valueOf(segment: SiteSegment, encoding: Encoding): string {
-  return segment[encoding];
 }

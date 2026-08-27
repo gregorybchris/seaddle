@@ -18,7 +18,8 @@ import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import { PinMark } from "@/widgets/pin-mark";
-import { RAMPS, type Encoding } from "../filters";
+import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../filters";
+import { gradeRuns } from "../grade";
 import type { SitePin } from "../use-graph";
 import {
   choiceBounds,
@@ -174,14 +175,52 @@ export function SiteMap({
   );
 
   // A road is drawn in the color of whatever the map is currently about.
+  // Elevation is not one of these: it varies along a road rather than across
+  // roads, so it cannot be a color per feature and is drawn separately below.
+  const attribute = isAttribute(encoding) ? encoding : null;
   const color = useMemo(
-    () => [
-      "match",
-      ["get", encoding],
-      ...Object.entries(RAMPS[encoding]).flat(),
-      "#1c4632",
-    ],
-    [encoding],
+    () =>
+      attribute
+        ? [
+            "match",
+            ["get", attribute],
+            ...Object.entries(RAMPS[attribute]).flat(),
+            "#1c4632",
+          ]
+        : "#1c4632",
+    [attribute],
+  );
+
+  /**
+   * The network cut into stretches of even steepness.
+   *
+   * Built here rather than at compile time because the elevation is already
+   * in the geometry that shipped: deriving it costs nothing to download, and a
+   * second file would be the same numbers again in a different shape. Only
+   * built when it is being looked at — it is several thousand features, and
+   * most visits never turn this on.
+   */
+  const gradeData = useMemo<FeatureCollection<LineString>>(() => {
+    if (attribute) return { type: "FeatureCollection", features: [] };
+    return {
+      type: "FeatureCollection",
+      features: [...graph.segments.values()].flatMap((segment) =>
+        gradeRuns(segment.points).map((run) => ({
+          type: "Feature" as const,
+          properties: { id: segment.id, grade: run.grade },
+          geometry: {
+            type: "LineString" as const,
+            coordinates: run.points as number[][],
+          },
+        })),
+      ),
+    };
+  }, [graph, attribute]);
+
+  // Continuous, so a hill easing off looks like it is easing off.
+  const gradeColor = useMemo(
+    () => ["interpolate", ["linear"], ["get", "grade"], ...GRADE_STOPS.flat()],
+    [],
   );
 
   const open = useMemo(() => [...continuations(route, graph)], [route, graph]);
@@ -280,12 +319,9 @@ export function SiteMap({
           type="line"
           paint={{
             "line-color": color as never,
-            "line-opacity": [
-              "case",
-              ["in", ["get", "id"], ["literal", dimmed]],
-              0.08,
-              0.45,
-            ],
+            "line-opacity": (attribute
+              ? ["case", ["in", ["get", "id"], ["literal", dimmed]], 0.08, 0.45]
+              : 0) as never,
             "line-width": 3,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
@@ -296,12 +332,9 @@ export function SiteMap({
           filter={["in", ["get", "id"], ["literal", open]]}
           paint={{
             "line-color": color as never,
-            "line-opacity": [
-              "case",
-              ["in", ["get", "id"], ["literal", dimmed]],
-              0.25,
-              1,
-            ],
+            "line-opacity": (attribute
+              ? ["case", ["in", ["get", "id"], ["literal", dimmed]], 0.25, 1]
+              : 0) as never,
             "line-width": isEmpty(route) ? 3.5 : 4.5,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
@@ -351,6 +384,49 @@ export function SiteMap({
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
       </Source>
+
+      {/* Elevation, drawn as its own set of lines rather than as a color on
+          the ones above. The steepness of a road changes along it, and a
+          feature can only hold one color, so the road is cut into stretches
+          that are each one steepness. Kept under the hit target and the chosen
+          route, so neither picking nor reading your own ride is affected. */}
+      {!attribute && (
+        <Source id="grade" type="geojson" data={gradeData}>
+          <Layer
+            id="grade-closed"
+            type="line"
+            beforeId={CLICKABLE}
+            paint={{
+              "line-color": gradeColor as never,
+              "line-opacity": [
+                "case",
+                ["in", ["get", "id"], ["literal", dimmed]],
+                0.08,
+                0.45,
+              ],
+              "line-width": 3,
+            }}
+            layout={{ "line-cap": "round", "line-join": "round" }}
+          />
+          <Layer
+            id="grade-open"
+            type="line"
+            beforeId={CLICKABLE}
+            filter={["in", ["get", "id"], ["literal", open]]}
+            paint={{
+              "line-color": gradeColor as never,
+              "line-opacity": [
+                "case",
+                ["in", ["get", "id"], ["literal", dimmed]],
+                0.25,
+                1,
+              ],
+              "line-width": isEmpty(route) ? 3.5 : 4.5,
+            }}
+            layout={{ "line-cap": "round", "line-join": "round" }}
+          />
+        </Source>
+      )}
 
       {[...shown.nearby, ...shown.chosen].map((pin) => (
         <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>

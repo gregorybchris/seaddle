@@ -13,10 +13,13 @@ import { humanize } from "@/lib/utilities/words";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import { ChipToggles } from "@/widgets/chip-toggles";
+import { STEEPEST_GRADE } from "../grade";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
 import {
-  ENCODINGS,
   ENCODING_VALUES,
+  ENCODINGS,
+  GRADE_STOPS,
+  isAttribute,
   isFiltering,
   NO_FILTERS,
   RAMPS,
@@ -128,6 +131,8 @@ export function FilterPanel({
 
 /** What the colors on the map currently mean. */
 function Legend({ encoding }: { encoding: Encoding }) {
+  if (!isAttribute(encoding)) return <GradeLegend />;
+
   return (
     <ul className="flex flex-wrap gap-x-3 gap-y-1">
       {ENCODING_VALUES[encoding].map((value) => (
@@ -145,5 +150,33 @@ function Legend({ encoding }: { encoding: Encoding }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * A bar rather than a row of swatches, because grade is continuous.
+ *
+ * Only the ends are labeled. The exact percentage under any one stretch of
+ * road is not a thing anyone is going to read off a legend, and the elevation
+ * chart gives the real number for a route once one is built; what this has to
+ * say is which end of the bar is the hard one.
+ */
+function GradeLegend() {
+  const ramp = GRADE_STOPS.map(
+    ([grade, color]) => `${color} ${(grade / STEEPEST_GRADE) * 100}%`,
+  ).join(", ");
+
+  return (
+    <div className="flex flex-col gap-1">
+      <span
+        aria-hidden
+        className="ring-sand/30 h-1.5 w-full rounded-full ring-1"
+        style={{ backgroundImage: `linear-gradient(to right, ${ramp})` }}
+      />
+      <div className="text-sand/70 flex justify-between text-[0.6875rem]">
+        <span>flat</span>
+        <span className="tabular">{STEEPEST_GRADE}%+</span>
+      </div>
+    </div>
   );
 }
