@@ -27,7 +27,7 @@ type FilterPanelProps = {
   onFilters: (filters: Filters) => void;
   encoding: Encoding;
   onEncoding: (encoding: Encoding) => void;
-  /** How many roads currently clear the bar, out of how many there are. */
+  /** How many segments currently clear the bar, out of how many there are. */
   passing: number;
   total: number;
 };
@@ -89,7 +89,7 @@ export function FilterPanel({
       {on && (
         <div className="flex items-center gap-2">
           <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
-            {passing} of {total} roads
+            {passing} of {total} segments
           </span>
           <Button
             variant="quiet"
