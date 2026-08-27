@@ -589,12 +589,11 @@ export function SiteMap({
           }}
           className="border-forest-deep bg-forest text-sand pointer-events-none absolute z-10 rounded-md border px-2 py-1.5 shadow-lg"
         >
-          <p className="tabular text-xs whitespace-nowrap">
-            {formatMiles(hovered.meters)}
-            <span className="text-sand/70">
-              {" "}
-              · ↑{formatFeet(hovered.climb)}
-            </span>
+          {hovered.name && (
+            <p className="max-w-56 truncate text-xs">{hovered.name}</p>
+          )}
+          <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
+            {formatMiles(hovered.meters)} · ↑{formatFeet(hovered.climb)}
           </p>
           <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
             {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
