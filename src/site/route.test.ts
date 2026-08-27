@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { ElevCoord } from "@/lib/models/geo";
+import { boundsOf } from "@/lib/geo/bounds";
 import { buildAdjacency } from "@/lib/graph/adjacency";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import {
   append,
   canAppend,
+  choiceBounds,
   continuations,
   EMPTY_ROUTE,
   isEmpty,
@@ -95,7 +97,7 @@ describe("starting a route", () => {
 
 describe("growing a route", () => {
   it("resolves direction on the second segment", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(route.ambiguous).toBe(false);
     expect(route.steps.map((s) => s.segment)).toEqual(["s1", "s2"]);
     expect(liveEnds(route)).toEqual(["nC"]);
@@ -104,43 +106,51 @@ describe("growing a route", () => {
   it("flips the first segment when the second is behind it", () => {
     // Clicking the neighbour behind you means you meant to ride the other way,
     // not that you made a mistake.
-    const route = append(startRoute(seg("s2")), seg("s1"));
+    const route = append(startRoute(seg("s2")), seg("s1"), G);
     expect(route.steps[0]).toEqual({ segment: "s2", from: "nC", to: "nB" });
     expect(route.steps[1]).toEqual({ segment: "s1", from: "nB", to: "nA" });
   });
 
   it("only offers what touches the live end once direction is settled", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect([...continuations(route, G)]).toEqual(["s3"]);
   });
 
   it("will not attach a segment that touches nothing live", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(canAppend(route, seg("s4"), G)).toBe(false);
-    expect(append(route, seg("s4"))).toEqual(route);
+    expect(append(route, seg("s4"), G)).toEqual(route);
+  });
+
+  it("refuses to double back down the road it arrived on", () => {
+    // The highlighting says this is not allowed, so the model must agree —
+    // otherwise the two disagree the moment a caller forgets to check.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    const back = append(route, seg("s2"), G);
+    expect(back).toEqual(route);
   });
 
   it("never offers the segment just ridden, so a route cannot double back in place", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(continuations(route, G).has("s2")).toBe(false);
   });
 
   it("reports a dead end as nothing to offer", () => {
-    let route = append(startRoute(seg("s1")), seg("s2"));
-    route = append(route, seg("s3"));
+    let route = append(startRoute(seg("s1")), seg("s2"), G);
+    route = append(route, seg("s3"), G);
     expect(continuations(route, G).size).toBe(0);
   });
 });
 
 describe("undo", () => {
   it("pops the last segment", () => {
-    let route = append(startRoute(seg("s1")), seg("s2"));
-    route = append(route, seg("s3"));
+    let route = append(startRoute(seg("s1")), seg("s2"), G);
+    route = append(route, seg("s3"), G);
     expect(undo(route).steps.map((s) => s.segment)).toEqual(["s1", "s2"]);
   });
 
   it("makes both ends live again on the way back to one segment", () => {
-    const route = undo(append(startRoute(seg("s1")), seg("s2")));
+    const route = undo(append(startRoute(seg("s1")), seg("s2"), G));
     expect(route.ambiguous).toBe(true);
     expect(liveEnds(route).sort()).toEqual(["nA", "nB"]);
   });
@@ -152,7 +162,7 @@ describe("undo", () => {
 
 describe("what the route measures", () => {
   it("adds up distance", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(routeMeters(route, G)).toBe(2000);
   });
 
@@ -163,31 +173,31 @@ describe("what the route measures", () => {
   });
 
   it("collapses to one number once direction is settled", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(routeGain(route, G)).toEqual({ min: 60, max: 60 });
   });
 
   it("counts the climb of the direction actually ridden", () => {
-    const downhill = append(startRoute(seg("s2")), seg("s1"));
+    const downhill = append(startRoute(seg("s2")), seg("s1"), G);
     expect(routeGain(downhill, G)).toEqual({ min: 0, max: 0 });
   });
 });
 
 describe("route geometry", () => {
   it("joins the segments without repeating the junction between them", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     expect(routePoints(route, G)).toHaveLength(5);
   });
 
   it("reverses a segment ridden backwards", () => {
-    const route = append(startRoute(seg("s2")), seg("s1"));
+    const route = append(startRoute(seg("s2")), seg("s1"), G);
     const points = routePoints(route, G);
     expect(points[0][2]).toBe(60);
     expect(points[points.length - 1][2]).toBe(0);
   });
 
   it("profiles the whole route, not each segment", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"));
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
     const profile = routeProfile(route, G);
     expect(profile.samples[0]).toBeCloseTo(0, 6);
     expect(profile.samples[profile.samples.length - 1]).toBeCloseTo(60, 6);
@@ -195,5 +205,33 @@ describe("route geometry", () => {
 
   it("has nothing to draw for an empty route", () => {
     expect(routePoints(EMPTY_ROUTE, G)).toEqual([]);
+  });
+});
+
+describe("what the map should be framing", () => {
+  it("frames the choices, not the road already ridden", () => {
+    // Riding nA→nB→nC leaves s3 as the only way on, so s1 and s2 have no
+    // business deciding the view.
+    const route = append(startRoute(seg("s1")), seg("s2"), G);
+    expect(choiceBounds(route, G)).toEqual(boundsOf(seg("s3").points));
+  });
+
+  it("covers every branch when there is more than one way on", () => {
+    // From nB both s2 and s4 are open, so both have to be in view.
+    const route = startRoute(seg("s1"));
+    const bounds = choiceBounds(route, G)!;
+    const covering = boundsOf([...seg("s2").points, ...seg("s4").points]);
+    expect(bounds.minLon).toBeCloseTo(covering.minLon, 9);
+    expect(bounds.maxLon).toBeCloseTo(covering.maxLon, 9);
+  });
+
+  it("has nothing to frame before a route starts", () => {
+    expect(choiceBounds(EMPTY_ROUTE, G)).toBeNull();
+  });
+
+  it("has nothing to frame at a dead end, so the view is left alone", () => {
+    let route = append(startRoute(seg("s1")), seg("s2"), G);
+    route = append(route, seg("s3"), G);
+    expect(choiceBounds(route, G)).toBeNull();
   });
 });

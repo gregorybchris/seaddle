@@ -5,7 +5,6 @@ import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
 import {
   append,
-  canAppend,
   EMPTY_ROUTE,
   isEmpty,
   startRoute,
@@ -23,12 +22,12 @@ export function MapPage() {
       if (!graph) return;
       const segment = graph.segments.get(id);
       if (!segment) return;
-      setRoute((current) => {
-        if (isEmpty(current)) return startRoute(segment);
-        return canAppend(current, segment, graph)
-          ? append(current, segment)
-          : current;
-      });
+      // `append` enforces the rules itself, so there is nothing to check here.
+      setRoute((current) =>
+        isEmpty(current)
+          ? startRoute(segment)
+          : append(current, segment, graph),
+      );
     },
     [graph],
   );

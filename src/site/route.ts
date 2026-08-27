@@ -1,6 +1,7 @@
+import { boundsOf } from "@/lib/geo/bounds";
 import { elevationProfile, type Profile } from "@/lib/geo/profile";
 import { otherEnd } from "@/lib/graph/adjacency";
-import type { ElevCoord } from "@/lib/models/geo";
+import type { Bounds, ElevCoord } from "@/lib/models/geo";
 import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 
@@ -81,9 +82,19 @@ export function canAppend(
  * Attaching to the far end of an undecided single segment flips that segment
  * rather than refusing: clicking the neighbour behind you means you meant to
  * ride the other way, not that you made a mistake.
+ *
+ * Refuses anything that is not a legal continuation. The rule lives here rather
+ * than in each caller, because a version that merely checked whether a segment
+ * touched the live end would let a route double straight back down the road it
+ * arrived on — which the highlighting says is not allowed.
  */
-export function append(route: Route, segment: SiteSegment): Route {
+export function append(
+  route: Route,
+  segment: SiteSegment,
+  graph: SiteGraph,
+): Route {
   if (isEmpty(route)) return startRoute(segment);
+  if (!canAppend(route, segment, graph)) return route;
 
   const first = route.steps[0];
   const last = route.steps[route.steps.length - 1];
@@ -184,6 +195,23 @@ export function routePoints(route: Route, graph: SiteGraph): ElevCoord[] {
     points.push(...(points.length === 0 ? ordered : ordered.slice(1)));
   }
   return points;
+}
+
+/**
+ * The area the choices occupy: every segment the route could grow into.
+ *
+ * This, rather than the route so far, is what the map should be showing. The
+ * road already ridden is settled; the decision in front of the rider is which
+ * way to go next, and a view framed on twenty miles of history can leave the
+ * turnings too small to tell apart. Null when the route has not started, or has
+ * run out of road — in both cases there is nothing to frame.
+ */
+export function choiceBounds(route: Route, graph: SiteGraph): Bounds | null {
+  if (isEmpty(route)) return null;
+  const points = [...continuations(route, graph)].flatMap(
+    (id) => graph.segments.get(id)?.points ?? [],
+  );
+  return points.length > 0 ? boundsOf(points) : null;
 }
 
 export function routeProfile(route: Route, graph: SiteGraph): Profile {

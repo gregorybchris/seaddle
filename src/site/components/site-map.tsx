@@ -7,18 +7,60 @@ import Map, {
   type MapRef,
 } from "react-map-gl";
 import type { FeatureCollection, LineString } from "geojson";
-import { boundsOf } from "@/lib/geo/bounds";
+import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
-import { continuations, isEmpty, type Route } from "../route";
+import { choiceBounds, continuations, isEmpty, type Route } from "../route";
 
-const CLICKABLE = "segments-open";
+const CLICKABLE = "segments-hit";
+
+/**
+ * How wide the invisible target around each road is, in screen pixels.
+ *
+ * A four-pixel line is a four-pixel target, which is unreasonable with a mouse
+ * and hopeless with a thumb. This is the figure the spec sets for touch, and
+ * the ambiguity a band this wide creates — two roads a few metres apart both
+ * being hit — is resolved by picking the nearest rather than the first.
+ */
+const HIT_WIDTH = 22;
 
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
   onPick: (id: SegmentId) => void;
 };
+
+/**
+ * Which road the tap meant, when a wide target caught more than one.
+ *
+ * Two roads running a few metres apart both fall inside a 22-pixel band, and
+ * taking whichever Mapbox listed first would pick by draw order — so it picks
+ * by distance instead, which is what the person aiming meant.
+ */
+function nearestOf(
+  event: MapLayerMouseEvent,
+  graph: SiteGraph,
+): SegmentId | null {
+  const hits = (event.features ?? [])
+    .map((feature) => String(feature.properties?.id ?? ""))
+    .filter(Boolean);
+  if (hits.length === 0) return null;
+  if (hits.length === 1) return hits[0];
+
+  const at: [number, number] = [event.lngLat.lng, event.lngLat.lat];
+  let best = hits[0];
+  let closest = Infinity;
+  for (const id of hits) {
+    const segment = graph.segments.get(id);
+    if (!segment) continue;
+    const away = projectOntoPolyline(segment.points, at).distanceMeters;
+    if (away < closest) {
+      closest = away;
+      best = id;
+    }
+  }
+  return best;
+}
 
 /**
  * Three states and only three: in the route, a place it could go next, and
@@ -67,30 +109,25 @@ export function SiteMap({ graph, route, onPick }: SiteMapProps) {
     );
   }, [graph]);
 
-  // Follow a growing route, but only when it has actually left the screen.
-  // Refitting every time would drag the map back from wherever the rider had
-  // just panned to look, which is worse than occasionally having to pan.
+  // Frame where the route can go next, not where it has been.
+  //
+  // The road already ridden is settled; the decision in front of the rider is
+  // which way to turn, and a view fitted to twenty miles of history leaves the
+  // turnings too small to tell apart. Refits on every pick rather than only
+  // when the choices have left the screen — the pick is a deliberate act, and
+  // answering it by moving the camera is the point.
   useEffect(() => {
-    if (!mapRef.current || route.steps.length < 2) return;
-    const points = route.steps.flatMap(
-      (step) => graph.segments.get(step.segment)?.points ?? [],
-    );
-    if (points.length === 0) return;
-
-    const bounds = boundsOf(points);
-    const view = mapRef.current.getMap().getBounds();
-    const visible =
-      view &&
-      view.contains([bounds.minLon, bounds.minLat]) &&
-      view.contains([bounds.maxLon, bounds.maxLat]);
-    if (visible) return;
-
+    if (!mapRef.current) return;
+    const bounds = choiceBounds(route, graph);
+    if (!bounds) return;
     mapRef.current.fitBounds(
       [
         [bounds.minLon, bounds.minLat],
         [bounds.maxLon, bounds.maxLat],
       ],
-      { padding: 90, duration: 700, maxZoom: 15 },
+      // Generous padding so the road just ridden stays partly in frame and the
+      // choices do not sit against the edge of the screen.
+      { padding: 140, duration: 700, maxZoom: 15 },
     );
   }, [route, graph]);
 
@@ -110,8 +147,8 @@ export function SiteMap({ graph, route, onPick }: SiteMapProps) {
       }
       onMouseOut={() => setOverRoad(false)}
       onClick={(event: MapLayerMouseEvent) => {
-        const id = event.features?.[0]?.properties?.id;
-        if (id) onPick(String(id));
+        const id = nearestOf(event, graph);
+        if (id) onPick(id);
       }}
     >
       <Source id="graph" type="geojson" data={data}>
@@ -128,13 +165,27 @@ export function SiteMap({ graph, route, onPick }: SiteMapProps) {
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
         <Layer
-          id={CLICKABLE}
+          id="segments-open"
           type="line"
           filter={["in", ["get", "id"], ["literal", open]]}
           paint={{
             "line-color": "#2f6b48",
             "line-opacity": 0.9,
             "line-width": isEmpty(route) ? 3.5 : 4.5,
+          }}
+          layout={{ "line-cap": "round", "line-join": "round" }}
+        />
+        {/* Invisible and wide: the thing a finger actually has to hit. Only
+            what may be picked is in it, so a fat target cannot catch a road
+            that is out of play. */}
+        <Layer
+          id={CLICKABLE}
+          type="line"
+          filter={["in", ["get", "id"], ["literal", open]]}
+          paint={{
+            "line-color": "#000000",
+            "line-opacity": 0,
+            "line-width": HIT_WIDTH,
           }}
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
