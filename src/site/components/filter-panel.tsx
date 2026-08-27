@@ -6,13 +6,10 @@ import {
   type Protection,
   type Surroundings,
 } from "@/lib/models/graph";
-import { Funnel } from "@phosphor-icons/react";
-import { cn } from "@/lib/utilities/style-utils";
 import { humanize } from "@/lib/utilities/words";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import { STEEPEST_GRADE } from "../grade";
-import { CollapsibleSection } from "@/widgets/collapsible-section";
 import {
   ENCODING_VALUES,
   ENCODINGS,
@@ -53,71 +50,57 @@ export function FilterPanel({
   const on = isFiltering(filters);
 
   return (
-    <CollapsibleSection
-      title="Filters"
-      // Amber once something is set, so a folded section still says it is
-      // doing something to the map.
-      icon={
-        <Funnel
-          weight={on ? "fill" : "bold"}
-          aria-hidden
-          className={cn("h-3 w-3", on ? "text-blaze" : "text-sand/70")}
-        />
-      }
-      count={on ? passing : total}
-    >
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
+      <ChipGroup
+        label="Color the map by"
+        options={ENCODINGS}
+        value={encoding}
+        onChange={onEncoding}
+      />
+      <Legend encoding={encoding} />
+
+      <div className="border-sand/10 flex flex-col gap-3 border-t pt-3">
         <ChipGroup
-          label="Color the map by"
-          options={ENCODINGS}
-          value={encoding}
-          onChange={onEncoding}
+          label="Nothing steeper than"
+          options={STEEPNESSES}
+          value={filters.steepest}
+          onChange={(steepest: Steepness) =>
+            onFilters({ ...filters, steepest })
+          }
         />
-        <Legend encoding={encoding} />
-
-        <div className="border-sand/10 flex flex-col gap-3 border-t pt-3">
-          <ChipGroup
-            label="Nothing steeper than"
-            options={STEEPNESSES}
-            value={filters.steepest}
-            onChange={(steepest: Steepness) =>
-              onFilters({ ...filters, steepest })
-            }
-          />
-          <ChipGroup
-            label="At least this protected"
-            options={PROTECTIONS}
-            value={filters.leastProtection}
-            onChange={(leastProtection: Protection) =>
-              onFilters({ ...filters, leastProtection })
-            }
-          />
-          <ChipGroup
-            label="At least this pretty"
-            options={SURROUNDINGS}
-            value={filters.leastSurroundings}
-            onChange={(leastSurroundings: Surroundings) =>
-              onFilters({ ...filters, leastSurroundings })
-            }
-          />
-        </div>
-
-        {on && (
-          <div className="flex items-center gap-2">
-            <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
-              {passing} of {total} roads
-            </span>
-            <Button
-              variant="quiet"
-              className="min-h-0 px-2 py-1 text-xs"
-              onClick={() => onFilters(NO_FILTERS)}
-            >
-              Clear
-            </Button>
-          </div>
-        )}
+        <ChipGroup
+          label="At least this protected"
+          options={PROTECTIONS}
+          value={filters.leastProtection}
+          onChange={(leastProtection: Protection) =>
+            onFilters({ ...filters, leastProtection })
+          }
+        />
+        <ChipGroup
+          label="At least this pretty"
+          options={SURROUNDINGS}
+          value={filters.leastSurroundings}
+          onChange={(leastSurroundings: Surroundings) =>
+            onFilters({ ...filters, leastSurroundings })
+          }
+        />
       </div>
-    </CollapsibleSection>
+
+      {on && (
+        <div className="flex items-center gap-2">
+          <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
+            {passing} of {total} roads
+          </span>
+          <Button
+            variant="quiet"
+            className="min-h-0 px-2 py-1 text-xs"
+            onClick={() => onFilters(NO_FILTERS)}
+          >
+            Clear
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
 
