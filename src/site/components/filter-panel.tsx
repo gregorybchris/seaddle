@@ -7,6 +7,8 @@ import {
   type LaneQuality,
   type Scenic,
 } from "@/lib/models/graph";
+import { Funnel } from "@phosphor-icons/react";
+import { cn } from "@/lib/utilities/style-utils";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import { ChipToggles } from "@/widgets/chip-toggles";
@@ -50,9 +52,17 @@ export function FilterPanel({
 
   return (
     <CollapsibleSection
-      title="What you'll ride"
+      title="Filters"
+      // Amber once something is set, so a folded section still says it is
+      // doing something to the map.
+      icon={
+        <Funnel
+          weight={on ? "fill" : "bold"}
+          aria-hidden
+          className={cn("h-3 w-3", on ? "text-blaze" : "text-sand/40")}
+        />
+      }
       count={on ? passing : total}
-      defaultOpen={false}
     >
       <div className="flex flex-col gap-4">
         <ChipGroup
@@ -121,9 +131,11 @@ function Legend({ encoding }: { encoding: Encoding }) {
     <ul className="flex flex-wrap gap-x-3 gap-y-1">
       {ENCODING_VALUES[encoding].map((value) => (
         <li key={value} className="flex items-center gap-1.5">
+          {/* Outlined, because the dark end of a ramp tuned for a pale
+              basemap is exactly this panel's own colour. */}
           <span
             aria-hidden
-            className="h-1.5 w-4 rounded-full"
+            className="ring-sand/30 h-1.5 w-4 rounded-full ring-1"
             style={{ backgroundColor: RAMPS[encoding][value] }}
           />
           <span className="text-sand/60 text-[0.6875rem]">{value}</span>

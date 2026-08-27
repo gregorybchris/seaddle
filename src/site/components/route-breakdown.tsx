@@ -48,7 +48,7 @@ export function RouteBreakdown({
           <li key={share.value} className="flex items-center gap-1.5">
             <span
               aria-hidden
-              className="h-1.5 w-1.5 shrink-0 rounded-full"
+              className="ring-sand/30 h-1.5 w-1.5 shrink-0 rounded-full ring-1"
               style={{ backgroundColor: RAMPS[encoding][share.value] }}
             />
             <span className="text-sand/70 text-[0.6875rem]">{share.value}</span>

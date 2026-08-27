@@ -6,6 +6,8 @@ import { SearchField } from "./search-field";
 
 type CollapsibleSectionProps = {
   title: string;
+  /** Sits before the title, for a section whose subject has a familiar sign. */
+  icon?: ReactNode;
   /** Shown beside the title so a closed section still says how much is inside. */
   count: number;
   search?: { value: string; onChange: (value: string) => void; label: string };
@@ -28,6 +30,7 @@ type CollapsibleSectionProps = {
  */
 export function CollapsibleSection({
   title,
+  icon,
   count,
   search,
   defaultOpen = true,
@@ -60,6 +63,7 @@ export function CollapsibleSection({
             !open && "-rotate-90",
           )}
         />
+        {icon}
         <span className="eyebrow text-sand/40 group-hover:text-sand/70 transition-colors">
           {title}
         </span>
