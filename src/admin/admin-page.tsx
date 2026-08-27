@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { boundsOf, padBounds } from "@/lib/geo/bounds";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode } from "@/lib/models/graph";
+import { cn } from "@/lib/utilities/style-utils";
 import { CycattleMark } from "@/widgets/cycattle-mark";
 import {
   DEFAULT_MAX_DETOUR_RATIO,
@@ -159,7 +160,7 @@ export default function AdminPage() {
     );
   }
 
-  if (data.loading) return <Notice title="Loading rides" />;
+  if (data.loading) return <Notice title="Loading rides" waiting />;
   if (data.error && data.tracks.length === 0) {
     return <Notice title="Could not load the rides">{data.error}</Notice>;
   }
@@ -218,17 +219,30 @@ export default function AdminPage() {
   );
 }
 
+/**
+ * A whole-screen state: waiting, or unable to start.
+ *
+ * Centred as one column rather than left-aligned inside a centred box, which
+ * left the mark hanging off the corner of the title instead of belonging to it.
+ */
 function Notice({
   title,
   children,
+  waiting = false,
 }: {
   title: string;
   children?: React.ReactNode;
+  waiting?: boolean;
 }) {
   return (
     <div className="bg-forest flex h-full items-center justify-center p-8">
-      <div className="max-w-sm">
-        <CycattleMark className="text-sand/80 mb-5 h-10 w-10" />
+      <div className="flex max-w-sm flex-col items-center text-center">
+        <CycattleMark
+          className={cn(
+            "text-sand/80 mb-5 h-12 w-12",
+            waiting && "animate-[breathe_1.8s_ease-in-out_infinite]",
+          )}
+        />
         <h1 className="text-sand text-lg tracking-[0.14em] uppercase">
           {title}
         </h1>
