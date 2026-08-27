@@ -1,4 +1,13 @@
-import type { NodeId, SegmentId, SegmentRecord } from "@/lib/models/graph";
+import type { NodeId, SegmentId } from "@/lib/models/graph";
+
+/**
+ * The topology of a segment and nothing else.
+ *
+ * Adjacency has no business knowing what a road is paved with, and asking for
+ * a whole segment record would stop the site — which holds a different shape —
+ * from using the same traversal the admin does.
+ */
+export type Edge = { id: SegmentId; from: NodeId; to: NodeId };
 
 export type Adjacency = Map<NodeId, SegmentId[]>;
 
@@ -9,7 +18,7 @@ export type Adjacency = Map<NodeId, SegmentId[]>;
  * millisecond, and a denormalised index in the file is one more thing that can
  * disagree with the segments it describes.
  */
-export function buildAdjacency(segments: SegmentRecord[]): Adjacency {
+export function buildAdjacency(segments: Edge[]): Adjacency {
   const adjacency: Adjacency = new Map();
   const add = (node: NodeId, segment: SegmentId) => {
     const existing = adjacency.get(node);
@@ -39,7 +48,7 @@ export function continuationsFrom(
 }
 
 /** The far end of a segment, given the end you are standing on. */
-export function otherEnd(segment: SegmentRecord, node: NodeId): NodeId {
+export function otherEnd(segment: Edge, node: NodeId): NodeId {
   if (segment.from === node) return segment.to;
   if (segment.to === node) return segment.from;
   throw new Error(`Segment ${segment.id} does not touch node ${node}`);
@@ -52,7 +61,7 @@ export function otherEnd(segment: SegmentRecord, node: NodeId): NodeId {
  * those almost certainly never touch the main network. That is a normal
  * condition rather than a bug, but it has to be visible.
  */
-export function connectedComponents(segments: SegmentRecord[]): NodeId[][] {
+export function connectedComponents(segments: Edge[]): NodeId[][] {
   const adjacency = buildAdjacency(segments);
   const byId = new Map(segments.map((s) => [s.id, s]));
   const seen = new Set<NodeId>();

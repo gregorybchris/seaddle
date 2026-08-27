@@ -2082,7 +2082,7 @@
         "startIndex": 2849,
         "endIndex": 3438
       },
-      "name": null,
+      "name": "Zoo Hill",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2102,7 +2102,7 @@
         "startIndex": 3900,
         "endIndex": 3695
       },
-      "name": null,
+      "name": "Zoo Hill Extension",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2122,7 +2122,7 @@
         "startIndex": 3900,
         "endIndex": 4121
       },
-      "name": null,
+      "name": "Zoo Hill Descent Pt 1",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2142,7 +2142,7 @@
         "startIndex": 4247,
         "endIndex": 4533
       },
-      "name": null,
+      "name": "Zoo Hill Descent Pt 2",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2222,27 +2222,7 @@
         "startIndex": 1782,
         "endIndex": 3293
       },
-      "name": null,
-      "difficulty": {
-        "forward": "medium",
-        "backward": "medium"
-      },
-      "laneQuality": "fair",
-      "scenic": "medium",
-      "surface": "asphalt",
-      "recommendedDirection": null,
-      "reviewed": false
-    },
-    {
-      "id": "s091",
-      "from": "n043",
-      "to": "n044",
-      "source": {
-        "track": "2026-07-05-morning-ride",
-        "startIndex": 4571,
-        "endIndex": 3564
-      },
-      "name": null,
+      "name": "East Lake Sammamish",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2262,7 +2242,7 @@
         "startIndex": 177,
         "endIndex": 155
       },
-      "name": null,
+      "name": "Marymoor West Entrance",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2282,7 +2262,7 @@
         "startIndex": 372,
         "endIndex": 259
       },
-      "name": null,
+      "name": "Redmond to Marymoor",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2302,7 +2282,7 @@
         "startIndex": 372,
         "endIndex": 458
       },
-      "name": null,
+      "name": "Marymoor Park West",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2322,7 +2302,7 @@
         "startIndex": 524,
         "endIndex": 652
       },
-      "name": null,
+      "name": "Marymoor Park East",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3262,7 +3242,7 @@
         "startIndex": 4680,
         "endIndex": 5231
       },
-      "name": null,
+      "name": "Bellevue N/S",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3282,7 +3262,7 @@
         "startIndex": 260,
         "endIndex": 39
       },
-      "name": null,
+      "name": "Fremont to Palatine",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3302,7 +3282,7 @@
         "startIndex": 6227,
         "endIndex": 6196
       },
-      "name": null,
+      "name": "QFC to Dinosaurs",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3322,7 +3302,7 @@
         "startIndex": 28,
         "endIndex": 0
       },
-      "name": null,
+      "name": "Lenin to QFC",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3342,7 +3322,7 @@
         "startIndex": 56,
         "endIndex": 9
       },
-      "name": null,
+      "name": "Bellevue to 520 Trail",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3362,7 +3342,7 @@
         "startIndex": 339,
         "endIndex": 347
       },
-      "name": null,
+      "name": "Palatine Climb Tippy Top",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3382,7 +3362,7 @@
         "startIndex": 260,
         "endIndex": 339
       },
-      "name": null,
+      "name": "Palatine Climb",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3402,7 +3382,7 @@
         "startIndex": 143,
         "endIndex": 197
       },
-      "name": null,
+      "name": "8th to Greenwood",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3422,7 +3402,7 @@
         "startIndex": 197,
         "endIndex": 225
       },
-      "name": null,
+      "name": "Greenwood to Fremont",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3443,6 +3423,66 @@
         "endIndex": 315
       },
       "name": "Phinney to Greenwood",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s153",
+      "from": "n038",
+      "to": "n045",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 373,
+        "endIndex": 114
+      },
+      "name": "Stone Way",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s154",
+      "from": "n044",
+      "to": "n113",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 3627,
+        "endIndex": 4425
+      },
+      "name": "Redmond to Bellevue",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s155",
+      "from": "n113",
+      "to": "n043",
+      "source": {
+        "track": "2026-07-05-morning-ride",
+        "startIndex": 4367,
+        "endIndex": 4571
+      },
+      "name": null,
       "difficulty": {
         "forward": "medium",
         "backward": "medium"

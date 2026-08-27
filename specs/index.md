@@ -501,12 +501,12 @@ typecheck, lint, and tests.
 
 ## 8. Milestones
 
-1. **Foundation** — project scaffold, data model types, `gpx:import`, `graph:build`, ported map
+1. ~~**Foundation**~~ — project scaffold, data model types, `gpx:import`, `graph:build`, ported map
    utilities, tests for the geometry math.
 2. **Admin core** — heatmap, node placement with snapping, candidate finder, extraction, crop and
    write-back. Stop as soon as ~10 real segments exist.
 3. **Site core** — map, segment chaining, sidebar, distance/gain/profile stats, built against
-   those real segments.
+   those real segments. _Done._
 4. **Admin completion** — metadata and pin editors, manual connect, coverage view, validation.
    Then actually slice the 21 tracks into the full graph.
 5. **Site completion** — filters, color encoding, attribute summary, out-and-back, URL sharing,
@@ -532,8 +532,8 @@ complete dataset.
 - **Segment granularity.** How long should a typical segment be? Too fine and route building is
   tedious; too coarse and the metadata stops being meaningful. Worth deciding empirically after
   the first ten.
-- **Cold start.** Opening fit to the full Everett–Burien bounds may read as a hairball to a
-  first-time visitor. Revisit after milestone 3, when there's enough real geometry to judge it
-  honestly rather than in the abstract.
+- ~~**Cold start.**~~ Settled at milestone 3: with 145 segments across 260 miles, opening fit to
+  the whole network reads as a map of where you can ride rather than as a hairball. No neighbourhood
+  picker needed.
 - **Pin sourcing.** All pins are hand-placed for now. Seattle Parks publishes fountain and restroom
   data, and OSM has both — an import could seed them, at the cost of accuracy.
