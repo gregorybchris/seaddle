@@ -1,7 +1,8 @@
 import { boundsOf } from "@/lib/geo/bounds";
+import { coordAtFraction } from "@/lib/geo/polyline";
 import { elevationProfile, type Profile } from "@/lib/geo/profile";
 import { otherEnd } from "@/lib/graph/adjacency";
-import type { Bounds, ElevCoord } from "@/lib/models/geo";
+import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 
@@ -102,7 +103,7 @@ export function canAppend(
  * Add a segment to whichever live end it touches.
  *
  * Attaching to the far end of an undecided single segment flips that segment
- * rather than refusing: clicking the neighbour behind you means you meant to
+ * rather than refusing: clicking the neighbor behind you means you meant to
  * ride the other way, not that you made a mistake.
  *
  * Refuses anything that is not a legal continuation. The rule lives here rather
@@ -217,7 +218,7 @@ function orient(segment: SiteSegment, from: NodeId): Step {
  * special case. The climb does change — a descent ridden home is a climb — and
  * because each mirrored step is oriented the other way, that falls out too.
  *
- * The turn itself counts as the decision, so Step back takes the whole return
+ * The turn itself counts as the decision, so Undo takes the whole return
  * leg off in one press rather than unpicking it a segment at a time.
  */
 export function outAndBack(route: Route): Route {
@@ -271,39 +272,6 @@ export function decodeRoute(encoded: string, graph: SiteGraph): Route {
       : append(route, segment, graph);
   }
   return route;
-}
-
-export type Leg = {
-  /** The steps added by one decision: the chosen segment and anything run through after it. */
-  steps: Step[];
-  meters: number;
-  gain: number;
-};
-
-/**
- * The route as a list of decisions rather than a list of segments.
- *
- * What a rider chose is a turn, not the three bends that followed it, and Step
- * back takes one of these off — so a list of segments would show three rows
- * disappearing for one press.
- */
-export function legs(route: Route, graph: SiteGraph): Leg[] {
-  const out: Leg[] = [];
-  for (const step of route.steps) {
-    const segment = graph.segments.get(step.segment);
-    const meters = segment?.meters ?? 0;
-    const gain = segment ? stepGain(step, segment) : 0;
-
-    const current = out[out.length - 1];
-    if (step.auto && current) {
-      current.steps.push(step);
-      current.meters += meters;
-      current.gain += gain;
-    } else {
-      out.push({ steps: [step], meters, gain });
-    }
-  }
-  return out;
 }
 
 export function routeMeters(route: Route, graph: SiteGraph): number {
@@ -381,6 +349,27 @@ export function choiceBounds(route: Route, graph: SiteGraph): Bounds | null {
   const points = [...continuations(route, graph)].flatMap(
     (id) => graph.segments.get(id)?.points ?? [],
   );
+  return points.length > 0 ? boundsOf(points) : null;
+}
+
+/**
+ * The point the map should hold still while a route grows.
+ *
+ * The end of the route, because that is where the next choice is and therefore
+ * where the cursor already is. An opening segment has no end yet — both of them
+ * are live — so it holds its middle instead, which keeps either end reachable.
+ */
+export function focusAnchor(route: Route, graph: SiteGraph): Coord | null {
+  const points = routePoints(route, graph);
+  if (points.length === 0) return null;
+  if (route.ambiguous) return coordAtFraction(points, 0.5);
+  const last = points[points.length - 1];
+  return [last[0], last[1]];
+}
+
+/** The whole ride, for when it is being looked at rather than built. */
+export function routeBounds(route: Route, graph: SiteGraph): Bounds | null {
+  const points = routePoints(route, graph);
   return points.length > 0 ? boundsOf(points) : null;
 }
 

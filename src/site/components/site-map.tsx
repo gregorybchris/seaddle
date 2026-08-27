@@ -8,12 +8,20 @@ import Map, {
   type MapRef,
 } from "react-map-gl";
 import type { FeatureCollection, LineString } from "geojson";
+import { centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import { harderDifficulty, type SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
 import { RAMPS, type Encoding } from "../filters";
-import { choiceBounds, continuations, isEmpty, type Route } from "../route";
+import {
+  choiceBounds,
+  continuations,
+  focusAnchor,
+  isEmpty,
+  routeBounds,
+  type Route,
+} from "../route";
 
 const CLICKABLE = "segments-hit";
 
@@ -22,7 +30,7 @@ const CLICKABLE = "segments-hit";
  *
  * A four-pixel line is a four-pixel target, which is unreasonable with a mouse
  * and hopeless with a thumb. This is the figure the spec sets for touch, and
- * the ambiguity a band this wide creates — two roads a few metres apart both
+ * the ambiguity a band this wide creates — two roads a few meters apart both
  * being hit — is resolved by picking the nearest rather than the first.
  */
 const HIT_WIDTH = 22;
@@ -35,13 +43,20 @@ type SiteMapProps = {
   dimmed: SegmentId[];
   /** Where the reader is pointing on the elevation chart, if anywhere. */
   scrubbed: Coord | null;
+  /**
+   * What the map should be showing, and a nonce so asking twice works.
+   *
+   * "choices" while a route is being built, "route" when one is being looked
+   * at — arriving on a shared link, or opening a saved ride.
+   */
+  framing: { mode: "choices" | "route"; at: number };
   onPick: (id: SegmentId) => void;
 };
 
 /**
  * Which road the tap meant, when a wide target caught more than one.
  *
- * Two roads running a few metres apart both fall inside a 22-pixel band, and
+ * Two roads running a few meters apart both fall inside a 22-pixel band, and
  * taking whichever Mapbox listed first would pick by draw order — so it picks
  * by distance instead, which is what the person aiming meant.
  */
@@ -84,6 +99,7 @@ export function SiteMap({
   encoding,
   dimmed,
   scrubbed,
+  framing,
   onPick,
 }: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
@@ -95,7 +111,7 @@ export function SiteMap({
       features: [...graph.segments.values()].map((segment) => ({
         type: "Feature",
         id: segment.id,
-        // The attributes travel with the feature, because the colour of a road
+        // The attributes travel with the feature, because the color of a road
         // is decided by a style expression on the GPU rather than in React.
         // Carrying only the id — which this did — left every expression
         // matching against nothing and every road drawn in the fallback.
@@ -118,8 +134,8 @@ export function SiteMap({
     [graph],
   );
 
-  // A road is drawn in the colour of whatever the map is currently about.
-  const colour = useMemo(
+  // A road is drawn in the color of whatever the map is currently about.
+  const color = useMemo(
     () => [
       "match",
       ["get", encoding],
@@ -153,12 +169,24 @@ export function SiteMap({
   // The road already ridden is settled; the decision in front of the rider is
   // which way to turn, and a view fitted to twenty miles of history leaves the
   // turnings too small to tell apart. Refits on every pick rather than only
-  // when the choices have left the screen — the pick is a deliberate act, and
+  // when the choices have left the screen: the pick is a deliberate act, and
   // answering it by moving the camera is the point.
+  //
+  // The end of the route is held in the middle of the screen while that
+  // happens, so the next choice appears around where the cursor already is
+  // rather than somewhere else each time.
   useEffect(() => {
     if (!mapRef.current) return;
-    const bounds = choiceBounds(route, graph);
-    if (!bounds) return;
+
+    const looking = framing.mode === "route";
+    const target = looking
+      ? routeBounds(route, graph)
+      : choiceBounds(route, graph);
+    if (!target) return;
+
+    const anchor = looking ? null : focusAnchor(route, graph);
+    const bounds = anchor ? centeredOn(anchor, target) : target;
+
     mapRef.current.fitBounds(
       [
         [bounds.minLon, bounds.minLat],
@@ -168,7 +196,7 @@ export function SiteMap({
       // choices do not sit against the edge of the screen.
       { padding: 140, duration: 700, maxZoom: 15 },
     );
-  }, [route, graph]);
+  }, [framing, route, graph]);
 
   return (
     <Map
@@ -201,7 +229,7 @@ export function SiteMap({
           id="segments-closed"
           type="line"
           paint={{
-            "line-color": colour as never,
+            "line-color": color as never,
             "line-opacity": [
               "case",
               ["in", ["get", "id"], ["literal", dimmed]],
@@ -217,7 +245,7 @@ export function SiteMap({
           type="line"
           filter={["in", ["get", "id"], ["literal", open]]}
           paint={{
-            "line-color": colour as never,
+            "line-color": color as never,
             "line-opacity": [
               "case",
               ["in", ["get", "id"], ["literal", dimmed]],
@@ -229,7 +257,7 @@ export function SiteMap({
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
         {/* Surface reads as a set of materials rather than a scale, so it is
-            reinforced with a pattern that does not rely on colour at all. */}
+            reinforced with a pattern that does not rely on color at all. */}
         <Layer
           id="segments-surface"
           type="line"

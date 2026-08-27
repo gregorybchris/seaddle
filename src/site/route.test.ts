@@ -11,10 +11,11 @@ import {
   decodeRoute,
   EMPTY_ROUTE,
   encodeRoute,
+  focusAnchor,
   isEmpty,
-  legs,
   liveEnds,
   outAndBack,
+  routeBounds,
   routeGain,
   routeMeters,
   routePoints,
@@ -107,7 +108,7 @@ describe("starting a route", () => {
     expect(ids(startRoute(seg("s2")))).toEqual(["s2"]);
   });
 
-  it("offers the neighbours of both ends while undecided", () => {
+  it("offers the neighbors of both ends while undecided", () => {
     const route = startRoute(seg("s2"));
     expect([...continuations(route, G)].sort()).toEqual(["s1", "s3", "s4"]);
   });
@@ -122,7 +123,7 @@ describe("growing a route", () => {
   });
 
   it("flips the first segment when the second is behind it", () => {
-    // Clicking the neighbour behind you means you meant to ride the other way,
+    // Clicking the neighbor behind you means you meant to ride the other way,
     // not that you made a mistake.
     const route = append(startRoute(seg("s2")), seg("s1"), G);
     expect(route.steps[0]).toEqual({
@@ -298,33 +299,6 @@ describe("what the map should be framing", () => {
   });
 });
 
-describe("the route as decisions", () => {
-  it("groups what was run through with the choice that caused it", () => {
-    // One press of Step back removes one of these, so one of these is what a
-    // row in the list has to be.
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    const grouped = legs(route, G);
-    expect(grouped).toHaveLength(2);
-    expect(grouped[1].steps.map((step) => step.segment)).toEqual(["s2", "s3"]);
-  });
-
-  it("adds up the distance and climb of a whole leg", () => {
-    const route = append(startRoute(seg("s1")), seg("s2"), G);
-    const [, second] = legs(route, G);
-    expect(second.meters).toBe(2000);
-    expect(second.gain).toBe(10);
-  });
-
-  it("gives one leg per segment where nothing was run through", () => {
-    const route = append(startRoute(seg("s1")), seg("s4"), G);
-    expect(legs(route, G)).toHaveLength(2);
-  });
-
-  it("has no legs before a route starts", () => {
-    expect(legs(EMPTY_ROUTE, G)).toEqual([]);
-  });
-});
-
 describe("out and back", () => {
   it("rides the chain home again", () => {
     const route = append(startRoute(seg("s1")), seg("s4"), G);
@@ -390,5 +364,36 @@ describe("carrying a route in a link", () => {
   it("reads an empty link as no route at all", () => {
     expect(decodeRoute("", G)).toEqual(EMPTY_ROUTE);
     expect(encodeRoute(EMPTY_ROUTE)).toBe("");
+  });
+});
+
+describe("where the map should hold still", () => {
+  it("anchors on the end of the route, where the next choice is", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    const points = routePoints(route, G);
+    const last = points[points.length - 1];
+    expect(focusAnchor(route, G)).toEqual([last[0], last[1]]);
+  });
+
+  it("anchors on the middle of an opening segment, which has no end yet", () => {
+    // Both its ends are live, so holding either one still would favor a
+    // direction the rider has not chosen.
+    const anchor = focusAnchor(startRoute(seg("s1")), G)!;
+    const points = routePoints(startRoute(seg("s1")), G);
+    expect(anchor).not.toEqual([points[0][0], points[0][1]]);
+    expect(anchor).not.toEqual([
+      points[points.length - 1][0],
+      points[points.length - 1][1],
+    ]);
+  });
+
+  it("has nothing to anchor on before a route starts", () => {
+    expect(focusAnchor(EMPTY_ROUTE, G)).toBeNull();
+    expect(routeBounds(EMPTY_ROUTE, G)).toBeNull();
+  });
+
+  it("covers the whole ride when it is being looked at rather than built", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(routeBounds(route, G)).toEqual(boundsOf(routePoints(route, G)));
   });
 });

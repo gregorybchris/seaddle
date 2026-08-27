@@ -35,12 +35,26 @@ export function MapPage() {
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const [encoding, setEncoding] = useState<Encoding>("laneQuality");
+  /**
+   * What the map should frame next.
+   *
+   * Building a route and looking at one want different views: mid-build the
+   * question is where to turn, but a ride opened from a link or from the saved
+   * list is finished, and the answer is what it looks like end to end.
+   */
+  const [framing, setFraming] = useState<{
+    mode: "choices" | "route";
+    at: number;
+  }>({ mode: "route", at: 0 });
 
   // Read the link once the graph is there to make sense of it, and again
   // whenever the back button moves through the history we have been writing.
   useEffect(() => {
     if (!graph) return;
-    const fromUrl = () => setRouteState(decodeRoute(routeFromUrl(), graph));
+    const fromUrl = () => {
+      setRouteState(decodeRoute(routeFromUrl(), graph));
+      setFraming({ mode: "route", at: Date.now() });
+    };
     fromUrl();
     window.addEventListener("popstate", fromUrl);
     return () => window.removeEventListener("popstate", fromUrl);
@@ -51,15 +65,19 @@ export function MapPage() {
    * makes the back button undo — free on a desktop, and where an Android
    * thumb already is.
    */
-  const changeRoute = useCallback((next: Route) => {
-    setRouteState(next);
-    const encoded = encodeRoute(next);
-    window.history.pushState(
-      null,
-      "",
-      encoded ? `?r=${encoded}` : window.location.pathname,
-    );
-  }, []);
+  const changeRoute = useCallback(
+    (next: Route, mode: "choices" | "route" = "choices") => {
+      setRouteState(next);
+      setFraming({ mode, at: Date.now() });
+      const encoded = encodeRoute(next);
+      window.history.pushState(
+        null,
+        "",
+        encoded ? `?r=${encoded}` : window.location.pathname,
+      );
+    },
+    [],
+  );
 
   const pick = useCallback(
     (id: SegmentId) => {
@@ -115,7 +133,9 @@ export function MapPage() {
         onUndo={() => changeRoute(undo(route))}
         onClear={() => changeRoute(EMPTY_ROUTE)}
         onOutAndBack={() => changeRoute(outAndBack(route))}
-        onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph))}
+        // A saved ride is finished, so it is shown whole rather than framed
+        // on wherever it could still go.
+        onLoad={(encoded) => changeRoute(decodeRoute(encoded, graph), "route")}
         onScrub={setScrub}
       />
       <main className="h-full md:min-w-0 md:flex-1">
@@ -125,6 +145,7 @@ export function MapPage() {
           encoding={encoding}
           dimmed={dimmed}
           scrubbed={scrubbed}
+          framing={framing}
           onPick={pick}
         />
       </main>
