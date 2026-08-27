@@ -8,7 +8,6 @@ import {
   PROTECTIONS,
   SURROUNDINGS,
   STEEPNESSES,
-  SURFACES,
   type Steepness,
   type Direction,
   type SegmentRecord,
@@ -129,13 +128,6 @@ export function SegmentEditor({
           value={shared((s) => s.surroundings)}
           mixed={disagree((s) => s.surroundings)}
           onChange={(surroundings) => onPatch({ surroundings })}
-        />
-        <ChipGroup
-          label="Surface"
-          options={SURFACES}
-          value={shared((s) => s.surface)}
-          mixed={disagree((s) => s.surface)}
-          onChange={(surface) => onPatch({ surface })}
         />
         <ChipGroup
           label="Ride it"

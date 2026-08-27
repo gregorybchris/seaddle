@@ -40,7 +40,6 @@ describe("buildGraphGeoJson", () => {
     const properties = collection.features[0].properties!;
     expect(properties.protection).toBe("bikePath");
     expect(properties.steepness).toBe("rolling");
-    expect(properties.surface).toBe("asphalt");
     expect(properties.reviewed).toBe(false);
   });
 

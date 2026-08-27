@@ -13,7 +13,7 @@ describe("humanize", () => {
   });
 
   it("keeps everything lowercase, since these are choices and not headings", () => {
-    expect(humanize("Surface")).toBe("surface");
+    expect(humanize("Surroundings")).toBe("surroundings");
     expect(humanize("recommendedDirection")).toBe("recommended direction");
   });
 

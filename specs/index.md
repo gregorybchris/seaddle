@@ -106,7 +106,6 @@ type Node = {
 type Steepness = "flat" | "rolling" | "steep";
 type Protection = "unprotected" | "bikeLane" | "bikePath";
 type Surroundings = "plain" | "pleasant" | "scenic";
-type Surface = "asphalt" | "gravel" | "dirt";
 
 type Segment = {
   id: SegmentId;
@@ -121,7 +120,6 @@ type Segment = {
   steepness: Steepness; // undirected: the same hill whichever way you meet it
   protection: Protection;
   surroundings: Surroundings;
-  surface: Surface;
   recommendedDirection: "forward" | "backward" | null;
   reviewed: boolean; // false until the attributes above are deliberately set, not defaulted
 
@@ -287,8 +285,8 @@ with no way to see why.
 
 Steepness, protection, and surroundings are ordered scales, so they are **threshold** controls —
 "nothing steeper than rolling," "at least a bike lane" — which is how the constraint is actually
-held in someone's head. Surface is categorical and gets a **multi-select** toggle group. A set of
-checkboxes for the ordinals would permit nonsense states like _flat and steep but not rolling_.
+held in someone's head. A set of checkboxes would permit nonsense states like _flat and steep but
+not rolling_.
 
 ```
 Nothing steeper than    flat ──●── steep       (rolling)
@@ -300,9 +298,9 @@ At least this pretty    plain       ●──── scenic     (any)
 one that is not a segment attribute: it is read from the recorded elevation point by point and
 colors *within* a segment, which is also why it is the one you cannot filter on.
 
-Surface is still recorded and still editable in the admin, but it is no longer offered to riders,
-as a filter or as a color. Every road in the network is asphalt, so both controls only ever had
-one honest answer.
+Surface is gone entirely — from the filters, from the color encodings, from the admin editor, and
+from the stored record. Every road in the network is asphalt, so the attribute only ever had one
+honest answer, and an editor field nobody ever changes is a field that eventually gets set wrong.
 
 
 ### Sharing and saving
@@ -416,7 +414,7 @@ with visible hairline gaps), simplified, rounded, and written to `geometry/<id>.
 recommended direction, optional name. Saving it sets `reviewed: true`. Autosaves.
 
 Judging ~200 segments one form at a time is the real cost of this project, so the admin also
-supports **multi-select bulk editing** — lasso or shift-click several segments and set surface or
+supports **multi-select bulk editing** — lasso or shift-click several segments and set surroundings or
 lane quality across all of them at once. Whole trails share attributes; the Burke-Gilman is one
 answer, not forty.
 
@@ -463,13 +461,13 @@ onto the polyline, and the pin can then be dragged off the line to its true posi
 - **Segment color ramps** are per attribute and chosen for contrast against the muted basemap:
   steepness runs green → amber → rust with distinct lightness steps (so it survives deuteranopia,
   not just hue); protection is a single-hue sequential ramp across three steps; surroundings is a
-  three-step sequential ramp; surface is categorical, reinforced by dash pattern.
+  three-step sequential ramp.
 
 ### Accessibility
 
 Keyboard-operable route building, visible focus rings, `prefers-reduced-motion` respected on map
 flights and sheet transitions, 44 px minimum touch targets, and color never as the sole encoding
-(surface uses dashes; the sidebar always states attributes in words).
+(the sidebar always states attributes in words).
 
 ### Performance budget
 

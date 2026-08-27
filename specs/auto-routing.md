@@ -71,7 +71,7 @@ aggregator, not ORS's own page._ Attribution goes next to the existing Mapbox at
 ### BRouter — the upgrade path
 
 [BRouter][br] (MIT) has the best bicycle profiles in the open-source world — its `.brf` scripts
-model gradient penalties, surface cost, and safety preference far more deliberately than a generic
+model gradient penalties and safety preference far more deliberately than a generic
 cycling profile. Elevation-aware by design. The catch is operational: the public instance publishes
 no usage policy for third-party apps, so relying on it for a public site is both fragile and rude.
 Using BRouter means self-hosting.
@@ -91,7 +91,7 @@ worse than the hand-judged segments next to it.
 This is the part that matters, and it's a design problem rather than a technical one.
 
 `index.md` opens by rejecting "an opaque line on a map." A routed connector is exactly that. The
-router knows nothing about lane quality, steepness, or surface, and the connector is precisely
+router knows nothing about protection or steepness, and the connector is precisely
 where a beginner is most likely to be pushed onto an arterial — it's the leg nobody has ridden and
 judged.
 

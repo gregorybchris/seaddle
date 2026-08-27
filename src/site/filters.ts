@@ -15,10 +15,7 @@ import type { SiteSegment } from "./graph-data";
  * than rolling", "at least a bike lane" — which is how the constraint is
  * actually held in someone's head. A row of checkboxes would permit nonsense
  * like flat and steep but not rolling.
- *
- * Surface used to be here as a set rather than a scale. Every road in the
- * network is asphalt, so the control only ever had one honest answer and asked
- * the rider to consider a choice that was not one.
+
  */
 export type Filters = {
   steepest: Steepness;

@@ -194,7 +194,6 @@ describe("addSegment", () => {
     // Extraction is meant to be cheap; judging the road is a separate pass.
     const { segment } = addSegment(base, candidate, nodeA, nodeB);
     expect(segment.reviewed).toBe(false);
-    expect(segment.surface).toBe("asphalt");
     expect(segment.steepness).toBe("flat");
   });
 

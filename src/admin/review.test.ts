@@ -19,28 +19,30 @@ const THREE = emptyGraph({
 describe("applyAttributes", () => {
   it("sets what it was given", () => {
     const after = applyAttributes(THREE, ["s001"], {
-      surface: "gravel",
+      steepness: "rolling",
       surroundings: "scenic",
     });
-    expect(after.segments[0].surface).toBe("gravel");
+    expect(after.segments[0].steepness).toBe("rolling");
     expect(after.segments[0].surroundings).toBe("scenic");
   });
 
   it("leaves everything it was not given alone", () => {
-    // Bulk editing is the normal case: a whole trail shares a surface without
-    // sharing a steepness, so one attribute must not overwrite the rest.
+    // Bulk editing is the normal case: a whole trail shares its surroundings
+    // without sharing a steepness, so one must not overwrite the rest.
     const reviewed = applyAttributes(THREE, ["s001"], {
       steepness: "steep",
       protection: "bikePath",
     });
-    const after = applyAttributes(reviewed, ["s001"], { surface: "dirt" });
+    const after = applyAttributes(reviewed, ["s001"], {
+      surroundings: "plain",
+    });
     expect(after.segments[0].steepness).toBe("steep");
     expect(after.segments[0].protection).toBe("bikePath");
   });
 
   it("marks whatever it touches as reviewed", () => {
     // Deciding is the review, so there is no separate button to forget.
-    const after = applyAttributes(THREE, ["s001"], { surface: "gravel" });
+    const after = applyAttributes(THREE, ["s001"], { surroundings: "scenic" });
     expect(after.segments[0].reviewed).toBe(true);
   });
 
@@ -64,17 +66,17 @@ describe("applyAttributes", () => {
       recommendedDirection: null,
     });
     expect(cleared.segments[0].recommendedDirection).toBeNull();
-    const untouched = applyAttributes(set, ["s001"], { surface: "dirt" });
+    const untouched = applyAttributes(set, ["s001"], { surroundings: "plain" });
     expect(untouched.segments[0].recommendedDirection).toBe("forward");
   });
 
   it("does nothing when nothing is selected", () => {
-    expect(applyAttributes(THREE, [], { surface: "dirt" })).toBe(THREE);
+    expect(applyAttributes(THREE, [], { surroundings: "plain" })).toBe(THREE);
   });
 
   it("leaves the input alone", () => {
-    applyAttributes(THREE, ["s001"], { surface: "dirt" });
-    expect(THREE.segments[0].surface).toBe("asphalt");
+    applyAttributes(THREE, ["s001"], { surroundings: "scenic" });
+    expect(THREE.segments[0].surroundings).toBe("plain");
     expect(THREE.segments[0].reviewed).toBe(false);
   });
 });
@@ -83,7 +85,7 @@ describe("markUnreviewed", () => {
   it("puts one back in the queue without changing what it says", () => {
     const after = markUnreviewed(THREE, "s002");
     expect(after.segments[1].reviewed).toBe(false);
-    expect(after.segments[1].surface).toBe(THREE.segments[1].surface);
+    expect(after.segments[1].surroundings).toBe(THREE.segments[1].surroundings);
   });
 });
 

@@ -9,7 +9,6 @@ import type {
   Surroundings,
   SegmentId,
   Steepness,
-  Surface,
 } from "@/lib/models/graph";
 
 /**
@@ -29,7 +28,6 @@ export type SiteSegment = {
   steepness: Steepness;
   protection: Protection;
   surroundings: Surroundings;
-  surface: Surface;
   recommendedDirection: Direction | null;
 };
 
@@ -71,7 +69,6 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     steepness: p.steepness as Steepness,
     protection: p.protection as Protection,
     surroundings: p.surroundings as Surroundings,
-    surface: p.surface as Surface,
     recommendedDirection: (p.recommendedDirection as Direction | null) ?? null,
   };
 }

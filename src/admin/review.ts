@@ -6,21 +6,19 @@ import type {
   SegmentId,
   SegmentRecord,
   Steepness,
-  Surface,
 } from "@/lib/models/graph";
 
 /**
  * What a review pass can change about a segment.
  *
  * Every field optional, because bulk editing is the normal case: whole trails
- * share a surface without sharing a steepness, and applying one attribute
- * across forty segments must not overwrite the other five.
+ * share their surroundings without sharing a steepness, and applying one
+ * attribute across forty segments must not overwrite the others.
  */
 export type AttributePatch = {
   steepness?: Steepness;
   protection?: Protection;
   surroundings?: Surroundings;
-  surface?: Surface;
   recommendedDirection?: Direction | null;
 };
 
@@ -53,7 +51,6 @@ function patched(segment: SegmentRecord, patch: AttributePatch): SegmentRecord {
     steepness: patch.steepness ?? segment.steepness,
     protection: patch.protection ?? segment.protection,
     surroundings: patch.surroundings ?? segment.surroundings,
-    surface: patch.surface ?? segment.surface,
     recommendedDirection:
       patch.recommendedDirection === undefined
         ? segment.recommendedDirection

@@ -26,7 +26,6 @@ function segment(over: Partial<SiteSegment> = {}): SiteSegment {
     steepness: "flat",
     protection: "unprotected",
     surroundings: "pleasant",
-    surface: "asphalt",
     recommendedDirection: null,
     ...over,
   };
@@ -37,12 +36,9 @@ const only = (over: Partial<Filters>): Filters => ({ ...NO_FILTERS, ...over });
 describe("passes", () => {
   it("lets everything through when nothing is set", () => {
     expect(passes(segment({ steepness: "steep" }), NO_FILTERS)).toBe(true);
-    expect(
-      passes(
-        segment({ protection: "unprotected", surface: "dirt" }),
-        NO_FILTERS,
-      ),
-    ).toBe(true);
+    expect(passes(segment({ protection: "unprotected" }), NO_FILTERS)).toBe(
+      true,
+    );
   });
 
   it("keeps out what is steeper than asked for", () => {

@@ -32,7 +32,6 @@ export function buildGraphGeoJson(
         steepness: segment.steepness,
         protection: segment.protection,
         surroundings: segment.surroundings,
-        surface: segment.surface,
         recommendedDirection: segment.recommendedDirection,
         reviewed: segment.reviewed,
         ...derived,
