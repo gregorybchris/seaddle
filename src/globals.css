@@ -73,21 +73,23 @@ body {
 /**
  * The sheet's resting height, driven by a custom property.
  *
- * The height and offset have to change at the breakpoint, and an inline style
- * cannot be media-queried — nor can a utility class override one. So the
- * component sets a number and the media query decides what to do with it.
+ * It stands exactly as tall as it currently shows rather than being a
+ * full-height panel slid down past the bottom edge, because the scrolling
+ * region inside it is sized from what is left over: a panel taller than the
+ * screen hands that region space nobody can see, and everything past the
+ * bottom edge stops being reachable at all.
+ *
+ * The height has to change at the breakpoint, and an inline style cannot be
+ * media-queried — nor can a utility class override one. So the component sets
+ * a number and the media query decides what to do with it.
  */
 .sheet {
-  height: calc(var(--sheet-height, 88) * 1vh);
-  transform: translateY(
-    calc((var(--sheet-height, 88) - var(--sheet-visible, 52)) * 1vh)
-  );
+  height: calc(var(--sheet-visible, 52) * 1vh);
 }
 
 @media (min-width: 48rem) {
   .sheet {
     height: 100%;
-    transform: none;
   }
 }
 
