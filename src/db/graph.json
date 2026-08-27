@@ -604,9 +604,9 @@
       },
       "name": "Arboretum West",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s002",
@@ -618,10 +618,10 @@
         "endIndex": 730
       },
       "name": "Discovery Lower Path",
-      "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "steepness": "rolling",
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s003",
@@ -634,9 +634,9 @@
       },
       "name": "Discovery Upper Path",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s005",
@@ -649,9 +649,9 @@
       },
       "name": "Loyal Heights to Greenwood",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s006",
@@ -709,9 +709,9 @@
       },
       "name": "Arboretum Treacherous Dirt",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s010",
@@ -725,8 +725,8 @@
       "name": "Ballard Locks to Golden Gardens",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s011",
@@ -739,9 +739,9 @@
       },
       "name": "Golden Gardens Climb",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s012",
@@ -754,9 +754,9 @@
       },
       "name": "From Locks Over Train Tracks",
       "steepness": "steep",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s013",
@@ -769,9 +769,9 @@
       },
       "name": "Discovery Climb",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s014",
@@ -785,8 +785,8 @@
       "name": "Gilman to Government",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s015",
@@ -799,9 +799,9 @@
       },
       "name": "Commodore Way",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s016",
@@ -814,9 +814,9 @@
       },
       "name": "Crossing Ballard Locks",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s020",
@@ -829,9 +829,9 @@
       },
       "name": "Green Lake NE",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s021",
@@ -844,9 +844,9 @@
       },
       "name": "Green Lake NW",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s022",
@@ -859,9 +859,9 @@
       },
       "name": "Green Lake SW",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s023",
@@ -874,9 +874,9 @@
       },
       "name": "Green Lake SE",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s024",
@@ -890,8 +890,8 @@
       "name": "Green Lake to Ravenna",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s025",
@@ -904,9 +904,9 @@
       },
       "name": "UW Burke Gilman to Ravenna",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s026",
@@ -919,9 +919,9 @@
       },
       "name": "Ravenna Burke Gilman to Kenmore",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s027",
@@ -934,9 +934,9 @@
       },
       "name": "Burke Gilman Through Kenmore",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s028",
@@ -949,9 +949,9 @@
       },
       "name": "Bothell through Kirkland to Bellevue",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s029",
@@ -964,9 +964,9 @@
       },
       "name": "Sammamish River Trail",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s030",
@@ -979,9 +979,9 @@
       },
       "name": "Eastlake",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s031",
@@ -994,9 +994,9 @@
       },
       "name": "Zoo to Green Lake",
       "steepness": "steep",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s032",
@@ -1009,9 +1009,9 @@
       },
       "name": "Fremont Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s033",
@@ -1024,9 +1024,9 @@
       },
       "name": "Cheshiahud Brooks to Adobe",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s034",
@@ -1039,9 +1039,9 @@
       },
       "name": "Gasworks to Brooks",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s035",
@@ -1055,8 +1055,8 @@
       "name": "34th St Brooks to Fremont Bridge",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s036",
@@ -1070,8 +1070,8 @@
       "name": "34th St Fremont Bridge to PCC",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s037",
@@ -1084,9 +1084,9 @@
       },
       "name": "PCC to Cheshiahud Lake Union Loop",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s038",
@@ -1099,9 +1099,9 @@
       },
       "name": "Cheshiahud Lake Union Loop to Dinosaurs",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s039",
@@ -1114,9 +1114,9 @@
       },
       "name": "Burke Gilman Dinosaurs",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s040",
@@ -1129,9 +1129,9 @@
       },
       "name": "Westlake",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s041",
@@ -1144,9 +1144,9 @@
       },
       "name": "Loyal Way",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s042",
@@ -1174,9 +1174,9 @@
       },
       "name": "Interlaken",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s044",
@@ -1189,9 +1189,9 @@
       },
       "name": "Fremont Ave to Interurban",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s045",
@@ -1204,9 +1204,9 @@
       },
       "name": "N Green Lake to Fremont Ave",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s047",
@@ -1219,9 +1219,9 @@
       },
       "name": "Ballard to Edmonds",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s049",
@@ -1234,9 +1234,9 @@
       },
       "name": "Perkins Connector",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s050",
@@ -1249,9 +1249,9 @@
       },
       "name": "Ballinger Commons South",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s051",
@@ -1264,9 +1264,9 @@
       },
       "name": "Ballinger Commons",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s053",
@@ -1279,9 +1279,9 @@
       },
       "name": "Interurban to Ballinger Commons",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s054",
@@ -1294,9 +1294,9 @@
       },
       "name": "Interurban to Echo Lake",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s055",
@@ -1309,9 +1309,9 @@
       },
       "name": "Echo Lake to Ballinger Commons South",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s056",
@@ -1324,9 +1324,9 @@
       },
       "name": "Echo Lake to Ballinger Commons North",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s057",
@@ -1340,8 +1340,8 @@
       "name": "Shilshole Fremont to Ballard Locks",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s058",
@@ -1354,9 +1354,9 @@
       },
       "name": "Fremont Bridge to Gilman Crossing",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s059",
@@ -1369,9 +1369,9 @@
       },
       "name": "Colman Dock to West Seattle Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s060",
@@ -1384,9 +1384,9 @@
       },
       "name": "Pike Place to Colman Dock",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s061",
@@ -1400,8 +1400,8 @@
       "name": "Pike Place to Centennial Park",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s062",
@@ -1429,9 +1429,9 @@
       },
       "name": "West Seattle to Burien",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s064",
@@ -1444,9 +1444,9 @@
       },
       "name": "Burien to Alki",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s065",
@@ -1459,9 +1459,9 @@
       },
       "name": "West Seattle",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s066",
@@ -1474,9 +1474,9 @@
       },
       "name": "Across West Seattle",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s067",
@@ -1489,9 +1489,9 @@
       },
       "name": "West Seattle Bridge to West Seattle",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s068",
@@ -1505,8 +1505,8 @@
       "name": "SLU to Pike Place",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s069",
@@ -1519,9 +1519,9 @@
       },
       "name": "Montlake to S Interlaken",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s070",
@@ -1534,9 +1534,9 @@
       },
       "name": "Montlake Crossing South",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s071",
@@ -1549,9 +1549,9 @@
       },
       "name": "Montlake Crossing Central",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s072",
@@ -1564,9 +1564,9 @@
       },
       "name": "Montlake Park Ramp",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s073",
@@ -1579,9 +1579,9 @@
       },
       "name": "Judkins Park to Interlaken",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s074",
@@ -1594,9 +1594,9 @@
       },
       "name": "Judkins",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s075",
@@ -1609,9 +1609,9 @@
       },
       "name": "Mt Baker Ridge Tunnel",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s076",
@@ -1624,9 +1624,9 @@
       },
       "name": "East Portal Hill Full",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s077",
@@ -1639,9 +1639,9 @@
       },
       "name": "East Portal Hill Upper",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s078",
@@ -1654,9 +1654,9 @@
       },
       "name": "East Portal Hill Central",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s079",
@@ -1669,9 +1669,9 @@
       },
       "name": "East Portal to Mt Baker Ridge Tunnel",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s080",
@@ -1684,9 +1684,9 @@
       },
       "name": "I90 Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s082",
@@ -1700,8 +1700,8 @@
       "name": "Newport Way S of Lake Sammamish",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s083",
@@ -1714,9 +1714,9 @@
       },
       "name": "Zoo Hill",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s084",
@@ -1729,9 +1729,9 @@
       },
       "name": "Zoo Hill Extension",
       "steepness": "steep",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s085",
@@ -1744,9 +1744,9 @@
       },
       "name": "Zoo Hill Descent Pt 1",
       "steepness": "steep",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s086",
@@ -1759,9 +1759,9 @@
       },
       "name": "Zoo Hill Descent Pt 2",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s087",
@@ -1774,9 +1774,9 @@
       },
       "name": "West Lake Sammamish",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s088",
@@ -1789,9 +1789,9 @@
       },
       "name": "Mill Valley",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s089",
@@ -1805,8 +1805,8 @@
       "name": "Zoo to Issaquah",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s090",
@@ -1819,9 +1819,9 @@
       },
       "name": "East Lake Sammamish",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s092",
@@ -1834,9 +1834,9 @@
       },
       "name": "Marymoor West Entrance",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s093",
@@ -1849,9 +1849,9 @@
       },
       "name": "Redmond to Marymoor",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s094",
@@ -1864,9 +1864,9 @@
       },
       "name": "Marymoor Park West",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s095",
@@ -1879,9 +1879,9 @@
       },
       "name": "Marymoor Park East",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s096",
@@ -1894,9 +1894,9 @@
       },
       "name": "West Seward Park",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s097",
@@ -1909,9 +1909,9 @@
       },
       "name": "South Seward Park",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s098",
@@ -1924,9 +1924,9 @@
       },
       "name": "East Seward Park",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s099",
@@ -1940,8 +1940,8 @@
       "name": "Genesee Park to Seward Park",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s100",
@@ -1954,9 +1954,9 @@
       },
       "name": "Colman Park to Genesee Park",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s101",
@@ -1969,9 +1969,9 @@
       },
       "name": "Colman Park Turns",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s102",
@@ -1984,9 +1984,9 @@
       },
       "name": "Leschi to Colman Park",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s103",
@@ -1999,9 +1999,9 @@
       },
       "name": "Leschi to East Portal",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s104",
@@ -2014,9 +2014,9 @@
       },
       "name": "Arboretum to Leschi",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s105",
@@ -2029,9 +2029,9 @@
       },
       "name": "Arboretum SE",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s106",
@@ -2044,9 +2044,9 @@
       },
       "name": "Arboretum NE",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s107",
@@ -2059,9 +2059,9 @@
       },
       "name": "Montlake to Arboretum S",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s108",
@@ -2074,9 +2074,9 @@
       },
       "name": "Montlake to Arboretum N",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s109",
@@ -2089,9 +2089,9 @@
       },
       "name": "Montlake Crossing to South Ramp",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s110",
@@ -2104,9 +2104,9 @@
       },
       "name": "Montlake Crossing to North Ramp",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s111",
@@ -2119,9 +2119,9 @@
       },
       "name": "UW Green to Ramp S",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s112",
@@ -2134,9 +2134,9 @@
       },
       "name": "UW Green to Ramp N",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s113",
@@ -2149,9 +2149,9 @@
       },
       "name": "UW Green / BG Crossing E",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s114",
@@ -2164,9 +2164,9 @@
       },
       "name": "Montlake Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s115",
@@ -2179,9 +2179,9 @@
       },
       "name": "BG E/W to UW Green",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s116",
@@ -2194,9 +2194,9 @@
       },
       "name": "UW Green to BG N/S",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s117",
@@ -2209,9 +2209,9 @@
       },
       "name": "UW Green / BG Crossing W",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s118",
@@ -2224,9 +2224,9 @@
       },
       "name": "520 Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s121",
@@ -2239,9 +2239,9 @@
       },
       "name": "Burke Gilman Through UW Sciences",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s122",
@@ -2254,9 +2254,9 @@
       },
       "name": "Corliss Crossing South",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s123",
@@ -2269,9 +2269,9 @@
       },
       "name": "Corliss Crossing to UW on Northlake",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s124",
@@ -2284,9 +2284,9 @@
       },
       "name": "Corliss Crossing East",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s125",
@@ -2299,9 +2299,9 @@
       },
       "name": "Gas Works to Corliss Crossing Northlake",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s126",
@@ -2314,9 +2314,9 @@
       },
       "name": "Gas Works to Corliss Crossing",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s127",
@@ -2329,9 +2329,9 @@
       },
       "name": "Corliss Crossing to Peace Park",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s128",
@@ -2344,9 +2344,9 @@
       },
       "name": "Mercer Island North",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s129",
@@ -2359,9 +2359,9 @@
       },
       "name": "Mercer Island South",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s130",
@@ -2374,9 +2374,9 @@
       },
       "name": "Mercer Island to Bellevue Bridge",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s131",
@@ -2389,9 +2389,9 @@
       },
       "name": "East Lake Washington Through Bellevue",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s132",
@@ -2404,9 +2404,9 @@
       },
       "name": "North Bellevue to 520 Bridge",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s133",
@@ -2421,7 +2421,7 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s134",
@@ -2434,9 +2434,9 @@
       },
       "name": "South Bellevue",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s135",
@@ -2449,9 +2449,9 @@
       },
       "name": "Bellevue to Issaquah",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s136",
@@ -2464,9 +2464,9 @@
       },
       "name": "SE Lake Washington May Creek",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s137",
@@ -2479,9 +2479,9 @@
       },
       "name": "SE Lake Washington Renton",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "scenic",
+      "reviewed": true
     },
     {
       "id": "s138",
@@ -2495,8 +2495,8 @@
       "name": "SW Lake Washington",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s139",
@@ -2510,8 +2510,8 @@
       "name": "SW Lake Washington to Seward",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s140",
@@ -2525,8 +2525,8 @@
       "name": "Northup to Bellevue Connector N",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s141",
@@ -2540,8 +2540,8 @@
       "name": "Northup to Bellevue Connector S",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s142",
@@ -2554,9 +2554,9 @@
       },
       "name": "Bellevue N/S",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s144",
@@ -2569,9 +2569,9 @@
       },
       "name": "Fremont to Palatine",
       "steepness": "rolling",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s145",
@@ -2585,8 +2585,8 @@
       "name": "QFC to Dinosaurs",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s146",
@@ -2599,9 +2599,9 @@
       },
       "name": "Lenin to QFC",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s147",
@@ -2614,9 +2614,9 @@
       },
       "name": "Bellevue to 520 Trail",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s148",
@@ -2629,9 +2629,9 @@
       },
       "name": "Palatine Climb Tippy Top",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s149",
@@ -2644,9 +2644,9 @@
       },
       "name": "Palatine Climb",
       "steepness": "steep",
-      "protection": "bikeLane",
+      "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s150",
@@ -2659,9 +2659,9 @@
       },
       "name": "8th to Greenwood",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s151",
@@ -2674,9 +2674,9 @@
       },
       "name": "Greenwood to Fremont",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s152",
@@ -2690,8 +2690,8 @@
       "name": "Phinney to Greenwood",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s153",
@@ -2705,8 +2705,8 @@
       "name": "Stone Way",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s154",
@@ -2719,9 +2719,9 @@
       },
       "name": "Redmond to Bellevue",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s155",
@@ -2735,8 +2735,8 @@
       "name": "Northup to North Bellevue",
       "steepness": "rolling",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s156",
@@ -2749,9 +2749,9 @@
       },
       "name": "Meridian at Ballinger Commons S",
       "steepness": "rolling",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s157",
@@ -2764,9 +2764,9 @@
       },
       "name": "Meridian at Ballinger Commons N",
       "steepness": "steep",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s158",
@@ -2794,9 +2794,9 @@
       },
       "name": "UW Mercer Court",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s160",
@@ -2809,9 +2809,9 @@
       },
       "name": "Mercer Court to UW Sciences",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s161",
@@ -2825,8 +2825,8 @@
       "name": "Peace Park Ramp",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s162",
@@ -2841,7 +2841,7 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s163",
@@ -2854,9 +2854,9 @@
       },
       "name": "UW Bridge North Ramp",
       "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s164",
@@ -2870,8 +2870,8 @@
       "name": "UW Bridge Ramp to Mercer Court",
       "steepness": "flat",
       "protection": "bikeLane",
-      "surroundings": "pleasant",
-      "reviewed": false
+      "surroundings": "plain",
+      "reviewed": true
     },
     {
       "id": "s165",
@@ -2946,7 +2946,7 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s170",
@@ -2960,8 +2960,8 @@
       "name": "Ballinger Commons Ramp",
       "steepness": "flat",
       "protection": "unprotected",
-      "surroundings": "plain",
-      "reviewed": false
+      "surroundings": "pleasant",
+      "reviewed": true
     }
   ],
   "pins": [
@@ -3212,6 +3212,86 @@
       "note": null,
       "at": 0.9996530084887466,
       "coord": [-122.547398, 47.60444]
+    },
+    {
+      "id": "p032",
+      "segment": "s012",
+      "kind": "viewpoint",
+      "note": "Cool view over train tracks",
+      "at": 0.2864874776538483,
+      "coord": [-122.399492, 47.663551]
+    },
+    {
+      "id": "p033",
+      "segment": "s058",
+      "kind": "hazard",
+      "note": "Bad bumps in bike path from tree roots",
+      "at": 0.7442882863181699,
+      "coord": [-122.358527, 47.650944]
+    },
+    {
+      "id": "p034",
+      "segment": "s035",
+      "kind": "hazard",
+      "note": "Very dangerous intersection for bikers. Be aware of cars turning",
+      "at": 0.3469046270614733,
+      "coord": [-122.347239, 47.649195]
+    },
+    {
+      "id": "p035",
+      "segment": "s057",
+      "kind": "hazard",
+      "note": "Be aware of train tracks. Cross only at right angles",
+      "at": 0.49489665576469294,
+      "coord": [-122.375867, 47.661553]
+    },
+    {
+      "id": "p036",
+      "segment": "s025",
+      "kind": "hazard",
+      "note": "A bit bumpy from tree roots",
+      "at": 0.45185503898778,
+      "coord": [-122.301856, 47.658132]
+    },
+    {
+      "id": "p037",
+      "segment": "s016",
+      "kind": "hazard",
+      "note": "You must walk your bike here for pedestrians",
+      "at": 0.021276455875150962,
+      "coord": [-122.396153, 47.667649]
+    },
+    {
+      "id": "p038",
+      "segment": "s016",
+      "kind": "viewpoint",
+      "note": "Ballard Locks",
+      "at": 0.4626214538954727,
+      "coord": [-122.39697, 47.665768]
+    },
+    {
+      "id": "p039",
+      "segment": "s009",
+      "kind": "hazard",
+      "note": "This patch of dirt can be dangerous. It is safer to get on the Arboretum path from the North",
+      "at": 0.18589331026336908,
+      "coord": [-122.296485, 47.640505]
+    },
+    {
+      "id": "p040",
+      "segment": "s045",
+      "kind": "hazard",
+      "note": "Road narrows here and cars can be aggressive",
+      "at": 0.4773302332186996,
+      "coord": [-122.344613, 47.687003]
+    },
+    {
+      "id": "p041",
+      "segment": "s114",
+      "kind": "hazard",
+      "note": "Trail narrows, keep right",
+      "at": 0.6267472398435208,
+      "coord": [-122.304547, 47.647335]
     }
   ]
 }
