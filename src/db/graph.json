@@ -2779,9 +2779,9 @@
       },
       "name": "Lake Ballinger to Ballinger Commons",
       "steepness": "flat",
-      "protection": "bikeLane",
+      "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s159",
