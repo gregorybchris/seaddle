@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { boundsOf, padBounds } from "@/lib/geo/bounds";
 import { snapEnds } from "@/lib/geo/polyline";
+import { walkOrder } from "@/lib/graph/walk";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode, PinKind } from "@/lib/models/graph";
+import { typingIn } from "@/lib/utilities/keys";
 import { cn } from "@/lib/utilities/style-utils";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import {
@@ -77,6 +79,31 @@ export default function AdminPage() {
       maxDetourRatio,
     });
   }, [index, from, to, data.tracks, radiusMeters, maxDetourRatio]);
+
+  /**
+   * Segments in the order the roads run, rather than the order they were cut.
+   *
+   * The sidebar lists this and the step buttons walk it, so during a review
+   * pass "next" is the segment you would have ridden onto — which is what
+   * makes it possible to judge how protected a road is without zooming out
+   * first to remember where it was. Ids record when a segment was extracted
+   * and say nothing about where it is.
+   *
+   * Only topology and geometry decide the order, so entering attributes never
+   * reshuffles the list under the pass that is entering them.
+   */
+  const orderedSegments = useMemo(() => {
+    const byId = new Map(data.graph.segments.map((s) => [s.id, s]));
+    const order = walkOrder(
+      data.graph.segments.map((segment) => ({
+        id: segment.id,
+        from: segment.from,
+        to: segment.to,
+        points: data.geometry.get(segment.id) ?? [],
+      })),
+    );
+    return order.flatMap((id) => byId.get(id) ?? []);
+  }, [data.graph.segments, data.geometry]);
 
   function handleMapClick(
     coord: Coord,
@@ -243,7 +270,7 @@ export default function AdminPage() {
   /** Hand over the next segment still carrying defaults, and go look at it. */
   function goToNextUnreviewed() {
     const after = selectedSegments.length === 1 ? selectedSegments[0] : null;
-    const next = nextUnreviewed(data.graph.segments, after);
+    const next = nextUnreviewed(orderedSegments, after);
     if (!next) {
       setHint("Every segment has been reviewed.");
       return;
@@ -256,12 +283,31 @@ export default function AdminPage() {
   /** Walk to the neighboring segment, so a judgment can be gone back to. */
   function goToStep(delta: 1 | -1) {
     const from = selectedSegments.length === 1 ? selectedSegments[0] : null;
-    const to = stepSegment(data.graph.segments, from, delta);
+    const to = stepSegment(orderedSegments, from, delta);
     if (!to) return;
     setHint(null);
     setSelectedSegments([to]);
     locateSegment(to);
   }
+
+  // A and D walk the pass, the same two steps as the caret buttons. A review
+  // is a hand on the mouse to pick roads apart and a hand on the keys to judge
+  // them, so moving on shouldn't cost a trip back to a 20px button. Bound here
+  // rather than in the panel so the keys cannot drift from the buttons; no
+  // dependency list, since the effect closes over the selection it steps from.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (typingIn(event.target)) return;
+
+      const key = event.key.toLowerCase();
+      if (key !== "a" && key !== "d") return;
+      goToStep(key === "d" ? 1 : -1);
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   function deleteNode(id: string) {
     const removal = removeNode(data.graph, id);
@@ -307,7 +353,7 @@ export default function AdminPage() {
         onMode={switchMode}
         trackCount={data.tracks.length}
         nodes={data.graph.nodes}
-        segments={data.graph.segments}
+        segments={orderedSegments}
         geometry={data.geometry}
         from={from}
         to={to}

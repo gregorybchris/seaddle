@@ -69,17 +69,23 @@ export function markUnreviewed(graph: GraphFile, id: SegmentId): GraphFile {
  * Reviewing 145 segments is only bearable if finishing one hands you the next,
  * so this drives a button rather than making someone hunt the list for what
  * they have not done yet.
+ *
+ * "Next" is a position in the list it is handed, not the next id: the caller
+ * orders segments along the roads, and a queue that jumped back to id order
+ * would undo exactly the thing that ordering is for.
  */
 export function nextUnreviewed(
   segments: SegmentRecord[],
   after: SegmentId | null,
 ): SegmentId | null {
-  const pending = segments.filter((segment) => !segment.reviewed);
-  if (pending.length === 0) return null;
-  if (after === null) return pending[0].id;
+  if (segments.length === 0) return null;
+  const at = after === null ? -1 : segments.findIndex((s) => s.id === after);
 
-  const later = pending.find((segment) => segment.id > after);
-  return (later ?? pending[0]).id;
+  for (let step = 1; step <= segments.length; step++) {
+    const segment = segments[(at + step + segments.length) % segments.length];
+    if (!segment.reviewed) return segment.id;
+  }
+  return null;
 }
 
 /**
@@ -91,8 +97,10 @@ export function nextUnreviewed(
  * unreviewed queue. A "previous" that walked that queue would refuse the one
  * case it exists for.
  *
- * By id, which is the order the file is stored in and the order the list shows,
- * so stepping through here and reading down the sidebar agree.
+ * In the order it is handed, which is the order the sidebar lists, so stepping
+ * through here and reading down the list agree. It used to sort by id itself;
+ * now that the caller walks the roads, sorting again here would put the map
+ * back to jumping across town between one segment and the next.
  */
 export function stepSegment(
   segments: SegmentRecord[],
@@ -100,13 +108,11 @@ export function stepSegment(
   delta: 1 | -1,
 ): SegmentId | null {
   if (segments.length === 0) return null;
+  if (from === null) return segments[0].id;
 
-  const ordered = [...segments].sort((a, b) => a.id.localeCompare(b.id));
-  if (from === null) return ordered[0].id;
-
-  const at = ordered.findIndex((segment) => segment.id === from);
-  if (at === -1) return ordered[0].id;
-  return ordered[(at + delta + ordered.length) % ordered.length].id;
+  const at = segments.findIndex((segment) => segment.id === from);
+  if (at === -1) return segments[0].id;
+  return segments[(at + delta + segments.length) % segments.length].id;
 }
 
 export function reviewProgress(segments: SegmentRecord[]): {
