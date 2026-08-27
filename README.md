@@ -34,7 +34,7 @@ src/db/tracks/*.json    full resolution, gitignored, DEV ONLY — never bundled
   │  admin: place nodes, pick and crop the cleanest geometry between them
   ▼
 src/db/graph.json       nodes + segment metadata + pins (authored, diffable)
-src/db/geometry/*.json  one point array per segment (written once)
+src/db/geometry/*.json  one point array per segment (redrawable from the source)
   │  pnpm graph:build
   ▼
 public/graph.geojson    what the browser loads and Mapbox styles directly
@@ -68,12 +68,13 @@ review step.
 
 ## Commands
 
-| Command            | What it does                                        |
-| ------------------ | --------------------------------------------------- |
-| `pnpm dev`         | Vite dev server (the admin page mounts in dev only) |
-| `pnpm gpx:import`  | Parse `src-gpx/` into full-resolution track JSON    |
-| `pnpm graph:build` | Compile the graph into the runtime GeoJSON          |
-| `pnpm test`        | Vitest over the geometry, graph, and GPX logic      |
-| `pnpm typecheck`   | `tsc --noEmit`                                      |
-| `pnpm lint`        | ESLint                                              |
-| `pnpm build`       | `graph:build`, typecheck, then a production bundle  |
+| Command                 | What it does                                        |
+| ----------------------- | --------------------------------------------------- |
+| `pnpm dev`              | Vite dev server (the admin page mounts in dev only) |
+| `pnpm gpx:import`       | Parse `src-gpx/` into full-resolution track JSON    |
+| `pnpm geometry:rebuild` | Redraw every segment from the ride it was cut from  |
+| `pnpm graph:build`      | Compile the graph into the runtime GeoJSON          |
+| `pnpm test`             | Vitest over the geometry, graph, and GPX logic      |
+| `pnpm typecheck`        | `tsc --noEmit`                                      |
+| `pnpm lint`             | ESLint                                              |
+| `pnpm build`            | `graph:build`, typecheck, then a production bundle  |

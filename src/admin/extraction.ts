@@ -15,8 +15,17 @@ import { SEGMENT_DEFAULTS } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import type { Candidate, TrackPointRef } from "./candidate-finder";
 
-/** Costs under 1% of the length on every real ride, drawn or recorded. */
-export const SIMPLIFY_TOLERANCE_METERS = 6;
+/**
+ * How far the drawn line may stray from the recorded one.
+ *
+ * A metre, because that is comfortably finer than the source data is accurate —
+ * GPS is good to a few metres and a drawn route is only as true as the hand
+ * that drew it — while still discarding the vertices import interpolated onto
+ * straight runs. Six metres was the first choice and it was wrong: it was
+ * validated on total length, which barely moves when corners are cut, and it
+ * turned curves into three-line polygons.
+ */
+export const SIMPLIFY_TOLERANCE_METERS = 1;
 
 /** Click within this of an existing junction and you meant that junction. */
 export const NODE_SNAP_METERS = 15;
@@ -25,13 +34,18 @@ export const NODE_SNAP_METERS = 15;
 export const TRACK_SNAP_METERS = 20;
 
 /**
- * The geometry a segment ships with: cropped, thinned, rounded, and pinned to
- * its junctions.
+ * The geometry a segment ships with: cropped, pinned to its junctions, thinned
+ * and rounded.
  *
- * Snapping happens last, after rounding, so the endpoints match the node
- * coordinates exactly rather than to within half a rounding step. Segments that
- * meet at a junction have to share a point precisely or the map draws a
- * hairline gap at every intersection.
+ * Segments meeting at a junction have to share a point exactly or the map draws
+ * a hairline gap at every intersection, so the ends are pinned twice: once
+ * before thinning and once after rounding. The first pin is what keeps the line
+ * honest — a junction can sit a good twenty metres from where the chosen ride
+ * actually passes, and a simplifier that has not been told the line starts
+ * there will run a straight chord out to its first kept point and miss the real
+ * path by far more than the tolerance. The second pin costs nothing and makes
+ * the exact match unconditional rather than a consequence of rounding node
+ * coordinates and track points to the same number of places.
  */
 export function extractGeometry(
   candidate: Candidate,
@@ -39,7 +53,25 @@ export function extractGeometry(
   to: Coord,
   toleranceMeters = SIMPLIFY_TOLERANCE_METERS,
 ): ElevCoord[] {
-  const thinned = simplify(candidate.points, toleranceMeters).map(roundPoint);
+  return buildGeometry(candidate.points, from, to, toleranceMeters);
+}
+
+/**
+ * The same treatment, applied to any cropped path.
+ *
+ * Separate from `extractGeometry` so geometry can be rebuilt from a segment's
+ * recorded source indices without inventing a candidate around it — which is
+ * what makes the tolerance a decision that can be revisited rather than baked
+ * into whatever was on disk the day a segment was cut.
+ */
+export function buildGeometry(
+  points: ElevCoord[],
+  from: Coord,
+  to: Coord,
+  toleranceMeters = SIMPLIFY_TOLERANCE_METERS,
+): ElevCoord[] {
+  const pinned = snapEnds(points, from, to);
+  const thinned = simplify(pinned, toleranceMeters).map(roundPoint);
   return snapEnds(thinned, from, to);
 }
 

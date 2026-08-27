@@ -55,10 +55,21 @@ Two consequences worth stating up front:
   but the admin needs to _see_ components, and the site must never imply you can chain across a
   gap that doesn't exist.
 - **Raw GPX is far too heavy to ship.** Full-resolution tracks stay in dev for extraction only.
-  Extracted segments are simplified (Douglas–Peucker, ~6 m tolerance) and coordinates rounded to
-  5 decimal places (~1 m) before they reach the browser. Measured on the real rides, that
-  tolerance drops about 88% of the points (5,417 → 636 on the longest) while changing the measured
-  length by 0.06–0.83%.
+  Extracted segments are simplified (Douglas–Peucker, **1 m tolerance**) and coordinates rounded to
+  6 decimal places (~11 cm) before they reach the browser.
+
+  The tolerance is set by how accurate the source actually is, not by payload. A metre is
+  comfortably finer than GPS is good for, and finer than a hand-drawn route is true, while still
+  discarding the vertices import interpolated onto straight runs. Measured across the real
+  segments, the drawn line stays within **0.99 m** of the recorded one.
+
+  It was first set to 6 m, validated on total length — under 1% error — and that was the wrong
+  metric. Length barely moves when corners are cut: at 6 m one real segment fell from 101 source
+  points to **4**, a curve rendered as three straight lines, and the worst case strayed **12 m**
+  from the road. Anything judged by eye has to be measured by maximum deviation, not by a total.
+
+  Rounding is tied to the same decision. Five decimal places quantise to about a metre, which at
+  a 1 m tolerance would add stair-stepping of its own to a line just kept smooth.
 
 ---
 

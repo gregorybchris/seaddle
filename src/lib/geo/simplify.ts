@@ -19,9 +19,9 @@ function perpendicularMeters(
 /**
  * Douglas–Peucker, in meters, preserving elevation on every kept point.
  *
- * Mapometer exports points about 5 m apart, which is far more detail than a map
- * at riding zoom can render. Six meters of tolerance cuts most of it without
- * visibly moving the line.
+ * Import resamples every ride to a 15 m vertex spacing, and most of those added
+ * vertices sit on straight runs where they carry nothing. A tolerance around a
+ * metre removes exactly those and keeps the shape of a curve.
  *
  * Iterative rather than recursive on purpose: a 5,000-point track that happens
  * to split badly would recurse 5,000 deep, and the failure mode is a stack
@@ -62,20 +62,31 @@ export function simplify(
   return points.filter((_, i) => keep[i]);
 }
 
-/** Five decimal places, ~1 m. Junction coordinates are stored at this precision. */
+/**
+ * Six decimal places, about 11 cm.
+ *
+ * Five would quantise to roughly a metre, which is the same order as the
+ * simplification tolerance — the rounding would then add its own visible
+ * stair-stepping to a line that had just been carefully kept smooth. The extra
+ * digit costs one character per coordinate.
+ */
+const PRECISION = 1e6;
+
 export function roundCoord(coord: Coord): Coord {
-  return [Math.round(coord[0] * 1e5) / 1e5, Math.round(coord[1] * 1e5) / 1e5];
+  return [
+    Math.round(coord[0] * PRECISION) / PRECISION,
+    Math.round(coord[1] * PRECISION) / PRECISION,
+  ];
 }
 
 /**
- * Round to five decimal places (~1 m) to stop float noise from bloating the
- * shipped GeoJSON. Elevation gets one decimal, which is already finer than the
- * data's real accuracy.
+ * Trim float noise without coarsening the line. Elevation gets one decimal,
+ * which is already finer than the data's real accuracy.
  */
 export function roundPoint(point: ElevCoord): ElevCoord {
   return [
-    Math.round(point[0] * 1e5) / 1e5,
-    Math.round(point[1] * 1e5) / 1e5,
+    Math.round(point[0] * PRECISION) / PRECISION,
+    Math.round(point[1] * PRECISION) / PRECISION,
     Math.round(point[2] * 10) / 10,
   ];
 }

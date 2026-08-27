@@ -78,9 +78,11 @@ describe("simplify", () => {
 });
 
 describe("roundPoint", () => {
-  it("trims coordinates to about a metre and elevation to a decimetre", () => {
+  it("trims float noise without coarsening the line", () => {
+    // Six places is about 11 cm — an order finer than the simplification
+    // tolerance, so rounding cannot add stair-stepping of its own.
     expect(roundPoint([-122.3512345678, 47.6512345678, 12.3456])).toEqual([
-      -122.35123, 47.65123, 12.3,
+      -122.351235, 47.651235, 12.3,
     ]);
   });
 });

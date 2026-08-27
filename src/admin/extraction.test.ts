@@ -4,8 +4,11 @@ import { polylineMeters } from "@/lib/geo/polyline";
 import { graph as emptyGraph } from "@/lib/graph/test-fixtures";
 import type { GraphNode } from "@/lib/models/graph";
 import { buildTrackIndex, findCandidates } from "./candidate-finder";
+import { projectOntoPolyline, snapEnds } from "@/lib/geo/polyline";
+import type { ElevCoord } from "@/lib/models/geo";
 import {
   addSegment,
+  buildGeometry,
   extractGeometry,
   placeNode,
   removeNode,
@@ -89,7 +92,7 @@ describe("placeNode", () => {
   it("rounds the coordinate to the precision segments are stored at", () => {
     const placed = placeNode(emptyGraph(), INDEX, [TRACK], at(250, 0));
     for (const value of placed.node.coord) {
-      expect(Math.round(value * 1e5) / 1e5).toBe(value);
+      expect(Math.round(value * 1e6) / 1e6).toBe(value);
     }
   });
 });
@@ -118,9 +121,59 @@ describe("extractGeometry", () => {
   it("rounds every coordinate it keeps", () => {
     const geometry = extractGeometry(candidate, nodeA.coord, nodeB.coord);
     for (const [lon, lat] of geometry.slice(1, -1)) {
-      expect(Math.round(lon * 1e5) / 1e5).toBe(lon);
-      expect(Math.round(lat * 1e5) / 1e5).toBe(lat);
+      expect(Math.round(lon * 1e6) / 1e6).toBe(lon);
+      expect(Math.round(lat * 1e6) / 1e6).toBe(lat);
     }
+  });
+});
+
+describe("buildGeometry", () => {
+  // A smooth curve rather than a path of straight legs: a polyline with exact
+  // corners simplifies to the same four vertices at any tolerance, which would
+  // make the tolerance look like it does nothing. Runs from A to B.
+  const BENDY: ElevCoord[] = Array.from({ length: 60 }, (_, i) => {
+    const t = i / 59;
+    const [lon, lat] = at(t * 500, Math.sin(Math.PI * t) * 60);
+    return [lon, lat, 10];
+  });
+
+  /** The furthest the drawn line strays from the recorded one. */
+  function worstError(truth: ElevCoord[], drawn: ElevCoord[]): number {
+    return Math.max(
+      ...truth.map(
+        (point) =>
+          projectOntoPolyline(drawn, [point[0], point[1]]).distanceMeters,
+      ),
+    );
+  }
+
+  it("stays within the tolerance of the recorded line", () => {
+    const geometry = buildGeometry(BENDY, A, B, 1);
+    expect(worstError(snapEnds(BENDY, A, B), geometry)).toBeLessThan(1.5);
+  });
+
+  it("stays within tolerance even when a junction sits well off the ride", () => {
+    // The case that made real segments miss by twelve metres: a junction can be
+    // twenty metres from where the chosen ride passes, and a simplifier that
+    // has not been told the line starts there runs a straight chord out to its
+    // first kept point and leaves the road entirely.
+    const offset = at(0, 20);
+    const geometry = buildGeometry(BENDY, offset, B, 1);
+    expect(worstError(snapEnds(BENDY, offset, B), geometry)).toBeLessThan(1.5);
+  });
+
+  it("still lands exactly on both junctions", () => {
+    const offset = at(0, 20);
+    const geometry = buildGeometry(BENDY, offset, B, 1);
+    const last = geometry[geometry.length - 1];
+    expect([geometry[0][0], geometry[0][1]]).toEqual([offset[0], offset[1]]);
+    expect([last[0], last[1]]).toEqual([B[0], B[1]]);
+  });
+
+  it("keeps more detail at a tighter tolerance", () => {
+    expect(buildGeometry(BENDY, A, B, 1).length).toBeGreaterThan(
+      buildGeometry(BENDY, A, B, 10).length,
+    );
   });
 });
 
