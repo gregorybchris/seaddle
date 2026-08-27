@@ -88,6 +88,33 @@ export function nextUnreviewed(
   return (later ?? pending[0]).id;
 }
 
+/**
+ * The segment before or after this one, wrapping at both ends.
+ *
+ * Over every segment rather than only the unreviewed ones. The reason to go
+ * back is almost always the segment just judged — a value picked too fast, a
+ * name typed wrong — and judging it is precisely what takes it out of the
+ * unreviewed queue. A "previous" that walked that queue would refuse the one
+ * case it exists for.
+ *
+ * By id, which is the order the file is stored in and the order the list shows,
+ * so stepping through here and reading down the sidebar agree.
+ */
+export function stepSegment(
+  segments: SegmentRecord[],
+  from: SegmentId | null,
+  delta: 1 | -1,
+): SegmentId | null {
+  if (segments.length === 0) return null;
+
+  const ordered = [...segments].sort((a, b) => a.id.localeCompare(b.id));
+  if (from === null) return ordered[0].id;
+
+  const at = ordered.findIndex((segment) => segment.id === from);
+  if (at === -1) return ordered[0].id;
+  return ordered[(at + delta + ordered.length) % ordered.length].id;
+}
+
 export function reviewProgress(segments: SegmentRecord[]): {
   reviewed: number;
   total: number;

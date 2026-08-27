@@ -1,5 +1,7 @@
 import {
   ArrowsClockwise,
+  CaretLeft,
+  CaretRight,
   CheckCircle,
   SkipForward,
 } from "@phosphor-icons/react";
@@ -37,6 +39,8 @@ type SegmentEditorProps = {
   onSwap: () => void;
   onNext: () => void;
   hasNext: boolean;
+  /** Walk to the segment before or after this one, in id order. */
+  onStep: (delta: 1 | -1) => void;
 };
 
 /**
@@ -58,6 +62,7 @@ export function SegmentEditor({
   onSwap,
   onNext,
   hasNext,
+  onStep,
 }: SegmentEditorProps) {
   if (selected.length === 0) return null;
 
@@ -147,6 +152,32 @@ export function SegmentEditor({
         <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
           {reviewed} of {total} reviewed
         </span>
+        {/* Stepping walks every segment, so the way back to the one just
+            judged is the same button whether or not judging it moved it out
+            of the unreviewed queue. Only with a single segment in hand: from
+            a multiple selection there is no "this one" to step from. */}
+        <div className="flex items-center gap-0.5">
+          <Button
+            variant="quiet"
+            className="min-h-9 px-1.5"
+            onClick={() => onStep(-1)}
+            disabled={!one}
+            aria-label="Previous segment"
+            title="Previous segment"
+          >
+            <CaretLeft weight="bold" className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="quiet"
+            className="min-h-9 px-1.5"
+            onClick={() => onStep(1)}
+            disabled={!one}
+            aria-label="Next segment"
+            title="Next segment"
+          >
+            <CaretRight weight="bold" className="h-4 w-4" />
+          </Button>
+        </div>
         <Button
           variant={allReviewed ? "primary" : "outline"}
           className="min-h-9 px-2 text-xs"

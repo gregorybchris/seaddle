@@ -17,6 +17,7 @@ import { addPin, pinTarget, removePin, updatePin } from "./pins";
 import {
   applyAttributes,
   nextUnreviewed,
+  stepSegment,
   swapSegmentDirection,
   type AttributePatch,
 } from "./review";
@@ -252,6 +253,16 @@ export default function AdminPage() {
     locateSegment(next);
   }
 
+  /** Walk to the neighboring segment, so a judgment can be gone back to. */
+  function goToStep(delta: 1 | -1) {
+    const from = selectedSegments.length === 1 ? selectedSegments[0] : null;
+    const to = stepSegment(data.graph.segments, from, delta);
+    if (!to) return;
+    setHint(null);
+    setSelectedSegments([to]);
+    locateSegment(to);
+  }
+
   function deleteNode(id: string) {
     const removal = removeNode(data.graph, id);
     if (removal.blockedBy.length > 0) {
@@ -352,6 +363,7 @@ export default function AdminPage() {
         onPatchSelected={patchSelected}
         onSwapSelected={() => void swapSelected()}
         onNextUnreviewed={goToNextUnreviewed}
+        onStepSegment={goToStep}
         onLocateNode={locateNode}
         onLocateSegment={locateSegment}
         focusedAt={focus}

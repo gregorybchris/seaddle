@@ -6,6 +6,7 @@ import {
   markUnreviewed,
   nextUnreviewed,
   reviewProgress,
+  stepSegment,
 } from "./review";
 
 const THREE = emptyGraph({
@@ -86,6 +87,42 @@ describe("markUnreviewed", () => {
     const after = markUnreviewed(THREE, "s002");
     expect(after.segments[1].reviewed).toBe(false);
     expect(after.segments[1].surroundings).toBe(THREE.segments[1].surroundings);
+  });
+});
+
+describe("stepSegment", () => {
+  it("walks forward and back through every segment", () => {
+    expect(stepSegment(THREE.segments, "s001", 1)).toBe("s002");
+    expect(stepSegment(THREE.segments, "s002", -1)).toBe("s001");
+  });
+
+  it("goes back to a segment that has just been reviewed", () => {
+    // The whole reason to press previous: s002 is reviewed and so is not in
+    // the unreviewed queue at all, but it is exactly the one being returned to.
+    expect(THREE.segments[1].reviewed).toBe(true);
+    expect(stepSegment(THREE.segments, "s003", -1)).toBe("s002");
+  });
+
+  it("wraps at both ends rather than stopping", () => {
+    expect(stepSegment(THREE.segments, "s003", 1)).toBe("s001");
+    expect(stepSegment(THREE.segments, "s001", -1)).toBe("s003");
+  });
+
+  it("starts at the beginning when nothing is in hand", () => {
+    expect(stepSegment(THREE.segments, null, 1)).toBe("s001");
+  });
+
+  it("orders by id, so stepping and reading the list agree", () => {
+    const shuffled = [THREE.segments[2], THREE.segments[0], THREE.segments[1]];
+    expect(stepSegment(shuffled, "s001", 1)).toBe("s002");
+  });
+
+  it("has nowhere to go in an empty graph", () => {
+    expect(stepSegment([], null, 1)).toBeNull();
+  });
+
+  it("falls back to the first when the segment it was given is gone", () => {
+    expect(stepSegment(THREE.segments, "s999", 1)).toBe("s001");
   });
 });
 

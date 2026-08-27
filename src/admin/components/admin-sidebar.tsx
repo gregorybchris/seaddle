@@ -44,6 +44,7 @@ type AdminSidebarProps = {
   onPatchSelected: (patch: AttributePatch) => void;
   onSwapSelected: () => void;
   onNextUnreviewed: () => void;
+  onStepSegment: (delta: 1 | -1) => void;
   candidates: Candidate[] | null;
   radiusMeters: number;
   maxDetourRatio: number;
@@ -147,6 +148,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
             }
             onSwap={props.onSwapSelected}
             onNext={props.onNextUnreviewed}
+            onStep={props.onStepSegment}
             hasNext={nextUnreviewed(props.segments, null) !== null}
           />
         )}
