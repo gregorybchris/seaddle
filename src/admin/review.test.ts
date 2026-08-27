@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { graph as emptyGraph, segment } from "@/lib/graph/test-fixtures";
 import {
   applyAttributes,
+  swapSegmentDirection,
   markUnreviewed,
   nextUnreviewed,
   reviewProgress,
@@ -112,5 +113,59 @@ describe("nextUnreviewed", () => {
 describe("reviewProgress", () => {
   it("counts what is done against the whole", () => {
     expect(reviewProgress(THREE.segments)).toEqual({ reviewed: 1, total: 3 });
+  });
+});
+
+describe("swapSegmentDirection", () => {
+  const one = emptyGraph({
+    segments: [
+      segment("s001", "nA", "nB", {
+        difficulty: { forward: "hard", backward: "easy" },
+        recommendedDirection: "forward",
+        source: { track: "ride", startIndex: 10, endIndex: 90 },
+      }),
+    ],
+    pins: [
+      {
+        id: "p001",
+        segment: "s001",
+        kind: "water",
+        note: null,
+        at: 0.25,
+        coord: [-122.35, 47.65],
+      },
+    ],
+  });
+
+  it("turns the junctions around", () => {
+    const after = swapSegmentDirection(one, "s001").segments[0];
+    expect([after.from, after.to]).toEqual(["nB", "nA"]);
+  });
+
+  it("turns the per-direction difficulty around with it", () => {
+    // The hill does not care which way the segment is stored.
+    const after = swapSegmentDirection(one, "s001").segments[0];
+    expect(after.difficulty).toEqual({ forward: "easy", backward: "hard" });
+  });
+
+  it("turns the source indices around, so a rebuild redraws the new direction", () => {
+    const after = swapSegmentDirection(one, "s001").segments[0];
+    expect(after.source.startIndex).toBe(90);
+    expect(after.source.endIndex).toBe(10);
+    expect(after.source.track).toBe("ride");
+  });
+
+  it("moves pins to the same place measured from the other end", () => {
+    expect(swapSegmentDirection(one, "s001").pins[0].at).toBeCloseTo(0.75, 9);
+  });
+
+  it("leaves the recommendation saying forward, which now points the other way", () => {
+    const after = swapSegmentDirection(one, "s001").segments[0];
+    expect(after.recommendedDirection).toBe("forward");
+  });
+
+  it("comes back to where it started when done twice", () => {
+    const there = swapSegmentDirection(one, "s001");
+    expect(swapSegmentDirection(there, "s001")).toEqual(one);
   });
 });

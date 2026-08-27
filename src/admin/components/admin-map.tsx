@@ -2,6 +2,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
+  Marker,
   Source,
   type MapLayerMouseEvent,
   type MapRef,
@@ -125,6 +126,24 @@ export function AdminMap({
       flipY: box ? event.point.y + TIP_HEIGHT > box.height : false,
     };
   }
+
+  /**
+   * Where the selected segment starts and finishes.
+   *
+   * A line on a map has no visible direction, but almost everything stored
+   * about a segment does — which way the hill goes, which way to ride it — so
+   * one selected segment gets a start and a finish drawn on it. Only ever one:
+   * two segments would give two starts and say nothing.
+   */
+  const ends = (() => {
+    if (selectedSegmentIds.length !== 1) return null;
+    const points = geometry.get(selectedSegmentIds[0]);
+    if (!points || points.length < 2) return null;
+    return {
+      start: points[0],
+      finish: points[points.length - 1],
+    };
+  })();
 
   return (
     <div ref={wrap} className="relative h-full w-full">
@@ -256,6 +275,19 @@ export function AdminMap({
             }}
           />
         </Source>
+        {ends && (
+          <>
+            <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
+              <span
+                aria-label="Segment start"
+                className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
+              />
+            </Marker>
+            <Marker longitude={ends.finish[0]} latitude={ends.finish[1]}>
+              <span aria-label="Segment finish" className="checkered block" />
+            </Marker>
+          </>
+        )}
       </Map>
 
       <button

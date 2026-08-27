@@ -12,7 +12,12 @@ import {
 } from "./candidate-finder";
 import { AdminMap } from "./components/admin-map";
 import { AdminSidebar, type Mode } from "./components/admin-sidebar";
-import { applyAttributes, nextUnreviewed, type AttributePatch } from "./review";
+import {
+  applyAttributes,
+  nextUnreviewed,
+  swapSegmentDirection,
+  type AttributePatch,
+} from "./review";
 import {
   addSegment,
   NODE_SNAP_METERS,
@@ -154,6 +159,24 @@ export default function AdminPage() {
     void data.save(applyAttributes(data.graph, selectedSegments, patch));
   }
 
+  /**
+   * Turn the selected segment around, geometry and all.
+   *
+   * The stored points have to be reversed alongside the record, or the drawn
+   * line would still run the old way while everything describing it said
+   * otherwise.
+   */
+  async function swapSelected() {
+    if (selectedSegments.length !== 1) return;
+    const id = selectedSegments[0];
+    const points = data.geometry.get(id);
+    if (!points) return;
+    await data.save(swapSegmentDirection(data.graph, id), {
+      id,
+      points: [...points].reverse(),
+    });
+  }
+
   /** Hand over the next segment still carrying defaults, and go look at it. */
   function goToNextUnreviewed() {
     const after = selectedSegments.length === 1 ? selectedSegments[0] : null;
@@ -237,6 +260,7 @@ export default function AdminPage() {
         selectedSegments={selectedSegments}
         onSelectSegments={setSelectedSegments}
         onPatchSelected={patchSelected}
+        onSwapSelected={() => void swapSelected()}
         onNextUnreviewed={goToNextUnreviewed}
         onLocateNode={locateNode}
         onLocateSegment={locateSegment}

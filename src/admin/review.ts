@@ -104,3 +104,46 @@ export function reviewProgress(segments: SegmentRecord[]): {
     total: segments.length,
   };
 }
+
+/**
+ * Turn a segment around: what was its start becomes its end.
+ *
+ * Offered instead of a "backward" recommendation, which asks a reader to hold
+ * two directions in their head at once — the way the segment is stored and the
+ * way it should be ridden. Flipping the segment collapses those into one, so
+ * the recommended way is always simply forward.
+ *
+ * Everything that means "which way" has to turn with it: the junctions, the
+ * per-direction difficulty, the pins measured along it, and the source indices
+ * — without those last two, `geometry:rebuild` would redraw the old direction
+ * and put every pin on the wrong half of the road.
+ */
+export function swapSegmentDirection(
+  graph: GraphFile,
+  id: SegmentId,
+): GraphFile {
+  return {
+    ...graph,
+    segments: graph.segments.map((segment) =>
+      segment.id === id
+        ? {
+            ...segment,
+            from: segment.to,
+            to: segment.from,
+            source: {
+              track: segment.source.track,
+              startIndex: segment.source.endIndex,
+              endIndex: segment.source.startIndex,
+            },
+            difficulty: {
+              forward: segment.difficulty.backward,
+              backward: segment.difficulty.forward,
+            },
+          }
+        : segment,
+    ),
+    pins: graph.pins.map((pin) =>
+      pin.segment === id ? { ...pin, at: 1 - pin.at } : pin,
+    ),
+  };
+}

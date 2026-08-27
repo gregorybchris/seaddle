@@ -1,4 +1,9 @@
-import { CheckCircle, SkipForward } from "@phosphor-icons/react";
+import {
+  ArrowsClockwise,
+  CheckCircle,
+  SkipForward,
+} from "@phosphor-icons/react";
+import { useEffect, useRef, useState } from "react";
 import {
   DIFFICULTIES,
   LANE_QUALITIES,
@@ -14,7 +19,12 @@ import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import type { AttributePatch } from "../review";
 
-const DIRECTIONS = ["forward", "backward", "either"] as const;
+/**
+ * Only two answers. "Backward" would ask a reader to hold two directions at
+ * once — the way the segment is stored and the way it should be ridden — so a
+ * segment that wants recommending the other way is turned around instead.
+ */
+const DIRECTIONS = ["forward", "either"] as const;
 
 type SegmentEditorProps = {
   selected: SegmentRecord[];
@@ -24,6 +34,8 @@ type SegmentEditorProps = {
   reviewed: number;
   total: number;
   onPatch: (patch: AttributePatch) => void;
+  onRename: (name: string) => void;
+  onSwap: () => void;
   onNext: () => void;
   hasNext: boolean;
 };
@@ -43,6 +55,8 @@ export function SegmentEditor({
   reviewed,
   total,
   onPatch,
+  onRename,
+  onSwap,
   onNext,
   hasNext,
 }: SegmentEditorProps) {
@@ -64,11 +78,6 @@ export function SegmentEditor({
         <span className="tabular text-blaze text-xs">
           {one ? one.id : `${selected.length} segments`}
         </span>
-        {one && (
-          <span className="text-sand truncate text-sm">
-            {one.name ?? "unnamed"}
-          </span>
-        )}
         <span
           className={cn(
             "eyebrow ml-auto shrink-0",
@@ -79,11 +88,24 @@ export function SegmentEditor({
         </span>
       </header>
 
+      {one && <NameField key={one.id} name={one.name} onRename={onRename} />}
+
       {one && (
-        <p className="tabular text-sand/45 -mt-2 text-[0.6875rem]">
-          {formatMiles(meters)} · ↑{formatFeet(gainForward)} out · ↑
-          {formatFeet(gainBackward)} back
-        </p>
+        <div className="-mt-2 flex items-center gap-2">
+          <p className="tabular text-sand/45 flex-1 text-[0.6875rem] whitespace-nowrap">
+            {formatMiles(meters)} · ↑{formatFeet(gainForward)} out · ↑
+            {formatFeet(gainBackward)} back
+          </p>
+          <Button
+            variant="quiet"
+            className="min-h-0 px-2 py-1 text-[0.6875rem]"
+            onClick={onSwap}
+            title="Turn the segment around, so forward points the other way"
+          >
+            <ArrowsClockwise weight="bold" className="h-3.5 w-3.5" />
+            Swap
+          </Button>
+        </div>
       )}
 
       <div className="flex flex-col gap-3">
@@ -159,5 +181,43 @@ export function SegmentEditor({
         </Button>
       </div>
     </section>
+  );
+}
+
+/**
+ * The segment's label, editable where it is read.
+ *
+ * Same always-live field as the inventory rows use: it reads as text until
+ * touched and commits on blur or Enter, rather than a mode to enter and leave
+ * for what is only typing.
+ */
+function NameField({
+  name,
+  onRename,
+}: {
+  name: string | null;
+  onRename: (name: string) => void;
+}) {
+  const [draft, setDraft] = useState(name ?? "");
+  const field = useRef<HTMLInputElement>(null);
+
+  useEffect(() => setDraft(name ?? ""), [name]);
+
+  return (
+    <input
+      ref={field}
+      value={draft}
+      onChange={(event) => setDraft(event.target.value)}
+      onBlur={() => {
+        if (draft.trim() !== (name ?? "")) onRename(draft);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.currentTarget.blur();
+        if (event.key === "Escape") setDraft(name ?? "");
+      }}
+      placeholder="Name this segment"
+      aria-label="Segment name"
+      className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/30 focus:border-blaze/60 -mt-1 w-full rounded-md border px-2 py-1.5 text-sm transition-colors focus:outline-none"
+    />
   );
 }

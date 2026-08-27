@@ -35,6 +35,7 @@ type AdminSidebarProps = {
   selectedSegments: string[];
   onSelectSegments: (ids: string[]) => void;
   onPatchSelected: (patch: AttributePatch) => void;
+  onSwapSelected: () => void;
   onNextUnreviewed: () => void;
   candidates: Candidate[] | null;
   radiusMeters: number;
@@ -122,6 +123,10 @@ export function AdminSidebar(props: AdminSidebarProps) {
             reviewed={progress.reviewed}
             total={progress.total}
             onPatch={props.onPatchSelected}
+            onRename={(name) =>
+              chosen[0] && props.onRenameSegment(chosen[0].id, name)
+            }
+            onSwap={props.onSwapSelected}
             onNext={props.onNextUnreviewed}
             hasNext={nextUnreviewed(props.segments, null) !== null}
           />
@@ -178,26 +183,20 @@ function SegmentBuilder({
 }: AdminSidebarProps) {
   return (
     <section className="flex flex-col gap-4">
-      <Steps
-        steps={[
-          { label: "Start junction", value: from?.id, done: !!from },
-          { label: "End junction", value: to?.id, done: !!to },
-          {
-            label: "Choose geometry",
-            value: candidates ? `${candidates.length} found` : undefined,
-            done: false,
-          },
-        ]}
-      />
-
       {from && (
-        <Button
-          variant="quiet"
-          className="-mt-2 min-h-0 self-end px-2 py-1 text-xs"
-          onClick={onClearSelection}
-        >
-          Start over
-        </Button>
+        <div className="-mt-2 flex items-center gap-2">
+          {/* A fact, not a tutorial: which junctions are picked so far. */}
+          <span className="tabular text-blaze/80 flex-1 text-xs">
+            {from.id} → {to?.id ?? "…"}
+          </span>
+          <Button
+            variant="quiet"
+            className="min-h-0 px-2 py-1 text-xs"
+            onClick={onClearSelection}
+          >
+            Start over
+          </Button>
+        </div>
       )}
 
       {candidates && (
@@ -234,68 +233,6 @@ function SegmentBuilder({
         </div>
       </details>
     </section>
-  );
-}
-
-type Step = { label: string; value?: string; done: boolean };
-
-/**
- * The three moves that make a segment, in order.
- *
- * Numbered because this genuinely is a sequence — you cannot pick geometry
- * before you have said which two junctions it runs between — and the marker
- * carries the state of each move rather than decorating it.
- */
-function Steps({ steps }: { steps: Step[] }) {
-  const currentIndex = steps.findIndex((step) => !step.done);
-
-  return (
-    <ol className="flex flex-col">
-      {steps.map((step, index) => {
-        const current = index === currentIndex;
-        return (
-          <li key={step.label} className="flex gap-3">
-            <div className="flex flex-col items-center">
-              <span
-                className={cn(
-                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[0.6875rem] transition-colors duration-200",
-                  step.done && "border-moss bg-moss text-forest-deep",
-                  current && "border-blaze text-blaze",
-                  !step.done && !current && "border-sand/20 text-sand/30",
-                )}
-              >
-                {step.done ? "✓" : index + 1}
-              </span>
-              {index < steps.length - 1 && (
-                <span
-                  className={cn(
-                    "w-px flex-1 transition-colors duration-200",
-                    step.done ? "bg-moss/50" : "bg-sand/15",
-                  )}
-                />
-              )}
-            </div>
-            <div className={cn("pb-4", index === steps.length - 1 && "pb-0")}>
-              <p
-                className={cn(
-                  "text-sm leading-6 transition-colors duration-200",
-                  current
-                    ? "text-sand"
-                    : step.done
-                      ? "text-sand/70"
-                      : "text-sand/35",
-                )}
-              >
-                {step.label}
-              </p>
-              {step.value && (
-                <p className="tabular text-blaze/90 text-xs">{step.value}</p>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
   );
 }
 
