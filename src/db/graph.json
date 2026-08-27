@@ -565,6 +565,16 @@
       "id": "n123",
       "name": null,
       "coord": [-122.317943, 47.655621]
+    },
+    {
+      "id": "n124",
+      "name": null,
+      "coord": [-122.510459, 47.62276]
+    },
+    {
+      "id": "n125",
+      "name": null,
+      "coord": [-122.510686, 47.622623]
     }
   ],
   "segments": [
@@ -1679,14 +1689,14 @@
       },
       "name": null,
       "difficulty": {
-        "forward": "medium",
-        "backward": "medium"
+        "forward": "easy",
+        "backward": "easy"
       },
-      "laneQuality": "fair",
+      "laneQuality": "good",
       "scenic": "medium",
       "surface": "asphalt",
       "recommendedDirection": null,
-      "reviewed": false
+      "reviewed": true
     },
     {
       "id": "s063",
