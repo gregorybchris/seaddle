@@ -575,6 +575,21 @@
       "id": "n125",
       "name": null,
       "coord": [-122.510686, 47.622623]
+    },
+    {
+      "id": "n126",
+      "name": null,
+      "coord": [-122.547448, 47.604496]
+    },
+    {
+      "id": "n127",
+      "name": null,
+      "coord": [-122.560888, 47.690211]
+    },
+    {
+      "id": "n128",
+      "name": null,
+      "coord": [-122.567734, 47.591217]
     }
   ],
   "segments": [
@@ -1980,12 +1995,12 @@
     },
     {
       "id": "s077",
-      "from": "n059",
-      "to": "n058",
+      "from": "n058",
+      "to": "n059",
       "source": {
         "track": "2026-06-03-morning-ride",
-        "startIndex": 1320,
-        "endIndex": 1308
+        "startIndex": 1308,
+        "endIndex": 1320
       },
       "name": null,
       "difficulty": {
@@ -3637,6 +3652,86 @@
       "surface": "asphalt",
       "recommendedDirection": null,
       "reviewed": false
+    },
+    {
+      "id": "s165",
+      "from": "n125",
+      "to": "n126",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 8555,
+        "endIndex": 6679
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s166",
+      "from": "n127",
+      "to": "n124",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 4224,
+        "endIndex": 2355
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s167",
+      "from": "n127",
+      "to": "n128",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 4224,
+        "endIndex": 6416
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s168",
+      "from": "n128",
+      "to": "n126",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 6416,
+        "endIndex": 6679
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
     }
   ],
   "pins": [
@@ -3879,6 +3974,14 @@
       "note": "Restrooms in the community center",
       "at": 0.15051430569839816,
       "coord": [-122.32586, 47.680176]
+    },
+    {
+      "id": "p031",
+      "segment": "s165",
+      "kind": "rest",
+      "note": null,
+      "at": 0.9996530084887466,
+      "coord": [-122.547398, 47.60444]
     }
   ]
 }

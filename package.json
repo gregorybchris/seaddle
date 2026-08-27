@@ -11,6 +11,7 @@
     "gpx:import": "tsx scripts/gpx-import.ts",
     "graph:build": "tsx scripts/graph-build.ts",
     "geometry:rebuild": "tsx scripts/geometry-rebuild.ts",
+    "attributes:seed": "tsx scripts/attributes-seed.ts",
     "favicon:build": "tsx scripts/favicon-build.ts",
     "test": "vitest run",
     "test:watch": "vitest",
