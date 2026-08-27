@@ -76,7 +76,7 @@ export function AdminMap({
   const mapRef = useRef<MapRef>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState<Hovered | null>(null);
-  const [labelled, setLabelled] = useState(false);
+  const [labeled, setLabeled] = useState(false);
 
   const trackData = useMemo(() => tracksToGeoJson(tracks), [tracks]);
   const segmentData = useMemo(
@@ -235,7 +235,7 @@ export function AdminMap({
               // read than the same id sitting level next to it.
               "text-rotation-alignment": "viewport",
               "text-allow-overlap": false,
-              visibility: labelled ? "visible" : "none",
+              visibility: labeled ? "visible" : "none",
             }}
             paint={{
               "text-color": "#12301f",
@@ -292,11 +292,11 @@ export function AdminMap({
 
       <button
         type="button"
-        onClick={() => setLabelled((on) => !on)}
-        aria-pressed={labelled}
+        onClick={() => setLabeled((on) => !on)}
+        aria-pressed={labeled}
         className={cn(
           "border-forest-deep/20 absolute top-3 right-3 rounded-md border px-2.5 py-1.5 text-xs shadow-sm transition-colors",
-          labelled
+          labeled
             ? "bg-forest text-sand"
             : "text-forest bg-paper/90 hover:bg-paper",
         )}

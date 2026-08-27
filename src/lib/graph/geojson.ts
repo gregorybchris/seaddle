@@ -9,7 +9,7 @@ import type { GraphFile, SegmentId } from "@/lib/models/graph";
  * into properties.
  *
  * Flat scalar properties are the point. Mapbox styles read them with `["get",
- * ...]`, so recolouring the whole map by a different attribute or dimming
+ * ...]`, so recoloring the whole map by a different attribute or dimming
  * everything a filter excludes is a paint expression evaluated on the GPU —
  * not React state and not a re-render.
  */
@@ -32,7 +32,7 @@ export function buildGraphGeoJson(
         to: segment.to,
         difficultyForward: segment.difficulty.forward,
         difficultyBackward: segment.difficulty.backward,
-        // One label to colour by, since a line can only be one colour.
+        // One label to color by, since a line can only be one color.
         difficulty: harderDifficulty(
           segment.difficulty.forward,
           segment.difficulty.backward,

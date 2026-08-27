@@ -63,7 +63,7 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
   );
 }
 
-/** What the map colours segments by. */
+/** What the map colors segments by. */
 export type Encoding = "difficulty" | "laneQuality" | "scenic" | "surface";
 
 export const ENCODINGS: { value: Encoding; label: string }[] = [
@@ -81,18 +81,18 @@ export const ENCODING_VALUES: Record<Encoding, readonly string[]> = {
 };
 
 /**
- * The colours each scale is drawn in.
+ * The colors each scale is drawn in.
  *
  * Two constraints, and the second one bit. Every ordered scale steps down in
  * lightness as well as changing hue, so the order survives being read by
  * someone who cannot separate red from green — the lightness carries it alone.
  * And none of them may run pale: the basemap is nearly white, and a first
  * attempt whose lightest step sat around 203 simply vanished into it, which
- * looked from a distance like the colouring not working at all. Nothing here
+ * looked from a distance like the coloring not working at all. Nothing here
  * goes above LIGHTEST_STEP.
  *
  * Surface is a set of materials rather than a scale, so it gets separate hues
- * instead of a ramp, reinforced by a dash pattern that does not rely on colour.
+ * instead of a ramp, reinforced by a dash pattern that does not rely on color.
  */
 export const RAMPS: Record<Encoding, Record<string, string>> = {
   difficulty: { easy: "#86b06a", medium: "#c98a2e", hard: "#9c3b25" },

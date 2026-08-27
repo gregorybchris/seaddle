@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { ElevCoord } from "@/lib/models/geo";
 import { findRecordingGaps, insideGap, splitAtGaps } from "./recording-gaps";
 
-/** Points a kilometre apart, so distance is never the reason a gap is missed. */
+/** Points a kilometer apart, so distance is never the reason a gap is missed. */
 function line(count: number): ElevCoord[] {
   return Array.from({ length: count }, (_, i) => [
     -122.35 + i * 0.01,
@@ -15,7 +15,7 @@ const MINUTE = 60_000;
 
 describe("findRecordingGaps", () => {
   it("finds the stretch a stopped recorder left behind", () => {
-    // Seattle to Bainbridge is thirteen kilometres and takes about forty
+    // Seattle to Bainbridge is thirteen kilometers and takes about forty
     // minutes, and a phone below deck records none of it.
     const times = [0, MINUTE, 45 * MINUTE, 46 * MINUTE];
     expect(findRecordingGaps(line(4), times)).toEqual([[1, 2]]);

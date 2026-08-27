@@ -1,14 +1,14 @@
 /**
  * The Space Needle as a bicycle.
  *
- * Recoloured from the supplied artwork to the site palette: the structure takes
- * the surrounding text colour so it works on any ground, and the saucer keeps
+ * Recolored from the supplied artwork to the site palette: the structure takes
+ * the surrounding text color so it works on any ground, and the saucer keeps
  * the one warm accent, like a light left on at the top.
  *
  * The viewBox is cropped to the drawing rather than left at the artboard's
  * 0 0 150 150, which carried about 8 units of empty margin on every side. At an
  * icon's size that margin became a couple of stray pixels, so the mark never
- * quite lined up with anything set beside or beneath it. Square, and centred on
+ * quite lined up with anything set beside or beneath it. Square, and centered on
  * the drawing, so a square element needs no letterboxing.
  */
 export function SeaddleMark({ className }: { className?: string }) {

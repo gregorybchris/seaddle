@@ -14,7 +14,7 @@ export function useGraph() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetch("/graph.geojson")
       .then((response) => {
         if (!response.ok)
@@ -22,15 +22,15 @@ export function useGraph() {
         return response.json() as Promise<FeatureCollection>;
       })
       .then((collection) => {
-        if (!cancelled) setGraph(parseGraph(collection));
+        if (!canceled) setGraph(parseGraph(collection));
       })
       .catch((caught: unknown) => {
-        if (!cancelled) {
+        if (!canceled) {
           setError(caught instanceof Error ? caught.message : String(caught));
         }
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

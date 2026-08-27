@@ -153,8 +153,8 @@ describe("buildGeometry", () => {
   });
 
   it("stays within tolerance even when a junction sits well off the ride", () => {
-    // The case that made real segments miss by twelve metres: a junction can be
-    // twenty metres from where the chosen ride passes, and a simplifier that
+    // The case that made real segments miss by twelve meters: a junction can be
+    // twenty meters from where the chosen ride passes, and a simplifier that
     // has not been told the line starts there runs a straight chord out to its
     // first kept point and leaves the road entirely.
     const offset = at(0, 20);

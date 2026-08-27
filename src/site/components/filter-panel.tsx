@@ -34,7 +34,7 @@ type FilterPanelProps = {
 };
 
 /**
- * What a rider will put up with, and what the map should be coloured by.
+ * What a rider will put up with, and what the map should be colored by.
  *
  * Nothing here hides a road. Failing a filter dims it, because hiding would
  * break the network into islands and leave someone staring at a gap with no
@@ -66,7 +66,7 @@ export function FilterPanel({
     >
       <div className="flex flex-col gap-4">
         <ChipGroup
-          label="Colour the map by"
+          label="Color the map by"
           options={ENCODINGS.map((option) => option.value)}
           value={encoding}
           onChange={onEncoding}
@@ -125,14 +125,14 @@ export function FilterPanel({
   );
 }
 
-/** What the colours on the map currently mean. */
+/** What the colors on the map currently mean. */
 function Legend({ encoding }: { encoding: Encoding }) {
   return (
     <ul className="flex flex-wrap gap-x-3 gap-y-1">
       {ENCODING_VALUES[encoding].map((value) => (
         <li key={value} className="flex items-center gap-1.5">
           {/* Outlined, because the dark end of a ramp tuned for a pale
-              basemap is exactly this panel's own colour. */}
+              basemap is exactly this panel's own color. */}
           <span
             aria-hidden
             className="ring-sand/30 h-1.5 w-4 rounded-full ring-1"

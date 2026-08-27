@@ -16,7 +16,7 @@ type Cell<T> = { coord: Coord; item: T }[];
  * so a query only ever has to look at the 3×3 block around its center.
  *
  * Adapted from tuxc's QueryEngine, with one change: that version inserted every
- * point into all nine of its neighbouring cells, which made the index nine
+ * point into all nine of its neighboring cells, which made the index nine
  * times larger than the data. Fanning out at query time instead of insert time
  * gives the same answers.
  */

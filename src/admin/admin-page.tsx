@@ -291,7 +291,7 @@ export default function AdminPage() {
 /**
  * A whole-screen state: waiting, or unable to start.
  *
- * Centred as one column rather than left-aligned inside a centred box, which
+ * Centered as one column rather than left-aligned inside a centered box, which
  * left the mark hanging off the corner of the title instead of belonging to it.
  */
 function Notice({

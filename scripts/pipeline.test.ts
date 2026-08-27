@@ -51,7 +51,7 @@ describe("segment extraction pipeline", () => {
   });
 
   it("lands the endpoints exactly on the junction coordinates", () => {
-    // Anything less and segments meeting at one node end metres apart, which
+    // Anything less and segments meeting at one node end meters apart, which
     // renders as a hairline gap at every intersection on the map.
     const nodeA: [number, number] = [-122.3401, 47.6801];
     const nodeB: [number, number] = [-122.3352, 47.6772];

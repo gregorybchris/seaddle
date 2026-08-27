@@ -46,7 +46,7 @@ describe("elevationGain", () => {
   });
 
   it("ignores jitter below the threshold", () => {
-    // Raw GPX wobbles by a metre between neighbouring points; summing every
+    // Raw GPX wobbles by a meter between neighboring points; summing every
     // positive delta would invent hundreds of feet of climbing on a flat trail.
     expect(elevationGain(pts([0, 1, 0, 1, 0, 1, 0]))).toBe(0);
   });

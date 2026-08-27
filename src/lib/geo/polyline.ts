@@ -28,7 +28,7 @@ export function cumulativeMeters(points: (Coord | ElevCoord)[]): number[] {
 /**
  * Total meters climbed, ignoring wobble below `thresholdMeters`.
  *
- * Raw GPX elevation jitters by a meter or two between neighbouring points, and
+ * Raw GPX elevation jitters by a meter or two between neighboring points, and
  * summing every positive delta turns a flat ride down the Burke-Gilman into
  * hundreds of feet of fictional climbing. So we only bank a rise once it has
  * held for the full threshold, and reset the reference on any real descent.
@@ -58,7 +58,7 @@ export function reversed(points: ElevCoord[]): ElevCoord[] {
 }
 
 /**
- * Insert points so no two neighbours are further apart than `maxSpacingMeters`.
+ * Insert points so no two neighbors are further apart than `maxSpacingMeters`.
  *
  * Drawn routes place a vertex only where the road changes direction, so a
  * straight mile of trail can be two points. The line between them already *is*

@@ -15,7 +15,7 @@ const HEIGHT = 64;
  * a rider before they set off — and "how high is that bit in the middle" is the
  * question the picture immediately provokes. The vertical range is held to a
  * floor so a flat trail does not draw like a mountain range just because the
- * axis was fitted to three metres of noise.
+ * axis was fitted to three meters of noise.
  */
 export function ElevationProfile({
   points,

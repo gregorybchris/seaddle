@@ -50,7 +50,7 @@ export function useAdminData(): AdminData {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     (async () => {
       try {
         const [loadedTracks, loadedGraph] = await Promise.all([
@@ -66,20 +66,20 @@ export function useAdminData(): AdminData {
               ] as const,
           ),
         );
-        if (cancelled) return;
+        if (canceled) return;
         setTracks(loadedTracks);
         setGraph(loadedGraph);
         setGeometry(new Map(entries));
       } catch (caught) {
-        if (!cancelled) {
+        if (!canceled) {
           setError(caught instanceof Error ? caught.message : String(caught));
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       }
     })();
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

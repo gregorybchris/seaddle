@@ -18,10 +18,10 @@ import type { Candidate, TrackPointRef } from "./candidate-finder";
 /**
  * How far the drawn line may stray from the recorded one.
  *
- * A metre, because that is comfortably finer than the source data is accurate —
- * GPS is good to a few metres and a drawn route is only as true as the hand
+ * A meter, because that is comfortably finer than the source data is accurate —
+ * GPS is good to a few meters and a drawn route is only as true as the hand
  * that drew it — while still discarding the vertices import interpolated onto
- * straight runs. Six metres was the first choice and it was wrong: it was
+ * straight runs. Six meters was the first choice and it was wrong: it was
  * validated on total length, which barely moves when corners are cut, and it
  * turned curves into three-line polygons.
  */
@@ -40,7 +40,7 @@ export const TRACK_SNAP_METERS = 20;
  * Segments meeting at a junction have to share a point exactly or the map draws
  * a hairline gap at every intersection, so the ends are pinned twice: once
  * before thinning and once after rounding. The first pin is what keeps the line
- * honest — a junction can sit a good twenty metres from where the chosen ride
+ * honest — a junction can sit a good twenty meters from where the chosen ride
  * actually passes, and a simplifier that has not been told the line starts
  * there will run a straight chord out to its first kept point and miss the real
  * path by far more than the tolerance. The second pin costs nothing and makes

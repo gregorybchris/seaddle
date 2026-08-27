@@ -21,7 +21,7 @@ function perpendicularMeters(
  *
  * Import resamples every ride to a 15 m vertex spacing, and most of those added
  * vertices sit on straight runs where they carry nothing. A tolerance around a
- * metre removes exactly those and keeps the shape of a curve.
+ * meter removes exactly those and keeps the shape of a curve.
  *
  * Iterative rather than recursive on purpose: a 5,000-point track that happens
  * to split badly would recurse 5,000 deep, and the failure mode is a stack
@@ -65,7 +65,7 @@ export function simplify(
 /**
  * Six decimal places, about 11 cm.
  *
- * Five would quantise to roughly a metre, which is the same order as the
+ * Five would quantise to roughly a meter, which is the same order as the
  * simplification tolerance — the rounding would then add its own visible
  * stair-stepping to a line that had just been carefully kept smooth. The extra
  * digit costs one character per coordinate.

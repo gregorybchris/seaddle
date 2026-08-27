@@ -151,7 +151,7 @@ describe("breakdown", () => {
   });
 });
 
-describe("the colour ramps", () => {
+describe("the color ramps", () => {
   it("cover every value each scale can take", () => {
     expect(Object.keys(RAMPS.difficulty).sort()).toEqual([
       "easy",
@@ -172,7 +172,7 @@ describe("the colour ramps", () => {
     ]);
   });
 
-  it("order the ordered scales by lightness, so the order survives colour blindness", () => {
+  it("order the ordered scales by lightness, so the order survives color blindness", () => {
     for (const scale of ["difficulty", "laneQuality", "scenic"] as const) {
       const steps = Object.values(RAMPS[scale]).map(lightnessOf);
       const descending = steps.every((v, i) => i === 0 || v < steps[i - 1]);
@@ -181,7 +181,7 @@ describe("the colour ramps", () => {
   });
 
   it("stay dark enough to see against a nearly white basemap", () => {
-    // The failure this catches looked like the colouring not working at all:
+    // The failure this catches looked like the coloring not working at all:
     // a first ramp started around 203, which simply vanished into the map.
     for (const scale of Object.values(RAMPS)) {
       for (const [value, hex] of Object.entries(scale)) {

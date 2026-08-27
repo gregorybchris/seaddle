@@ -49,7 +49,7 @@ deliberate, and coordinates alone cannot tell the two apart.
 The marked points stay in the array rather than being removed, so every index — and therefore
 every segment already cut from that ride — keeps meaning what it did.
 
-Import therefore normalises both: every ride is **resampled to a maximum 15 m vertex spacing**. On
+Import therefore normalizes both: every ride is **resampled to a maximum 15 m vertex spacing**. On
 a drawn route the line between two vertices already is the route, so interpolating along it adds
 no error — it just gives the junction-finding tools something to hit. Without it the two sparsest
 rides (156 m and 145 m between vertices, 106 km of riding) are invisible to a 25 m junction
@@ -70,7 +70,7 @@ Two consequences worth stating up front:
   Extracted segments are simplified (Douglas–Peucker, **1 m tolerance**) and coordinates rounded to
   6 decimal places (~11 cm) before they reach the browser.
 
-  The tolerance is set by how accurate the source actually is, not by payload. A metre is
+  The tolerance is set by how accurate the source actually is, not by payload. A meter is
   comfortably finer than GPS is good for, and finer than a hand-drawn route is true, while still
   discarding the vertices import interpolated onto straight runs. Measured across the real
   segments, the drawn line stays within **0.99 m** of the recorded one.
@@ -80,7 +80,7 @@ Two consequences worth stating up front:
   points to **4**, a curve rendered as three straight lines, and the worst case strayed **12 m**
   from the road. Anything judged by eye has to be measured by maximum deviation, not by a total.
 
-  Rounding is tied to the same decision. Five decimal places quantise to about a metre, which at
+  Rounding is tied to the same decision. Five decimal places quantise to about a meter, which at
   a 1 m tolerance would add stair-stepping of its own to a line just kept smooth.
 
 ---
@@ -533,7 +533,7 @@ complete dataset.
   tedious; too coarse and the metadata stops being meaningful. Worth deciding empirically after
   the first ten.
 - ~~**Cold start.**~~ Settled at milestone 3: with 145 segments across 260 miles, opening fit to
-  the whole network reads as a map of where you can ride rather than as a hairball. No neighbourhood
+  the whole network reads as a map of where you can ride rather than as a hairball. No neighborhood
   picker needed.
 - **Pin sourcing.** All pins are hand-placed for now. Seattle Parks publishes fountain and restroom
   data, and OSM has both — an import could seed them, at the cost of accuracy.

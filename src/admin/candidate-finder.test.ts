@@ -109,7 +109,7 @@ describe("findCandidates", () => {
   });
 
   it("prefers the track that passed closer to the junctions", () => {
-    // Same shape, but one is drawn a few metres off the intersection.
+    // Same shape, but one is drawn a few meters off the intersection.
     const onIt = trackThrough("on-it", [at(-100, 0), at(600, 0)]);
     const offBy = trackThrough("off-by", [at(-100, 18), at(600, 18)]);
     const tracks = [offBy, onIt];

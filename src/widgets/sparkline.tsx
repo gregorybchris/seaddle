@@ -18,7 +18,7 @@ const HEIGHT = 24;
  *
  * Seattle riding is decided by hills, so the shape of the climb is the thing
  * worth seeing before choosing a piece of geometry. The vertical range is held
- * to a floor: a two-metre rise over a mile is flat, and drawing it edge to edge
+ * to a floor: a two-meter rise over a mile is flat, and drawing it edge to edge
  * would make every flat trail look like Queen Anne.
  */
 export function Sparkline({

@@ -15,7 +15,7 @@ export type Adjacency = Map<NodeId, SegmentId[]>;
  * Which segments touch each node.
  *
  * Derived on load rather than stored. At a few hundred segments this is under a
- * millisecond, and a denormalised index in the file is one more thing that can
+ * millisecond, and a denormalized index in the file is one more thing that can
  * disagree with the segments it describes.
  */
 export function buildAdjacency(segments: Edge[]): Adjacency {

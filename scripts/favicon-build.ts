@@ -11,7 +11,7 @@
  *
  * Second, sizes at or below 32px drop the bicycle and keep only the top of the
  * Needle. The full mark is a bicycle drawn in hairlines, and at 16px those
- * hairlines land on a third of a pixel each and grey out into a smudge. The
+ * hairlines land on a third of a pixel each and gray out into a smudge. The
  * saucer survives that reduction — it is the half of the mark that is still
  * recognisably itself at tab size, and it carries the blaze accent.
  *
@@ -64,7 +64,7 @@ function markPaths() {
   };
 }
 
-/** Fits a box from the mark's coordinate space into the canvas, centred. */
+/** Fits a box from the mark's coordinate space into the canvas, centered. */
 function fit(
   box: { x: number; y: number; w: number; h: number },
   coverage: number,
