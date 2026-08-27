@@ -550,6 +550,21 @@
       "id": "n120",
       "name": null,
       "coord": [-122.35526, 47.689141]
+    },
+    {
+      "id": "n121",
+      "name": null,
+      "coord": [-122.316671, 47.654806]
+    },
+    {
+      "id": "n122",
+      "name": null,
+      "coord": [-122.317825, 47.655401]
+    },
+    {
+      "id": "n123",
+      "name": null,
+      "coord": [-122.317943, 47.655621]
     }
   ],
   "segments": [
@@ -2754,46 +2769,6 @@
       "reviewed": false
     },
     {
-      "id": "s119",
-      "from": "n031",
-      "to": "n109",
-      "source": {
-        "track": "bikes-on-the-boulevard",
-        "startIndex": 3552,
-        "endIndex": 3640
-      },
-      "name": null,
-      "difficulty": {
-        "forward": "medium",
-        "backward": "medium"
-      },
-      "laneQuality": "fair",
-      "scenic": "medium",
-      "surface": "asphalt",
-      "recommendedDirection": null,
-      "reviewed": false
-    },
-    {
-      "id": "s120",
-      "from": "n108",
-      "to": "n109",
-      "source": {
-        "track": "two-bridges-mercer-and-bellevue",
-        "startIndex": 5092,
-        "endIndex": 5148
-      },
-      "name": null,
-      "difficulty": {
-        "forward": "medium",
-        "backward": "medium"
-      },
-      "laneQuality": "fair",
-      "scenic": "medium",
-      "surface": "asphalt",
-      "recommendedDirection": null,
-      "reviewed": false
-    },
-    {
       "id": "s121",
       "from": "n108",
       "to": "n032",
@@ -3521,6 +3496,126 @@
         "track": "2026-07-25-afternoon-ride",
         "startIndex": 4934,
         "endIndex": 4765
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s159",
+      "from": "n109",
+      "to": "n121",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5148,
+        "endIndex": 5118
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s160",
+      "from": "n121",
+      "to": "n108",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5118,
+        "endIndex": 5092
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s161",
+      "from": "n122",
+      "to": "n109",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 9020,
+        "endIndex": 9042
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s162",
+      "from": "n123",
+      "to": "n031",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 3599,
+        "endIndex": 3552
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s163",
+      "from": "n123",
+      "to": "n122",
+      "source": {
+        "track": "north-lake-washington",
+        "startIndex": 363,
+        "endIndex": 384
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s164",
+      "from": "n122",
+      "to": "n121",
+      "source": {
+        "track": "north-lake-washington",
+        "startIndex": 384,
+        "endIndex": 400
       },
       "name": null,
       "difficulty": {
