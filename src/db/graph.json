@@ -854,26 +854,6 @@
       "reviewed": false
     },
     {
-      "id": "s019",
-      "from": "n026",
-      "to": "n017",
-      "source": {
-        "track": "edmonds",
-        "startIndex": 2199,
-        "endIndex": 2028
-      },
-      "name": "Echo Lake to Lake Ballinger",
-      "difficulty": {
-        "forward": "medium",
-        "backward": "medium"
-      },
-      "laneQuality": "fair",
-      "scenic": "medium",
-      "surface": "asphalt",
-      "recommendedDirection": null,
-      "reviewed": false
-    },
-    {
       "id": "s020",
       "from": "n037",
       "to": "n040",
@@ -2182,7 +2162,7 @@
         "startIndex": 3370,
         "endIndex": 1401
       },
-      "name": null,
+      "name": "Mill Valley",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -2202,7 +2182,7 @@
         "startIndex": 2542,
         "endIndex": 2243
       },
-      "name": null,
+      "name": "Zoo to Issaquah",
       "difficulty": {
         "forward": "medium",
         "backward": "medium"
@@ -3481,6 +3461,66 @@
         "track": "2026-07-05-morning-ride",
         "startIndex": 4367,
         "endIndex": 4571
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s156",
+      "from": "n026",
+      "to": "n074",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 2199,
+        "endIndex": 2172
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s157",
+      "from": "n074",
+      "to": "n072",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 2172,
+        "endIndex": 2144
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s158",
+      "from": "n072",
+      "to": "n017",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 4934,
+        "endIndex": 4765
       },
       "name": null,
       "difficulty": {
