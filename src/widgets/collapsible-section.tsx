@@ -1,6 +1,6 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { CaretDown } from "@phosphor-icons/react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 import { SearchField } from "./search-field";
 
@@ -10,6 +10,11 @@ type CollapsibleSectionProps = {
   count: number;
   search?: { value: string; onChange: (value: string) => void; label: string };
   defaultOpen?: boolean;
+  /**
+   * Open the section whenever this changes to something truthy — for when
+   * what the reader just asked for is inside a section they had folded away.
+   */
+  openOn?: unknown;
   children: ReactNode;
 };
 
@@ -26,9 +31,14 @@ export function CollapsibleSection({
   count,
   search,
   defaultOpen = true,
+  openOn,
   children,
 }: CollapsibleSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
+
+  useEffect(() => {
+    if (openOn) setOpen(true);
+  }, [openOn]);
 
   return (
     <Collapsible.Root

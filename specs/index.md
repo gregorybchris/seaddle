@@ -415,6 +415,11 @@ onto the polyline, and the pin can then be dragged off the line to its true posi
 
 ### Supporting tools
 
+- **Identifying what is on the map** — hovering a mapped segment names it at the cursor (id, name,
+  length, climb), and in Segments mode clicking one selects it: the matching row scrolls into view,
+  highlights, and puts the cursor in its name, so a line spotted on the map can be named without
+  going looking for it in a list of hundreds. A toggle draws every segment's label along its line —
+  ids when zoomed out, names once there is room for them.
 - **Manual connect** — force-join two node endpoints farther apart than the snap tolerance (a
   bridge deck, a trail gap), merge two nodes into one, or reassign a segment endpoint to a
   different node. Auto-snapping handles ~95%; this covers the rest.

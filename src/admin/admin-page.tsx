@@ -35,6 +35,7 @@ export default function AdminPage() {
   const [to, setTo] = useState<GraphNode | null>(null);
   const [preview, setPreview] = useState<ElevCoord[] | null>(null);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
+  const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
   const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
   const [maxDetourRatio, setMaxDetourRatio] = useState(
     DEFAULT_MAX_DETOUR_RATIO,
@@ -63,7 +64,7 @@ export default function AdminPage() {
     });
   }, [index, from, to, data.tracks, radiusMeters, maxDetourRatio]);
 
-  function handleMapClick(coord: Coord) {
+  function handleMapClick(coord: Coord, segmentId: string | null) {
     if (!index) return;
     setHint(null);
 
@@ -89,7 +90,13 @@ export default function AdminPage() {
 
     const node = snapToNodes(data.graph.nodes, coord, SELECT_NODE_METERS);
     if (!node) {
-      setHint("Click a junction. Switch to Junctions to place a new one.");
+      // Away from any junction, a click on a mapped segment means that
+      // segment — the one thing a click here could otherwise not reach.
+      if (segmentId) {
+        setSelectedSegment(segmentId);
+        return;
+      }
+      setHint("Click a junction, or a mapped segment to select it.");
       return;
     }
     if (!from) {
@@ -126,6 +133,7 @@ export default function AdminPage() {
     setTo(null);
     setPreview(null);
     setSelectedNode(null);
+    setSelectedSegment(null);
   }
 
   function deleteNode(id: string) {
@@ -195,6 +203,8 @@ export default function AdminPage() {
         onRenameSegment={(id, name) =>
           void data.save(renameSegment(data.graph, id, name))
         }
+        selectedSegment={selectedSegment}
+        onSelectSegment={setSelectedSegment}
         onLocateNode={locateNode}
         onLocateSegment={locateSegment}
         focusedAt={focus}
@@ -209,7 +219,9 @@ export default function AdminPage() {
           tracks={data.tracks}
           nodes={data.graph.nodes}
           selectedNodeIds={selectedNodeIds}
+          segments={data.graph.segments}
           geometry={data.geometry}
+          selectedSegmentId={selectedSegment}
           preview={preview}
           focus={focus}
           onMapClick={handleMapClick}

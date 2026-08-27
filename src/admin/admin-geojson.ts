@@ -7,7 +7,8 @@ import type {
 } from "geojson";
 import { splitAtGaps } from "@/lib/gpx/recording-gaps";
 import type { ElevCoord } from "@/lib/models/geo";
-import type { GraphNode, SegmentId } from "@/lib/models/graph";
+import { deriveSegment } from "@/lib/graph/derive";
+import type { GraphNode, SegmentId, SegmentRecord } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 
 export function lineFeature(points: ElevCoord[]): Feature<LineString> {
@@ -53,15 +54,28 @@ export function tracksToGeoJson(
   };
 }
 
+/**
+ * Mapped segments, carrying enough about themselves to be identified in place.
+ *
+ * Name and length ride along in the properties so the map can answer "what is
+ * this line?" without the sidebar being involved, and so a label layer can read
+ * them straight off the feature.
+ */
 export function segmentsToGeoJson(
+  segments: SegmentRecord[],
   geometry: Map<SegmentId, ElevCoord[]>,
 ): FeatureCollection<LineString> {
+  const names = new Map(segments.map((segment) => [segment.id, segment.name]));
   return {
     type: "FeatureCollection",
     features: [...geometry.entries()].map(([id, points]) => ({
       type: "Feature",
       id,
-      properties: { id },
+      properties: {
+        id,
+        name: names.get(id) ?? null,
+        ...deriveSegment(points),
+      },
       geometry: { type: "LineString", coordinates: points as number[][] },
     })),
   };

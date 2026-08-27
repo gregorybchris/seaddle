@@ -1,5 +1,5 @@
 import { Crosshair } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 
 type InventoryRowProps = {
@@ -12,6 +12,12 @@ type InventoryRowProps = {
   onHover?: (hovering: boolean) => void;
   onSelect?: () => void;
   onLocate?: () => void;
+  /**
+   * When this row becomes the selected one, bring it into view and put the
+   * cursor in its name — so picking something off the map lands you ready to
+   * name it rather than ready to go looking for it.
+   */
+  revealOnSelect?: boolean;
 };
 
 /**
@@ -32,8 +38,11 @@ export function InventoryRow({
   onHover,
   onSelect,
   onLocate,
+  revealOnSelect = false,
 }: InventoryRowProps) {
   const [draft, setDraft] = useState(name ?? "");
+  const row = useRef<HTMLLIElement>(null);
+  const field = useRef<HTMLInputElement>(null);
 
   // Follow the stored name when it changes underneath us, but never while the
   // field is focused — that would overwrite what is being typed.
@@ -41,12 +50,21 @@ export function InventoryRow({
     setDraft(name ?? "");
   }, [name]);
 
+  useEffect(() => {
+    if (!selected || !revealOnSelect) return;
+    row.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    // Focus without selecting: the caret lands in an existing name rather than
+    // replacing it, so this is safe when the click was only to identify.
+    field.current?.focus({ preventScroll: true });
+  }, [selected, revealOnSelect]);
+
   function commit() {
     if (draft.trim() !== (name ?? "")) onRename(draft);
   }
 
   return (
     <li
+      ref={row}
       onMouseEnter={() => onHover?.(true)}
       onMouseLeave={() => onHover?.(false)}
       className={cn(
@@ -68,6 +86,7 @@ export function InventoryRow({
       </button>
 
       <input
+        ref={field}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
         onBlur={commit}

@@ -28,6 +28,8 @@ type AdminSidebarProps = {
   to: GraphNode | null;
   selectedNode: GraphNode | null;
   onSelectNode: (node: GraphNode | null) => void;
+  selectedSegment: string | null;
+  onSelectSegment: (id: string | null) => void;
   candidates: Candidate[] | null;
   radiusMeters: number;
   maxDetourRatio: number;
@@ -115,6 +117,8 @@ export function AdminSidebar(props: AdminSidebarProps) {
 
         <SegmentInventory
           segments={props.segments}
+          selectedId={props.selectedSegment}
+          onSelect={props.onSelectSegment}
           geometry={props.geometry}
           onHover={props.onHoverGeometry}
           onRemove={props.onRemoveSegment}
@@ -309,6 +313,8 @@ function matches(query: string, id: string, name: string | null): boolean {
 
 function SegmentInventory({
   segments,
+  selectedId,
+  onSelect,
   geometry,
   onHover,
   onRemove,
@@ -316,6 +322,8 @@ function SegmentInventory({
   onLocate,
 }: {
   segments: SegmentRecord[];
+  selectedId: string | null;
+  onSelect: (id: string | null) => void;
   geometry: Map<string, ElevCoord[]>;
   onHover: (points: ElevCoord[] | null) => void;
   onRemove: (id: string) => void;
@@ -334,6 +342,7 @@ function SegmentInventory({
     <CollapsibleSection
       title="Mapped segments"
       count={segments.length}
+      openOn={selectedId}
       search={{
         value: query,
         onChange: setQuery,
@@ -347,6 +356,11 @@ function SegmentInventory({
             key={segment.id}
             id={segment.id}
             name={segment.name}
+            selected={segment.id === selectedId}
+            revealOnSelect
+            onSelect={() =>
+              onSelect(segment.id === selectedId ? null : segment.id)
+            }
             detail={formatMiles(polylineMeters(geometry.get(segment.id) ?? []))}
             onRename={(name) => onRename(segment.id, name)}
             onRemove={() => onRemove(segment.id)}
@@ -403,6 +417,7 @@ function JunctionInventory({
     <CollapsibleSection
       title="Placed junctions"
       count={nodes.length}
+      openOn={selectedId}
       search={{
         value: query,
         onChange: setQuery,
@@ -418,6 +433,7 @@ function JunctionInventory({
             name={node.name}
             detail={load.get(node.id) ? `${load.get(node.id)} seg` : "unused"}
             selected={node.id === selectedId}
+            revealOnSelect
             onSelect={() => onSelect(node.id === selectedId ? null : node)}
             onRename={(name) => onRename(node.id, name)}
             onRemove={() => onRemove(node.id)}
