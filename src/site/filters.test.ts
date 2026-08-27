@@ -14,6 +14,7 @@ import {
 function segment(over: Partial<SiteSegment> = {}): SiteSegment {
   return {
     id: "s1",
+    name: null,
     from: "nA",
     to: "nB",
     points: [

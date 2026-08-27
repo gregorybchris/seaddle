@@ -29,6 +29,7 @@ export function buildGraphGeoJson(
         id: segment.id,
         from: segment.from,
         to: segment.to,
+        name: segment.name,
         steepness: segment.steepness,
         protection: segment.protection,
         surroundings: segment.surroundings,

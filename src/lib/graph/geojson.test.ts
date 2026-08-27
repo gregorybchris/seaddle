@@ -28,6 +28,7 @@ describe("buildGraphGeoJson", () => {
     ],
     segments: [
       segment("s1", "nA", "nB", {
+        name: "Ballard Locks to Golden Gardens",
         protection: "bikePath",
         steepness: "rolling",
       }),
@@ -41,6 +42,11 @@ describe("buildGraphGeoJson", () => {
     expect(properties.protection).toBe("bikePath");
     expect(properties.steepness).toBe("rolling");
     expect(properties.reviewed).toBe(false);
+  });
+
+  it("carries the name, which riders read on hover", () => {
+    const properties = buildGraphGeoJson(g, geometry).features[0].properties!;
+    expect(properties.name).toBe("Ballard Locks to Golden Gardens");
   });
 
   it("injects the derived numbers rather than trusting a stored copy", () => {

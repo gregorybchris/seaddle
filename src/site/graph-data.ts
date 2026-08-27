@@ -19,6 +19,7 @@ import type {
  */
 export type SiteSegment = {
   id: SegmentId;
+  name: string | null;
   from: NodeId;
   to: NodeId;
   points: ElevCoord[];
@@ -63,6 +64,7 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     from: String(p.from),
     to: String(p.to),
     points: feature.geometry.coordinates as ElevCoord[],
+    name: p.name ? String(p.name) : null,
     meters: Number(p.meters ?? 0),
     gainForward: Number(p.gainForward ?? 0),
     gainBackward: Number(p.gainBackward ?? 0),

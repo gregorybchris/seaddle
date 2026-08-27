@@ -109,7 +109,7 @@ type Surroundings = "plain" | "pleasant" | "scenic";
 
 type Segment = {
   id: SegmentId;
-  name: string | null; // admin-only audit label, never shown to users
+  name: string | null; // shown to riders on hover where set
   from: NodeId;
   to: NodeId;
 

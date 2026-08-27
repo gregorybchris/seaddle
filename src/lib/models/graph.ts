@@ -34,7 +34,14 @@ export type GraphNode = {
  */
 export type SegmentRecord = {
   id: SegmentId;
-  /** Admin-only audit label. Never shown to users. */
+  /**
+   * What this stretch of road is called, shown to riders where one is set.
+   *
+   * Started as an admin-only audit label and earned its way out: "Ballard
+   * Locks to Golden Gardens" tells someone deciding far more than any
+   * attribute can. Still optional — an unnamed road is described by its
+   * numbers alone rather than by an id nobody outside the editor can use.
+   */
   name: string | null;
   from: NodeId;
   to: NodeId;

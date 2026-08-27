@@ -63,6 +63,7 @@ const PINS_FROM_ZOOM = 12.5;
  * taking at all.
  */
 type Hovered = {
+  name: string | null;
   meters: number;
   climb: number;
   steepness: string;
@@ -323,6 +324,7 @@ export function SiteMap({
 
     const box = wrap.current?.getBoundingClientRect();
     return {
+      name: segment.name,
       meters: segment.meters,
       // Undirected, like the steepness it agrees with: the bigger of the two
       // climbs, since which way this will be ridden is not decided yet.

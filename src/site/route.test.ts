@@ -50,6 +50,7 @@ function segment(
   ];
   return {
     id,
+    name: null,
     from,
     to,
     points,
