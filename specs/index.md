@@ -503,15 +503,23 @@ typecheck, lint, and tests.
 
 1. ~~**Foundation**~~ — project scaffold, data model types, `gpx:import`, `graph:build`, ported map
    utilities, tests for the geometry math.
-2. **Admin core** — heatmap, node placement with snapping, candidate finder, extraction, crop and
-   write-back. Stop as soon as ~10 real segments exist.
-3. **Site core** — map, segment chaining, sidebar, distance/gain/profile stats, built against
-   those real segments. _Done._
-4. **Admin completion** — metadata and pin editors, manual connect, coverage view, validation.
-   Then actually slice the 21 tracks into the full graph.
-5. **Site completion** — filters, color encoding, attribute summary, out-and-back, URL sharing,
-   localStorage saves, GPX export.
-6. **Polish** — custom Studio basemap, mobile bottom sheet, accessibility pass, performance.
+2. ~~**Admin core**~~ — heatmap, node placement with snapping, candidate finder, extraction, crop
+   and write-back.
+3. ~~**Site core**~~ — map, segment chaining, sidebar, distance/gain/profile stats.
+4. **Admin completion** — ~~metadata editor~~, ~~slicing the rides into a full graph~~ (153
+   segments, 261 miles). Still open: **pin editor**, **manual connect**, **coverage view**,
+   **validation panel** — the last only exists as warnings printed by `graph:build`.
+5. ~~**Site completion**~~ — filters, color encoding, attribute summary, out-and-back, URL
+   sharing, localStorage saves, GPX export.
+6. **Polish** — ~~mobile bottom sheet~~. Still open: **custom Studio basemap** (both maps are
+   still on the stock light style), **accessibility pass**, **performance** — app JS is 106 kB
+   gzipped against a 100 kB budget.
+
+Beyond these, [`auto-routing.md`](auto-routing.md) specifies connectors — routing a rider from
+their front door to the graph — and is unbuilt. It gates itself on milestone 5, which is now done.
+
+The review pass gates the rest of the site's value: every segment still carries default
+attributes, so filters and color encoding work correctly against data that says nothing yet.
 
 Admin leads because the site has nothing to render without a real graph, and every interaction
 decision made against fake data is a guess. But it cuts over to the site at ~10 segments (step 3)
