@@ -1,6 +1,7 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
+  AttributionControl,
   Layer,
   Marker,
   Source,
@@ -205,6 +206,11 @@ export function SiteMap({
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       mapStyle="mapbox://styles/mapbox/light-v11"
       style={{ width: "100%", height: "100%" }}
+      // Collapsed to a single mark rather than removed. Mapbox's terms and
+      // OpenStreetMap's licence both require the credit to be shown, and
+      // compact is the smallest form they allow — tuxc turns it off outright,
+      // which is not something to copy.
+      attributionControl={false}
       // Only a road is clickable, so only a road says so. Claiming every pixel
       // is clickable teaches a beginner nothing about where they may go.
       cursor={overRoad ? "pointer" : "grab"}
@@ -315,6 +321,7 @@ export function SiteMap({
           />
         </Marker>
       )}
+      <AttributionControl compact />
     </Map>
   );
 }
