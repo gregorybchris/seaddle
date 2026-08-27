@@ -18,8 +18,21 @@ export function sortGraph(graph: GraphFile): GraphFile {
   };
 }
 
+/**
+ * Pretty-printed, but with coordinate pairs kept on one line.
+ *
+ * Left to itself, JSON.stringify spreads every `[lon, lat]` over six lines, so
+ * a file with a few hundred junctions becomes thousands of lines of single
+ * numbers. The file exists to be read in a diff; a coordinate is one value.
+ */
 export function serializeGraph(graph: GraphFile): string {
-  return JSON.stringify(sortGraph(graph), null, 2) + "\n";
+  const pretty = JSON.stringify(sortGraph(graph), null, 2);
+  return (
+    pretty.replace(
+      /\[\s*\n\s*(-?\d+(?:\.\d+)?),\s*\n\s*(-?\d+(?:\.\d+)?)\s*\n\s*\]/g,
+      "[$1, $2]",
+    ) + "\n"
+  );
 }
 
 export type GraphProblem = { level: "error" | "warning"; message: string };

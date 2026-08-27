@@ -130,3 +130,34 @@ describe("validateGraph", () => {
     ).not.toThrow();
   });
 });
+
+describe("serializeGraph formatting", () => {
+  it("keeps a coordinate on one line", () => {
+    // Otherwise a few hundred junctions become thousands of lines of single
+    // numbers, and the file stops being reviewable in a diff.
+    const serialized = serializeGraph(
+      graph({
+        nodes: [{ id: "n1", name: null, coord: [-122.35123, 47.65123] }],
+      }),
+    );
+    expect(serialized).toContain('"coord": [-122.35123, 47.65123]');
+  });
+
+  it("still indents the structure around it", () => {
+    const serialized = serializeGraph(
+      graph({
+        nodes: [{ id: "n1", name: "Gas Works", coord: [-122.3, 47.6] }],
+      }),
+    );
+    expect(serialized).toContain('    "id": "n1"');
+    expect(serialized).toContain('    "name": "Gas Works"');
+  });
+
+  it("round-trips back to the same graph", () => {
+    const original = graph({
+      nodes: [{ id: "n1", name: null, coord: [-122.35, 47.65] }],
+      segments: [segment("s1", "n1", "n1")],
+    });
+    expect(JSON.parse(serializeGraph(original))).toEqual(sortGraph(original));
+  });
+});

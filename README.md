@@ -41,6 +41,26 @@ Derived values — length, elevation gain each way — are computed only in
 copy living beside the geometry it comes from goes stale the moment a segment is
 re-cropped.
 
+## Admin
+
+`pnpm dev`, then <http://localhost:5173/admin>. It mounts only in development —
+`import.meta.env.DEV` is a build-time literal, so the page and its API are not in
+the production bundle at all. There is nothing to protect because there is
+nothing out there.
+
+Building the graph goes junctions first, segments second:
+
+1. **Junctions.** Click where rides cross. The click snaps onto the nearest ride
+   and onto an existing junction if one is within 15 m, so clicking the same
+   intersection twice gives you one node rather than two that never connect.
+2. **Segments.** Click two junctions. Every ride that runs between them is
+   scored on directness, how close it passed, and how evenly its points are
+   spaced, then ranked. Pick the cleanest geometry; it is cropped, thinned, and
+   its ends pinned exactly to the junctions.
+
+Edits autosave to `src/db/` through a dev-only Vite middleware. `git diff` is the
+review step.
+
 ## Commands
 
 | Command            | What it does                                        |

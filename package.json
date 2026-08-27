@@ -25,6 +25,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-map-gl": "^7.1.9",
+    "react-router-dom": "^7.18.2",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {

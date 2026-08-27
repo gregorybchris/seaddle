@@ -24,7 +24,8 @@
     "vite.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "vite-plugins/**/*.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }

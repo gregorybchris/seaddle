@@ -1,4 +1,4 @@
-import type { ElevCoord } from "@/lib/models/geo";
+import type { Coord, ElevCoord } from "@/lib/models/geo";
 import { flat, toLocalMeters } from "./distance";
 
 /** Perpendicular distance in meters from `point` to the line through `a` and `b`. */
@@ -60,6 +60,11 @@ export function simplify(
   }
 
   return points.filter((_, i) => keep[i]);
+}
+
+/** Five decimal places, ~1 m. Junction coordinates are stored at this precision. */
+export function roundCoord(coord: Coord): Coord {
+  return [Math.round(coord[0] * 1e5) / 1e5, Math.round(coord[1] * 1e5) / 1e5];
 }
 
 /**
