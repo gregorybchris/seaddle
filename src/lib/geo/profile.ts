@@ -18,6 +18,28 @@ export type Profile = {
  * seconds — so plotting one column per vertex stretches the twisty parts and
  * squashes the straights, which draws a hill in the wrong place.
  */
+/**
+ * Read a profile at a fraction of the way along it.
+ *
+ * Fractions rather than indices, because the caller is working from a pointer
+ * position across a chart and has no business knowing how many samples were
+ * taken. Snaps to the nearest sample: the profile is already evenly spaced by
+ * distance, so interpolating between two of them would add precision the data
+ * does not have.
+ */
+export function sampleAt(
+  profile: Profile,
+  fraction: number,
+): { meters: number; elevation: number } | null {
+  if (profile.samples.length === 0) return null;
+  const clamped = Math.max(0, Math.min(1, fraction));
+  const index = Math.round(clamped * (profile.samples.length - 1));
+  return {
+    meters: profile.meters * (index / Math.max(1, profile.samples.length - 1)),
+    elevation: profile.samples[index],
+  };
+}
+
 export function elevationProfile(
   points: ElevCoord[],
   sampleCount = 48,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ElevCoord } from "@/lib/models/geo";
-import { elevationProfile } from "./profile";
+import { elevationProfile, sampleAt } from "./profile";
 
 /** A line whose vertices are deliberately uneven: dense, then one long jump. */
 function unevenClimb(): ElevCoord[] {
@@ -55,5 +55,31 @@ describe("elevationProfile", () => {
     expect(elevationProfile([[-122.35, 47.65, 5]], 4).samples).toEqual([
       5, 5, 5, 5,
     ]);
+  });
+});
+
+describe("sampleAt", () => {
+  const profile = elevationProfile(unevenClimb(), 21);
+
+  it("reads the start and the end exactly", () => {
+    expect(sampleAt(profile, 0)).toEqual({ meters: 0, elevation: 0 });
+    const end = sampleAt(profile, 1)!;
+    expect(end.meters).toBeCloseTo(profile.meters, 6);
+    expect(end.elevation).toBeCloseTo(30, 6);
+  });
+
+  it("reports distance and height together", () => {
+    const middle = sampleAt(profile, 0.5)!;
+    expect(middle.meters).toBeCloseTo(profile.meters / 2, 6);
+    expect(middle.elevation).toBeGreaterThan(20);
+  });
+
+  it("clamps a pointer that has run off either end of the chart", () => {
+    expect(sampleAt(profile, -0.4)).toEqual(sampleAt(profile, 0));
+    expect(sampleAt(profile, 1.7)).toEqual(sampleAt(profile, 1));
+  });
+
+  it("has nothing to read when there is no profile", () => {
+    expect(sampleAt(elevationProfile([], 8), 0.5)).toBeNull();
   });
 });
