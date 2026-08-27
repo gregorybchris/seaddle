@@ -77,9 +77,14 @@ export function RoutePanel({
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
-            <h1 className="text-sand flex-1 text-base leading-none tracking-[0.18em] uppercase">
-              Seaddle
-            </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
+                Seaddle
+              </h1>
+              <p className="eyebrow text-sand/40 mt-1">
+                Seattle cycling routes
+              </p>
+            </div>
           </div>
 
           {/* Dimmed until there is a ride, so the zeros read as "not yet"
