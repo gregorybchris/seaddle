@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No `version:` here on purpose. The action reads `packageManager` from
+      # package.json, and specifying both makes it refuse to install at all.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 8
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -22,6 +22,6 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm test
-      # Proves the graph compiles and the bundle builds. Source tracks are not
-      # needed: the pipeline test reads src-gpx directly, which is committed.
+      # Proves the graph compiles and the bundle builds. Source rides are not
+      # needed: the pipeline test reads a committed synthetic fixture.
       - run: pnpm build
