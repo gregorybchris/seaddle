@@ -1,6 +1,3458 @@
 {
   "version": 1,
-  "nodes": [],
-  "segments": [],
+  "nodes": [
+    {
+      "id": "n001",
+      "name": null,
+      "coord": [-122.2941, 47.6285]
+    },
+    {
+      "id": "n003",
+      "name": null,
+      "coord": [-122.29641, 47.64052]
+    },
+    {
+      "id": "n006",
+      "name": null,
+      "coord": [-122.4122, 47.66009]
+    },
+    {
+      "id": "n007",
+      "name": null,
+      "coord": [-122.4133, 47.6546]
+    },
+    {
+      "id": "n008",
+      "name": null,
+      "coord": [-122.38638, 47.65591]
+    },
+    {
+      "id": "n009",
+      "name": null,
+      "coord": [-122.38199, 47.64629]
+    },
+    {
+      "id": "n013",
+      "name": null,
+      "coord": [-122.38759, 47.68687]
+    },
+    {
+      "id": "n015",
+      "name": null,
+      "coord": [-122.36603, 47.6891]
+    },
+    {
+      "id": "n017",
+      "name": null,
+      "coord": [-122.33136, 47.79238]
+    },
+    {
+      "id": "n018",
+      "name": null,
+      "coord": [-122.32618, 47.78491]
+    },
+    {
+      "id": "n020",
+      "name": null,
+      "coord": [-122.29678, 47.64043]
+    },
+    {
+      "id": "n021",
+      "name": null,
+      "coord": [-122.40265, 47.6879]
+    },
+    {
+      "id": "n022",
+      "name": null,
+      "coord": [-122.3962, 47.66774]
+    },
+    {
+      "id": "n023",
+      "name": null,
+      "coord": [-122.39832, 47.69059]
+    },
+    {
+      "id": "n024",
+      "name": null,
+      "coord": [-122.3983, 47.66077]
+    },
+    {
+      "id": "n025",
+      "name": null,
+      "coord": [-122.39932, 47.66464]
+    },
+    {
+      "id": "n026",
+      "name": null,
+      "coord": [-122.33521, 47.7706]
+    },
+    {
+      "id": "n027",
+      "name": null,
+      "coord": [-122.280296, 47.751849]
+    },
+    {
+      "id": "n028",
+      "name": null,
+      "coord": [-122.35013, 47.70865]
+    },
+    {
+      "id": "n029",
+      "name": null,
+      "coord": [-122.307225, 47.632297]
+    },
+    {
+      "id": "n030",
+      "name": null,
+      "coord": [-122.317057, 47.64205]
+    },
+    {
+      "id": "n031",
+      "name": null,
+      "coord": [-122.321211, 47.651565]
+    },
+    {
+      "id": "n032",
+      "name": null,
+      "coord": [-122.3073, 47.65077]
+    },
+    {
+      "id": "n033",
+      "name": null,
+      "coord": [-122.30611, 47.65102]
+    },
+    {
+      "id": "n034",
+      "name": null,
+      "coord": [-122.304835, 47.651038]
+    },
+    {
+      "id": "n035",
+      "name": null,
+      "coord": [-122.30571, 47.650715]
+    },
+    {
+      "id": "n036",
+      "name": null,
+      "coord": [-122.300519, 47.666289]
+    },
+    {
+      "id": "n037",
+      "name": null,
+      "coord": [-122.326873, 47.678581]
+    },
+    {
+      "id": "n038",
+      "name": null,
+      "coord": [-122.339993, 47.669872]
+    },
+    {
+      "id": "n039",
+      "name": null,
+      "coord": [-122.345694, 47.674259]
+    },
+    {
+      "id": "n040",
+      "name": null,
+      "coord": [-122.337806, 47.685615]
+    },
+    {
+      "id": "n041",
+      "name": null,
+      "coord": [-122.349896, 47.68915]
+    },
+    {
+      "id": "n042",
+      "name": null,
+      "coord": [-122.212758, 47.750036]
+    },
+    {
+      "id": "n043",
+      "name": null,
+      "coord": [-122.20286, 47.643186]
+    },
+    {
+      "id": "n044",
+      "name": null,
+      "coord": [-122.128084, 47.670533]
+    },
+    {
+      "id": "n045",
+      "name": null,
+      "coord": [-122.342671, 47.648516]
+    },
+    {
+      "id": "n046",
+      "name": null,
+      "coord": [-122.333873, 47.64694]
+    },
+    {
+      "id": "n047",
+      "name": null,
+      "coord": [-122.349888, 47.647034]
+    },
+    {
+      "id": "n048",
+      "name": null,
+      "coord": [-122.349687, 47.649499]
+    },
+    {
+      "id": "n049",
+      "name": null,
+      "coord": [-122.33951, 47.627069]
+    },
+    {
+      "id": "n050",
+      "name": null,
+      "coord": [-122.354342, 47.670506]
+    },
+    {
+      "id": "n051",
+      "name": null,
+      "coord": [-122.357272, 47.652925]
+    },
+    {
+      "id": "n052",
+      "name": null,
+      "coord": [-122.358097, 47.652181]
+    },
+    {
+      "id": "n053",
+      "name": null,
+      "coord": [-122.355077, 47.650603]
+    },
+    {
+      "id": "n054",
+      "name": null,
+      "coord": [-122.347155, 47.648596]
+    },
+    {
+      "id": "n055",
+      "name": null,
+      "coord": [-122.3513, 47.649772]
+    },
+    {
+      "id": "n056",
+      "name": null,
+      "coord": [-122.24805, 47.59033]
+    },
+    {
+      "id": "n057",
+      "name": null,
+      "coord": [-122.288134, 47.590779]
+    },
+    {
+      "id": "n058",
+      "name": null,
+      "coord": [-122.28913, 47.59119]
+    },
+    {
+      "id": "n059",
+      "name": null,
+      "coord": [-122.288678, 47.5909]
+    },
+    {
+      "id": "n060",
+      "name": null,
+      "coord": [-122.289144, 47.590382]
+    },
+    {
+      "id": "n061",
+      "name": null,
+      "coord": [-122.287541, 47.585527]
+    },
+    {
+      "id": "n062",
+      "name": null,
+      "coord": [-122.25769, 47.54965]
+    },
+    {
+      "id": "n063",
+      "name": null,
+      "coord": [-122.199148, 47.532809]
+    },
+    {
+      "id": "n064",
+      "name": null,
+      "coord": [-122.096457, 47.541515]
+    },
+    {
+      "id": "n065",
+      "name": null,
+      "coord": [-122.112387, 47.548302]
+    },
+    {
+      "id": "n066",
+      "name": null,
+      "coord": [-122.099229, 47.563013]
+    },
+    {
+      "id": "n067",
+      "name": null,
+      "coord": [-122.07712, 47.55377]
+    },
+    {
+      "id": "n068",
+      "name": null,
+      "coord": [-122.09759, 47.66139]
+    },
+    {
+      "id": "n069",
+      "name": null,
+      "coord": [-122.40079, 47.694071]
+    },
+    {
+      "id": "n070",
+      "name": null,
+      "coord": [-122.303006, 47.643226]
+    },
+    {
+      "id": "n071",
+      "name": null,
+      "coord": [-122.329798, 47.770546]
+    },
+    {
+      "id": "n072",
+      "name": null,
+      "coord": [-122.335353, 47.777979]
+    },
+    {
+      "id": "n073",
+      "name": null,
+      "coord": [-122.334042, 47.773732]
+    },
+    {
+      "id": "n074",
+      "name": null,
+      "coord": [-122.335322, 47.774138]
+    },
+    {
+      "id": "n075",
+      "name": null,
+      "coord": [-122.342132, 47.770282]
+    },
+    {
+      "id": "n076",
+      "name": null,
+      "coord": [-122.34298, 47.60861]
+    },
+    {
+      "id": "n077",
+      "name": null,
+      "coord": [-122.344738, 47.609007]
+    },
+    {
+      "id": "n078",
+      "name": null,
+      "coord": [-122.336617, 47.601716]
+    },
+    {
+      "id": "n079",
+      "name": null,
+      "coord": [-122.35794, 47.57123]
+    },
+    {
+      "id": "n080",
+      "name": null,
+      "coord": [-122.4037, 47.56094]
+    },
+    {
+      "id": "n081",
+      "name": null,
+      "coord": [-122.370629, 47.572047]
+    },
+    {
+      "id": "n082",
+      "name": null,
+      "coord": [-122.350624, 47.474007]
+    },
+    {
+      "id": "n083",
+      "name": null,
+      "coord": [-122.30386, 47.644237]
+    },
+    {
+      "id": "n084",
+      "name": null,
+      "coord": [-122.304316, 47.645029]
+    },
+    {
+      "id": "n085",
+      "name": null,
+      "coord": [-122.301365, 47.64543]
+    },
+    {
+      "id": "n086",
+      "name": null,
+      "coord": [-122.298558, 47.642835]
+    },
+    {
+      "id": "n087",
+      "name": null,
+      "coord": [-122.299573, 47.644335]
+    },
+    {
+      "id": "n088",
+      "name": null,
+      "coord": [-122.23857, 47.63767]
+    },
+    {
+      "id": "n089",
+      "name": null,
+      "coord": [-122.196519, 47.580073]
+    },
+    {
+      "id": "n090",
+      "name": null,
+      "coord": [-122.20723, 47.5772]
+    },
+    {
+      "id": "n092",
+      "name": null,
+      "coord": [-122.297461, 47.590273]
+    },
+    {
+      "id": "n093",
+      "name": null,
+      "coord": [-122.306145, 47.595342]
+    },
+    {
+      "id": "n094",
+      "name": null,
+      "coord": [-122.126817, 47.550767]
+    },
+    {
+      "id": "n095",
+      "name": null,
+      "coord": [-122.125815, 47.66171]
+    },
+    {
+      "id": "n096",
+      "name": null,
+      "coord": [-122.049505, 47.53893]
+    },
+    {
+      "id": "n097",
+      "name": null,
+      "coord": [-122.179995, 47.579547]
+    },
+    {
+      "id": "n098",
+      "name": null,
+      "coord": [-122.123, 47.66297]
+    },
+    {
+      "id": "n099",
+      "name": null,
+      "coord": [-122.112647, 47.663857]
+    },
+    {
+      "id": "n100",
+      "name": null,
+      "coord": [-122.209302, 47.520658]
+    },
+    {
+      "id": "n101",
+      "name": null,
+      "coord": [-122.208991, 47.485252]
+    },
+    {
+      "id": "n102",
+      "name": null,
+      "coord": [-122.25122, 47.56211]
+    },
+    {
+      "id": "n103",
+      "name": null,
+      "coord": [-122.24654, 47.55355]
+    },
+    {
+      "id": "n104",
+      "name": null,
+      "coord": [-122.277193, 47.570037]
+    },
+    {
+      "id": "n105",
+      "name": null,
+      "coord": [-122.284784, 47.602906]
+    },
+    {
+      "id": "n106",
+      "name": null,
+      "coord": [-122.293235, 47.631786]
+    },
+    {
+      "id": "n107",
+      "name": null,
+      "coord": [-122.305128, 47.650354]
+    },
+    {
+      "id": "n108",
+      "name": null,
+      "coord": [-122.313359, 47.65357]
+    },
+    {
+      "id": "n109",
+      "name": null,
+      "coord": [-122.32091, 47.65562]
+    },
+    {
+      "id": "n110",
+      "name": null,
+      "coord": [-122.33042, 47.65093]
+    },
+    {
+      "id": "n111",
+      "name": null,
+      "coord": [-122.33128, 47.650018]
+    },
+    {
+      "id": "n112",
+      "name": null,
+      "coord": [-122.331458, 47.650524]
+    },
+    {
+      "id": "n113",
+      "name": null,
+      "coord": [-122.181795, 47.632542]
+    },
+    {
+      "id": "n114",
+      "name": null,
+      "coord": [-122.181877, 47.632379]
+    },
+    {
+      "id": "n115",
+      "name": null,
+      "coord": [-122.183624, 47.622702]
+    },
+    {
+      "id": "n116",
+      "name": null,
+      "coord": [-122.267258, 47.537019]
+    },
+    {
+      "id": "n117",
+      "name": null,
+      "coord": [-122.360755, 47.669473]
+    },
+    {
+      "id": "n118",
+      "name": null,
+      "coord": [-122.35116, 47.65147]
+    },
+    {
+      "id": "n119",
+      "name": null,
+      "coord": [-122.355285, 47.670449]
+    },
+    {
+      "id": "n120",
+      "name": null,
+      "coord": [-122.35526, 47.689141]
+    }
+  ],
+  "segments": [
+    {
+      "id": "s001",
+      "from": "n003",
+      "to": "n001",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 602,
+        "endIndex": 758
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s002",
+      "from": "n006",
+      "to": "n007",
+      "source": {
+        "track": "magnolia-2",
+        "startIndex": 626,
+        "endIndex": 730
+      },
+      "name": "Discovery Lower Path",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s003",
+      "from": "n006",
+      "to": "n007",
+      "source": {
+        "track": "magnolia-belltown",
+        "startIndex": 971,
+        "endIndex": 1043
+      },
+      "name": "Discovery Upper Path",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s005",
+      "from": "n013",
+      "to": "n015",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 17,
+        "endIndex": 143
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s006",
+      "from": "n007",
+      "to": "n009",
+      "source": {
+        "track": "magnolia-2",
+        "startIndex": 730,
+        "endIndex": 1260
+      },
+      "name": "Discovery to Interbay",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s007",
+      "from": "n009",
+      "to": "n008",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 1360,
+        "endIndex": 1460
+      },
+      "name": "Interbay to Gilman Crossing",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s008",
+      "from": "n017",
+      "to": "n018",
+      "source": {
+        "track": "everett",
+        "startIndex": 7893,
+        "endIndex": 7998
+      },
+      "name": "Interurban to Lake Ballinger",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s009",
+      "from": "n003",
+      "to": "n020",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 602,
+        "endIndex": 599
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s010",
+      "from": "n022",
+      "to": "n021",
+      "source": {
+        "track": "magnolia-ballard",
+        "startIndex": 1110,
+        "endIndex": 864
+      },
+      "name": "Ballard Locks to Golden Gardens",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s011",
+      "from": "n023",
+      "to": "n021",
+      "source": {
+        "track": "magnolia-ballard",
+        "startIndex": 704,
+        "endIndex": 864
+      },
+      "name": "Golden Gardens Climb",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s012",
+      "from": "n025",
+      "to": "n024",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 500,
+        "endIndex": 569
+      },
+      "name": "From Locks Over Train Tracks",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s013",
+      "from": "n024",
+      "to": "n006",
+      "source": {
+        "track": "magnolia-2",
+        "startIndex": 493,
+        "endIndex": 626
+      },
+      "name": "Discovery Climb",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s014",
+      "from": "n008",
+      "to": "n024",
+      "source": {
+        "track": "magnolia-2",
+        "startIndex": 379,
+        "endIndex": 493
+      },
+      "name": "Gilman to Government",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s015",
+      "from": "n025",
+      "to": "n008",
+      "source": {
+        "track": "magnolia-belltown",
+        "startIndex": 524,
+        "endIndex": 702
+      },
+      "name": "Commodore Way",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s016",
+      "from": "n022",
+      "to": "n025",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 443,
+        "endIndex": 500
+      },
+      "name": "Crossing Ballard Locks",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s019",
+      "from": "n026",
+      "to": "n017",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 2199,
+        "endIndex": 2028
+      },
+      "name": "Echo Lake to Lake Ballinger",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s020",
+      "from": "n037",
+      "to": "n040",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 517,
+        "endIndex": 640
+      },
+      "name": "Green Lake NE",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s021",
+      "from": "n040",
+      "to": "n039",
+      "source": {
+        "track": "2026-06-20-afternoon-ride",
+        "startIndex": 575,
+        "endIndex": 437
+      },
+      "name": "Green Lake NW",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s022",
+      "from": "n039",
+      "to": "n038",
+      "source": {
+        "track": "green-lake",
+        "startIndex": 467,
+        "endIndex": 527
+      },
+      "name": "Green Lake SW",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s023",
+      "from": "n038",
+      "to": "n037",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 373,
+        "endIndex": 517
+      },
+      "name": "Green Lake SE",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s024",
+      "from": "n037",
+      "to": "n036",
+      "source": {
+        "track": "2026-06-20-afternoon-ride",
+        "startIndex": 684,
+        "endIndex": 1017
+      },
+      "name": "Green Lake to Ravenna",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s025",
+      "from": "n034",
+      "to": "n036",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 3625,
+        "endIndex": 3496
+      },
+      "name": "UW Burke Gilman to Ravenna",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s026",
+      "from": "n036",
+      "to": "n027",
+      "source": {
+        "track": "2026-06-20-afternoon-ride",
+        "startIndex": 1017,
+        "endIndex": 2176
+      },
+      "name": "Ravenna Burke Gilman to Kenmore",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s027",
+      "from": "n042",
+      "to": "n027",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 2222,
+        "endIndex": 1748
+      },
+      "name": "Burke Gilman Through Kenmore",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s028",
+      "from": "n042",
+      "to": "n043",
+      "source": {
+        "track": "north-lake-washington",
+        "startIndex": 2158,
+        "endIndex": 3239
+      },
+      "name": "Bothell through Kirkland to Bellevue",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s029",
+      "from": "n042",
+      "to": "n044",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 2222,
+        "endIndex": 3627
+      },
+      "name": "Sammamish River Trail",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s030",
+      "from": "n031",
+      "to": "n049",
+      "source": {
+        "track": "2026-05-14-afternoon-ride",
+        "startIndex": 368,
+        "endIndex": 718
+      },
+      "name": "Eastlake",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s031",
+      "from": "n050",
+      "to": "n039",
+      "source": {
+        "track": "2026-07-21-evening-ride",
+        "startIndex": 347,
+        "endIndex": 466
+      },
+      "name": "Zoo to Green Lake",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s032",
+      "from": "n048",
+      "to": "n047",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 1815,
+        "endIndex": 1788
+      },
+      "name": "Fremont Bridge",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s033",
+      "from": "n045",
+      "to": "n054",
+      "source": {
+        "track": "2025-06-04-afternoon-ride",
+        "startIndex": 4093,
+        "endIndex": 4134
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s034",
+      "from": "n046",
+      "to": "n045",
+      "source": {
+        "track": "2026-05-14-afternoon-ride",
+        "startIndex": 168,
+        "endIndex": 102
+      },
+      "name": "Gasworks to Brooks",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s035",
+      "from": "n048",
+      "to": "n045",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 10,
+        "endIndex": 66
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s036",
+      "from": "n048",
+      "to": "n055",
+      "source": {
+        "track": "2026-05-14-afternoon-ride",
+        "startIndex": 49,
+        "endIndex": 39
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s037",
+      "from": "n055",
+      "to": "n054",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 7253,
+        "endIndex": 7214
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s038",
+      "from": "n054",
+      "to": "n053",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 2635,
+        "endIndex": 2691
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s039",
+      "from": "n053",
+      "to": "n052",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 2691,
+        "endIndex": 2711
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s040",
+      "from": "n049",
+      "to": "n047",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 327,
+        "endIndex": 117
+      },
+      "name": "Westlake",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s041",
+      "from": "n023",
+      "to": "n013",
+      "source": {
+        "track": "magnolia-ballard",
+        "startIndex": 704,
+        "endIndex": 582
+      },
+      "name": "Loyal Way",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s042",
+      "from": "n069",
+      "to": "n013",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 1078,
+        "endIndex": 1390
+      },
+      "name": "Golden Gardens Ascent Alt",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s043",
+      "from": "n029",
+      "to": "n030",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 8618,
+        "endIndex": 8811
+      },
+      "name": "Interlaken",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s044",
+      "from": "n041",
+      "to": "n028",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 225,
+        "endIndex": 373
+      },
+      "name": "Fremont Ave to Interurban",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s045",
+      "from": "n040",
+      "to": "n041",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 640,
+        "endIndex": 792
+      },
+      "name": "N Green Lake to Fremont Ave",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s047",
+      "from": "n015",
+      "to": "n017",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 145,
+        "endIndex": 2028
+      },
+      "name": "Ballard to Edmonds",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s049",
+      "from": "n071",
+      "to": "n027",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 5075,
+        "endIndex": 5533
+      },
+      "name": "Perkins Connector",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s050",
+      "from": "n071",
+      "to": "n026",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 946,
+        "endIndex": 918
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s051",
+      "from": "n073",
+      "to": "n071",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 5010,
+        "endIndex": 5075
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s052",
+      "from": "n074",
+      "to": "n073",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 1781,
+        "endIndex": 1790
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s053",
+      "from": "n072",
+      "to": "n073",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 4934,
+        "endIndex": 5010
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s054",
+      "from": "n028",
+      "to": "n075",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 373,
+        "endIndex": 882
+      },
+      "name": "Interurban to Echo Lake",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s055",
+      "from": "n075",
+      "to": "n026",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 882,
+        "endIndex": 918
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s056",
+      "from": "n075",
+      "to": "n074",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 1699,
+        "endIndex": 1781
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s057",
+      "from": "n052",
+      "to": "n022",
+      "source": {
+        "track": "2026-07-17-afternoon-ride",
+        "startIndex": 85,
+        "endIndex": 429
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s058",
+      "from": "n008",
+      "to": "n047",
+      "source": {
+        "track": "magnolia-2",
+        "startIndex": 379,
+        "endIndex": 73
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s059",
+      "from": "n079",
+      "to": "n078",
+      "source": {
+        "track": "burien",
+        "startIndex": 1177,
+        "endIndex": 700
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s060",
+      "from": "n078",
+      "to": "n076",
+      "source": {
+        "track": "2026-06-28-afternoon-ride",
+        "startIndex": 2312,
+        "endIndex": 2402
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s061",
+      "from": "n076",
+      "to": "n077",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 913,
+        "endIndex": 929
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s062",
+      "from": "n077",
+      "to": "n009",
+      "source": {
+        "track": "magnolia-belltown",
+        "startIndex": 2109,
+        "endIndex": 1569
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s063",
+      "from": "n079",
+      "to": "n082",
+      "source": {
+        "track": "burien",
+        "startIndex": 1177,
+        "endIndex": 2514
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s064",
+      "from": "n082",
+      "to": "n080",
+      "source": {
+        "track": "burien",
+        "startIndex": 2514,
+        "endIndex": 4234
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s065",
+      "from": "n080",
+      "to": "n081",
+      "source": {
+        "track": "burien",
+        "startIndex": 4234,
+        "endIndex": 4998
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s066",
+      "from": "n080",
+      "to": "n081",
+      "source": {
+        "track": "west-seattle-alki",
+        "startIndex": 2134,
+        "endIndex": 2586
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s067",
+      "from": "n081",
+      "to": "n079",
+      "source": {
+        "track": "burien",
+        "startIndex": 4998,
+        "endIndex": 5103
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s068",
+      "from": "n076",
+      "to": "n049",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 626,
+        "endIndex": 327
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s069",
+      "from": "n070",
+      "to": "n030",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 3902,
+        "endIndex": 4071
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s070",
+      "from": "n070",
+      "to": "n083",
+      "source": {
+        "track": "2025-06-04-afternoon-ride",
+        "startIndex": 3651,
+        "endIndex": 3666
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s071",
+      "from": "n083",
+      "to": "n084",
+      "source": {
+        "track": "2025-06-04-afternoon-ride",
+        "startIndex": 3666,
+        "endIndex": 3676
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s072",
+      "from": "n085",
+      "to": "n087",
+      "source": {
+        "track": "mercer-island",
+        "startIndex": 4849,
+        "endIndex": 4821
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s073",
+      "from": "n093",
+      "to": "n029",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 8197,
+        "endIndex": 8618
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s074",
+      "from": "n093",
+      "to": "n092",
+      "source": {
+        "track": "2026-06-03-morning-ride",
+        "startIndex": 4129,
+        "endIndex": 4000
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s075",
+      "from": "n092",
+      "to": "n060",
+      "source": {
+        "track": "2026-06-03-morning-ride",
+        "startIndex": 4000,
+        "endIndex": 3938
+      },
+      "name": "Mt Baker Ridge Tunnel",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s076",
+      "from": "n058",
+      "to": "n057",
+      "source": {
+        "track": "2026-08-06-afternoon-ride",
+        "startIndex": 1269,
+        "endIndex": 1287
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s077",
+      "from": "n059",
+      "to": "n058",
+      "source": {
+        "track": "2026-06-03-morning-ride",
+        "startIndex": 1320,
+        "endIndex": 1308
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s078",
+      "from": "n059",
+      "to": "n057",
+      "source": {
+        "track": "2025-06-04-afternoon-ride",
+        "startIndex": 2883,
+        "endIndex": 2874
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s079",
+      "from": "n059",
+      "to": "n060",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 2528,
+        "endIndex": 2540
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s080",
+      "from": "n057",
+      "to": "n056",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 1308,
+        "endIndex": 1590
+      },
+      "name": "I90 Bridge",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s082",
+      "from": "n066",
+      "to": "n067",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 2678,
+        "endIndex": 2849
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s083",
+      "from": "n067",
+      "to": "n065",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 2849,
+        "endIndex": 3438
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s084",
+      "from": "n065",
+      "to": "n064",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 3900,
+        "endIndex": 3695
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s085",
+      "from": "n065",
+      "to": "n094",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 3900,
+        "endIndex": 4121
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s086",
+      "from": "n094",
+      "to": "n066",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 4247,
+        "endIndex": 4533
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s087",
+      "from": "n095",
+      "to": "n066",
+      "source": {
+        "track": "lake-sammamish-mine",
+        "startIndex": 3921,
+        "endIndex": 2736
+      },
+      "name": "West Lake Sammamish",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s088",
+      "from": "n063",
+      "to": "n096",
+      "source": {
+        "track": "may-valley-loop",
+        "startIndex": 3370,
+        "endIndex": 1401
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s089",
+      "from": "n067",
+      "to": "n096",
+      "source": {
+        "track": "lake-sammamish-mine",
+        "startIndex": 2542,
+        "endIndex": 2243
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s090",
+      "from": "n096",
+      "to": "n068",
+      "source": {
+        "track": "lake-sammamish-loop",
+        "startIndex": 1782,
+        "endIndex": 3293
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s091",
+      "from": "n043",
+      "to": "n044",
+      "source": {
+        "track": "2026-07-05-morning-ride",
+        "startIndex": 4571,
+        "endIndex": 3564
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s092",
+      "from": "n095",
+      "to": "n098",
+      "source": {
+        "track": "lake-sammamish-loop",
+        "startIndex": 177,
+        "endIndex": 155
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s093",
+      "from": "n098",
+      "to": "n044",
+      "source": {
+        "track": "lake-sammamish-mine",
+        "startIndex": 372,
+        "endIndex": 259
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s094",
+      "from": "n098",
+      "to": "n099",
+      "source": {
+        "track": "lake-sammamish-mine",
+        "startIndex": 372,
+        "endIndex": 458
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s095",
+      "from": "n099",
+      "to": "n068",
+      "source": {
+        "track": "lake-sammamish-mine",
+        "startIndex": 524,
+        "endIndex": 652
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s096",
+      "from": "n062",
+      "to": "n102",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 2483,
+        "endIndex": 2287
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s097",
+      "from": "n103",
+      "to": "n062",
+      "source": {
+        "track": "across-seattle",
+        "startIndex": 2845,
+        "endIndex": 2950
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s098",
+      "from": "n103",
+      "to": "n102",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 2179,
+        "endIndex": 2287
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s099",
+      "from": "n062",
+      "to": "n104",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 1857,
+        "endIndex": 1552
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s100",
+      "from": "n104",
+      "to": "n061",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 2186,
+        "endIndex": 2388
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s101",
+      "from": "n060",
+      "to": "n061",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 2506,
+        "endIndex": 2388
+      },
+      "name": "Loopy Road",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s102",
+      "from": "n105",
+      "to": "n061",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 1153,
+        "endIndex": 1346
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s103",
+      "from": "n105",
+      "to": "n058",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 1107,
+        "endIndex": 1287
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s104",
+      "from": "n105",
+      "to": "n001",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 1107,
+        "endIndex": 758
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s105",
+      "from": "n106",
+      "to": "n001",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 936,
+        "endIndex": 984
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s106",
+      "from": "n106",
+      "to": "n003",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 936,
+        "endIndex": 771
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s107",
+      "from": "n003",
+      "to": "n086",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 602,
+        "endIndex": 564
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s108",
+      "from": "n086",
+      "to": "n087",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 564,
+        "endIndex": 542
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s109",
+      "from": "n083",
+      "to": "n087",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 506,
+        "endIndex": 542
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s110",
+      "from": "n084",
+      "to": "n085",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 4928,
+        "endIndex": 4897
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s111",
+      "from": "n035",
+      "to": "n107",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 401,
+        "endIndex": 409
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s112",
+      "from": "n035",
+      "to": "n033",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 401,
+        "endIndex": 395
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s113",
+      "from": "n035",
+      "to": "n034",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 402,
+        "endIndex": 410
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s114",
+      "from": "n107",
+      "to": "n084",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5003,
+        "endIndex": 4928
+      },
+      "name": "Montlake Bridge",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s115",
+      "from": "n032",
+      "to": "n033",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 385,
+        "endIndex": 395
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s116",
+      "from": "n033",
+      "to": "n034",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 6863,
+        "endIndex": 6851
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s117",
+      "from": "n032",
+      "to": "n035",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 392,
+        "endIndex": 402
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s118",
+      "from": "n085",
+      "to": "n088",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 4897,
+        "endIndex": 4478
+      },
+      "name": "520 Bridge",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s119",
+      "from": "n031",
+      "to": "n109",
+      "source": {
+        "track": "bikes-on-the-boulevard",
+        "startIndex": 3552,
+        "endIndex": 3640
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s120",
+      "from": "n108",
+      "to": "n109",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5092,
+        "endIndex": 5148
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s121",
+      "from": "n108",
+      "to": "n032",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 348,
+        "endIndex": 399
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s122",
+      "from": "n111",
+      "to": "n112",
+      "source": {
+        "track": "2026-05-10-morning-ride",
+        "startIndex": 759,
+        "endIndex": 749
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s123",
+      "from": "n110",
+      "to": "n108",
+      "source": {
+        "track": "sammamish-river-trail",
+        "startIndex": 6016,
+        "endIndex": 5877
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s124",
+      "from": "n111",
+      "to": "n110",
+      "source": {
+        "track": "sammamish-river-trail",
+        "startIndex": 196,
+        "endIndex": 206
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s125",
+      "from": "n111",
+      "to": "n046",
+      "source": {
+        "track": "sammamish-river-trail",
+        "startIndex": 196,
+        "endIndex": 153
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s126",
+      "from": "n112",
+      "to": "n046",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5236,
+        "endIndex": 5274
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s127",
+      "from": "n112",
+      "to": "n109",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 5236,
+        "endIndex": 5148
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s128",
+      "from": "n056",
+      "to": "n090",
+      "source": {
+        "track": "2026-06-03-morning-ride",
+        "startIndex": 1615,
+        "endIndex": 2078
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s129",
+      "from": "n056",
+      "to": "n090",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 1590,
+        "endIndex": 3233
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s130",
+      "from": "n090",
+      "to": "n089",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 3233,
+        "endIndex": 3339
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s131",
+      "from": "n089",
+      "to": "n088",
+      "source": {
+        "track": "2026-08-06-afternoon-ride",
+        "startIndex": 3272,
+        "endIndex": 4375
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s132",
+      "from": "n088",
+      "to": "n043",
+      "source": {
+        "track": "2026-07-05-morning-ride",
+        "startIndex": 4860,
+        "endIndex": 4571
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s133",
+      "from": "n063",
+      "to": "n097",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 5753,
+        "endIndex": 5231
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s134",
+      "from": "n089",
+      "to": "n097",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 1718,
+        "endIndex": 1875
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s135",
+      "from": "n066",
+      "to": "n097",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 4533,
+        "endIndex": 5255
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s136",
+      "from": "n063",
+      "to": "n100",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 5753,
+        "endIndex": 5882
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s137",
+      "from": "n100",
+      "to": "n101",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 5959,
+        "endIndex": 6430
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s138",
+      "from": "n116",
+      "to": "n101",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 7239,
+        "endIndex": 6430
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s139",
+      "from": "n062",
+      "to": "n116",
+      "source": {
+        "track": "across-seattle",
+        "startIndex": 2591,
+        "endIndex": 2455
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s140",
+      "from": "n113",
+      "to": "n114",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 4425,
+        "endIndex": 4431
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s141",
+      "from": "n114",
+      "to": "n115",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 4458,
+        "endIndex": 4602
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s142",
+      "from": "n115",
+      "to": "n097",
+      "source": {
+        "track": "afternoon-ride",
+        "startIndex": 4680,
+        "endIndex": 5231
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s144",
+      "from": "n117",
+      "to": "n051",
+      "source": {
+        "track": "2026-07-21-evening-ride",
+        "startIndex": 260,
+        "endIndex": 39
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s145",
+      "from": "n053",
+      "to": "n055",
+      "source": {
+        "track": "burien",
+        "startIndex": 6227,
+        "endIndex": 6196
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s146",
+      "from": "n055",
+      "to": "n118",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 28,
+        "endIndex": 0
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s147",
+      "from": "n051",
+      "to": "n118",
+      "source": {
+        "track": "2026-07-19-afternoon-ride",
+        "startIndex": 56,
+        "endIndex": 9
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s148",
+      "from": "n119",
+      "to": "n050",
+      "source": {
+        "track": "2026-07-21-evening-ride",
+        "startIndex": 339,
+        "endIndex": 347
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s149",
+      "from": "n117",
+      "to": "n119",
+      "source": {
+        "track": "2026-07-21-evening-ride",
+        "startIndex": 260,
+        "endIndex": 339
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s150",
+      "from": "n015",
+      "to": "n120",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 143,
+        "endIndex": 197
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s151",
+      "from": "n120",
+      "to": "n041",
+      "source": {
+        "track": "interurban-to-lake-wa",
+        "startIndex": 197,
+        "endIndex": 225
+      },
+      "name": null,
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    },
+    {
+      "id": "s152",
+      "from": "n120",
+      "to": "n119",
+      "source": {
+        "track": "2026-07-19-afternoon-ride",
+        "startIndex": 533,
+        "endIndex": 315
+      },
+      "name": "Phinney to Greenwood",
+      "difficulty": {
+        "forward": "medium",
+        "backward": "medium"
+      },
+      "laneQuality": "fair",
+      "scenic": "medium",
+      "surface": "asphalt",
+      "recommendedDirection": null,
+      "reviewed": false
+    }
+  ],
   "pins": []
 }
