@@ -9,13 +9,22 @@ import { cn } from "@/lib/utilities/style-utils";
 
 export type Detent = "peek" | "half" | "full";
 
-/** How much of the viewport the sheet shows at each resting height. */
-const DETENT_VH: Record<Detent, number> = { peek: 16, half: 52, full: 88 };
+/**
+ * How much of the viewport the sheet shows at each resting height.
+ *
+ * `peek` is sized to clear the pinned header — the counts and the mode switch —
+ * because a resting height that cuts the mode switch in half would make the
+ * control you need most the one you have to drag for.
+ */
+const DETENT_VH: Record<Detent, number> = { peek: 22, half: 52, full: 88 };
 const ORDER: Detent[] = ["peek", "half", "full"];
 const SHEET_VH = DETENT_VH.full;
 
 type SheetProps = {
-  /** Always visible, even at the smallest height. Keep it short. */
+  /**
+   * Pinned above the scrolling area and visible at every resting height.
+   * Whatever decides the meaning of what is below it belongs here.
+   */
   peek: ReactNode;
   /**
    * Raise the sheet when this becomes true, and lower it when it stops.

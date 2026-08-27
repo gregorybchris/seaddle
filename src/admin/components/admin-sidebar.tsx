@@ -10,6 +10,7 @@ import { Segmented } from "@/widgets/segmented";
 import { Sheet } from "@/widgets/sheet";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
 import { InventoryRow } from "@/widgets/inventory-row";
+import { ScrollList } from "@/widgets/scroll-list";
 import { Stat } from "@/widgets/stat";
 import type { Candidate } from "../candidate-finder";
 import { CandidateList } from "./candidate-list";
@@ -77,30 +78,27 @@ export function AdminSidebar(props: AdminSidebarProps) {
             <Stat value={props.segments.length} label="segments" />
             <Stat value={formatMiles(totalMeters)} label="mapped" />
           </div>
+
+          {/* Pinned with the counts rather than scrolling with the lists: it
+              decides what everything below it means, so it has to be reachable
+              without scrolling back up for it. */}
+          <Segmented
+            options={[
+              { value: "nodes" as const, label: "Junctions" },
+              { value: "segments" as const, label: "Segments" },
+            ]}
+            value={props.mode}
+            onChange={props.onMode}
+          />
         </div>
       }
     >
       <div className="flex flex-col gap-5">
-        <Segmented
-          options={[
-            { value: "nodes" as const, label: "Junctions" },
-            { value: "segments" as const, label: "Segments" },
-          ]}
-          value={props.mode}
-          onChange={props.onMode}
-        />
-
         {props.error && <Banner tone="alarm">{props.error}</Banner>}
         {props.hint && <Banner tone="notice">{props.hint}</Banner>}
 
         {props.mode === "nodes" ? (
           <>
-            <p className="text-sand/75 text-sm leading-relaxed">
-              Click where rides cross. The click snaps onto the nearest ride,
-              and onto a junction already there if one is close — so clicking
-              the same intersection twice gives you one junction, not two that
-              never connect. Click a junction again to select it.
-            </p>
             <JunctionInventory
               nodes={props.nodes}
               segments={props.segments}
@@ -343,7 +341,7 @@ function SegmentInventory({
       }}
     >
       {shown.length === 0 && <NoMatches query={query} />}
-      <ul className="flex flex-col">
+      <ScrollList count={shown.length}>
         {shown.map((segment) => (
           <InventoryRow
             key={segment.id}
@@ -358,7 +356,7 @@ function SegmentInventory({
             }
           />
         ))}
-      </ul>
+      </ScrollList>
     </CollapsibleSection>
   );
 }
@@ -412,7 +410,7 @@ function JunctionInventory({
       }}
     >
       {shown.length === 0 && <NoMatches query={query} />}
-      <ul className="flex flex-col">
+      <ScrollList count={shown.length}>
         {shown.map((node) => (
           <InventoryRow
             key={node.id}
@@ -426,7 +424,7 @@ function JunctionInventory({
             onLocate={() => onLocate(node)}
           />
         ))}
-      </ul>
+      </ScrollList>
     </CollapsibleSection>
   );
 }

@@ -127,6 +127,30 @@ body {
   animation: collapsible-close 200ms var(--ease-settle);
 }
 
+/* Fades the first and last few pixels of a scrolling list, so a row cut off at
+   the edge looks deliberately cut off rather than simply ending. */
+.scroll-faded {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 10px,
+    black calc(100% - 10px),
+    transparent 100%
+  );
+}
+
+/* A slow breath while waiting, so a screen with nothing on it but a mark still
+   reads as working rather than stuck. Neutralised by the reduced-motion rule. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
