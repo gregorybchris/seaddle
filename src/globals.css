@@ -1,0 +1,32 @@
+@import "@fontsource/didact-gothic/latin-400.css";
+@import "tailwindcss";
+
+/**
+ * Forest green and earthy neutrals, in the spirit of wta.org. Outdoorsy and
+ * friendly without tipping into childish.
+ */
+@theme {
+  --font-sans: "Didact Gothic", ui-sans-serif, system-ui, sans-serif;
+
+  --color-forest: #2f5d3f;
+  --color-forest-deep: #1f4029;
+  --color-moss: #6b8f5e;
+  --color-bark: #6b563f;
+  --color-sand: #e8dfd0;
+  --color-paper: #faf7f1;
+  --color-ink: #2a2724;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* The map owns the viewport; nothing behind it should ever scroll. */
+  overscroll-behavior: none;
+}

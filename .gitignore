@@ -1,0 +1,17 @@
+node_modules
+dist
+*.tsbuildinfo
+.env
+.env.local
+.vercel
+.DS_Store
+
+# Derived from src-gpx by `pnpm gpx:import` — reproducible, so not committed.
+src/db/tracks/
+
+# Compiled by `pnpm graph:build` from src/db — reproducible, so not committed.
+public/graph.geojson
+public/pins.geojson
+
+# Source rides start and end at home. Kept local, never committed.
+src-gpx/

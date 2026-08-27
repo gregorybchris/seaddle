@@ -1,0 +1,9 @@
+dist
+node_modules
+pnpm-lock.yaml
+src-gpx
+src/db/tracks
+src/db/geometry
+public/*.geojson
+specs
+logos

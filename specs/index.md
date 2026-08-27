@@ -19,19 +19,30 @@ character is the sum of its parts rather than an opaque line on a map.
 
 ## 1. Source data
 
-`src-gpx/` holds 21 GPX files (~50,000 track points, 8.7 MB raw), exported from Mapometer at
-roughly 5 m point spacing. Coverage spans Seattle proper, the Eastside (Mercer Island, Sammamish,
-May Valley), and outlying tracks in Everett, Edmonds, and Burien.
+`src-gpx/` holds 21 GPX files (~50,000 track points, 8.7 MB raw), exported from Mapometer.
+Coverage spans Seattle proper, the Eastside (Mercer Island, Sammamish, May Valley), and outlying
+tracks in Everett, Edmonds, and Burien.
+
+**These are drawn routes, not GPS recordings.** Mapometer snaps to roads, so the geometry is
+already clean: measured point spacing is 15–18 m (one sparse file sits near 156 m) and there is
+almost no scatter. That is better raw material than a pile of recorded rides — the extraction
+tooling can trust the shape it is given, and simplification is close to free.
+
+**The rides are not committed.** They start and end at home, so they stay on the machine that made
+them and `src-gpx/` is gitignored. Tests run against a synthetic fixture calibrated to the same
+spacing and scatter, so a fresh clone passes without them.
 
 Two consequences worth stating up front:
 
 - **The graph will have several disconnected components.** The Everett and Burien tracks almost
   certainly won't touch the Seattle network. This is fine and must not be treated as an error —
-  but the admin needs to *see* components, and the site must never imply you can chain across a
+  but the admin needs to _see_ components, and the site must never imply you can chain across a
   gap that doesn't exist.
 - **Raw GPX is far too heavy to ship.** Full-resolution tracks stay in dev for extraction only.
   Extracted segments are simplified (Douglas–Peucker, ~6 m tolerance) and coordinates rounded to
-  5 decimal places (~1 m) before they reach the browser.
+  5 decimal places (~1 m) before they reach the browser. Measured on the real rides, that
+  tolerance drops about 88% of the points (5,417 → 636 on the longest) while changing the measured
+  length by 0.06–0.83%.
 
 ---
 
@@ -44,23 +55,23 @@ belong to a segment).
 type Coord = [lon: number, lat: number];
 type ElevCoord = [lon: number, lat: number, ele: number]; // ele in meters
 
-type NodeId = string;    // "n017"
+type NodeId = string; // "n017"
 type SegmentId = string; // "s042"
 
 type Node = {
   id: NodeId;
-  name: string | null;   // admin-only audit label, never shown to users
+  name: string | null; // admin-only audit label, never shown to users
   coord: Coord;
 };
 
-type Difficulty  = "easy" | "medium" | "hard";
+type Difficulty = "easy" | "medium" | "hard";
 type LaneQuality = "poor" | "fair" | "good" | "great";
-type Scenic      = "low" | "medium" | "high";
-type Surface     = "asphalt" | "gravel" | "dirt";
+type Scenic = "low" | "medium" | "high";
+type Surface = "asphalt" | "gravel" | "dirt";
 
 type Segment = {
   id: SegmentId;
-  name: string | null;   // admin-only audit label, never shown to users
+  name: string | null; // admin-only audit label, never shown to users
   from: NodeId;
   to: NodeId;
 
@@ -73,11 +84,11 @@ type Segment = {
   scenic: Scenic;
   surface: Surface;
   recommendedDirection: "forward" | "backward" | null;
-  reviewed: boolean;     // false until the attributes above are deliberately set, not defaulted
+  reviewed: boolean; // false until the attributes above are deliberately set, not defaulted
 
   // derived at build time from the geometry
   meters: number;
-  gainForward: number;   // meters climbed traversing from → to
+  gainForward: number; // meters climbed traversing from → to
   gainBackward: number;
 };
 
@@ -88,8 +99,8 @@ type Pin = {
   segment: SegmentId;
   kind: PinKind;
   note: string | null;
-  at: number;      // 0..1 fraction along the segment, from → to. Orders pins along a route.
-  coord: Coord;    // actual map position; may sit slightly off the line (a fountain in a park)
+  at: number; // 0..1 fraction along the segment, from → to. Orders pins along a route.
+  coord: Coord; // actual map position; may sit slightly off the line (a fountain in a park)
 };
 ```
 
@@ -98,7 +109,7 @@ type Pin = {
 A new segment is born with defaults — `medium` difficulty both ways, `fair` lane, `medium` scenic,
 `asphalt`, no recommended direction — and `reviewed: false`. Attributes are therefore never
 `null`, the site never renders an "unknown" state, and the admin can still tell the difference
-between *"asphalt because I checked"* and *"asphalt because nobody has looked at this yet."*
+between _"asphalt because I checked"_ and _"asphalt because nobody has looked at this yet."_
 Extracting a segment stays a fast, low-friction action; judging it is a separate pass.
 
 ### Directionality
@@ -154,10 +165,10 @@ that's under a millisecond and beats maintaining a denormalized index in the fil
 
 ## 3. Build pipeline
 
-| Step | Command | Input | Output |
-|---|---|---|---|
-| Import | `pnpm gpx:import` | `src-gpx/*.gpx` | `src/db/tracks/*.json` (full resolution) |
-| Compile | `pnpm graph:build` (runs pre-build) | `graph.json` + `geometry/` | `public/*.geojson` |
+| Step    | Command                             | Input                      | Output                                   |
+| ------- | ----------------------------------- | -------------------------- | ---------------------------------------- |
+| Import  | `pnpm gpx:import`                   | `src-gpx/*.gpx`            | `src/db/tracks/*.json` (full resolution) |
+| Compile | `pnpm graph:build` (runs pre-build) | `graph.json` + `geometry/` | `public/*.geojson`                       |
 
 The compile step is where all derived numbers are computed once: length via haversine, elevation
 gain in each direction (with a small threshold to reject GPS noise — only count rises above ~2 m),
@@ -216,13 +227,13 @@ dressed up as authority):
 
 - Total distance and total elevation gain
 - An elevation profile chart across the whole assembled route
-- An aggregate attribute summary: stacked bars showing the route's mix — *"73% good or great bike
-  lane · 1.2 mi hard · 84% asphalt"*. This is the feature that turns segment metadata into a real
+- An aggregate attribute summary: stacked bars showing the route's mix — _"73% good or great bike
+  lane · 1.2 mi hard · 84% asphalt"_. This is the feature that turns segment metadata into a real
   safety read, and it's the reason a beginner would use this site over Strava.
 
 **Segment detail.** Tapping a single segment swaps the sidebar to its details: length, gain in
 each direction, all four attributes, recommended direction if set, its pins, and a mini elevation
-profile. Segment *names are never shown* — they're an admin audit field. Segments are identified
+profile. Segment _names are never shown_ — they're an admin audit field. Segments are identified
 visually, by the highlight on the map.
 
 **Filters** style, never hide. A segment failing an active filter renders dim and thin but stays
@@ -232,7 +243,7 @@ with no way to see why.
 Difficulty, lane quality, and scenic value are ordered scales, so they are **threshold** controls —
 "at most medium difficulty," "at least good bike lane" — which is how the constraint is actually
 held in someone's head. Surface is categorical and gets a **multi-select** toggle group. A set of
-checkboxes for the ordinals would permit nonsense states like *easy and hard but not medium*.
+checkboxes for the ordinals would permit nonsense states like _easy and hard but not medium_.
 
 ```
 Difficulty     easy ──●── hard   (at most: medium)
@@ -251,7 +262,7 @@ The segment chain lives in the **URL**: `cycattle.com/?r=s017,s042,s043,s088`. C
 route, refresh is lossless, and a bookmark is a saved ride. No accounts, no backend.
 
 Because appends push history entries, back-navigating past the empty route leaves the site
-normally — history is undo *within* a route, never a trap.
+normally — history is undo _within_ a route, never a trap.
 
 On top of that, **named saves in localStorage**: "Save this ride," give it a name, and it lists in
 the sidebar on return visits. Each saved ride is just its URL plus a name and a timestamp.
@@ -259,9 +270,9 @@ the sidebar on return visits. Each saved ride is just its URL plus a name and a 
 ### GPX export
 
 **Entirely client-side.** The browser already holds every point; stitching the chain into a GPX
-string is a Blob download. No serverless function, no latency, no cold start, works offline. *(The
+string is a Blob download. No serverless function, no latency, no cold start, works offline. _(The
 first draft of this spec assumed a Vercel function for this — it isn't needed and shouldn't be
-built.)*
+built.)_
 
 Exported GPX is a single `<trk>` with one `<trkseg>`, elevation included, named from the saved
 ride name or generated from distance.
@@ -270,7 +281,7 @@ ride name or generated from distance.
 
 The sidebar becomes a **bottom sheet with three detents**: peek (a one-line stats bar), half, and
 full, draggable between. The map stays visible while building a route, which is essential when the
-map *is* the interface.
+map _is_ the interface.
 
 Touch targets are the real risk: map lines are thin. Segment hit-testing uses a padded
 `queryRenderedFeatures` box (~22 px radius on touch, ~8 px on pointer) so a fingertip reliably
@@ -311,7 +322,7 @@ formatting matter here — a diff that reorders 200 segments on every save is us
 
 Nodes are defined first, segments second. This inverts the obvious "cut tracks into pieces"
 approach, and it's better: junctions become real objects placed where intersections actually are,
-segment geometry gets *chosen* rather than inherited from whichever GPX happened to be cut, and
+segment geometry gets _chosen_ rather than inherited from whichever GPX happened to be cut, and
 junction dedup falls out by construction instead of being a cleanup pass.
 
 **Step 1 — Heatmap.** Render all 21 source tracks as a single line layer at low opacity. Overlaps
@@ -319,7 +330,7 @@ accumulate, so heavily-ridden roads glow and the shape of the network becomes ob
 scales with zoom.
 
 **Step 2 — Place nodes.** Click a junction. The click snaps to the nearest track point within
-~20 m (so nodes sit *on* the tracks), then snaps to an existing node within ~15 m if one is there —
+~20 m (so nodes sit _on_ the tracks), then snaps to an existing node within ~15 m if one is there —
 so clicking the same intersection twice reuses one node rather than creating a twin. Nodes can be
 named, dragged, and deleted (with a warning when segments reference them).
 
