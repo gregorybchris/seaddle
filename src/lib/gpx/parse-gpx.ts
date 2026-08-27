@@ -13,6 +13,13 @@ export type ParsedGpx = {
    * alone.
    */
   times: (number | null)[];
+  /**
+   * When the ride happened, ISO 8601, or null for a route that was drawn.
+   *
+   * Kept as a string because it is displayed far more often than it is
+   * computed with, and ISO sorts chronologically as plain text.
+   */
+  recordedAt: string | null;
 };
 
 function asArray<T>(value: T | T[] | undefined): T[] {
@@ -54,5 +61,16 @@ export function parseGpx(xml: string): ParsedGpx {
 
   const rawName = gpx.metadata?.name ?? asArray(gpx.trk)[0]?.name ?? null;
   const name = rawName === null ? null : String(rawName).trim();
-  return { name: name || null, points, times };
+
+  // The metadata stamp if there is one, otherwise the first point that carries
+  // a time — some exporters give one and not the other.
+  const stamp = gpx.metadata?.time ?? null;
+  const firstTime = times.find((time) => time !== null) ?? null;
+  const recordedAt = stamp
+    ? new Date(String(stamp)).toISOString()
+    : firstTime !== null
+      ? new Date(firstTime).toISOString()
+      : null;
+
+  return { name: name || null, points, times, recordedAt };
 }

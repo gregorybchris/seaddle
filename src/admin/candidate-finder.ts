@@ -40,6 +40,8 @@ export type CandidateOptions = {
 export type Candidate = {
   track: string;
   trackName: string;
+  /** When the ride happened, ISO 8601, or null for a route that was drawn. */
+  trackDate: string | null;
   startIndex: number;
   endIndex: number;
   /** Cropped and oriented from → to, but not yet snapped or simplified. */
@@ -194,6 +196,7 @@ export function findCandidates(
         const candidate: Candidate = {
           track: slug,
           trackName: track.name,
+          trackDate: track.recordedAt ?? null,
           startIndex: start.index,
           endIndex: end.index,
           points,
@@ -216,11 +219,34 @@ export function findCandidates(
 
   const best: Candidate[] = [];
   for (const candidates of perTrack.values()) {
+    // Within one ride, the cleanest pass leads and the rest become alternates.
     candidates.sort((a, b) => a.score - b.score);
     const [primary, ...alternates] = candidates;
     best.push({ ...primary, alternates });
   }
-  return best.sort((a, b) => a.score - b.score);
+  return best.sort(byMostRecent);
+}
+
+/**
+ * Newest ride first.
+ *
+ * Recency is the ordering that matches how the geometry is actually chosen: a
+ * road resurfaced or a trail rerouted since an older ride was recorded, and the
+ * most recent pass is the one that reflects what is there now. Scoring still
+ * decides what qualifies at all — a candidate that wanders is rejected outright
+ * rather than merely ranked low — and every number behind it stays on the card.
+ *
+ * Drawn routes carry no date and sort last, ordered among themselves by how
+ * cleanly they run.
+ */
+function byMostRecent(a: Candidate, b: Candidate): number {
+  if (a.trackDate && b.trackDate) {
+    // ISO 8601 compares chronologically as text.
+    return b.trackDate.localeCompare(a.trackDate);
+  }
+  if (a.trackDate) return -1;
+  if (b.trackDate) return 1;
+  return a.score - b.score;
 }
 
 /**

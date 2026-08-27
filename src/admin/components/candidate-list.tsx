@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
+import { formatRideDate } from "@/lib/utilities/dates";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
 import { Sparkline } from "@/widgets/sparkline";
@@ -91,13 +92,24 @@ function CandidateCard({
       <div className="flex flex-col gap-1.5 p-2.5 pl-2">
         <div className="flex items-baseline gap-2">
           <span className="tabular text-sand/30 text-[0.625rem]">{rank}</span>
+          {/* Strava names every ride "Afternoon Ride", so when there is a date
+              it is the thing that tells one candidate from another and leads.
+              A drawn route has no date but was named by hand, so its name does
+              the same job. */}
           <span className="text-sand truncate text-sm">
-            {candidate.trackName}
+            {candidate.trackDate
+              ? formatRideDate(candidate.trackDate)
+              : candidate.trackName}
           </span>
           <span className="tabular text-sand ml-auto shrink-0 text-xs">
             {formatMiles(candidate.meters)}
           </span>
         </div>
+        {candidate.trackDate && (
+          <span className="text-sand/40 -mt-1 truncate text-[0.6875rem]">
+            {candidate.trackName}
+          </span>
+        )}
 
         <Sparkline
           points={candidate.points}

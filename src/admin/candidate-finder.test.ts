@@ -149,3 +149,62 @@ describe("findCandidates", () => {
     ).toHaveLength(1);
   });
 });
+
+describe("ordering", () => {
+  function dated(slug: string, recordedAt: string | null) {
+    return { ...trackThrough(slug, [at(-100, 0), at(600, 0)]), recordedAt };
+  }
+
+  it("puts the most recent ride first", () => {
+    // A road resurfaced or a trail rerouted since an older ride was recorded,
+    // so the newest pass is the one that reflects what is there now.
+    const tracks = [
+      dated("older", "2025-06-04T18:00:00Z"),
+      dated("newest", "2026-08-06T18:00:00Z"),
+      dated("middle", "2026-05-09T18:00:00Z"),
+    ];
+    const found = findCandidates(tracks, buildTrackIndex(tracks), A, B);
+    expect(found.map((c) => c.track)).toEqual(["newest", "middle", "older"]);
+  });
+
+  it("sorts undated drawn routes last, cleanest of them first", () => {
+    const tracks = [
+      {
+        ...trackThrough("bendy", [at(0, 0), at(250, 300), at(500, 0)]),
+        recordedAt: null,
+      },
+      dated("recorded", "2026-01-01T18:00:00Z"),
+      dated("drawn-direct", null),
+    ];
+    const found = findCandidates(tracks, buildTrackIndex(tracks), A, B, {
+      maxDetourRatio: 5,
+    });
+    expect(found[0].track).toBe("recorded");
+    expect(found[1].track).toBe("drawn-direct");
+    expect(found[2].track).toBe("bendy");
+  });
+
+  it("carries the ride date onto the candidate", () => {
+    const tracks = [dated("ride", "2026-07-06T18:00:00Z")];
+    const found = findCandidates(tracks, buildTrackIndex(tracks), A, B);
+    expect(found[0].trackDate).toBe("2026-07-06T18:00:00Z");
+  });
+
+  it("still keeps a ride's own passes ordered by how cleanly they run", () => {
+    const loop = {
+      ...trackThrough("loop", [
+        at(0, 0),
+        at(500, 0),
+        at(500, 600),
+        at(0, 600),
+        at(0, 0),
+        at(0, -300),
+      ]),
+      recordedAt: "2026-07-06T18:00:00Z",
+    };
+    const found = findCandidates([loop], buildTrackIndex([loop]), A, B, {
+      maxDetourRatio: 5,
+    })[0];
+    expect(found.meters).toBeLessThan(found.alternates[0].meters);
+  });
+});

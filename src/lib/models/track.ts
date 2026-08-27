@@ -40,4 +40,6 @@ export type Track = {
    * cut from this ride, keep meaning what they did.
    */
   gaps: [number, number][];
+  /** When it was ridden, ISO 8601, or null for a route that was drawn. */
+  recordedAt: string | null;
 };

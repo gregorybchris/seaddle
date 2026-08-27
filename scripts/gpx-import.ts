@@ -90,6 +90,7 @@ async function main() {
       name: parsed.name ?? slug,
       points,
       gaps: rawGaps.map(([from, to]) => [indexOf[from], indexOf[to]]),
+      recordedAt: parsed.recordedAt,
     };
     if (track.points.length === 0) {
       console.warn(`  ! ${slug} has no track points — skipped`);

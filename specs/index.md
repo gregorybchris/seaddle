@@ -380,14 +380,23 @@ named, dragged, and deleted (with a warning when segments reference them).
   normalizing stored geometry to run from → to
 - handles loops correctly: a track passing A twice yields several valid pairs, so take the pair
   with the shortest sub-path and surface the alternates if the result looks wrong
-- **scores and ranks** each candidate rather than just listing them: detour ratio (path length ÷
-  great-circle A→B), endpoint distance to the nodes, point-spacing regularity, and point count
+- **scores** each candidate on detour ratio (path length ÷ great-circle A→B), endpoint distance to
+  the nodes, point-spacing regularity, and point count
 - rejects candidates above a detour threshold (default 3.0, adjustable — some legitimate segments
   curve hard around a lake). A track that touches both A and B but wanders three miles in between
   must not be offered as a segment.
 
-The ranked candidates list track name, length, gain, point count, and detour ratio; hovering one
-previews it on the map. You pick the cleanest geometry.
+**Candidates are ordered most recent ride first.** A road gets resurfaced and a trail gets
+rerouted, so the newest pass is the one that reflects what is actually there now. Scoring still
+decides what qualifies at all — a candidate that wanders is rejected outright rather than merely
+ranked low — and every number behind it stays on the card, so a bad ordering is visible rather
+than hidden. Drawn routes carry no date and sort last, ordered among themselves by how cleanly
+they run.
+
+Each candidate shows its ride date, length, gain, point count, and detour ratio; hovering one
+previews it on the map. Strava names every ride "Afternoon Ride", so where there is a date it
+leads and the name follows underneath — a drawn route was named by hand, so its name leads
+instead.
 
 **Step 4 — Crop and store.** The chosen sub-path is cropped, its **endpoints snapped to the exact
 node coordinates** (otherwise segments meeting at one junction end a few meters apart and render
