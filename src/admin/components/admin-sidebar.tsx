@@ -94,19 +94,20 @@ export function AdminSidebar(props: AdminSidebarProps) {
     <Sheet
       raisedWhen={props.candidates !== null}
       lowerOn={props.focusedAt}
+      header={
+        <div className="flex items-center gap-3">
+          <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
+              Seaddle
+            </h1>
+            <p className="eyebrow text-sand/70 mt-1">Route builder</p>
+          </div>
+          <SaveState saving={props.saving} />
+        </div>
+      }
       peek={
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
-            <div className="min-w-0 flex-1">
-              <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
-                Seaddle
-              </h1>
-              <p className="eyebrow text-sand/70 mt-1">Route builder</p>
-            </div>
-            <SaveState saving={props.saving} />
-          </div>
-
           <div className="border-sand/10 flex items-end justify-between border-t pt-3">
             <Stat value={props.trackCount} label="rides" />
             <Stat value={props.nodes.length} label="junctions" />

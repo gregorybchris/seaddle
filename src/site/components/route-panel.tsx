@@ -78,37 +78,33 @@ export function RoutePanel({
       // visible instead of covering it.
       raisedTo="half"
       restingAt="peek"
+      header={
+        <div className="flex items-center gap-3">
+          <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
+              Seaddle
+            </h1>
+            <p className="eyebrow text-sand/70 mt-1">Seattle cycling routes</p>
+          </div>
+        </div>
+      }
+      /* Not dimmed before a ride starts. Fading a block of already-muted text
+         compounds: 70% type inside a 70% wrapper lands near half strength and
+         stops being readable. "0.0 mi" says "not yet" by itself. */
       peek={
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
-            <div className="min-w-0 flex-1">
-              <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
-                Seaddle
-              </h1>
-              <p className="eyebrow text-sand/70 mt-1">
-                Seattle cycling routes
-              </p>
-            </div>
-          </div>
-
-          {/* Not dimmed before a ride starts. Fading a block of already-muted
-              text compounds: 70% type inside a 70% wrapper lands near half
-              strength and stops being readable. "0.0 mi" says "not yet" by
-              itself. */}
-          <div className="border-sand/10 flex items-end gap-6 border-t pt-3">
-            <Figure label="distance" value={formatMiles(meters)} />
-            <Figure
-              label="climbing"
-              value={
-                gain.min === gain.max
-                  ? formatFeet(gain.max)
-                  : // One segment has no direction yet, and the two answers can
-                    // differ by hundreds of feet.
-                    `${Math.round(gain.min * 3.28084)}–${formatFeet(gain.max)}`
-              }
-            />
-          </div>
+        <div className="border-sand/10 flex items-end gap-6 border-t pt-3">
+          <Figure label="distance" value={formatMiles(meters)} />
+          <Figure
+            label="climbing"
+            value={
+              gain.min === gain.max
+                ? formatFeet(gain.max)
+                : // One segment has no direction yet, and the two answers can
+                  // differ by hundreds of feet.
+                  `${Math.round(gain.min * 3.28084)}–${formatFeet(gain.max)}`
+            }
+          />
         </div>
       }
     >
