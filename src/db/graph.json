@@ -565,6 +565,11 @@
       "id": "n123",
       "name": null,
       "coord": [-122.317943, 47.655621]
+    },
+    {
+      "id": "n124",
+      "name": null,
+      "coord": [-122.200525, 47.579127]
     }
   ],
   "segments": [
@@ -3629,5 +3634,38 @@
       "reviewed": false
     }
   ],
-  "pins": []
+  "pins": [
+    {
+      "id": "p001",
+      "segment": "s131",
+      "kind": "water",
+      "note": "There are a couple of water fountains if you head down closer to the water",
+      "at": 0.45964076939527315,
+      "coord": [-122.210509, 47.611827]
+    },
+    {
+      "id": "p002",
+      "segment": "s131",
+      "kind": "photo",
+      "note": null,
+      "at": 0.4587875904013089,
+      "coord": [-122.210417, 47.611773]
+    },
+    {
+      "id": "p003",
+      "segment": "s131",
+      "kind": "photo",
+      "note": null,
+      "at": 0.7754169503930755,
+      "coord": [-122.238876, 47.616241]
+    },
+    {
+      "id": "p004",
+      "segment": "s085",
+      "kind": "water",
+      "note": "Water fountain over by the sports fields",
+      "at": 0.9616579099909595,
+      "coord": [-122.127487, 47.550048]
+    }
+  ]
 }
