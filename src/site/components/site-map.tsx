@@ -2,12 +2,14 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   Layer,
+  Marker,
   Source,
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl";
 import type { FeatureCollection, LineString } from "geojson";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
+import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
 import { choiceBounds, continuations, isEmpty, type Route } from "../route";
@@ -27,6 +29,8 @@ const HIT_WIDTH = 22;
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
+  /** Where the reader is pointing on the elevation chart, if anywhere. */
+  scrubbed: Coord | null;
   onPick: (id: SegmentId) => void;
 };
 
@@ -70,7 +74,7 @@ function nearestOf(
  * clickable is what is bright, and what is not is visibly out of play rather
  * than merely unresponsive.
  */
-export function SiteMap({ graph, route, onPick }: SiteMapProps) {
+export function SiteMap({ graph, route, scrubbed, onPick }: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
   const [overRoad, setOverRoad] = useState(false);
 
@@ -201,6 +205,20 @@ export function SiteMap({ graph, route, onPick }: SiteMapProps) {
           layout={{ "line-cap": "round", "line-join": "round" }}
         />
       </Source>
+
+      {/* The same place the chart is reporting, so a height on the graph has a
+          somewhere on the map.
+          Dark core, pale ring — deliberately not the chart's amber, because the
+          route it sits on is amber and a marker has to be visible against the
+          thing it marks. */}
+      {scrubbed && (
+        <Marker longitude={scrubbed[0]} latitude={scrubbed[1]}>
+          <span
+            aria-hidden
+            className="bg-forest-deep border-paper block h-3.5 w-3.5 rounded-full border-2 shadow-[0_1px_4px_rgba(18,48,31,0.55)]"
+          />
+        </Marker>
+      )}
     </Map>
   );
 }

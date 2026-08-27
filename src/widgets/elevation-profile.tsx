@@ -21,10 +21,17 @@ export function ElevationProfile({
   points,
   className,
   minRangeMeters = 30,
+  onScrub,
 }: {
   points: ElevCoord[];
   className?: string;
   minRangeMeters?: number;
+  /**
+   * Where along the ride the reader is looking, 0 to 1, or null once they
+   * stop. Lets the map put the same place under a marker — a height without a
+   * "where" only answers half the question.
+   */
+  onScrub?: (fraction: number | null) => void;
 }) {
   const gradientId = useId();
   const chart = useRef<HTMLDivElement>(null);
@@ -54,17 +61,21 @@ export function ElevationProfile({
   const steps = profile.samples.length - 1;
   const reading = at === null ? null : sampleAt(profile, at / steps);
 
+  /** Reported from the handlers rather than during render, where it would be a side effect. */
+  function scrubTo(index: number | null) {
+    setAt(index);
+    onScrub?.(index === null ? null : index / steps);
+  }
+
   function moveTo(event: React.PointerEvent) {
     const box = chart.current?.getBoundingClientRect();
     if (!box || box.width === 0) return;
     const fraction = (event.clientX - box.left) / box.width;
-    setAt(Math.round(Math.max(0, Math.min(1, fraction)) * steps));
+    scrubTo(Math.round(Math.max(0, Math.min(1, fraction)) * steps));
   }
 
   function nudge(by: number) {
-    setAt((current) =>
-      Math.max(0, Math.min(steps, (current ?? Math.round(steps / 2)) + by)),
-    );
+    scrubTo(Math.max(0, Math.min(steps, (at ?? Math.round(steps / 2)) + by)));
   }
 
   return (
@@ -86,13 +97,13 @@ export function ElevationProfile({
         }
         onPointerMove={moveTo}
         onPointerDown={moveTo}
-        onPointerLeave={() => setAt(null)}
-        onBlur={() => setAt(null)}
+        onPointerLeave={() => scrubTo(null)}
+        onBlur={() => scrubTo(null)}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") nudge(1);
           else if (event.key === "ArrowLeft") nudge(-1);
-          else if (event.key === "Home") setAt(0);
-          else if (event.key === "End") setAt(steps);
+          else if (event.key === "Home") scrubTo(0);
+          else if (event.key === "End") scrubTo(steps);
           else return;
           event.preventDefault();
         }}
