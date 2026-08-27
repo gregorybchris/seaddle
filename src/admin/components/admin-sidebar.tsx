@@ -9,6 +9,10 @@ import { CycattleMark } from "@/widgets/cycattle-mark";
 import { Segmented } from "@/widgets/segmented";
 import { Sheet } from "@/widgets/sheet";
 import { CollapsibleSection } from "@/widgets/collapsible-section";
+import { SegmentEditor } from "./segment-editor";
+import type { AttributePatch } from "../review";
+import { nextUnreviewed, reviewProgress } from "../review";
+import { deriveSegment } from "@/lib/graph/derive";
 import { InventoryRow } from "@/widgets/inventory-row";
 import { ScrollList } from "@/widgets/scroll-list";
 import { Stat } from "@/widgets/stat";
@@ -28,8 +32,10 @@ type AdminSidebarProps = {
   to: GraphNode | null;
   selectedNode: GraphNode | null;
   onSelectNode: (node: GraphNode | null) => void;
-  selectedSegment: string | null;
-  onSelectSegment: (id: string | null) => void;
+  selectedSegments: string[];
+  onSelectSegments: (ids: string[]) => void;
+  onPatchSelected: (patch: AttributePatch) => void;
+  onNextUnreviewed: () => void;
   candidates: Candidate[] | null;
   radiusMeters: number;
   maxDetourRatio: number;
@@ -55,6 +61,14 @@ export function AdminSidebar(props: AdminSidebarProps) {
   const totalMeters = [...props.geometry.values()].reduce(
     (sum, points) => sum + polylineMeters(points),
     0,
+  );
+
+  const picked = new Set(props.selectedSegments);
+  const chosen = props.segments.filter((segment) => picked.has(segment.id));
+  const progress = reviewProgress(props.segments);
+  // Only meaningful for a single selection; the editor hides it otherwise.
+  const derived = deriveSegment(
+    (chosen.length === 1 && props.geometry.get(chosen[0].id)) || [],
   );
 
   return (
@@ -99,8 +113,28 @@ export function AdminSidebar(props: AdminSidebarProps) {
         {props.error && <Banner tone="alarm">{props.error}</Banner>}
         {props.hint && <Banner tone="notice">{props.hint}</Banner>}
 
+        {chosen.length > 0 && (
+          <SegmentEditor
+            selected={chosen}
+            meters={derived.meters}
+            gainForward={derived.gainForward}
+            gainBackward={derived.gainBackward}
+            reviewed={progress.reviewed}
+            total={progress.total}
+            onPatch={props.onPatchSelected}
+            onNext={props.onNextUnreviewed}
+            hasNext={nextUnreviewed(props.segments, null) !== null}
+          />
+        )}
+
         {props.mode === "nodes" ? (
           <>
+            <p className="text-sand/75 text-sm leading-relaxed">
+              Click where rides cross. The click snaps onto the nearest ride,
+              and onto a junction already there if one is close — so clicking
+              the same intersection twice gives you one junction, not two that
+              never connect. Click a junction again to select it.
+            </p>
             <JunctionInventory
               nodes={props.nodes}
               segments={props.segments}
@@ -117,8 +151,8 @@ export function AdminSidebar(props: AdminSidebarProps) {
 
         <SegmentInventory
           segments={props.segments}
-          selectedId={props.selectedSegment}
-          onSelect={props.onSelectSegment}
+          selectedIds={props.selectedSegments}
+          onSelect={props.onSelectSegments}
           geometry={props.geometry}
           onHover={props.onHoverGeometry}
           onRemove={props.onRemoveSegment}
@@ -313,7 +347,7 @@ function matches(query: string, id: string, name: string | null): boolean {
 
 function SegmentInventory({
   segments,
-  selectedId,
+  selectedIds,
   onSelect,
   geometry,
   onHover,
@@ -322,8 +356,8 @@ function SegmentInventory({
   onLocate,
 }: {
   segments: SegmentRecord[];
-  selectedId: string | null;
-  onSelect: (id: string | null) => void;
+  selectedIds: string[];
+  onSelect: (ids: string[]) => void;
   geometry: Map<string, ElevCoord[]>;
   onHover: (points: ElevCoord[] | null) => void;
   onRemove: (id: string) => void;
@@ -342,7 +376,7 @@ function SegmentInventory({
     <CollapsibleSection
       title="Mapped segments"
       count={segments.length}
-      openOn={selectedId}
+      openOn={selectedIds.join(",")}
       search={{
         value: query,
         onChange: setQuery,
@@ -356,10 +390,14 @@ function SegmentInventory({
             key={segment.id}
             id={segment.id}
             name={segment.name}
-            selected={segment.id === selectedId}
-            revealOnSelect
+            selected={selectedIds.includes(segment.id)}
+            revealOnSelect={selectedIds.length === 1}
             onSelect={() =>
-              onSelect(segment.id === selectedId ? null : segment.id)
+              onSelect(
+                selectedIds.includes(segment.id)
+                  ? selectedIds.filter((id) => id !== segment.id)
+                  : [...selectedIds, segment.id],
+              )
             }
             detail={formatMiles(polylineMeters(geometry.get(segment.id) ?? []))}
             onRename={(name) => onRename(segment.id, name)}

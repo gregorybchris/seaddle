@@ -12,6 +12,7 @@ import {
 } from "./candidate-finder";
 import { AdminMap } from "./components/admin-map";
 import { AdminSidebar, type Mode } from "./components/admin-sidebar";
+import { applyAttributes, nextUnreviewed, type AttributePatch } from "./review";
 import {
   addSegment,
   NODE_SNAP_METERS,
@@ -35,7 +36,7 @@ export default function AdminPage() {
   const [to, setTo] = useState<GraphNode | null>(null);
   const [preview, setPreview] = useState<ElevCoord[] | null>(null);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
+  const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
   const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
   const [maxDetourRatio, setMaxDetourRatio] = useState(
     DEFAULT_MAX_DETOUR_RATIO,
@@ -64,7 +65,11 @@ export default function AdminPage() {
     });
   }, [index, from, to, data.tracks, radiusMeters, maxDetourRatio]);
 
-  function handleMapClick(coord: Coord, segmentId: string | null) {
+  function handleMapClick(
+    coord: Coord,
+    segmentId: string | null,
+    additive: boolean,
+  ) {
     if (!index) return;
     setHint(null);
 
@@ -93,7 +98,15 @@ export default function AdminPage() {
       // Away from any junction, a click on a mapped segment means that
       // segment — the one thing a click here could otherwise not reach.
       if (segmentId) {
-        setSelectedSegment(segmentId);
+        // Shift or command adds to the selection, so a whole trail can be
+        // judged in one answer instead of forty.
+        setSelectedSegments((current) =>
+          additive
+            ? current.includes(segmentId)
+              ? current.filter((id) => id !== segmentId)
+              : [...current, segmentId]
+            : [segmentId],
+        );
         return;
       }
       setHint("Click a junction, or a mapped segment to select it.");
@@ -133,7 +146,25 @@ export default function AdminPage() {
     setTo(null);
     setPreview(null);
     setSelectedNode(null);
-    setSelectedSegment(null);
+    setSelectedSegments([]);
+  }
+
+  function patchSelected(patch: AttributePatch) {
+    if (selectedSegments.length === 0) return;
+    void data.save(applyAttributes(data.graph, selectedSegments, patch));
+  }
+
+  /** Hand over the next segment still carrying defaults, and go look at it. */
+  function goToNextUnreviewed() {
+    const after = selectedSegments.length === 1 ? selectedSegments[0] : null;
+    const next = nextUnreviewed(data.graph.segments, after);
+    if (!next) {
+      setHint("Every segment has been reviewed.");
+      return;
+    }
+    setHint(null);
+    setSelectedSegments([next]);
+    locateSegment(next);
   }
 
   function deleteNode(id: string) {
@@ -203,8 +234,10 @@ export default function AdminPage() {
         onRenameSegment={(id, name) =>
           void data.save(renameSegment(data.graph, id, name))
         }
-        selectedSegment={selectedSegment}
-        onSelectSegment={setSelectedSegment}
+        selectedSegments={selectedSegments}
+        onSelectSegments={setSelectedSegments}
+        onPatchSelected={patchSelected}
+        onNextUnreviewed={goToNextUnreviewed}
         onLocateNode={locateNode}
         onLocateSegment={locateSegment}
         focusedAt={focus}
@@ -221,7 +254,7 @@ export default function AdminPage() {
           selectedNodeIds={selectedNodeIds}
           segments={data.graph.segments}
           geometry={data.geometry}
-          selectedSegmentId={selectedSegment}
+          selectedSegmentIds={selectedSegments}
           preview={preview}
           focus={focus}
           onMapClick={handleMapClick}

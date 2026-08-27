@@ -44,10 +44,14 @@ type AdminMapProps = {
   segments: SegmentRecord[];
   geometry: Map<SegmentId, ElevCoord[]>;
   preview: ElevCoord[] | null;
-  selectedSegmentId: string | null;
+  selectedSegmentIds: string[];
   /** Somewhere to fly to. A fresh object each time, so asking twice works. */
   focus: { bounds: Bounds; maxZoom?: number } | null;
-  onMapClick: (coord: Coord, segmentId: string | null) => void;
+  onMapClick: (
+    coord: Coord,
+    segmentId: string | null,
+    additive: boolean,
+  ) => void;
 };
 
 /**
@@ -64,7 +68,7 @@ export function AdminMap({
   segments,
   geometry,
   preview,
-  selectedSegmentId,
+  selectedSegmentIds,
   focus,
   onMapClick,
 }: AdminMapProps) {
@@ -140,6 +144,7 @@ export function AdminMap({
           onMapClick(
             [event.lngLat.lng, event.lngLat.lat],
             segmentUnder(event)?.id ?? null,
+            event.originalEvent.shiftKey || event.originalEvent.metaKey,
           )
         }
       >
@@ -182,7 +187,7 @@ export function AdminMap({
           <Layer
             id="segments-selected"
             type="line"
-            filter={["==", ["get", "id"], selectedSegmentId ?? ""]}
+            filter={["in", ["get", "id"], ["literal", selectedSegmentIds]]}
             paint={{
               "line-color": "#d97b2e",
               "line-width": 7,
