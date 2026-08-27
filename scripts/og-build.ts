@@ -189,8 +189,8 @@ ${structure.map((d) => `    <path fill="${SAND}" d="${d}"/>`).join("\n")}
   <text x="232" y="222" fill="${SAND}" font-family="Didact Gothic" font-size="68" letter-spacing="12.2">SEADDLE</text>
   <text x="235" y="266" fill="${BLAZE}" font-family="IBM Plex Mono" font-weight="500" font-size="21" letter-spacing="2.9">SEATTLE CYCLING ROUTES</text>
   <g fill="${SAND}" fill-opacity="0.78" font-family="Didact Gothic" font-size="31">
-    <text x="80" y="382">Build a ride one segment at a time,</text>
-    <text x="80" y="424">each one rated before you ride it.</text>
+    <text x="80" y="382">Over 300 miles of beginner to intermediate</text>
+    <text x="80" y="424">cycling routes around Seattle.</text>
   </g>
   <text x="80" y="556" fill="${SAND}" fill-opacity="0.45" font-family="IBM Plex Mono" font-weight="500" font-size="19" letter-spacing="2.4">SEADDLE.COM</text>
 </svg>
