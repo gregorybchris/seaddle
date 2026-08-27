@@ -2,7 +2,7 @@ import { ArrowUUpLeft, Trash } from "@phosphor-icons/react";
 import { cn } from "@/lib/utilities/style-utils";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
-import { CycattleMark } from "@/widgets/cycattle-mark";
+import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { Sheet } from "@/widgets/sheet";
 import type { SiteGraph } from "../graph-data";
@@ -35,9 +35,9 @@ export function RoutePanel({ graph, route, onUndo, onClear }: RoutePanelProps) {
       peek={
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <CycattleMark className="text-sand h-8 w-8 shrink-0" />
+            <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
             <h1 className="text-sand flex-1 text-base leading-none tracking-[0.18em] uppercase">
-              Cycattle
+              Seaddle
             </h1>
           </div>
 

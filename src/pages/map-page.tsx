@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import type { SegmentId } from "@/lib/models/graph";
-import { CycattleMark } from "@/widgets/cycattle-mark";
+import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
 import {
@@ -33,7 +33,7 @@ export function MapPage() {
   );
 
   if (error) return <Splash title="Map unavailable">{error}</Splash>;
-  if (!graph) return <Splash title="Cycattle" waiting />;
+  if (!graph) return <Splash title="Seaddle" waiting />;
 
   return (
     <div className="relative h-full md:flex">
@@ -62,7 +62,7 @@ function Splash({
   return (
     <div className="bg-forest flex h-full items-center justify-center p-8">
       <div className="flex max-w-sm flex-col items-center text-center">
-        <CycattleMark
+        <SeaddleMark
           className={
             waiting
               ? "text-sand/80 mb-5 h-12 w-12 animate-[breathe_1.8s_ease-in-out_infinite]"

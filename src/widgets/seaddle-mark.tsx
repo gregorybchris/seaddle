@@ -11,13 +11,13 @@
  * quite lined up with anything set beside or beneath it. Square, and centred on
  * the drawing, so a square element needs no letterboxing.
  */
-export function CycattleMark({ className }: { className?: string }) {
+export function SeaddleMark({ className }: { className?: string }) {
   return (
     <svg
       viewBox="7.8 7.7 134.4 134.4"
       className={className}
       role="img"
-      aria-label="Cycattle"
+      aria-label="Seaddle"
       fill="currentColor"
     >
       <path d="m88 119-2.4-11.4-4 4.6 1.5 8.6h-5.9v-4.1l-3.8 4.1c-0.4 0.4-0.9 0.5-1.4 0.5l-9.9-0.1-3.3 20.4h4.8l2.4-15.8h6.6v15.8h4.7v-15.9h6.6l2.6 15.8h4.7l-3.2-22.5z" />

@@ -1,11 +1,11 @@
-# Cycattle
+# Seaddle
 
-Cycattle is a website for new cyclists in the Seattle area. It helps people new to the sport
+Seaddle is a website for new cyclists in the Seattle area. It helps people new to the sport
 discover routes that suit them.
 
 The core problem: every route site makes you pick a start and an end. But a route's usefulness
 depends entirely on where you live, and a beginner doesn't know which roads are pleasant and
-which will scare them off the sport. Cycattle answers "what's a good ride from around here?"
+which will scare them off the sport. Seaddle answers "what's a good ride from around here?"
 instead of "here is someone else's 32-mile loop."
 
 ## The central idea
@@ -297,7 +297,7 @@ without relying on color.
 
 ### Sharing and saving
 
-The segment chain lives in the **URL**: `cycattle.com/?r=s017,s042,s043,s088`. Copy-paste shares a
+The segment chain lives in the **URL**: `seaddle.com/?r=s017,s042,s043,s088`. Copy-paste shares a
 route, refresh is lossless, and a bookmark is a saved ride. No accounts, no backend.
 
 Because appends push history entries, back-navigating past the empty route leaves the site

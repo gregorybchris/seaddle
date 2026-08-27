@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const publicDir = join(root, "public");
-const markFile = join(root, "src/widgets/cycattle-mark.tsx");
+const markFile = join(root, "src/widgets/seaddle-mark.tsx");
 
 /** The site palette, from src/globals.css. */
 const FOREST = "#1c4632";
@@ -87,7 +87,7 @@ function svg(
     : `<rect width="${CANVAS}" height="${CANVAS}" rx="${CORNER}" fill="${FOREST}"/>`;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CANVAS} ${CANVAS}">`,
-    `  <!-- ${note} Generated from src/widgets/cycattle-mark.tsx by pnpm favicon:build. -->`,
+    `  <!-- ${note} Generated from src/widgets/seaddle-mark.tsx by pnpm favicon:build. -->`,
     `  ${ground}`,
     `  <g transform="${transform}">`,
     ...sand.map((d) => `    <path fill="${SAND}" d="${d}"/>`),
@@ -110,21 +110,21 @@ const small = svg(
 );
 /** The whole mark, for anywhere the bicycle still reads. */
 const large = svg(
-  "The Cycattle mark on the site palette.",
+  "The Seaddle mark on the site palette.",
   fit(full, 0.78),
   structure,
   blaze,
 );
 /** iOS masks the icon itself, and a rounded ground would leave gaps at the corners. */
 const touch = svg(
-  "The Cycattle mark, squared for iOS masking.",
+  "The Seaddle mark, squared for iOS masking.",
   fit(full, 0.78),
   structure,
   blaze,
   true,
 );
 
-const work = mkdtempSync(join(tmpdir(), "cycattle-favicon-"));
+const work = mkdtempSync(join(tmpdir(), "seaddle-favicon-"));
 try {
   const render = (source: string, size: number, out: string) => {
     execFileSync("rsvg-convert", [

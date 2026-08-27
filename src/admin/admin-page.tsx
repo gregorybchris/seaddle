@@ -3,7 +3,7 @@ import { boundsOf, padBounds } from "@/lib/geo/bounds";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
-import { CycattleMark } from "@/widgets/cycattle-mark";
+import { SeaddleMark } from "@/widgets/seaddle-mark";
 import {
   DEFAULT_MAX_DETOUR_RATIO,
   DEFAULT_RADIUS_METERS,
@@ -306,7 +306,7 @@ function Notice({
   return (
     <div className="bg-forest flex h-full items-center justify-center p-8">
       <div className="flex max-w-sm flex-col items-center text-center">
-        <CycattleMark
+        <SeaddleMark
           className={cn(
             "text-sand/80 mb-5 h-12 w-12",
             waiting && "animate-[breathe_1.8s_ease-in-out_infinite]",

@@ -1,4 +1,4 @@
-# Cycattle
+# Seaddle
 
 A website for new cyclists in the Seattle area. Routes are not stored — a graph
 of segments is, and a route is a path a rider builds through it by clicking.

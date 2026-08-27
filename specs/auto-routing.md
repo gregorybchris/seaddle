@@ -1,7 +1,7 @@
 # Auto-routing: connectors
 
 A companion to `index.md`. It covers one feature: getting a user from their front door to the
-cycattle graph.
+seaddle graph.
 
 ## 1. The problem
 
@@ -22,7 +22,7 @@ road and the line follows it. Worth separating the two things hiding in that req
 
 Only the second is needed. It's one call instead of a dozen, it's fewer decisions for a beginner,
 and it's the thing that actually answers "can I ride to this from my house?" Freehand drawing is a
-route _editor_, and cycattle is deliberately not one.
+route _editor_, and seaddle is deliberately not one.
 
 ---
 
@@ -136,7 +136,7 @@ start point by clicking is not that, and doesn't reopen the decision.
 The chain already lives in the URL. Connectors extend it with **waypoints, never geometry**:
 
 ```
-cycattle.com/?r=s017,s042,s043&from=-122.31,47.65
+seaddle.com/?r=s017,s042,s043&from=-122.31,47.65
 ```
 
 Short, diffable, re-resolvable on load, and license-clean under any provider we might switch to
