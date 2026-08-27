@@ -135,7 +135,8 @@ export function SegmentEditor({
         {/* Stepping walks every segment, so the way back to the one just
             judged is the same button whether or not judging it moved it out
             of the unreviewed queue. Only with a single segment in hand: from
-            a multiple selection there is no "this one" to step from. */}
+            a multiple selection there is no "this one" to step from. A and D
+            do the same, for a pass that keeps its hands on the keys. */}
         <div className="flex items-center gap-0.5">
           <Button
             variant="quiet"
@@ -143,7 +144,7 @@ export function SegmentEditor({
             onClick={() => onStep(-1)}
             disabled={!one}
             aria-label="Previous segment"
-            title="Previous segment"
+            title="Previous segment (A)"
           >
             <CaretLeft weight="bold" className="h-4 w-4" />
           </Button>
@@ -153,7 +154,7 @@ export function SegmentEditor({
             onClick={() => onStep(1)}
             disabled={!one}
             aria-label="Next segment"
-            title="Next segment"
+            title="Next segment (D)"
           >
             <CaretRight weight="bold" className="h-4 w-4" />
           </Button>

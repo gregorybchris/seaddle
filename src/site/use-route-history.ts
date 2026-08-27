@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { typingIn } from "@/lib/utilities/keys";
 import type { SiteGraph } from "./graph-data";
 import { decodeStages, EMPTY_ROUTE, encodeRoute, type Route } from "./route";
 
@@ -136,11 +137,12 @@ export function useRouteHistory(graph: SiteGraph | null) {
   }, [graph, adopt]);
 
   // ⌘Z and ⌘⇧Z, and their control-key spellings elsewhere. Bound here rather
-  // than in the panel so the keys cannot drift from the buttons.
+  // than in the panel so the keys cannot drift from the buttons. ⌘Z belongs to
+  // the text field while someone is in one.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
-      if (typing(event.target)) return;
+      if (typingIn(event.target)) return;
 
       const key = event.key.toLowerCase();
       const redoing = key === "y" || (key === "z" && event.shiftKey);
@@ -165,14 +167,4 @@ export function useRouteHistory(graph: SiteGraph | null) {
     canUndo: timeline.index > 0,
     canRedo: timeline.index < timeline.entries.length - 1,
   };
-}
-
-/** ⌘Z belongs to the text field while someone is in one. */
-function typing(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  return (
-    target.isContentEditable ||
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement
-  );
 }
