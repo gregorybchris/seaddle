@@ -4,7 +4,13 @@ import { roundCoord, roundPoint, simplify } from "@/lib/geo/simplify";
 import { nextId } from "@/lib/db/ids";
 import { SpatialIndex } from "@/lib/mapping/spatial-index";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
-import type { GraphFile, GraphNode, SegmentRecord } from "@/lib/models/graph";
+import type {
+  GraphFile,
+  GraphNode,
+  NodeId,
+  SegmentId,
+  SegmentRecord,
+} from "@/lib/models/graph";
 import { SEGMENT_DEFAULTS } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import type { Candidate, TrackPointRef } from "./candidate-finder";
@@ -162,6 +168,66 @@ export function addSegment(
     graph: { ...graph, segments: [...graph.segments, segment] },
     segment,
     geometry: extractGeometry(candidate, from.coord, to.coord),
+  };
+}
+
+/**
+ * Set or clear an admin label.
+ *
+ * Blank and whitespace collapse to null so "no name" has exactly one
+ * representation, rather than an empty string that sorts and compares
+ * differently from the absent case.
+ */
+export function renameSegment(
+  graph: GraphFile,
+  id: SegmentId,
+  name: string,
+): GraphFile {
+  const trimmed = name.trim();
+  return {
+    ...graph,
+    segments: graph.segments.map((segment) =>
+      segment.id === id ? { ...segment, name: trimmed || null } : segment,
+    ),
+  };
+}
+
+export function renameNode(
+  graph: GraphFile,
+  id: NodeId,
+  name: string,
+): GraphFile {
+  const trimmed = name.trim();
+  return {
+    ...graph,
+    nodes: graph.nodes.map((node) =>
+      node.id === id ? { ...node, name: trimmed || null } : node,
+    ),
+  };
+}
+
+export type NodeRemoval = {
+  graph: GraphFile;
+  /** Segments still attached. Non-empty means nothing was removed. */
+  blockedBy: SegmentId[];
+};
+
+/**
+ * Remove a junction, unless segments are still hanging off it.
+ *
+ * Refusing rather than cascading: deleting a junction under a segment would
+ * leave geometry pointing at nothing, and quietly taking the segments with it
+ * destroys more than the click asked for. The caller gets the list so it can
+ * say which ones are in the way.
+ */
+export function removeNode(graph: GraphFile, id: NodeId): NodeRemoval {
+  const blockedBy = graph.segments
+    .filter((segment) => segment.from === id || segment.to === id)
+    .map((segment) => segment.id);
+  if (blockedBy.length > 0) return { graph, blockedBy };
+  return {
+    graph: { ...graph, nodes: graph.nodes.filter((node) => node.id !== id) },
+    blockedBy: [],
   };
 }
 

@@ -1,5 +1,6 @@
+import { useMemo, useState } from "react";
 import type { ElevCoord } from "@/lib/models/geo";
-import type { GraphNode } from "@/lib/models/graph";
+import type { GraphNode, SegmentRecord } from "@/lib/models/graph";
 import { polylineMeters } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
 import { formatMiles } from "@/lib/utilities/units";
@@ -7,6 +8,8 @@ import { Button } from "@/widgets/button";
 import { CycattleMark } from "@/widgets/cycattle-mark";
 import { Segmented } from "@/widgets/segmented";
 import { Sheet } from "@/widgets/sheet";
+import { CollapsibleSection } from "@/widgets/collapsible-section";
+import { InventoryRow } from "@/widgets/inventory-row";
 import { Stat } from "@/widgets/stat";
 import type { Candidate } from "../candidate-finder";
 import { CandidateList } from "./candidate-list";
@@ -18,10 +21,12 @@ type AdminSidebarProps = {
   onMode: (mode: Mode) => void;
   trackCount: number;
   nodes: GraphNode[];
-  segmentIds: string[];
+  segments: SegmentRecord[];
   geometry: Map<string, ElevCoord[]>;
   from: GraphNode | null;
   to: GraphNode | null;
+  selectedNode: GraphNode | null;
+  onSelectNode: (node: GraphNode | null) => void;
   candidates: Candidate[] | null;
   radiusMeters: number;
   maxDetourRatio: number;
@@ -34,6 +39,9 @@ type AdminSidebarProps = {
   onChoose: (candidate: Candidate) => void;
   onClearSelection: () => void;
   onRemoveSegment: (id: string) => void;
+  onRenameSegment: (id: string, name: string) => void;
+  onRemoveNode: (id: string) => void;
+  onRenameNode: (id: string, name: string) => void;
 };
 
 export function AdminSidebar(props: AdminSidebarProps) {
@@ -61,7 +69,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
           <div className="border-sand/10 flex items-end justify-between border-t pt-3">
             <Stat value={props.trackCount} label="rides" />
             <Stat value={props.nodes.length} label="junctions" />
-            <Stat value={props.segmentIds.length} label="segments" />
+            <Stat value={props.segments.length} label="segments" />
             <Stat value={formatMiles(totalMeters)} label="mapped" />
           </div>
         </div>
@@ -81,23 +89,32 @@ export function AdminSidebar(props: AdminSidebarProps) {
         {props.hint && <Banner tone="notice">{props.hint}</Banner>}
 
         {props.mode === "nodes" ? (
-          <section className="flex flex-col gap-2">
+          <>
             <p className="text-sand/75 text-sm leading-relaxed">
               Click where rides cross. The click snaps onto the nearest ride,
               and onto a junction already there if one is close — so clicking
               the same intersection twice gives you one junction, not two that
-              never connect.
+              never connect. Click a junction again to select it.
             </p>
-          </section>
+            <JunctionInventory
+              nodes={props.nodes}
+              segments={props.segments}
+              selectedId={props.selectedNode?.id ?? null}
+              onSelect={props.onSelectNode}
+              onRename={props.onRenameNode}
+              onRemove={props.onRemoveNode}
+            />
+          </>
         ) : (
           <SegmentBuilder {...props} />
         )}
 
-        <Inventory
-          ids={props.segmentIds}
+        <SegmentInventory
+          segments={props.segments}
           geometry={props.geometry}
           onHover={props.onHoverGeometry}
           onRemove={props.onRemoveSegment}
+          onRename={props.onRenameSegment}
         />
       </div>
     </Sheet>
@@ -275,45 +292,137 @@ function Range({
   );
 }
 
-function Inventory({
-  ids,
+/** Match on the label people give things, and on the id printed beside it. */
+function matches(query: string, id: string, name: string | null): boolean {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return true;
+  return (
+    id.toLowerCase().includes(needle) ||
+    (name ?? "").toLowerCase().includes(needle)
+  );
+}
+
+function SegmentInventory({
+  segments,
   geometry,
   onHover,
   onRemove,
+  onRename,
 }: {
-  ids: string[];
+  segments: SegmentRecord[];
   geometry: Map<string, ElevCoord[]>;
   onHover: (points: ElevCoord[] | null) => void;
   onRemove: (id: string) => void;
+  onRename: (id: string, name: string) => void;
 }) {
-  if (ids.length === 0) return null;
+  const [query, setQuery] = useState("");
+  const shown = useMemo(
+    () => segments.filter((s) => matches(query, s.id, s.name)),
+    [segments, query],
+  );
+
+  if (segments.length === 0) return null;
 
   return (
-    <section className="flex flex-col gap-2">
-      <h2 className="eyebrow text-sand/40">Mapped segments</h2>
+    <CollapsibleSection
+      title="Mapped segments"
+      count={segments.length}
+      search={{
+        value: query,
+        onChange: setQuery,
+        label: "Search segments",
+      }}
+    >
+      {shown.length === 0 && <NoMatches query={query} />}
       <ul className="flex flex-col">
-        {ids.map((id) => (
-          <li
-            key={id}
-            onMouseEnter={() => onHover(geometry.get(id) ?? null)}
-            onMouseLeave={() => onHover(null)}
-            className="border-sand/10 hover:bg-sand/5 group flex items-center gap-3 border-b px-1 py-2 transition-colors last:border-b-0"
-          >
-            <span className="tabular text-sand/80 text-xs">{id}</span>
-            <span className="tabular text-sand/45 flex-1 text-xs">
-              {formatMiles(polylineMeters(geometry.get(id) ?? []))}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(id)}
-              className="text-sand/0 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/50 text-xs transition-colors focus-visible:outline-none"
-            >
-              Delete
-            </button>
-          </li>
+        {shown.map((segment) => (
+          <InventoryRow
+            key={segment.id}
+            id={segment.id}
+            name={segment.name}
+            detail={formatMiles(polylineMeters(geometry.get(segment.id) ?? []))}
+            onRename={(name) => onRename(segment.id, name)}
+            onRemove={() => onRemove(segment.id)}
+            onHover={(hovering) =>
+              onHover(hovering ? (geometry.get(segment.id) ?? null) : null)
+            }
+          />
         ))}
       </ul>
-    </section>
+    </CollapsibleSection>
+  );
+}
+
+function JunctionInventory({
+  nodes,
+  segments,
+  selectedId,
+  onSelect,
+  onRename,
+  onRemove,
+}: {
+  nodes: GraphNode[];
+  segments: SegmentRecord[];
+  selectedId: string | null;
+  onSelect: (node: GraphNode | null) => void;
+  onRename: (id: string, name: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  const [query, setQuery] = useState("");
+
+  // How many segments hang off each junction. A zero is a junction that can be
+  // deleted freely; anything else has to have its segments removed first.
+  const load = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const segment of segments) {
+      for (const end of [segment.from, segment.to]) {
+        counts.set(end, (counts.get(end) ?? 0) + 1);
+      }
+    }
+    return counts;
+  }, [segments]);
+
+  const shown = useMemo(
+    () => nodes.filter((node) => matches(query, node.id, node.name)),
+    [nodes, query],
+  );
+
+  if (nodes.length === 0) return null;
+
+  return (
+    <CollapsibleSection
+      title="Placed junctions"
+      count={nodes.length}
+      search={{
+        value: query,
+        onChange: setQuery,
+        label: "Search junctions",
+      }}
+    >
+      {shown.length === 0 && <NoMatches query={query} />}
+      <ul className="flex flex-col">
+        {shown.map((node) => (
+          <InventoryRow
+            key={node.id}
+            id={node.id}
+            name={node.name}
+            detail={load.get(node.id) ? `${load.get(node.id)} seg` : "unused"}
+            selected={node.id === selectedId}
+            onSelect={() => onSelect(node.id === selectedId ? null : node)}
+            onRename={(name) => onRename(node.id, name)}
+            onRemove={() => onRemove(node.id)}
+          />
+        ))}
+      </ul>
+    </CollapsibleSection>
+  );
+}
+
+function NoMatches({ query }: { query: string }) {
+  return (
+    <p className="text-sand/40 px-1 py-2 text-xs">
+      Nothing matching “{query.trim()}”.
+    </p>
   );
 }
 

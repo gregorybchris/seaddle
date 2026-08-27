@@ -91,6 +91,42 @@ body {
   }
 }
 
+/* Radix measures the panel and hands us its height, which is the only way to
+   animate to `auto` without hard-coding a size that will be wrong. */
+@keyframes collapsible-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-close {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.collapsible-panel {
+  overflow: hidden;
+}
+
+.collapsible-panel[data-state="open"] {
+  animation: collapsible-open 240ms var(--ease-settle);
+}
+
+.collapsible-panel[data-state="closed"] {
+  animation: collapsible-close 200ms var(--ease-settle);
+}
+
 @keyframes rise {
   from {
     opacity: 0;

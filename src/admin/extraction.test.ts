@@ -8,7 +8,10 @@ import {
   addSegment,
   extractGeometry,
   placeNode,
+  removeNode,
   removeSegment,
+  renameNode,
+  renameSegment,
   snapToNodes,
   snapToTracks,
 } from "./extraction";
@@ -219,5 +222,69 @@ describe("removeSegment", () => {
       ],
     };
     expect(removeSegment(withPin, "s001").pins).toEqual([]);
+  });
+});
+
+describe("renaming", () => {
+  const withSegment = addSegment(
+    emptyGraph({ nodes: [node("n001", A), node("n002", B)] }),
+    findCandidates([TRACK], INDEX, A, B)[0],
+    node("n001", A),
+    node("n002", B),
+  ).graph;
+
+  it("labels a segment", () => {
+    expect(
+      renameSegment(withSegment, "s001", "Burke-Gilman").segments[0].name,
+    ).toBe("Burke-Gilman");
+  });
+
+  it("collapses a blank name to null, so absent has one representation", () => {
+    const graph = emptyGraph({ nodes: [node("n001", A)] });
+    expect(renameNode(graph, "n001", "   ").nodes[0].name).toBeNull();
+  });
+
+  it("trims surrounding space", () => {
+    const graph = emptyGraph({ nodes: [node("n001", A)] });
+    expect(renameNode(graph, "n001", "  Gas Works  ").nodes[0].name).toBe(
+      "Gas Works",
+    );
+  });
+
+  it("leaves everything else alone", () => {
+    const graph = emptyGraph({ nodes: [node("n001", A), node("n002", B)] });
+    const renamed = renameNode(graph, "n001", "Fremont");
+    expect(renamed.nodes[1]).toBe(graph.nodes[1]);
+    expect(graph.nodes[0].name).toBeNull();
+  });
+});
+
+describe("removeNode", () => {
+  it("removes a junction nothing is attached to", () => {
+    const graph = emptyGraph({ nodes: [node("n001", A), node("n002", B)] });
+    const removal = removeNode(graph, "n001");
+    expect(removal.blockedBy).toEqual([]);
+    expect(removal.graph.nodes.map((n) => n.id)).toEqual(["n002"]);
+  });
+
+  it("refuses while a segment is still hanging off it", () => {
+    // Cascading would leave geometry pointing at nothing, and taking the
+    // segments too would destroy more than the click asked for.
+    const nodeA = node("n001", A);
+    const nodeB = node("n002", B);
+    const { graph } = addSegment(
+      emptyGraph({ nodes: [nodeA, nodeB] }),
+      findCandidates([TRACK], INDEX, A, B)[0],
+      nodeA,
+      nodeB,
+    );
+    const removal = removeNode(graph, "n001");
+    expect(removal.blockedBy).toEqual(["s001"]);
+    expect(removal.graph.nodes).toHaveLength(2);
+  });
+
+  it("does nothing for a junction that is not there", () => {
+    const graph = emptyGraph({ nodes: [node("n001", A)] });
+    expect(removeNode(graph, "n404").graph.nodes).toHaveLength(1);
   });
 });

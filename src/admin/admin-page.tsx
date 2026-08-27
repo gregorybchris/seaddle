@@ -12,8 +12,12 @@ import { AdminMap } from "./components/admin-map";
 import { AdminSidebar, type Mode } from "./components/admin-sidebar";
 import {
   addSegment,
+  NODE_SNAP_METERS,
   placeNode,
+  removeNode,
   removeSegment,
+  renameNode,
+  renameSegment,
   snapToNodes,
 } from "./extraction";
 import { useAdminData, useTrackIndex } from "./use-admin-data";
@@ -28,11 +32,22 @@ export default function AdminPage() {
   const [from, setFrom] = useState<GraphNode | null>(null);
   const [to, setTo] = useState<GraphNode | null>(null);
   const [preview, setPreview] = useState<ElevCoord[] | null>(null);
+  const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
   const [maxDetourRatio, setMaxDetourRatio] = useState(
     DEFAULT_MAX_DETOUR_RATIO,
   );
   const [hint, setHint] = useState<string | null>(null);
+
+  // A fresh array every render would re-upload the node layer on every
+  // keystroke elsewhere in the panel.
+  const selectedNodeIds = useMemo(
+    () =>
+      [from?.id, to?.id, selectedNode?.id].filter(
+        (id): id is string => id !== undefined,
+      ),
+    [from, to, selectedNode],
+  );
 
   const candidates = useMemo(() => {
     if (!index || !from || !to) return null;
@@ -47,16 +62,21 @@ export default function AdminPage() {
     setHint(null);
 
     if (mode === "nodes") {
-      const placed = placeNode(data.graph, index, data.tracks, coord);
-      if (placed.reused) {
-        setHint(`That junction already exists — reused ${placed.node.id}.`);
+      // Within the dedup radius the click means the junction already there, so
+      // select it rather than silently doing nothing.
+      const existing = snapToNodes(data.graph.nodes, coord, NODE_SNAP_METERS);
+      if (existing) {
+        setSelectedNode(existing.id === selectedNode?.id ? null : existing);
         return;
       }
+      const placed = placeNode(data.graph, index, data.tracks, coord);
       if (!placed.onTrack) {
-        setHint(
-          `${placed.node.id} is not on any ride, so no segment can reach it.`,
-        );
+        // Nothing can ever be extracted to a junction no ride passes, so
+        // saving one just leaves rubbish to find and delete later.
+        setHint("No ride runs near there. Zoom in and click on a line.");
+        return;
       }
+      setSelectedNode(placed.node);
       void data.save(placed.graph);
       return;
     }
@@ -89,6 +109,22 @@ export default function AdminPage() {
     setFrom(null);
     setTo(null);
     setPreview(null);
+    setSelectedNode(null);
+  }
+
+  function deleteNode(id: string) {
+    const removal = removeNode(data.graph, id);
+    if (removal.blockedBy.length > 0) {
+      setHint(
+        `${id} still carries ${removal.blockedBy.join(", ")}. Delete ${
+          removal.blockedBy.length > 1 ? "those segments" : "that segment"
+        } first.`,
+      );
+      return;
+    }
+    setHint(null);
+    if (selectedNode?.id === id) setSelectedNode(null);
+    void data.save(removal.graph);
   }
 
   function switchMode(next: Mode) {
@@ -120,10 +156,12 @@ export default function AdminPage() {
         onMode={switchMode}
         trackCount={data.tracks.length}
         nodes={data.graph.nodes}
-        segmentIds={data.graph.segments.map((segment) => segment.id)}
+        segments={data.graph.segments}
         geometry={data.geometry}
         from={from}
         to={to}
+        selectedNode={selectedNode}
+        onSelectNode={setSelectedNode}
         candidates={candidates}
         radiusMeters={radiusMeters}
         maxDetourRatio={maxDetourRatio}
@@ -138,15 +176,20 @@ export default function AdminPage() {
         onRemoveSegment={(id) =>
           void data.remove(removeSegment(data.graph, id), id)
         }
+        onRenameSegment={(id, name) =>
+          void data.save(renameSegment(data.graph, id, name))
+        }
+        onRemoveNode={deleteNode}
+        onRenameNode={(id, name) =>
+          void data.save(renameNode(data.graph, id, name))
+        }
       />
 
       <main className="h-full md:min-w-0 md:flex-1">
         <AdminMap
           tracks={data.tracks}
           nodes={data.graph.nodes}
-          selectedNodeIds={[from?.id, to?.id].filter(
-            (id): id is string => !!id,
-          )}
+          selectedNodeIds={selectedNodeIds}
           geometry={data.geometry}
           preview={preview}
           onMapClick={handleMapClick}
