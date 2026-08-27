@@ -20,8 +20,13 @@ export default defineConfig({
        * Nothing under src/db is part of the client module graph: the admin
        * reads it over /__admin and the site reads the compiled GeoJSON, so
        * there is nothing here for HMR to do anyway.
+       *
+       * The compiled GeoJSON is ignored for the same reason. The admin now
+       * rebuilds it on every save, and a watched write there would reload the
+       * page being worked in — the site picks the new file up on its next
+       * load, which is when it asks for it.
        */
-      ignored: ["**/src/db/**"],
+      ignored: ["**/src/db/**", "**/public/*.geojson"],
     },
   },
   test: {

@@ -1,4 +1,7 @@
-import { elevationGain, polylineMeters, reversed } from "@/lib/geo/polyline";
+// Relative, not "@/", and it has to stay that way: this module is reached from
+// vite.config.ts through the admin plugin, and Vite loads its own config before
+// the alias exists.
+import { elevationGain, polylineMeters, reversed } from "../geo/polyline";
 import type { ElevCoord } from "@/lib/models/geo";
 import type { SegmentDerived } from "@/lib/models/graph";
 

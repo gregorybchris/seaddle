@@ -1,7 +1,7 @@
 import type { Feature, FeatureCollection, LineString, Point } from "geojson";
 import type { ElevCoord } from "@/lib/models/geo";
-import type { GraphFile, SegmentId } from "@/lib/models/graph";
 import { deriveSegment } from "./derive";
+import type { GraphFile, SegmentId } from "@/lib/models/graph";
 
 /**
  * The runtime format: one LineString per segment, every attribute flattened

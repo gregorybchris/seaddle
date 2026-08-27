@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Connect, Plugin } from "vite";
+import { compileGraph } from "../scripts/lib/compile";
 import { serializeGraph } from "../src/lib/db/graph-file";
 import type { GraphFile } from "../src/lib/models/graph";
 
@@ -19,12 +20,40 @@ const TRACKS_DIR = path.resolve("src/db/tracks");
  */
 export function adminApi(): Plugin {
   return {
-    name: "cycattle-admin-api",
+    name: "seaddle-admin-api",
     apply: "serve",
     configureServer(server) {
       server.middlewares.use("/__admin", handle);
     },
   };
+}
+
+/**
+ * Recompile what the site reads, shortly after the admin changes what it is
+ * compiled from.
+ *
+ * Without this the two halves drift: the admin writes src/db and the site
+ * fetches public/graph.geojson, and nothing in between notices. Debounced
+ * because a review pass saves on every chip that gets clicked, and rebuilding
+ * a hundred and fifty geometry files per click would be absurd.
+ */
+let pending: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleCompile(): void {
+  if (pending) clearTimeout(pending);
+  pending = setTimeout(() => {
+    pending = null;
+    compileGraph().catch((error: unknown) => {
+      // A half-finished graph is a normal thing to have mid-edit, so this
+      // reports and waits for the next save rather than failing the write
+      // that has already happened.
+      console.warn(
+        `[seaddle] the site's map could not be rebuilt: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    });
+  }, 500);
 }
 
 const handle: Connect.NextHandleFunction = (request, response, next) => {
@@ -66,6 +95,7 @@ async function route(
     // Sorted and pretty-printed on the way out. The admin autosaves, so an
     // unstable key order would make every diff unreadable.
     await writeFile(GRAPH_FILE, serializeGraph(graph));
+    scheduleCompile();
     return { ok: true, segments: graph.segments.length };
   }
 
@@ -77,10 +107,12 @@ async function route(
       const points = await readBody(request);
       await mkdir(GEOMETRY_DIR, { recursive: true });
       await writeFile(file, JSON.stringify(points) + "\n");
+      scheduleCompile();
       return { ok: true, id };
     }
     if (method === "DELETE") {
       if (existsSync(file)) await unlink(file);
+      scheduleCompile();
       return { ok: true, id };
     }
     if (method === "GET") {
