@@ -13,6 +13,7 @@
     "geometry:rebuild": "tsx scripts/geometry-rebuild.ts",
     "attributes:seed": "tsx scripts/attributes-seed.ts",
     "favicon:build": "tsx scripts/favicon-build.ts",
+    "og:build": "tsx scripts/og-build.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",

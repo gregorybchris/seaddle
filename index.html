@@ -10,16 +10,66 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#1c4632" />
-    <title>Seaddle</title>
+
+    <title>Seaddle — Seattle bike routes for new cyclists</title>
     <meta
       name="description"
-      content="Find a good bike ride around Seattle, one segment at a time."
+      content="Build a bike ride around Seattle one segment at a time — each rated for steepness, protection, and surroundings, so you know the road before you ride."
     />
-    <script
-      data-goatcounter="https://seaddle.goatcounter.com/count"
-      async
-      src="//gc.zgo.at/count.js"
-    ></script>
+    <!--
+      The route a rider builds lives in the query string, so the same page is
+      reachable under endless ?r= permutations and, because every path rewrites
+      to this file, under any path at all. One canonical points the whole lot at
+      the root rather than letting a crawler index someone's 32-mile loop as a
+      page of its own.
+    -->
+    <link rel="canonical" href="https://seaddle.com/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Seaddle" />
+    <meta property="og:url" content="https://seaddle.com/" />
+    <meta
+      property="og:title"
+      content="Seaddle — Seattle bike routes for new cyclists"
+    />
+    <meta
+      property="og:description"
+      content="Build a bike ride around Seattle one segment at a time — each rated for steepness, protection, and surroundings, so you know the road before you ride."
+    />
+    <!-- Absolute: a scraper reads this markup without a page to resolve against. -->
+    <meta property="og:image" content="https://seaddle.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Seaddle mark beside a map of ridable segments around Seattle, with one route picked out in orange."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Seaddle",
+        "url": "https://seaddle.com/",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript.",
+        "isAccessibleForFree": true,
+        "description": "A map of ridable segments around Seattle. A route is not stored but built: riders click their way from one junction to the next, and every segment carries its steepness, how protected it is, its surroundings, and its surface.",
+        "areaServed": {
+          "@type": "City",
+          "name": "Seattle",
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "WA",
+            "addressCountry": "US"
+          }
+        }
+      }
+    </script>
+
     <script
       data-goatcounter="https://seaddle.goatcounter.com/count"
       async
@@ -28,6 +78,27 @@
   </head>
   <body>
     <div id="root"></div>
+    <!--
+      The map is drawn in the browser, so a crawler that does not run scripts
+      finds an empty div and nothing to index. This says what the page is for
+      the ones that do not render, and is never seen by anyone who does.
+    -->
+    <noscript>
+      <h1>Seaddle — Seattle bike routes for new cyclists</h1>
+      <p>
+        Seaddle is a map of ridable segments around Seattle and the Eastside,
+        for people new enough to cycling that they do not yet know which roads
+        are pleasant and which will scare them off it. Rather than handing you
+        someone else's loop between two points, it lets you build a ride outward
+        from wherever you are, one segment at a time.
+      </p>
+      <p>
+        Every segment carries what a new rider actually wants to know before
+        committing to it: how steep it is, how protected from traffic, what it
+        is paved with, and what it is like to be on. Seaddle needs JavaScript to
+        draw the map.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

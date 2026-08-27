@@ -74,6 +74,7 @@ review step.
 | `pnpm gpx:import`       | Parse `src-gpx/` into full-resolution track JSON    |
 | `pnpm geometry:rebuild` | Redraw every segment from the ride it was cut from  |
 | `pnpm graph:build`      | Compile the graph into the runtime GeoJSON          |
+| `pnpm og:build`         | Redraw the social card from the mark and the graph  |
 | `pnpm test`             | Vitest over the geometry, graph, and GPX logic      |
 | `pnpm typecheck`        | `tsc --noEmit`                                      |
 | `pnpm lint`             | ESLint                                              |

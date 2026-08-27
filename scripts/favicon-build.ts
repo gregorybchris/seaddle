@@ -18,51 +18,17 @@
  * Requires: rsvg-convert (librsvg), magick (ImageMagick 7).
  */
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { BLAZE, FOREST, MARK, SAND, SAUCER, markPaths } from "./lib/mark";
 
-const root = fileURLToPath(new URL("..", import.meta.url));
-const publicDir = join(root, "public");
-const markFile = join(root, "src/widgets/seaddle-mark.tsx");
-
-/** The site palette, from src/globals.css. */
-const FOREST = "#1c4632";
-const SAND = "#e9e0d0";
-const BLAZE = "#d97b2e";
-
-/** The mark's own viewBox, and the box the top of the Needle occupies in it. */
-const MARK = { x: 7.8, y: 7.7, size: 134.4 };
-const SAUCER = { x: 53.2, y: 7.7, w: 43.6, h: 68.8 };
+const publicDir = fileURLToPath(new URL("../public", import.meta.url));
 
 /** Everything is drawn at 512 and scaled down, so one master serves every size. */
 const CANVAS = 512;
 const CORNER = 112;
-
-function markPaths() {
-  const source = readFileSync(markFile, "utf8");
-  const paths = [...source.matchAll(/d="([^"]+)"/g)].map((m) => m[1]);
-  /**
-   * The slicing below is positional, so a changed mark should stop the build
-   * rather than quietly ship the wrong shapes.
-   */
-  if (paths.length !== 6) {
-    throw new Error(`expected 6 paths in the mark, found ${paths.length}`);
-  }
-  if (
-    !/text-blaze[\s\S]*?d="/.test(source.slice(source.lastIndexOf("<path")))
-  ) {
-    throw new Error(
-      "expected the last path in the mark to be the blaze accent",
-    );
-  }
-  return {
-    structure: paths.slice(0, 5),
-    blaze: paths[5],
-    saucer: paths.slice(3, 5),
-  };
-}
 
 /** Fits a box from the mark's coordinate space into the canvas, centered. */
 function fit(

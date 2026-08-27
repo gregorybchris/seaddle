@@ -1,0 +1,9 @@
+# Seaddle is one page. The ride a rider builds lives in the query string, and
+# every path rewrites to that page, so there is nothing else here to crawl.
+User-agent: *
+Allow: /
+
+# Not shipped — the admin is dev-only, so this path just serves the map again.
+Disallow: /admin
+
+Sitemap: https://seaddle.com/sitemap.xml
