@@ -38,5 +38,5 @@ export function trackThrough(
   }
   const last = waypoints[waypoints.length - 1];
   points.push([last[0], last[1], 10]);
-  return { slug, name: slug, points };
+  return { slug, name: slug, points, gaps: [] };
 }

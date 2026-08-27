@@ -1,3 +1,4 @@
+import { Crosshair } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 
@@ -10,6 +11,7 @@ type InventoryRowProps = {
   onRemove: () => void;
   onHover?: (hovering: boolean) => void;
   onSelect?: () => void;
+  onLocate?: () => void;
 };
 
 /**
@@ -29,6 +31,7 @@ export function InventoryRow({
   onRemove,
   onHover,
   onSelect,
+  onLocate,
 }: InventoryRowProps) {
   const [draft, setDraft] = useState(name ?? "");
 
@@ -85,6 +88,18 @@ export function InventoryRow({
       <span className="tabular text-sand/45 shrink-0 text-[0.6875rem]">
         {detail}
       </span>
+
+      {onLocate && (
+        <button
+          type="button"
+          onClick={onLocate}
+          aria-label={`Show ${id} on the map`}
+          title="Show on the map"
+          className="text-sand/0 hover:text-blaze focus-visible:text-blaze group-hover:text-sand/40 shrink-0 p-1 transition-colors focus-visible:outline-none"
+        >
+          <Crosshair weight="bold" className="h-3.5 w-3.5" />
+        </button>
+      )}
 
       <button
         type="button"

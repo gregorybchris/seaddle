@@ -24,6 +24,13 @@ type SheetProps = {
    * the panel comes up to meet them rather than waiting to be dragged.
    */
   raisedWhen?: boolean;
+  /**
+   * Drop the sheet out of the way whenever this changes.
+   *
+   * For the moments the answer is on the map rather than in the panel — asking
+   * to be shown where something is, only for the panel to be covering it.
+   */
+  lowerOn?: unknown;
   children: ReactNode;
 };
 
@@ -35,7 +42,12 @@ type SheetProps = {
  * resting heights rather than free movement, because a panel that stops
  * wherever your thumb left it never looks deliberate.
  */
-export function Sheet({ peek, raisedWhen = false, children }: SheetProps) {
+export function Sheet({
+  peek,
+  raisedWhen = false,
+  lowerOn,
+  children,
+}: SheetProps) {
   const [detent, setDetent] = useState<Detent>("half");
   const [dragVh, setDragVh] = useState<number | null>(null);
   const drag = useRef<{ startY: number; startVh: number } | null>(null);
@@ -45,6 +57,15 @@ export function Sheet({ peek, raisedWhen = false, children }: SheetProps) {
   useEffect(() => {
     setDetent(raisedWhen ? "full" : "half");
   }, [raisedWhen]);
+
+  const firstRun = useRef(true);
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    setDetent("peek");
+  }, [lowerOn]);
 
   const onPointerDown = useCallback(
     (event: React.PointerEvent) => {

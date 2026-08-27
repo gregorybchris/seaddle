@@ -1,7 +1,12 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useMemo } from "react";
-import Map, { Layer, Source, type MapLayerMouseEvent } from "react-map-gl";
-import type { Coord, ElevCoord } from "@/lib/models/geo";
+import { useEffect, useMemo, useRef } from "react";
+import Map, {
+  Layer,
+  Source,
+  type MapLayerMouseEvent,
+  type MapRef,
+} from "react-map-gl";
+import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode, SegmentId } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import {
@@ -18,6 +23,8 @@ type AdminMapProps = {
   selectedNodeIds: string[];
   geometry: Map<SegmentId, ElevCoord[]>;
   preview: ElevCoord[] | null;
+  /** Somewhere to fly to. A fresh object each time, so asking twice works. */
+  focus: { bounds: Bounds; maxZoom?: number } | null;
   onMapClick: (coord: Coord) => void;
 };
 
@@ -34,14 +41,27 @@ export function AdminMap({
   selectedNodeIds,
   geometry,
   preview,
+  focus,
   onMapClick,
 }: AdminMapProps) {
+  const mapRef = useRef<MapRef>(null);
   const trackData = useMemo(() => tracksToGeoJson(tracks), [tracks]);
   const segmentData = useMemo(() => segmentsToGeoJson(geometry), [geometry]);
   const nodeData = useMemo(
     () => nodesToGeoJson(nodes, selectedNodeIds),
     [nodes, selectedNodeIds],
   );
+  useEffect(() => {
+    if (!focus || !mapRef.current) return;
+    mapRef.current.fitBounds(
+      [
+        [focus.bounds.minLon, focus.bounds.minLat],
+        [focus.bounds.maxLon, focus.bounds.maxLat],
+      ],
+      { padding: 80, duration: 900, maxZoom: focus.maxZoom ?? 16 },
+    );
+  }, [focus]);
+
   const previewData = useMemo(
     () =>
       preview
@@ -55,6 +75,7 @@ export function AdminMap({
 
   return (
     <Map
+      ref={mapRef}
       initialViewState={{ longitude: -122.33, latitude: 47.62, zoom: 11 }}
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       mapStyle="mapbox://styles/mapbox/light-v11"

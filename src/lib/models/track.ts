@@ -27,4 +27,17 @@ export type Track = {
   slug: string;
   name: string;
   points: ElevCoord[];
+  /**
+   * Spans of `points` the recorder never observed, as [from, to] index pairs.
+   *
+   * A GPS that stops recording — below deck on a ferry, in a tunnel, when a
+   * phone dies — leaves a straight line between where it stopped and where it
+   * resumed. That line is not a road, and import fills it with vertices like
+   * any other straight, so it has to be marked: nothing may snap to it and it
+   * must not be drawn as if it were somewhere you can ride.
+   *
+   * The points stay in the array so that indices, and therefore every segment
+   * cut from this ride, keep meaning what they did.
+   */
+  gaps: [number, number][];
 };

@@ -37,6 +37,18 @@ the sparsest geometry in the set is hand-drawn, not recorded. And **drawn elevat
 because Mapometer samples a terrain model rather than measuring; filtering is not a GPS
 accommodation, it is unconditional.
 
+**A recorder that stops leaves a line that is not a road.** A ride onto a ferry keeps its GPS
+below deck for the crossing, and the export joins the two ends with one straight line: measured
+here, 13 km of open water covered twice on one ride, at a perfectly plausible 15.7 km/h. Speed
+cannot catch it. What gives it away is that the recording interval is three seconds and the gap is
+fifty minutes — so any leg with timestamps either side, more than two minutes apart and more than
+100 m long, is marked as a stretch nobody was observed riding. Nothing snaps to those points and
+they are not drawn. Routes without timestamps are exempt: a drawn route's long straight legs are
+deliberate, and coordinates alone cannot tell the two apart.
+
+The marked points stay in the array rather than being removed, so every index — and therefore
+every segment already cut from that ride — keeps meaning what it did.
+
 Import therefore normalises both: every ride is **resampled to a maximum 15 m vertex spacing**. On
 a drawn route the line between two vertices already is the route, so interpolating along it adds
 no error — it just gives the junction-finding tools something to hit. Without it the two sparsest

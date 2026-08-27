@@ -42,6 +42,10 @@ type AdminSidebarProps = {
   onRenameSegment: (id: string, name: string) => void;
   onRemoveNode: (id: string) => void;
   onRenameNode: (id: string, name: string) => void;
+  onLocateNode: (node: GraphNode) => void;
+  onLocateSegment: (id: string) => void;
+  /** Changes whenever the map is sent somewhere, so the sheet can get out of the way. */
+  focusedAt: unknown;
 };
 
 export function AdminSidebar(props: AdminSidebarProps) {
@@ -53,6 +57,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
   return (
     <Sheet
       raisedWhen={props.candidates !== null}
+      lowerOn={props.focusedAt}
       peek={
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
@@ -103,6 +108,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
               onSelect={props.onSelectNode}
               onRename={props.onRenameNode}
               onRemove={props.onRemoveNode}
+              onLocate={props.onLocateNode}
             />
           </>
         ) : (
@@ -115,6 +121,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
           onHover={props.onHoverGeometry}
           onRemove={props.onRemoveSegment}
           onRename={props.onRenameSegment}
+          onLocate={props.onLocateSegment}
         />
       </div>
     </Sheet>
@@ -308,12 +315,14 @@ function SegmentInventory({
   onHover,
   onRemove,
   onRename,
+  onLocate,
 }: {
   segments: SegmentRecord[];
   geometry: Map<string, ElevCoord[]>;
   onHover: (points: ElevCoord[] | null) => void;
   onRemove: (id: string) => void;
   onRename: (id: string, name: string) => void;
+  onLocate: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const shown = useMemo(
@@ -343,6 +352,7 @@ function SegmentInventory({
             detail={formatMiles(polylineMeters(geometry.get(segment.id) ?? []))}
             onRename={(name) => onRename(segment.id, name)}
             onRemove={() => onRemove(segment.id)}
+            onLocate={() => onLocate(segment.id)}
             onHover={(hovering) =>
               onHover(hovering ? (geometry.get(segment.id) ?? null) : null)
             }
@@ -360,6 +370,7 @@ function JunctionInventory({
   onSelect,
   onRename,
   onRemove,
+  onLocate,
 }: {
   nodes: GraphNode[];
   segments: SegmentRecord[];
@@ -367,6 +378,7 @@ function JunctionInventory({
   onSelect: (node: GraphNode | null) => void;
   onRename: (id: string, name: string) => void;
   onRemove: (id: string) => void;
+  onLocate: (node: GraphNode) => void;
 }) {
   const [query, setQuery] = useState("");
 
@@ -411,6 +423,7 @@ function JunctionInventory({
             onSelect={() => onSelect(node.id === selectedId ? null : node)}
             onRename={(name) => onRename(node.id, name)}
             onRemove={() => onRemove(node.id)}
+            onLocate={() => onLocate(node)}
           />
         ))}
       </ul>

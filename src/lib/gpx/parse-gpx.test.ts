@@ -59,6 +59,19 @@ describe("parseGpx", () => {
     expect(parseGpx(xml).points).toHaveLength(1);
   });
 
+  it("reads the time each point was recorded", () => {
+    const xml = `<gpx><trk><trkseg>
+      <trkpt lat="47.6" lon="-122.4"><ele>1</ele><time>2026-07-06T16:18:54Z</time></trkpt>
+    </trkseg></trk></gpx>`;
+    expect(parseGpx(xml).times).toEqual([Date.parse("2026-07-06T16:18:54Z")]);
+  });
+
+  it("gives a null time per point for a route that was drawn", () => {
+    // Which is the whole signal: no timestamps means nobody rode this, so its
+    // long straight legs are deliberate rather than a recorder switched off.
+    expect(parseGpx(MINIMAL).times).toEqual([null, null]);
+  });
+
   it("refuses a document that is not GPX", () => {
     expect(() => parseGpx("<html></html>")).toThrow(/No <gpx> root/);
   });

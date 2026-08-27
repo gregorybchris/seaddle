@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import type { Coord, ElevCoord } from "@/lib/models/geo";
+import { boundsOf, padBounds } from "@/lib/geo/bounds";
+import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { GraphNode } from "@/lib/models/graph";
 import { CycattleMark } from "@/widgets/cycattle-mark";
 import {
@@ -38,6 +39,10 @@ export default function AdminPage() {
     DEFAULT_MAX_DETOUR_RATIO,
   );
   const [hint, setHint] = useState<string | null>(null);
+  const [focus, setFocus] = useState<{
+    bounds: Bounds;
+    maxZoom?: number;
+  } | null>(null);
 
   // A fresh array every render would re-upload the node layer on every
   // keystroke elsewhere in the panel.
@@ -103,6 +108,16 @@ export default function AdminPage() {
       points: added.geometry,
     });
     clearSelection();
+  }
+
+  /** A fresh object every time, so asking for the same place twice still flies. */
+  function locateNode(node: GraphNode) {
+    setFocus({ bounds: padBounds(boundsOf([node.coord]), 150), maxZoom: 17 });
+  }
+
+  function locateSegment(id: string) {
+    const points = data.geometry.get(id);
+    if (points && points.length > 0) setFocus({ bounds: boundsOf(points) });
   }
 
   function clearSelection() {
@@ -179,6 +194,9 @@ export default function AdminPage() {
         onRenameSegment={(id, name) =>
           void data.save(renameSegment(data.graph, id, name))
         }
+        onLocateNode={locateNode}
+        onLocateSegment={locateSegment}
+        focusedAt={focus}
         onRemoveNode={deleteNode}
         onRenameNode={(id, name) =>
           void data.save(renameNode(data.graph, id, name))
@@ -192,6 +210,7 @@ export default function AdminPage() {
           selectedNodeIds={selectedNodeIds}
           geometry={data.geometry}
           preview={preview}
+          focus={focus}
           onMapClick={handleMapClick}
         />
       </main>

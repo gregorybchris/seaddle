@@ -2,6 +2,7 @@ import { haversineMeters } from "@/lib/geo/distance";
 import { crop, elevationGain, polylineMeters } from "@/lib/geo/polyline";
 import { SpatialIndex } from "@/lib/mapping/spatial-index";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
+import { insideGap } from "@/lib/gpx/recording-gaps";
 import type { Track } from "@/lib/models/track";
 
 export type TrackPointRef = { track: string; index: number };
@@ -63,15 +64,29 @@ export type Candidate = {
   alternates: Candidate[];
 };
 
+/**
+ * Every ride's points, ready to be searched near a click.
+ *
+ * Points that only exist because import filled a stretch the recorder never
+ * saw are left out. Otherwise a junction could be placed in the middle of Puget
+ * Sound, on the line a GPS leaves behind while its owner is on a ferry, and a
+ * segment extracted along it.
+ */
 export function buildTrackIndex(
   tracks: Track[],
   cellMeters = 100,
 ): SpatialIndex<TrackPointRef> {
   const entries = tracks.flatMap((track) =>
-    track.points.map((point, index) => ({
-      coord: [point[0], point[1]] as Coord,
-      item: { track: track.slug, index },
-    })),
+    track.points.flatMap((point, index) =>
+      insideGap(track.gaps ?? [], index)
+        ? []
+        : [
+            {
+              coord: [point[0], point[1]] as Coord,
+              item: { track: track.slug, index },
+            },
+          ],
+    ),
   );
   return new SpatialIndex(entries, cellMeters);
 }

@@ -10,7 +10,9 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { densify } from "../src/lib/geo/polyline";
+import type { ElevCoord } from "../src/lib/models/geo";
 import { parseGpx } from "../src/lib/gpx/parse-gpx";
+import { findRecordingGaps } from "../src/lib/gpx/recording-gaps";
 import { MAX_TRACK_SPACING_METERS, type Track } from "../src/lib/models/track";
 
 const SOURCE_DIR = path.resolve("src-gpx");
@@ -26,6 +28,34 @@ function slugify(filename: string): string {
     .replace(/^-|-$/g, "");
 }
 
+/**
+ * Resample, and report where each original point landed.
+ *
+ * The mapping is what lets a gap found in the recorded points be expressed in
+ * terms of the resampled ones without re-detecting it there.
+ */
+function densifyTracked(original: ElevCoord[]): {
+  points: ElevCoord[];
+  indexOf: number[];
+} {
+  const indexOf: number[] = [];
+  const points: ElevCoord[] = [];
+  for (let i = 0; i < original.length; i++) {
+    if (i === 0) {
+      indexOf.push(0);
+      points.push(original[0]);
+      continue;
+    }
+    const leg = densify(
+      [original[i - 1], original[i]],
+      MAX_TRACK_SPACING_METERS,
+    );
+    points.push(...leg.slice(1));
+    indexOf.push(points.length - 1);
+  }
+  return { points, indexOf };
+}
+
 async function main() {
   if (!existsSync(SOURCE_DIR)) {
     throw new Error(`No source directory at ${SOURCE_DIR}`);
@@ -39,6 +69,7 @@ async function main() {
 
   const seen = new Map<string, string>();
   let totalPoints = 0;
+  let totalGaps = 0;
 
   for (const file of files) {
     const slug = slugify(file);
@@ -50,12 +81,15 @@ async function main() {
 
     const xml = await readFile(path.join(SOURCE_DIR, file), "utf8");
     const parsed = parseGpx(xml);
+    // Gaps are found on the recorded points, then translated to where those
+    // points end up once the ride is resampled.
+    const rawGaps = findRecordingGaps(parsed.points, parsed.times);
+    const { points, indexOf } = densifyTracked(parsed.points);
     const track: Track = {
       slug,
       name: parsed.name ?? slug,
-      // Resampled so the admin's junction search works the same on a Strava
-      // recording and on a route drawn with a vertex every 150 m.
-      points: densify(parsed.points, MAX_TRACK_SPACING_METERS),
+      points,
+      gaps: rawGaps.map(([from, to]) => [indexOf[from], indexOf[to]]),
     };
     if (track.points.length === 0) {
       console.warn(`  ! ${slug} has no track points — skipped`);
@@ -66,16 +100,18 @@ async function main() {
       JSON.stringify(track) + "\n",
     );
     totalPoints += track.points.length;
-    const added = track.points.length - parsed.points.length;
+    totalGaps += track.gaps.length;
     console.log(
       `  ${slug.padEnd(32)} ${String(parsed.points.length).padStart(5)} → ` +
         `${String(track.points.length).padStart(5)} pts` +
-        `${added > 0 ? ` (+${added})` : ""}  ${track.name}`,
+        `${track.gaps.length ? `  ${track.gaps.length} recording gap(s)` : ""}` +
+        `  ${track.name}`,
     );
   }
 
   console.log(
-    `\nImported ${seen.size} tracks, ${totalPoints.toLocaleString()} points → src/db/tracks/`,
+    `\nImported ${seen.size} rides, ${totalPoints.toLocaleString()} points` +
+      `${totalGaps ? `, ${totalGaps} recording gap(s) marked` : ""} → src/db/tracks/`,
   );
 }
 

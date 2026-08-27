@@ -1,4 +1,11 @@
-import type { Feature, FeatureCollection, LineString, Point } from "geojson";
+import type {
+  Feature,
+  FeatureCollection,
+  LineString,
+  MultiLineString,
+  Point,
+} from "geojson";
+import { splitAtGaps } from "@/lib/gpx/recording-gaps";
 import type { ElevCoord } from "@/lib/models/geo";
 import type { GraphNode, SegmentId } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
@@ -26,15 +33,21 @@ export const EMPTY_LINES: FeatureCollection<LineString> = {
  */
 export function tracksToGeoJson(
   tracks: Track[],
-): FeatureCollection<LineString> {
+): FeatureCollection<MultiLineString> {
   return {
     type: "FeatureCollection",
     features: tracks.map((track) => ({
       type: "Feature",
       properties: { slug: track.slug },
       geometry: {
-        type: "LineString",
-        coordinates: track.points as number[][],
+        type: "MultiLineString",
+        // Drawn as the stretches that were actually recorded, so the straight
+        // line a GPS leaves behind on a ferry is not painted across the water
+        // as though it were a road.
+        coordinates: splitAtGaps(
+          track.points,
+          track.gaps ?? [],
+        ) as number[][][],
       },
     })),
   };
