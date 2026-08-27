@@ -1,11 +1,11 @@
 import {
-  LANE_QUALITIES,
-  SCENICS,
+  PROTECTIONS,
+  SURROUNDINGS,
   STEEPNESSES,
   SURFACES,
   type Steepness,
-  type LaneQuality,
-  type Scenic,
+  type Protection,
+  type Surroundings,
 } from "@/lib/models/graph";
 import { Funnel } from "@phosphor-icons/react";
 import { cn } from "@/lib/utilities/style-utils";
@@ -87,19 +87,19 @@ export function FilterPanel({
             }
           />
           <ChipGroup
-            label="Bike lane at least"
-            options={LANE_QUALITIES}
-            value={filters.leastLaneQuality}
-            onChange={(leastLaneQuality: LaneQuality) =>
-              onFilters({ ...filters, leastLaneQuality })
+            label="Protection at least"
+            options={PROTECTIONS}
+            value={filters.leastProtection}
+            onChange={(leastProtection: Protection) =>
+              onFilters({ ...filters, leastProtection })
             }
           />
           <ChipGroup
-            label="Scenic at least"
-            options={SCENICS}
-            value={filters.leastScenic}
-            onChange={(leastScenic: Scenic) =>
-              onFilters({ ...filters, leastScenic })
+            label="Surroundings at least"
+            options={SURROUNDINGS}
+            value={filters.leastSurroundings}
+            onChange={(leastSurroundings: Surroundings) =>
+              onFilters({ ...filters, leastSurroundings })
             }
           />
           <ChipToggles

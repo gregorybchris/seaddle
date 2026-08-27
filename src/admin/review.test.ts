@@ -20,10 +20,10 @@ describe("applyAttributes", () => {
   it("sets what it was given", () => {
     const after = applyAttributes(THREE, ["s001"], {
       surface: "gravel",
-      scenic: "high",
+      surroundings: "scenic",
     });
     expect(after.segments[0].surface).toBe("gravel");
-    expect(after.segments[0].scenic).toBe("high");
+    expect(after.segments[0].surroundings).toBe("scenic");
   });
 
   it("leaves everything it was not given alone", () => {
@@ -31,11 +31,11 @@ describe("applyAttributes", () => {
     // sharing a steepness, so one attribute must not overwrite the rest.
     const reviewed = applyAttributes(THREE, ["s001"], {
       steepness: "steep",
-      laneQuality: "great",
+      protection: "fullBikePath",
     });
     const after = applyAttributes(reviewed, ["s001"], { surface: "dirt" });
     expect(after.segments[0].steepness).toBe("steep");
-    expect(after.segments[0].laneQuality).toBe("great");
+    expect(after.segments[0].protection).toBe("fullBikePath");
   });
 
   it("marks whatever it touches as reviewed", () => {
@@ -46,12 +46,12 @@ describe("applyAttributes", () => {
 
   it("applies across every segment named", () => {
     const after = applyAttributes(THREE, ["s001", "s003"], {
-      laneQuality: "great",
+      protection: "fullBikePath",
     });
-    expect(after.segments.map((s) => s.laneQuality)).toEqual([
-      "great",
-      "fair",
-      "great",
+    expect(after.segments.map((s) => s.protection)).toEqual([
+      "fullBikePath",
+      "unprotected",
+      "fullBikePath",
     ]);
   });
 

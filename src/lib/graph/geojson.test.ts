@@ -27,7 +27,10 @@ describe("buildGraphGeoJson", () => {
       { id: "nB", name: null, coord: [-122.348, 47.65] },
     ],
     segments: [
-      segment("s1", "nA", "nB", { laneQuality: "great", steepness: "hilly" }),
+      segment("s1", "nA", "nB", {
+        protection: "fullBikePath",
+        steepness: "hilly",
+      }),
     ],
   });
   const geometry = new Map<string, ElevCoord[]>([["s1", line()]]);
@@ -35,7 +38,7 @@ describe("buildGraphGeoJson", () => {
   it("flattens every attribute into properties a Mapbox expression can read", () => {
     const collection = buildGraphGeoJson(g, geometry);
     const properties = collection.features[0].properties!;
-    expect(properties.laneQuality).toBe("great");
+    expect(properties.protection).toBe("fullBikePath");
     expect(properties.steepness).toBe("hilly");
     expect(properties.surface).toBe("asphalt");
     expect(properties.reviewed).toBe(false);

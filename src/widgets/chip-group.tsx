@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 import { humanize } from "@/lib/utilities/words";
 
@@ -30,29 +31,37 @@ export function ChipGroup<T extends string>({
         {label}
         {mixed && <span className="text-blaze/70 ml-2 normal-case">mixed</span>}
       </span>
+      {/* Balanced rather than flex-wrapped. Wrapping fills each line before
+          starting the next, which with five choices leaves one chip sitting
+          alone on a second line looking like it belongs to something else;
+          balancing spreads them evenly instead. It only works on lines of
+          inline content, so these are inline-blocks separated by real spaces
+          rather than flex items — and where a browser does not support it they
+          wrap exactly as they did before. */}
       <div
         role="radiogroup"
         aria-label={label}
-        className="flex flex-wrap gap-1"
+        className="-mx-0.5 -mb-1 text-balance"
       >
         {options.map((option) => {
           const active = !mixed && option === value;
           return (
-            <button
-              key={option}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() => onChange(option)}
-              className={cn(
-                "focus-visible:ring-blaze rounded-md border px-2 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
-                active
-                  ? "border-blaze-deep bg-blaze text-forest-deep"
-                  : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",
-              )}
-            >
-              {humanize(option)}
-            </button>
+            <Fragment key={option}>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => onChange(option)}
+                className={cn(
+                  "focus-visible:ring-blaze mx-0.5 mb-1 inline-block rounded-md border px-2 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                  active
+                    ? "border-blaze-deep bg-blaze text-forest-deep"
+                    : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",
+                )}
+              >
+                {humanize(option)}
+              </button>{" "}
+            </Fragment>
           );
         })}
       </div>

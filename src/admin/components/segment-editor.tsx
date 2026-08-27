@@ -5,8 +5,8 @@ import {
 } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import {
-  LANE_QUALITIES,
-  SCENICS,
+  PROTECTIONS,
+  SURROUNDINGS,
   STEEPNESSES,
   SURFACES,
   type Steepness,
@@ -117,18 +117,18 @@ export function SegmentEditor({
           onChange={(steepness: Steepness) => onPatch({ steepness })}
         />
         <ChipGroup
-          label="Bike lane"
-          options={LANE_QUALITIES}
-          value={shared((s) => s.laneQuality)}
-          mixed={disagree((s) => s.laneQuality)}
-          onChange={(laneQuality) => onPatch({ laneQuality })}
+          label="Protection"
+          options={PROTECTIONS}
+          value={shared((s) => s.protection)}
+          mixed={disagree((s) => s.protection)}
+          onChange={(protection) => onPatch({ protection })}
         />
         <ChipGroup
-          label="Scenic"
-          options={SCENICS}
-          value={shared((s) => s.scenic)}
-          mixed={disagree((s) => s.scenic)}
-          onChange={(scenic) => onPatch({ scenic })}
+          label="Surroundings"
+          options={SURROUNDINGS}
+          value={shared((s) => s.surroundings)}
+          mixed={disagree((s) => s.surroundings)}
+          onChange={(surroundings) => onPatch({ surroundings })}
         />
         <ChipGroup
           label="Surface"

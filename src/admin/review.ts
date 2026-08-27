@@ -1,8 +1,8 @@
 import type {
   Direction,
   GraphFile,
-  LaneQuality,
-  Scenic,
+  Protection,
+  Surroundings,
   SegmentId,
   SegmentRecord,
   Steepness,
@@ -18,8 +18,8 @@ import type {
  */
 export type AttributePatch = {
   steepness?: Steepness;
-  laneQuality?: LaneQuality;
-  scenic?: Scenic;
+  protection?: Protection;
+  surroundings?: Surroundings;
   surface?: Surface;
   recommendedDirection?: Direction | null;
 };
@@ -51,8 +51,8 @@ function patched(segment: SegmentRecord, patch: AttributePatch): SegmentRecord {
   return {
     ...segment,
     steepness: patch.steepness ?? segment.steepness,
-    laneQuality: patch.laneQuality ?? segment.laneQuality,
-    scenic: patch.scenic ?? segment.scenic,
+    protection: patch.protection ?? segment.protection,
+    surroundings: patch.surroundings ?? segment.surroundings,
     surface: patch.surface ?? segment.surface,
     recommendedDirection:
       patch.recommendedDirection === undefined

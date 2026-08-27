@@ -12,7 +12,7 @@ instead of "here is someone else's 32-mile loop."
 
 Routes are not stored. A **graph of segments** is stored, and a route is a path the user builds
 through it by clicking. Each segment carries the metadata a new cyclist actually cares about —
-how hard it is, how safe the bike lane is, how pretty it is, what it's paved with — so a route's
+how hard it is, how protected it is, how pretty it is, what it's paved with — so a route's
 character is the sum of its parts rather than an opaque line on a map.
 
 ---
@@ -104,8 +104,8 @@ type Node = {
 };
 
 type Steepness = "flat" | "hilly" | "steep";
-type LaneQuality = "poor" | "fair" | "good" | "great";
-type Scenic = "low" | "medium" | "high";
+type Protection = "unprotected" | "roadBikeLane" | "fullBikePath";
+type Surroundings = "plain" | "nice" | "scenic";
 type Surface = "asphalt" | "gravel" | "dirt";
 
 type Segment = {
@@ -119,8 +119,8 @@ type Segment = {
 
   // authored attributes
   steepness: Steepness; // undirected: the same hill whichever way you meet it
-  laneQuality: LaneQuality;
-  scenic: Scenic;
+  protection: Protection;
+  surroundings: Surroundings;
   surface: Surface;
   recommendedDirection: "forward" | "backward" | null;
   reviewed: boolean; // false until the attributes above are deliberately set, not defaulted
@@ -145,7 +145,7 @@ type Pin = {
 
 ### Authoring defaults
 
-A new segment is born with defaults — `flat` steepness, `fair` lane, `medium` scenic,
+A new segment is born with defaults — `flat` steepness, `unprotected`, `plain` surroundings,
 `asphalt`, no recommended direction — and `reviewed: false`. Attributes are therefore never
 `null`, the site never renders an "unknown" state, and the admin can still tell the difference
 between _"asphalt because I checked"_ and _"asphalt because nobody has looked at this yet."_
@@ -196,7 +196,7 @@ segments, and no per-segment React components to reconcile.
 
 ```js
 // color by the currently selected attribute
-"line-color": ["match", ["get", "laneQuality"],
+"line-color": ["match", ["get", "protection"],
   "poor", C.poor, "fair", C.fair, "good", C.good, "great", C.great, C.unknown]
 
 // filters dim, never hide
@@ -285,19 +285,21 @@ visually, by the highlight on the map.
 present and clickable. Hiding would fragment the graph and strand a user in a disconnected island
 with no way to see why.
 
-Steepness, lane quality, and scenic value are ordered scales, so they are **threshold** controls —
-"nothing steeper than hilly," "at least good bike lane" — which is how the constraint is actually
+Steepness, protection, and surroundings are ordered scales, so they are **threshold** controls —
+"nothing steeper than hilly," "at least a painted bike lane" — which is how the constraint is actually
 held in someone's head. Surface is categorical and gets a **multi-select** toggle group. A set of
 checkboxes for the ordinals would permit nonsense states like _flat and steep but not hilly_.
 
 ```
 Steepness      flat ──●── steep  (at most: hilly)
-Bike lane      poor ──●── great  (at least: good)
-Scenic         low  ●──── high   (any)
+Protection     unprotected ──●── full bike path  (at least: road bike lane)
+Surroundings   plain       ●──── scenic          (any)
 Surface        [asphalt] [gravel] [dirt]
 ```
 
-**Color encoding** is user-selectable: steepness, bike-lane quality, scenic value, or surface.
+**Color encoding** is user-selectable: steepness, protection, surroundings, surface, or elevation.
+Elevation is the one that is not a segment attribute: it is read from the recorded elevation point
+by point and colors *within* a segment, which is also why it is the one you cannot filter on.
 Surface additionally uses a dash pattern (solid asphalt, dashed gravel, dotted dirt) so it reads
 without relying on color.
 
@@ -458,7 +460,7 @@ onto the polyline, and the pin can then be dragged off the line to its true posi
   styled to sit quietly in the corner.
 - **Segment color ramps** are per attribute and chosen for contrast against the muted basemap:
   steepness runs green → amber → rust with distinct lightness steps (so it survives deuteranopia,
-  not just hue); lane quality is a single-hue sequential ramp across four steps; scenic is a
+  not just hue); protection is a single-hue sequential ramp across three steps; surroundings is a
   three-step sequential ramp; surface is categorical, reinforced by dash pattern.
 
 ### Accessibility

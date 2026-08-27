@@ -4,9 +4,9 @@ import { buildAdjacency, type Adjacency } from "@/lib/graph/adjacency";
 import type { Bounds, ElevCoord } from "@/lib/models/geo";
 import type {
   Direction,
-  LaneQuality,
+  Protection,
   NodeId,
-  Scenic,
+  Surroundings,
   SegmentId,
   Steepness,
   Surface,
@@ -27,8 +27,8 @@ export type SiteSegment = {
   gainForward: number;
   gainBackward: number;
   steepness: Steepness;
-  laneQuality: LaneQuality;
-  scenic: Scenic;
+  protection: Protection;
+  surroundings: Surroundings;
   surface: Surface;
   recommendedDirection: Direction | null;
 };
@@ -69,8 +69,8 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     gainForward: Number(p.gainForward ?? 0),
     gainBackward: Number(p.gainBackward ?? 0),
     steepness: p.steepness as Steepness,
-    laneQuality: p.laneQuality as LaneQuality,
-    scenic: p.scenic as Scenic,
+    protection: p.protection as Protection,
+    surroundings: p.surroundings as Surroundings,
     surface: p.surface as Surface,
     recommendedDirection: (p.recommendedDirection as Direction | null) ?? null,
   };

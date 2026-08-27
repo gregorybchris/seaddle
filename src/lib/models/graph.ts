@@ -5,14 +5,18 @@ export type SegmentId = string; // "s042"
 export type PinId = string; // "p003"
 
 export type Steepness = "flat" | "hilly" | "steep";
-export type LaneQuality = "poor" | "fair" | "good" | "great";
-export type Scenic = "low" | "medium" | "high";
+export type Protection = "unprotected" | "roadBikeLane" | "fullBikePath";
+export type Surroundings = "plain" | "nice" | "scenic";
 export type Surface = "asphalt" | "gravel" | "dirt";
 export type Direction = "forward" | "backward";
 
 export const STEEPNESSES: Steepness[] = ["flat", "hilly", "steep"];
-export const LANE_QUALITIES: LaneQuality[] = ["poor", "fair", "good", "great"];
-export const SCENICS: Scenic[] = ["low", "medium", "high"];
+export const PROTECTIONS: Protection[] = [
+  "unprotected",
+  "roadBikeLane",
+  "fullBikePath",
+];
+export const SURROUNDINGS: Surroundings[] = ["plain", "nice", "scenic"];
 export const SURFACES: Surface[] = ["asphalt", "gravel", "dirt"];
 
 export type GraphNode = {
@@ -42,8 +46,8 @@ export type SegmentRecord = {
 
   /** How much climbing it involves, ridden either way. */
   steepness: Steepness;
-  laneQuality: LaneQuality;
-  scenic: Scenic;
+  protection: Protection;
+  surroundings: Surroundings;
   surface: Surface;
   recommendedDirection: Direction | null;
 
@@ -109,8 +113,8 @@ export type GraphFile = {
 export const SEGMENT_DEFAULTS = {
   name: null,
   steepness: "flat",
-  laneQuality: "fair",
-  scenic: "medium",
+  protection: "unprotected",
+  surroundings: "plain",
   surface: "asphalt",
   recommendedDirection: null,
   reviewed: false,

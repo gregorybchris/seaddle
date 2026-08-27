@@ -35,7 +35,7 @@ export function MapPage() {
   const [route, setRouteState] = useState<Route>(EMPTY_ROUTE);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
-  const [encoding, setEncoding] = useState<Encoding>("laneQuality");
+  const [encoding, setEncoding] = useState<Encoding>("protection");
   /**
    * What the map should frame next.
    *

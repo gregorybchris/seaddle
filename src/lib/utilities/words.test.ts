@@ -4,11 +4,11 @@ import { humanize } from "./words";
 describe("humanize", () => {
   it("splits camel case into words", () => {
     // The one that leaked into the interface.
-    expect(humanize("laneQuality")).toBe("lane quality");
+    expect(humanize("roadBikeLane")).toBe("road bike lane");
   });
 
   it("leaves a plain word alone", () => {
-    expect(humanize("scenic")).toBe("scenic");
+    expect(humanize("surroundings")).toBe("surroundings");
     expect(humanize("asphalt")).toBe("asphalt");
   });
 

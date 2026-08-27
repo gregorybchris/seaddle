@@ -100,7 +100,7 @@ describe("findCandidates", () => {
     expect(candidate.meters).toBeLessThan(candidate.alternates[0].meters);
   });
 
-  it("ranks the more direct track above the scenic route", () => {
+  it("ranks the more direct track above the surroundings route", () => {
     const direct = trackThrough("direct", [at(-100, 0), at(600, 0)]);
     const bendy = trackThrough("bendy", [at(0, 0), at(250, 400), at(500, 0)]);
     const tracks = [bendy, direct];

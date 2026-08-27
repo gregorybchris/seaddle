@@ -1,5 +1,5 @@
 /**
- * Turn a stored value into something readable: "laneQuality" → "lane quality".
+ * Turn a stored value into something readable: "protection" → "lane quality".
  *
  * Done by rule rather than by a table of labels, because a table only covers
  * the values someone remembered to add to it — and the one that leaked into the

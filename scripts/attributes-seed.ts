@@ -9,7 +9,7 @@
  * store the downhill direction first was the trap the old two-sided field kept
  * walking into.
  *
- * Lane quality is seeded too, but only as a placeholder: nothing in the data
+ * Protection is seeded too, but only as a placeholder: nothing in the data
  * implies it, and it stays uniform until someone rides these roads and says.
  *
  * Nothing here sets `reviewed`, so the queue still counts only what a person
@@ -76,7 +76,7 @@ async function main() {
     // The bigger of the two climbs: the same hill either way you meet it.
     const steepness = steepnessFor(Math.max(gainForward, gainBackward), meters);
     tally[steepness]++;
-    return { ...segment, steepness, laneQuality: "good" as const };
+    return { ...segment, steepness, protection: "roadBikeLane" as const };
   });
 
   await writeFile(GRAPH_FILE, serializeGraph({ ...graph, segments }));

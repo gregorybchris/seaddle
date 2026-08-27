@@ -161,8 +161,8 @@ export function SiteMap({
         properties: {
           id: segment.id,
           steepness: segment.steepness,
-          laneQuality: segment.laneQuality,
-          scenic: segment.scenic,
+          protection: segment.protection,
+          surroundings: segment.surroundings,
           surface: segment.surface,
         },
         geometry: {

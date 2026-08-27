@@ -1,10 +1,10 @@
 import {
-  LANE_QUALITIES,
-  SCENICS,
+  PROTECTIONS,
+  SURROUNDINGS,
   STEEPNESSES,
   SURFACES,
-  type LaneQuality,
-  type Scenic,
+  type Protection,
+  type Surroundings,
   type Steepness,
   type Surface,
 } from "@/lib/models/graph";
@@ -13,31 +13,31 @@ import type { SiteSegment } from "./graph-data";
 /**
  * What a rider will put up with.
  *
- * Steepness, bike lane and scenic value are ordered scales, so they are
- * thresholds — "nothing steeper than hilly", "at least a decent bike lane" —
+ * Steepness, bike lane and surroundings value are ordered scales, so they are
+ * thresholds — "nothing steeper than hilly", "at least a painted bike lane" —
  * which is how the constraint is actually held in someone's head. Surface is a
  * set of things, not a scale, so it is a set here too. A row of checkboxes for
  * the ordered ones would permit nonsense like flat and steep but not hilly.
  */
 export type Filters = {
   steepest: Steepness;
-  leastLaneQuality: LaneQuality;
-  leastScenic: Scenic;
+  leastProtection: Protection;
+  leastSurroundings: Surroundings;
   surfaces: Surface[];
 };
 
 export const NO_FILTERS: Filters = {
   steepest: "steep",
-  leastLaneQuality: "poor",
-  leastScenic: "low",
+  leastProtection: "unprotected",
+  leastSurroundings: "plain",
   surfaces: [...SURFACES],
 };
 
 export function isFiltering(filters: Filters): boolean {
   return (
     filters.steepest !== NO_FILTERS.steepest ||
-    filters.leastLaneQuality !== NO_FILTERS.leastLaneQuality ||
-    filters.leastScenic !== NO_FILTERS.leastScenic ||
+    filters.leastProtection !== NO_FILTERS.leastProtection ||
+    filters.leastSurroundings !== NO_FILTERS.leastSurroundings ||
     filters.surfaces.length !== SURFACES.length
   );
 }
@@ -47,9 +47,10 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
   return (
     STEEPNESSES.indexOf(segment.steepness) <=
       STEEPNESSES.indexOf(filters.steepest) &&
-    LANE_QUALITIES.indexOf(segment.laneQuality) >=
-      LANE_QUALITIES.indexOf(filters.leastLaneQuality) &&
-    SCENICS.indexOf(segment.scenic) >= SCENICS.indexOf(filters.leastScenic) &&
+    PROTECTIONS.indexOf(segment.protection) >=
+      PROTECTIONS.indexOf(filters.leastProtection) &&
+    SURROUNDINGS.indexOf(segment.surroundings) >=
+      SURROUNDINGS.indexOf(filters.leastSurroundings) &&
     filters.surfaces.includes(segment.surface)
   );
 }
@@ -60,7 +61,7 @@ export function passes(segment: SiteSegment, filters: Filters): boolean {
  * Every one of these is a small ordered or unordered set, which is what lets a
  * route be broken down by it and a legend list what the colors mean.
  */
-export type Attribute = "steepness" | "laneQuality" | "scenic" | "surface";
+export type Attribute = "steepness" | "protection" | "surroundings" | "surface";
 
 /**
  * What the map colors roads by.
@@ -77,13 +78,13 @@ export type Encoding = Attribute | "elevation";
 /**
  * In the order they are offered. No labels: they are read through `humanize`,
  * so there is no second list to keep in step with this one — which is how
- * "laneQuality" came to be shown to riders in the first place.
+ * "protection" came to be shown to riders in the first place.
  */
 export const ENCODINGS: Encoding[] = [
-  "laneQuality",
+  "protection",
   "steepness",
   "elevation",
-  "scenic",
+  "surroundings",
   "surface",
 ];
 
@@ -94,8 +95,8 @@ export function isAttribute(encoding: Encoding): encoding is Attribute {
 
 export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
   steepness: STEEPNESSES,
-  laneQuality: LANE_QUALITIES,
-  scenic: SCENICS,
+  protection: PROTECTIONS,
+  surroundings: SURROUNDINGS,
   surface: SURFACES,
 };
 
@@ -115,13 +116,12 @@ export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
  */
 export const RAMPS: Record<Attribute, Record<string, string>> = {
   steepness: { flat: "#86b06a", hilly: "#c98a2e", steep: "#9c3b25" },
-  laneQuality: {
-    poor: "#cf9b57",
-    fair: "#a8a24e",
-    good: "#5f9358",
-    great: "#1c4632",
+  protection: {
+    unprotected: "#cf9b57",
+    roadBikeLane: "#5f9358",
+    fullBikePath: "#1c4632",
   },
-  scenic: { low: "#97967f", medium: "#6d9464", high: "#2f6b48" },
+  surroundings: { plain: "#97967f", nice: "#6d9464", scenic: "#2f6b48" },
   surface: { asphalt: "#4a6b7c", gravel: "#b98a4b", dirt: "#8a5a3b" },
 };
 
