@@ -160,6 +160,7 @@ export function MapPage() {
           encoding={encoding}
           dimmed={dimmed}
           scrubbed={scrubbed}
+          allPins={pins}
           pins={routePins}
           framing={framing}
           onPick={pick}

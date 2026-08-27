@@ -130,9 +130,15 @@ export function RoutePanel({
             {pins.length > 0 && (
               <ul className="flex flex-col gap-1">
                 {pins.map((pin) => (
-                  <li key={pin.id} className="flex items-center gap-2">
-                    <PinMark kind={pin.kind} className="h-4 w-4 shrink-0" />
-                    <span className="text-sand/70 truncate text-xs">
+                  <li key={pin.id} className="flex items-start gap-2">
+                    <PinMark
+                      kind={pin.kind}
+                      className="mt-0.5 h-4 w-4 shrink-0"
+                    />
+                    {/* Wrapped, not truncated: the note is the whole point of
+                        the pin, and "water fountains if you head down clo…"
+                        answers nothing. */}
+                    <span className="text-sand/70 text-xs leading-relaxed">
                       {pin.note ?? PIN_LABELS[pin.kind]}
                     </span>
                   </li>

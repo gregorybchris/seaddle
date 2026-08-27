@@ -39,18 +39,24 @@ const CLICKABLE = "segments-hit";
  */
 const HIT_WIDTH = 22;
 
+/**
+ * The zoom at which points of interest start appearing off-route.
+ *
+ * Around a neighborhood rather than a city: at the opening view the whole
+ * network is on screen and a pin for every fountain would be a rash of marks
+ * over roads too small to pick out.
+ */
+const PINS_FROM_ZOOM = 12.5;
+
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
   encoding: Encoding;
   /** Roads that fail the filters: dimmed, never hidden. */
   dimmed: SegmentId[];
-  /**
-   * Points of interest on the roads already chosen.
-   *
-   * Only those: every fountain in the city at once would bury the map, and
-   * what a rider wants to know is what is on the ride they are building.
-   */
+  /** Every point of interest on the graph. */
+  allPins: SitePin[];
+  /** Those on the roads already chosen, which are shown at any zoom. */
   pins: SitePin[];
   /** Where the reader is pointing on the elevation chart, if anywhere. */
   scrubbed: Coord | null;
@@ -109,6 +115,7 @@ export function SiteMap({
   route,
   encoding,
   dimmed,
+  allPins,
   pins,
   scrubbed,
   framing,
@@ -116,6 +123,26 @@ export function SiteMap({
 }: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
   const [overRoad, setOverRoad] = useState(false);
+  const [zoom, setZoom] = useState(10);
+
+  /**
+   * Which pins to draw.
+   *
+   * Every fountain in the city at once buries a view of the whole network, so
+   * away from the map they appear only once it is zoomed in far enough to be
+   * looking at a neighborhood. Pins on the chosen route show at any zoom: they
+   * are part of the ride being built rather than scenery around it — and
+   * showing them only after a road is picked would mean a rider could never use
+   * a water stop to decide where to go.
+   */
+  const shown = useMemo(() => {
+    const chosen = new Set(pins.map((pin) => pin.id));
+    const nearby =
+      zoom >= PINS_FROM_ZOOM
+        ? allPins.filter((pin) => !chosen.has(pin.id))
+        : [];
+    return { chosen: pins, nearby };
+  }, [pins, allPins, zoom]);
 
   const data = useMemo<FeatureCollection<LineString>>(
     () => ({
@@ -230,6 +257,7 @@ export function SiteMap({
         setOverRoad(Boolean(event.features?.length))
       }
       onMouseOut={() => setOverRoad(false)}
+      onMove={(event) => setZoom(event.viewState.zoom)}
       onClick={(event: MapLayerMouseEvent) => {
         const id = nearestOf(event, graph);
         if (id) onPick(id);
@@ -319,9 +347,15 @@ export function SiteMap({
         />
       </Source>
 
-      {pins.map((pin) => (
+      {shown.nearby.map((pin) => (
         <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
-          <PinMark kind={pin.kind} className="h-4 w-4" />
+          <PinMark kind={pin.kind} className="h-4 w-4 opacity-70" />
+        </Marker>
+      ))}
+
+      {shown.chosen.map((pin) => (
+        <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
+          <PinMark kind={pin.kind} className="h-5 w-5" />
         </Marker>
       ))}
 

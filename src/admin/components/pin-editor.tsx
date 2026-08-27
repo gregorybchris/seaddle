@@ -7,6 +7,7 @@ import {
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
 import { PinMark } from "@/widgets/pin-mark";
+import { ScrollList } from "@/widgets/scroll-list";
 
 type PinEditorProps = {
   pins: Pin[];
@@ -96,7 +97,7 @@ export function PinEditor({
       )}
 
       {pins.length > 0 && (
-        <ul className="flex flex-col">
+        <ScrollList count={pins.length}>
           {pins.map((pin) => (
             <li
               key={pin.id}
@@ -128,7 +129,7 @@ export function PinEditor({
               </button>
             </li>
           ))}
-        </ul>
+        </ScrollList>
       )}
     </section>
   );
