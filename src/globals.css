@@ -255,6 +255,69 @@ body {
   box-shadow: 0 1px 3px rgb(18 48 31 / 0.4);
 }
 
+/**
+ * Type and marks that sit directly on the map.
+ *
+ * The map is not one ground but many — pale road fill, water, park green, a
+ * satellite tile — so no single ink color reads across all of them. White with
+ * a dark halo traced around the letterforms and around the mark's own paths
+ * does, and the halo follows the shape rather than boxing it, so the map still
+ * shows through everywhere the glyph is not.
+ *
+ * The halo is ink cut most of the way to sand rather than ink itself: at a
+ * weight thick enough to separate the white from a pale road it would
+ * otherwise read as a hard black keyline drawn around the wordmark, which is
+ * louder than anything else on the site. It is mixed as far toward sand as it
+ * goes before the mark stops holding its shape against paper.
+ */
+:root {
+  --outline-ink: color-mix(in srgb, var(--color-ink) 42%, var(--color-sand));
+}
+
+.outlined-type {
+  --outline-width: 1.5px;
+  color: var(--color-paper);
+  text-shadow:
+    var(--outline-width) 0 0 var(--outline-ink),
+    calc(var(--outline-width) * -1) 0 0 var(--outline-ink),
+    0 var(--outline-width) 0 var(--outline-ink),
+    0 calc(var(--outline-width) * -1) 0 var(--outline-ink),
+    calc(var(--outline-width) * 0.7) calc(var(--outline-width) * 0.7) 0
+      var(--outline-ink),
+    calc(var(--outline-width) * -0.7) calc(var(--outline-width) * 0.7) 0
+      var(--outline-ink),
+    calc(var(--outline-width) * 0.7) calc(var(--outline-width) * -0.7) 0
+      var(--outline-ink),
+    calc(var(--outline-width) * -0.7) calc(var(--outline-width) * -0.7) 0
+      var(--outline-ink),
+    0 1px 3px color-mix(in srgb, var(--color-ink) 40%, transparent);
+}
+
+/* The full halo closes up the counters of a nine-pixel face, so the smallest
+   line gets two thirds of it. */
+.outlined-type-fine {
+  --outline-width: 1px;
+}
+
+.outlined-mark {
+  color: var(--color-paper);
+  filter: drop-shadow(
+    0 1px 2px color-mix(in srgb, var(--color-ink) 40%, transparent)
+  );
+}
+
+/* Stroke painted behind the fill, at a width measured on screen rather than in
+   the viewBox — so the mark's halo weighs the same as the type's whatever size
+   the icon is drawn at, and the drawing keeps its own outline instead of
+   growing one that swallows the gaps in it. */
+.outlined-mark path {
+  stroke: var(--outline-ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  paint-order: stroke;
+}
+
 /* Mapbox's compact attribution swaps the credit between `display: none` and
    `display: block`, which cannot animate — the panel simply appears. Given as a
    width the pill can travel, it grows out from under its own button instead,
@@ -325,4 +388,19 @@ body {
    arriving rather than as the old set having silently changed. */
 .rise {
   animation: rise 260ms var(--ease-settle) both;
+}
+
+/* A message about the map, laid over the bottom of it — and so it has to clear
+   whatever else is down there: the peeked sheet on a phone, Mapbox's credits on
+   a wide screen. The sheet's own height comes from the component, which is why
+   this is a class over a custom property rather than an inline style: an inline
+   style cannot be media-queried, and a utility class cannot override one. */
+.map-notice {
+  bottom: calc(var(--peek-vh) * 1vh + 0.75rem);
+}
+
+@media (min-width: 48rem) {
+  .map-notice {
+    bottom: 2.25rem;
+  }
 }
