@@ -120,11 +120,11 @@ export function RoutePanel({
     <Sheet
       label="Your ride"
       headerAt="desktop"
-      raisedWhen={started}
-      // The map is the thing here. Resting low keeps it in view while a start
-      // is chosen, and rising only to half leaves the change a pick just made
-      // visible instead of covering it.
-      raisedTo="half"
+      // The map is the thing here, and the first pick is a change on the map:
+      // rising to meet it would cover the very road that was just chosen. The
+      // panel stays low and the pinned slot carries the reading, so the ride
+      // is read where it is being drawn and the panel comes up when it is
+      // asked for.
       restingAt="peek"
       header={
         <div className="flex items-center gap-3">
@@ -163,7 +163,13 @@ export function RoutePanel({
 
         {started ? (
           <>
-            <ElevationProfile points={points} onScrub={onScrub} />
+            {/* Gone while the sheet is down, where all it could show is the
+                top inch of itself under the buttons. */}
+            <ElevationProfile
+              points={points}
+              onScrub={onScrub}
+              className="max-md:group-data-[collapsed]/sheet:hidden"
+            />
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
 
@@ -178,10 +184,16 @@ export function RoutePanel({
           <HowItWorks />
         )}
 
-        {/* Still here once a route has been undone away to nothing, because
+        {/* Lifted to the top of the scroll on a phone, where the panel rests
+            low and everything below the fold costs a drag: taking a pick back
+            is the move a rider makes most, so it is the one that should be in
+            reach without one. The sidebar has no fold to be under, so there it
+            stays where it reads — after the ride it acts on.
+
+            Still here once a route has been undone away to nothing, because
             that is exactly the moment Redo is the thing being reached for. */}
         {(started || canRedo) && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-md:order-first">
             <Button
               variant="outline"
               className="flex-1"

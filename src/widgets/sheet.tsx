@@ -129,6 +129,20 @@ export function Sheet({
   } | null>(null);
 
   const visibleVh = dragVh ?? DETENT_VH[detent];
+  /**
+   * Whether the panel is down at its lowest, exposed for the content to answer.
+   *
+   * Nothing tall is worth the few lines showing at `peek` — a chart cut off at
+   * its first inch is not a smaller chart, it is a strip of ink under whatever
+   * the rider actually came for. Read from the live height rather than the
+   * detent so what it hides comes back as the drag passes `peek` instead of
+   * waiting for the thumb to lift.
+   *
+   * On a wide screen the sidebar is a fixed height and the detent it happens
+   * to be holding means nothing, so anything keying off this belongs behind a
+   * `max-md:`.
+   */
+  const collapsed = visibleVh <= PEEK_VH;
 
   useEffect(() => {
     setDetent(raisedWhen ? raisedTo : restingAt);
@@ -247,8 +261,9 @@ export function Sheet({
   return (
     <aside
       aria-label={label}
+      data-collapsed={collapsed || undefined}
       className={cn(
-        "sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl",
+        "group/sheet sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl",
         "shadow-[0_-8px_32px_rgba(18,48,31,0.28)]",
         "md:static md:w-[22rem] md:rounded-none md:shadow-none lg:w-96",
         // Only between resting heights. Under the thumb it tracks the drag
