@@ -268,14 +268,19 @@ body {
  * does, and the halo follows the shape rather than boxing it, so the map still
  * shows through everywhere the glyph is not.
  *
- * The halo is ink cut most of the way to sand rather than ink itself: at a
- * weight thick enough to separate the white from a pale road it would
- * otherwise read as a hard black keyline drawn around the wordmark, which is
- * louder than anything else on the site. It is mixed as far toward sand as it
- * goes before the mark stops holding its shape against paper.
+ * The halo is ink cut toward sand rather than ink itself: at a weight thick
+ * enough to separate the white from a pale road it would otherwise read as a
+ * hard black keyline drawn around the wordmark, which is louder than anything
+ * else on the site.
+ *
+ * A first pass cut it as far toward sand as it would go while still holding
+ * the mark's shape against paper, which put it at 42% ink and left the outline
+ * reading as grey rather than as an outline. This is the same halo 30% darker
+ * — 64% ink lands the mixed color on 0.7 of the channels the old one had — so
+ * it separates properly and still stops short of a keyline.
  */
 :root {
-  --outline-ink: color-mix(in srgb, var(--color-ink) 42%, var(--color-sand));
+  --outline-ink: color-mix(in srgb, var(--color-ink) 64%, var(--color-sand));
 }
 
 .outlined-type {
