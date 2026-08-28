@@ -323,7 +323,11 @@ therefore has to receive pointer events, where everything around it stays transp
 tap counts as a dismissal precisely because of that, since while the card is up it is in the way of
 the road beneath it and a tap that did nothing would read as the map having stopped working.
 
-Building is where a rider arrives and is unchanged. Exploring frees the whole network to be
+Exploring is where a rider arrives who has never chosen otherwise — the first question a map of a
+strange city gets is what its lines are, not which of them to chain, and building answers a question
+that has not been asked yet. A link carrying a ride is the exception: that rider was sent something
+to look at, and the panel holding its distance, climb, profile, and GPX button is the route panel. It
+overrides the default only, never a stored choice. Exploring frees the whole network to be
 clicked — not just the roads that continue the route — and swaps the sidebar for the one road being
 read: its name, its length, its climb, its three attributes, and its elevation profile. Clicking the
 ground between roads puts it down again. The route is left alone throughout and comes back untouched

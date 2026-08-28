@@ -24,7 +24,9 @@ type Timeline = { entries: Route[]; index: number };
 
 const START: Timeline = { entries: [EMPTY_ROUTE], index: 0 };
 
-function encodedFromUrl(): string {
+/** The ride in the link, if the link carries one. Also read by `use-mode`,
+ *  which opens on the route panel when someone has been sent a ride. */
+export function encodedFromUrl(): string {
   return new URLSearchParams(window.location.search).get("r") ?? "";
 }
 

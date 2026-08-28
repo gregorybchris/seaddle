@@ -51,9 +51,10 @@ export function MapPage() {
   /**
    * What a click on a road does, and which road is being read if it reads.
    *
-   * Building is where a rider arrives who has never said otherwise, because it
-   * is what the site is for. Anyone who has said otherwise arrives back where
-   * they left off — the mode is kept in the browser like the choice of ground.
+   * Exploring is where a rider arrives who has never said otherwise: the first
+   * question a map of a strange city gets is what its lines are, not which of
+   * them to chain. Anyone who has said otherwise arrives back where they left
+   * off — the mode is kept in the browser like the choice of ground.
    *
    * Switching away leaves the route alone — it is still there on the map and
    * still there when the shovel comes back — so exploring costs nothing to

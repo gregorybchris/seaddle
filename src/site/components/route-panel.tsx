@@ -135,8 +135,8 @@ export function RoutePanel({
             <Figure label="climbing" value={climbText(gain)} />
           </div>
         ) : (
-          <StartHere>
-            {PICK} any road on the map to start building your route.
+          <StartHere headline="Build your route">
+            {PICK} any segment on the map to add it.
           </StartHere>
         )
       }
