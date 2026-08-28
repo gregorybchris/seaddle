@@ -454,7 +454,7 @@ site loads. A screen in the admin would be a second place to look for the same f
 - **Feel:** outdoorsy, friendly, inviting. Not childish, definitely not serious.
 - **Palette:** forest green primary with earthy neutrals, in the spirit of wta.org — deep green,
   moss, bark brown, sand, warm off-white. Light theme only.
-- **Controls:** buttons and inputs in the PostHog style — solid fill, defined border, a hard offset
+- **Controls:** buttons and inputs in the 3D style — solid fill, defined border, a hard offset
   shadow that gives a 3D appearance, and a press state that translates the element into its own
   shadow. Chunky, tactile, obviously clickable.
 - **Basemap:** a **custom Mapbox Studio style**, muted and desaturated, built so green route lines
