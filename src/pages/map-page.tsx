@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { coordAtFraction } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
 import type { Coord } from "@/lib/models/geo";
@@ -23,6 +23,8 @@ import { MapLegend } from "@/site/components/map-legend";
 import { MapWatermark } from "@/site/components/map-watermark";
 import { SHOW_TURNINGS } from "@/site/flags";
 import { turnings } from "@/site/turnings";
+import { SegmentPanel } from "@/site/components/segment-panel";
+import { useMode } from "@/site/use-mode";
 import { useGraph } from "@/site/use-graph";
 import { useRouteHistory } from "@/site/use-route-history";
 
@@ -46,6 +48,19 @@ export function MapPage() {
   } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  /**
+   * What a click on a road does, and which road is being read if it reads.
+   *
+   * Building is where a rider arrives who has never said otherwise, because it
+   * is what the site is for. Anyone who has said otherwise arrives back where
+   * they left off — the mode is kept in the browser like the choice of ground.
+   *
+   * Switching away leaves the route alone — it is still there on the map and
+   * still there when the shovel comes back — so exploring costs nothing to
+   * step into mid-ride, which is exactly when the question it answers comes up.
+   */
+  const [mode, setMode] = useMode();
+  const [selected, setSelected] = useState<SegmentId | null>(null);
   /**
    * What the map is colored by before anyone asks for something else.
    *
@@ -93,14 +108,27 @@ export function MapPage() {
     [route, graph],
   );
 
-  /** The place on the map the reader is pointing at on the elevation chart. */
-  const scrubbed = useMemo(
-    () =>
-      scrub === null || points.length < 2
-        ? null
-        : coordAtFraction(points, scrub),
-    [scrub, points],
-  );
+  const reading = selected ? (graph?.segments.get(selected) ?? null) : null;
+
+  /**
+   * The place on the map the reader is pointing at on the elevation chart.
+   *
+   * Measured along whatever the visible panel is charting — the whole ride, or
+   * the one road being read. There are two charts, so which line the fraction
+   * runs along has to follow which panel is open, or scrubbing one road would
+   * put the marker somewhere along a ride nobody is looking at.
+   */
+  const scrubbed = useMemo(() => {
+    const charted = mode === "explore" ? (reading?.points ?? []) : points;
+    return scrub === null || charted.length < 2
+      ? null
+      : coordAtFraction(charted, scrub);
+  }, [scrub, mode, reading, points]);
+
+  // A fraction along one road means nothing along the next, and the chart only
+  // reports its own end of that when a pointer leaves it — which a finger
+  // lifting off a phone does not reliably do.
+  useEffect(() => setScrub(null), [selected, mode]);
 
   /** The pins on the roads chosen so far, in the order they are ridden past. */
   const routePins = useMemo(
@@ -135,23 +163,27 @@ export function MapPage() {
 
   return (
     <div className="relative h-full md:flex">
-      <RoutePanel
-        graph={graph}
-        route={route}
-        encoding={encoding}
-        onUndo={undo}
-        onRedo={redo}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        onClear={() => changeRoute(EMPTY_ROUTE)}
-        // A saved ride is finished, so it is shown whole rather than framed
-        // on wherever it could still go.
-        onLoad={load}
-        onScrub={setScrub}
-        turnings={choices}
-        onPick={pick}
-        onHighlight={setHighlighted}
-      />
+      {mode === "explore" ? (
+        <SegmentPanel segment={reading} onScrub={setScrub} />
+      ) : (
+        <RoutePanel
+          graph={graph}
+          route={route}
+          encoding={encoding}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onClear={() => changeRoute(EMPTY_ROUTE)}
+          // A saved ride is finished, so it is shown whole rather than framed
+          // on wherever it could still go.
+          onLoad={load}
+          onScrub={setScrub}
+          turnings={choices}
+          onPick={pick}
+          onHighlight={setHighlighted}
+        />
+      )}
       {/* The map's own box, and so the frame everything laid over it is
           positioned against — the controls read their state straight from here
           rather than being drilled through the map to reach it. */}
@@ -159,6 +191,7 @@ export function MapPage() {
         <SiteMap
           graph={graph}
           route={route}
+          mode={mode}
           encoding={encoding}
           basemap={basemap}
           dimmed={dimmed}
@@ -167,7 +200,9 @@ export function MapPage() {
           pins={routePins}
           framing={framing}
           highlighted={highlighted}
+          selected={mode === "explore" ? selected : null}
           onPick={pick}
+          onSelect={setSelected}
           onCenter={noteCenter}
         />
 
@@ -180,6 +215,8 @@ export function MapPage() {
           className="absolute top-14 left-3 z-10 md:top-auto md:bottom-9"
         />
         <MapControls
+          mode={mode}
+          onMode={setMode}
           encoding={encoding}
           onEncoding={setEncoding}
           basemap={basemap}

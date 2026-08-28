@@ -1,4 +1,5 @@
 import { PROTECTIONS, STEEPNESSES, SURROUNDINGS } from "@/lib/models/graph";
+import type { Tone } from "@/widgets/badge";
 import type { SiteSegment } from "./graph-data";
 
 /**
@@ -67,6 +68,32 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
     bikePath: "#533178",
   },
   surroundings: { plain: "#97967f", pleasant: "#6d9464", scenic: "#2f6b48" },
+};
+
+/**
+ * Whether a value is good news, for the badges in the explore panel.
+ *
+ * A second reading of the same three scales, and deliberately not the same one
+ * as `RAMPS`. A ramp answers "which step of this scale is this road on", which
+ * is what a map needs — every value distinct, the order carried by lightness.
+ * A badge answers "is this in my favour", which is a different question and one
+ * that two values can answer the same way.
+ *
+ * That is why protection reads red-then-green-then-green here while the map
+ * draws it tan, magenta, violet: a bike lane and a bike path are both a yes to
+ * a beginner asking whether they will be riding in traffic, and the distinction
+ * between them belongs on the map, where there is a legend to explain it. It is
+ * the one place the two readings disagree — steepness and surroundings already
+ * ran green-amber-red and gray-green-green on the map, and the badges keep it.
+ *
+ * The cost is that "bike lane" is a green pill beside a magenta line. Worth it:
+ * a rider reading one road wants the verdict, and a rider reading the whole map
+ * wants the categories.
+ */
+export const TONES: Record<Attribute, Record<string, Tone>> = {
+  steepness: { flat: "good", rolling: "caution", steep: "poor" },
+  protection: { unprotected: "poor", bikeLane: "good", bikePath: "good" },
+  surroundings: { plain: "neutral", pleasant: "good", scenic: "good" },
 };
 
 /**

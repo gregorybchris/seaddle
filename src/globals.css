@@ -20,6 +20,10 @@
   --color-forest-deep: #12301f;
   --color-forest-lift: #245a3f;
   --color-moss: #86a874;
+  /* The edge moss takes when it is a fill, the way blaze and clay already have
+     one. Every filled thing on this site is drawn as a deeper border around its
+     own color, and moss was the one that could not be. */
+  --color-moss-deep: #5f7a52;
   --color-blaze: #d97b2e;
   --color-blaze-deep: #a85a1d;
 

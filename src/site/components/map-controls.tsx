@@ -1,4 +1,4 @@
-import { Funnel, Palette } from "@phosphor-icons/react";
+import { Binoculars, Funnel, Palette, Shovel } from "@phosphor-icons/react";
 import { useState } from "react";
 import type { BasemapId } from "@/lib/basemap";
 import { BasemapChoices } from "@/widgets/basemap-choices";
@@ -7,9 +7,12 @@ import { Dialog } from "@/widgets/dialog";
 import { MapButton } from "@/widgets/map-button";
 import { ENCODINGS, type Encoding } from "../encoding";
 import type { Filters } from "../filters";
+import type { Mode } from "../mode";
 import { FilterPanel } from "./filter-panel";
 
 type MapControlsProps = {
+  mode: Mode;
+  onMode: (mode: Mode) => void;
   encoding: Encoding;
   onEncoding: (encoding: Encoding) => void;
   basemap: BasemapId;
@@ -21,12 +24,16 @@ type MapControlsProps = {
 };
 
 /**
- * The settings that used to sit in the panel, as two buttons on the map.
+ * The settings that used to sit in the panel, as buttons on the map.
  *
  * They left the panel because neither is part of building a route: a rider sets
  * a filter or a color once and then spends the rest of the session picking
  * roads, with the controls for both taking up room the whole time. Behind a
  * button they cost nothing until they are wanted.
+ *
+ * The mode switch sits with them because it is the same kind of thing — set
+ * once, then lived with — even though it is the one control here that changes
+ * what a click on the map does rather than what the map looks like.
  *
  * Both colors live in one dialog. What the map is colored *by* and what it is
  * drawn *on* were in different places for no reason other than having been
@@ -34,6 +41,8 @@ type MapControlsProps = {
  * it sits under the first.
  */
 export function MapControls({
+  mode,
+  onMode,
   encoding,
   onEncoding,
   basemap,
@@ -45,10 +54,33 @@ export function MapControls({
 }: MapControlsProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [colorsOpen, setColorsOpen] = useState(false);
+  const exploring = mode === "explore";
 
   return (
     <>
       <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+        {/* The mode the map is in, not the one a press would reach. It sits
+            beside two buttons that open something and then close again, and
+            this one does not — so it has to say which of the two answers a
+            click on a road is currently getting. The label carries both — the
+            mode and what a press would do — rather than the icon saying one
+            and `aria-pressed` the other, which is the arrangement that leaves
+            a screen reader hearing "explore, pressed" while the map builds. */}
+        <MapButton
+          aria-label={
+            exploring
+              ? "Exploring roads. Switch to building a route."
+              : "Building a route. Switch to exploring roads."
+          }
+          title={exploring ? "Exploring" : "Building"}
+          onClick={() => onMode(exploring ? "build" : "explore")}
+        >
+          {exploring ? (
+            <Binoculars size={17} weight="bold" />
+          ) : (
+            <Shovel size={17} weight="bold" />
+          )}
+        </MapButton>
         <MapButton
           aria-label="Filters"
           aria-haspopup="dialog"

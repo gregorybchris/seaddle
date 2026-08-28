@@ -24,6 +24,7 @@ import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
 import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../encoding";
+import { modeNotice, type Mode } from "../mode";
 import { gradeRuns } from "../grade";
 import {
   choiceBounds,
@@ -34,6 +35,7 @@ import {
   type Route,
 } from "../route";
 import type { Framing } from "../use-route-history";
+import { PICK } from "../pointing";
 import { closedNotice, whyClosed } from "../why-closed";
 import { MapNotice, type Notice } from "./map-notice";
 
@@ -64,9 +66,15 @@ function dimming(dimmed: SegmentId[], faded: number, full: number) {
   return ["case", ["in", ["get", "id"], ["literal", dimmed]], faded, full];
 }
 
-/** Wider once a ride is under way, when the open roads are the few to pick from. */
-function openWidth(route: Route): number {
-  return isEmpty(route) ? 3.5 : 4.5;
+/**
+ * Wider once a ride is under way, when the open roads are the few to pick from.
+ *
+ * Never while exploring: there every road is open, so the wider line would say
+ * nothing about which ones are in play and only make a map of the whole network
+ * heavier to read.
+ */
+function openWidth(route: Route, exploring: boolean): number {
+  return exploring || isEmpty(route) ? 3.5 : 4.5;
 }
 
 /**
@@ -118,6 +126,8 @@ const TIP_HEIGHT = 56;
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
+  /** What a click on a road means here: add it to the ride, or read it. */
+  mode: Mode;
   encoding: Encoding;
   /** Which ground to draw everything on. Chosen elsewhere; painted here,
    *  because painting it needs the map instance and choosing it does not. */
@@ -139,7 +149,11 @@ type SiteMapProps = {
   framing: Framing;
   /** The road the panel is pointing at, drawn so a keyboard can see where it is. */
   highlighted: SegmentId | null;
+  /** The road being read while exploring, if any. */
+  selected: SegmentId | null;
   onPick: (id: SegmentId) => void;
+  /** A road to read, or nothing when the click landed on the ground. */
+  onSelect: (id: SegmentId | null) => void;
   /**
    * Where the map is looking, once it has settled.
    *
@@ -209,6 +223,7 @@ function nearestOf(
 export function SiteMap({
   graph,
   route,
+  mode,
   encoding,
   basemap,
   dimmed,
@@ -217,9 +232,12 @@ export function SiteMap({
   scrubbed,
   framing,
   highlighted,
+  selected,
   onPick,
+  onSelect,
   onCenter,
 }: SiteMapProps) {
+  const exploring = mode === "explore";
   const mapRef = useRef<MapRef>(null);
   useBasemapPaint(mapRef, basemap);
   const wrap = useRef<HTMLDivElement>(null);
@@ -330,11 +348,72 @@ export function SiteMap({
     [],
   );
 
-  const open = useMemo(() => [...continuations(route, graph)], [route, graph]);
+  /**
+   * The roads a click may land on.
+   *
+   * Exploring drops the rule that a route has to join up, because nothing is
+   * being joined: the whole network goes live, which is the only way a rider
+   * mid-route can read a road that does not happen to continue it. That falls
+   * straight out of the layers — the open band, the bright lines and the wider
+   * stroke are all filtered on this one list.
+   */
+  const open = useMemo(
+    () =>
+      exploring ? [...graph.segments.keys()] : [...continuations(route, graph)],
+    [exploring, route, graph],
+  );
   const chosen = useMemo(
     () => route.steps.map((step) => step.segment),
     [route],
   );
+
+  /**
+   * The roads carrying the dark casing: the ride so far, or the one road being
+   * read.
+   *
+   * One mark for both, because both are the same statement — *this* is what the
+   * panel is about — and because it is the mark that does not cost a road its
+   * colour. The route used to be repainted deep forest, which said "chosen" by
+   * throwing away the steepness or the bike lane that made it worth choosing;
+   * now the ride and the roads around it can be compared on the encoding while
+   * the ride is still obvious.
+   *
+   * Nothing while exploring with nothing selected, and never both at once: the
+   * ride is not the subject over there, and casing it as well would give the
+   * one road being read no way to stand out from it.
+   */
+  const marked = useMemo(
+    () => (exploring ? (selected ? [selected] : []) : chosen),
+    [exploring, selected, chosen],
+  );
+
+  /**
+   * The roads drawn in full colour, which is not the same as the roads that
+   * can be clicked.
+   *
+   * The ride belongs here whether or not it can be appended to — with the
+   * casing carrying "chosen" instead of a repaint, a road left out of this
+   * would be drawn at the faded weight of the network behind it, and the route
+   * would come out fainter than the choices leading off it.
+   */
+  const bright = useMemo(
+    () => (exploring ? open : [...new Set([...open, ...chosen])]),
+    [exploring, open, chosen],
+  );
+
+  /**
+   * Which way the road being read runs, drawn on its two ends.
+   *
+   * The chart in the panel is one road laid out left to right, and a line on a
+   * map has no visible direction — so without these there is nothing saying
+   * which end of it the climb starts from. The same green dot and checkered
+   * flag the admin uses, because it is the same question being answered.
+   */
+  const ends = useMemo(() => {
+    const points = selected ? graph.segments.get(selected)?.points : null;
+    if (!exploring || !points || points.length < 2) return null;
+    return { start: points[0], finish: points[points.length - 1] };
+  }, [exploring, selected, graph]);
 
   // Frame the whole network on arrival. There is no geolocation, so this is
   // the only thing that tells a first-time visitor what is covered.
@@ -401,6 +480,34 @@ export function SiteMap({
   // make the road it named perfectly pickable, and a note still insisting
   // otherwise is worse than no note at all.
   useEffect(() => setNotice(null), [route]);
+
+  /**
+   * Say which mode this now is, every time that changes and never on arrival.
+   *
+   * Switching modes is the one change here that alters what a click means
+   * while showing almost nothing for it: the icon swaps and the panel swaps,
+   * and neither says the rules just changed. Nobody has switched anything on
+   * the first render, though, so a banner there would be the site explaining
+   * itself before it had been asked a question — which is what the panel is
+   * for.
+   *
+   * It replaces whatever was up rather than queueing behind it. A refusal
+   * about a road that just became pickable is the message least worth keeping.
+   */
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    setNotice({
+      ...modeNotice(mode, PICK),
+      at: Date.now(),
+      // A few seconds: this confirms something deliberate rather than teaching
+      // a rule, and it is in the way of the map it is describing.
+      linger: 4000,
+    });
+  }, [mode]);
 
   const opened = shown.find(({ pin }) => pin.id === openPin)?.pin ?? null;
 
@@ -481,6 +588,15 @@ export function SiteMap({
           const at = pointOf(event);
 
           const picked = nearestOf(hitsIn(event, CLICKABLE), at, graph);
+
+          // Exploring, a road is something to read rather than something to
+          // add, and the ground between roads is how it gets put down again —
+          // so a miss is an answer here instead of a refusal to explain.
+          if (exploring) {
+            onSelect(picked);
+            return;
+          }
+
           if (picked) {
             setNotice(null);
             onPick(picked);
@@ -503,6 +619,26 @@ export function SiteMap({
         }}
       >
         <Source id="graph" type="geojson" data={data}>
+          {/* What the panel is about, cased in the panel's own dark rather than
+            repainted in it. What a road is colored is the whole of what it has
+            to say for itself, so the mark goes underneath and widens it into
+            something findable at a glance — which the pale highlighter above
+            could not do over a near-white basemap.
+
+            First, so every line on this map draws over it: it is a casing, and
+            a casing that covered the grade running along the road it marks
+            would hide the reading it was pointing at. */}
+          <Layer
+            id="segments-marked"
+            type="line"
+            filter={["in", ["get", "id"], ["literal", marked]]}
+            paint={{
+              "line-color": "#12301f",
+              "line-opacity": 0.9,
+              "line-width": 11,
+            }}
+            layout={ROUNDED}
+          />
           {/* Out of play: still drawn, so the shape of the network stays
             readable and a dead end is visibly a dead end. Drawn at no opacity
             at all under the grade encoding, which has its own lines below. */}
@@ -521,13 +657,13 @@ export function SiteMap({
           <Layer
             id="segments-open"
             type="line"
-            filter={["in", ["get", "id"], ["literal", open]]}
+            filter={["in", ["get", "id"], ["literal", bright]]}
             paint={{
               "line-color": color as never,
               "line-opacity": (attribute
                 ? dimming(dimmed, 0.25, 1)
                 : 0) as never,
-              "line-width": openWidth(route),
+              "line-width": openWidth(route, exploring),
             }}
             layout={ROUNDED}
           />
@@ -560,24 +696,6 @@ export function SiteMap({
             }}
             layout={ROUNDED}
           />
-          <Layer
-            id="segments-chosen"
-            type="line"
-            filter={["in", ["get", "id"], ["literal", chosen]]}
-            paint={{
-              // The route wins over the encoding: it is the subject, and a
-              // chosen road has to be findable at a glance. Deep forest rather
-              // than blaze, which sat a few degrees off the amber in the middle
-              // of the steepness ramp — the road already picked and the roads
-              // that could be picked next were coming out the same color, which
-              // is the one distinction this map cannot afford to lose.
-              "line-color": "#1c4632",
-              "line-opacity": 1,
-              "line-width": 6,
-            }}
-            layout={ROUNDED}
-          />
-
           {/* The road the panel is pointing at, drawn like a highlighter over
             the top rather than as another color of line: it has to be findable
             without hiding what the road already says about itself, and a
@@ -619,11 +737,11 @@ export function SiteMap({
               id="grade-open"
               type="line"
               beforeId={CLICKABLE}
-              filter={["in", ["get", "id"], ["literal", open]]}
+              filter={["in", ["get", "id"], ["literal", bright]]}
               paint={{
                 "line-color": gradeColor as never,
                 "line-opacity": dimming(dimmed, 0.25, 1) as never,
-                "line-width": openWidth(route),
+                "line-width": openWidth(route, exploring),
               }}
               layout={ROUNDED}
             />
@@ -652,6 +770,24 @@ export function SiteMap({
               </p>
             )}
           </Popup>
+        )}
+
+        {/* Which end of the road the chart in the panel starts from. The green
+          dot and the flag are the admin's, unchanged: it is the same question
+          — which way does this line run — and answering it two ways would be
+          two things to learn instead of one. */}
+        {ends && (
+          <>
+            <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
+              <span
+                aria-label="Road start"
+                className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
+              />
+            </Marker>
+            <Marker longitude={ends.finish[0]} latitude={ends.finish[1]}>
+              <span aria-label="Road finish" className="checkered block" />
+            </Marker>
+          </>
         )}
 
         {/* The same place the chart is reporting, so a height on the graph has a

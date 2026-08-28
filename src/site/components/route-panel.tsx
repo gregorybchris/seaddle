@@ -1,9 +1,7 @@
 import {
   ArrowUUpLeft,
   ArrowUUpRight,
-  CursorClick,
   DownloadSimple,
-  HandTap,
   Trash,
   X,
 } from "@phosphor-icons/react";
@@ -35,6 +33,8 @@ import { SHOW_TURNINGS } from "../flags";
 import type { Turning } from "../turnings";
 import { useSavedRides, type SavedRide } from "../use-saved-rides";
 import { RouteBreakdown } from "./route-breakdown";
+import { PICK } from "../pointing";
+import { StartHere } from "./start-here";
 import { TurningsList } from "./turnings-list";
 
 /** What the undo keys are called on this machine, for the button tooltips. */
@@ -42,20 +42,6 @@ const MOD =
   typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
     ? "\u2318"
     : "Ctrl+";
-
-/**
- * What picking a road is called on this machine, and what it is done with.
- *
- * The one instruction a first-time rider is given should name the gesture they
- * actually have. Decided by whether the pointer can hover rather than by screen
- * width, because it is the input being described and not the layout — a small
- * window on a laptop is still a mouse.
- */
-const POINTING =
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(hover: hover)").matches;
-const PICK = POINTING ? "Click" : "Tap";
-const PickIcon = POINTING ? CursorClick : HandTap;
 
 type RoutePanelProps = {
   graph: SiteGraph;
@@ -149,7 +135,9 @@ export function RoutePanel({
             <Figure label="climbing" value={climbText(gain)} />
           </div>
         ) : (
-          <StartHere />
+          <StartHere>
+            {PICK} any road on the map to start building your route.
+          </StartHere>
         )
       }
     >
@@ -181,7 +169,7 @@ export function RoutePanel({
             )}
           </>
         ) : (
-          <HowItWorks />
+          <HowBuildingWorks />
         )}
 
         {/* Lifted to the top of the scroll on a phone, where the panel rests
@@ -257,48 +245,6 @@ export function RoutePanel({
 }
 
 /**
- * The invitation to begin, in the panel's pinned slot.
- *
- * Said the way a first-time rider would say it: "road", not "segment", and the
- * gesture this machine actually has rather than both spelled out. The old
- * wording named the data model — appending connected segments is what the code
- * does, and nobody arrives here holding a graph.
- *
- * Amber is the site's colour for whatever is live, and on a screen with no ride
- * on it yet the only live thing is this. It is spent on the mark alone: the
- * sentence stays sand, which is legible at this size where amber on its own
- * tint is not, and the tinted band is what carries the eye.
- *
- * Built to wrap, because at any readable size it does: this sentence wants
- * 338px and the sidebar's text column is 256px, so one line would mean 11px
- * type — smaller than the steps under it, for the thing meant to be read
- * first. So the two lines are made to look chosen rather than survived.
- *
- * Balanced against each other, and then set large enough to fill what
- * balancing measures out. Those two go together: balancing alone splits the
- * sentence into two short lines and leaves the right half of the band empty,
- * which reads worse than the orphan it fixed. At this size both lines run most
- * of the width, so the band is full and the break looks deliberate. It is also
- * the size the only instruction on an empty screen deserves.
- */
-function StartHere() {
-  return (
-    <p className="border-blaze/35 bg-blaze/10 text-sand flex items-start gap-2.5 rounded-lg border px-3 py-2.5 text-[1.3125rem] leading-snug">
-      {/* Nudged down onto the middle of the first line rather than the top of
-          its box, so the mark sits on that line instead of floating above it. */}
-      <PickIcon
-        weight="bold"
-        aria-hidden
-        className="text-blaze mt-1 h-[1.375rem] w-[1.375rem] shrink-0"
-      />
-      <span className="text-balance">
-        {PICK} any road on the map to start building your route.
-      </span>
-    </p>
-  );
-}
-
-/**
  * The whole of how this works, in three lines.
  *
  * A rider who has never seen the site does not know that roads chain, that the
@@ -316,10 +262,10 @@ const STEPS = [
   "Save or export the ride",
 ];
 
-function HowItWorks() {
+function HowBuildingWorks() {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="eyebrow text-sand/70">How it works</h2>
+      <h2 className="eyebrow text-sand/70">Build mode</h2>
       <ol className="flex flex-col gap-1.5">
         {STEPS.map((step, index) => (
           <li key={step} className="flex items-baseline gap-2.5">
