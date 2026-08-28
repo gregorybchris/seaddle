@@ -62,6 +62,7 @@ export function FilterPanel({
       <div className="border-sand/10 flex flex-col gap-3 border-t pt-3">
         <ChipGroup
           label="Nothing steeper than"
+          joined
           options={STEEPNESSES}
           value={filters.steepest}
           onChange={(steepest: Steepness) =>
@@ -70,6 +71,7 @@ export function FilterPanel({
         />
         <ChipGroup
           label="At least this protected"
+          joined
           options={PROTECTIONS}
           value={filters.leastProtection}
           onChange={(leastProtection: Protection) =>
@@ -78,6 +80,7 @@ export function FilterPanel({
         />
         <ChipGroup
           label="At least this pretty"
+          joined
           options={SURROUNDINGS}
           value={filters.leastSurroundings}
           onChange={(leastSurroundings: Surroundings) =>

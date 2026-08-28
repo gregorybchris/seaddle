@@ -107,6 +107,7 @@ export function SegmentEditor({
       <div className="flex flex-col gap-3">
         <ChipGroup
           label="Steepness"
+          joined
           options={STEEPNESSES}
           value={shared((s) => s.steepness)}
           mixed={disagree((s) => s.steepness)}
@@ -114,6 +115,7 @@ export function SegmentEditor({
         />
         <ChipGroup
           label="Protection"
+          joined
           options={PROTECTIONS}
           value={shared((s) => s.protection)}
           mixed={disagree((s) => s.protection)}
@@ -121,6 +123,7 @@ export function SegmentEditor({
         />
         <ChipGroup
           label="Surroundings"
+          joined
           options={SURROUNDINGS}
           value={shared((s) => s.surroundings)}
           mixed={disagree((s) => s.surroundings)}
