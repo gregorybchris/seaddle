@@ -1,7 +1,9 @@
 import {
   ArrowUUpLeft,
   ArrowUUpRight,
+  CursorClick,
   DownloadSimple,
+  HandTap,
   Trash,
   X,
 } from "@phosphor-icons/react";
@@ -40,6 +42,20 @@ const MOD =
   typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
     ? "\u2318"
     : "Ctrl+";
+
+/**
+ * What picking a road is called on this machine, and what it is done with.
+ *
+ * The one instruction a first-time rider is given should name the gesture they
+ * actually have. Decided by whether the pointer can hover rather than by screen
+ * width, because it is the input being described and not the layout — a small
+ * window on a laptop is still a mouse.
+ */
+const POINTING =
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(hover: hover)").matches;
+const PICK = POINTING ? "Click" : "Tap";
+const PickIcon = POINTING ? CursorClick : HandTap;
 
 type RoutePanelProps = {
   graph: SiteGraph;
@@ -121,14 +137,20 @@ export function RoutePanel({
           </div>
         </div>
       }
-      /* Not dimmed before a ride starts. Fading a block of already-muted text
-         compounds: 70% type inside a 70% wrapper lands near half strength and
-         stops being readable. "0.0 mi" says "not yet" by itself. */
+      /* The one slot pinned at every resting height, so whatever sits here is
+         what a rider sees without touching anything. Before a ride starts that
+         should be how to start one: two zeros are not a reading, they are the
+         absence of one, and they were holding the most visible place on the
+         screen against the only sentence that had somewhere to send anybody. */
       peek={
-        <div className="border-sand/10 flex items-end gap-6 border-t pt-3 max-md:border-t-0 max-md:pt-0">
-          <Figure label="distance" value={formatMiles(meters)} />
-          <Figure label="climbing" value={climbText(gain)} />
-        </div>
+        started ? (
+          <div className="border-sand/10 flex items-end gap-6 border-t pt-3 max-md:border-t-0 max-md:pt-0">
+            <Figure label="distance" value={formatMiles(meters)} />
+            <Figure label="climbing" value={climbText(gain)} />
+          </div>
+        ) : (
+          <StartHere />
+        )
       }
     >
       <div className="flex flex-col gap-5">
@@ -153,10 +175,7 @@ export function RoutePanel({
             )}
           </>
         ) : (
-          <p className="text-sand/75 text-sm leading-relaxed">
-            Tap any segment to start. Continue to append connected segments to
-            build your route.
-          </p>
+          <HowItWorks />
         )}
 
         {/* Still here once a route has been undone away to nothing, because
@@ -226,7 +245,98 @@ export function RoutePanel({
 }
 
 /**
- * Keep this ride, and take it away as a file.
+ * The invitation to begin, in the panel's pinned slot.
+ *
+ * Said the way a first-time rider would say it: "road", not "segment", and the
+ * gesture this machine actually has rather than both spelled out. The old
+ * wording named the data model — appending connected segments is what the code
+ * does, and nobody arrives here holding a graph.
+ *
+ * Amber is the site's colour for whatever is live, and on a screen with no ride
+ * on it yet the only live thing is this. It is spent on the mark alone: the
+ * sentence stays sand, which is legible at this size where amber on its own
+ * tint is not, and the tinted band is what carries the eye.
+ *
+ * Built to wrap, because at any readable size it does: this sentence wants
+ * 338px and the sidebar's text column is 256px, so one line would mean 11px
+ * type — smaller than the steps under it, for the thing meant to be read
+ * first. So the two lines are made to look chosen rather than survived.
+ *
+ * Balanced against each other, and then set large enough to fill what
+ * balancing measures out. Those two go together: balancing alone splits the
+ * sentence into two short lines and leaves the right half of the band empty,
+ * which reads worse than the orphan it fixed. At this size both lines run most
+ * of the width, so the band is full and the break looks deliberate. It is also
+ * the size the only instruction on an empty screen deserves.
+ */
+function StartHere() {
+  return (
+    <p className="border-blaze/35 bg-blaze/10 text-sand flex items-start gap-2.5 rounded-lg border px-3 py-2.5 text-[1.3125rem] leading-snug">
+      {/* Nudged down onto the middle of the first line rather than the top of
+          its box, so the mark sits on that line instead of floating above it. */}
+      <PickIcon
+        weight="bold"
+        aria-hidden
+        className="text-blaze mt-1 h-[1.375rem] w-[1.375rem] shrink-0"
+      />
+      <span className="text-balance">
+        {PICK} any road on the map to start building your route.
+      </span>
+    </p>
+  );
+}
+
+/**
+ * The whole of how this works, in three lines.
+ *
+ * A rider who has never seen the site does not know that roads chain, that the
+ * bright ones are the legal next moves, or that a ride can leave here as a
+ * file — and none of that is discoverable from a map of lines. Three lines is
+ * the budget: it is under the fold on a phone at rest, so it has to be worth
+ * finding without being what anyone has to read before their first pick.
+ *
+ * It starts from the pick rather than repeating it, because the sentence
+ * telling them to pick is already pinned above this and always in view.
+ */
+const STEPS = [
+  "Select a segment and unreachable segments will dim",
+  "Keep picking to add on to the route",
+  "Save or export the ride",
+];
+
+function HowItWorks() {
+  return (
+    <section className="flex flex-col gap-2">
+      <h2 className="eyebrow text-sand/70">How it works</h2>
+      <ol className="flex flex-col gap-1.5">
+        {STEPS.map((step, index) => (
+          <li key={step} className="flex items-baseline gap-2.5">
+            {/* Hidden from a reader who is already being told this is the
+                second of three, and kept off the amber so the invitation above
+                stays the one warm thing on an empty screen.
+
+                Sat on its baseline rather than in its box: it is mono and a
+                point smaller than the sentence beside it, and two line boxes
+                of different heights share a top edge, not a baseline — which
+                left the digit riding a pixel high. */}
+            <span
+              aria-hidden
+              className="tabular text-sand/45 w-2 shrink-0 text-xs"
+            >
+              {index + 1}
+            </span>
+            <span className="text-sand/75 text-[0.8125rem] leading-relaxed">
+              {step}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/**
+ * Keep this ride, and export it as a file.
  *
  * Both are the same act from a rider's side — "I want this later" — so they sit
  * together rather than being scattered around the panel.

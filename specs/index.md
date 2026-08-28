@@ -271,6 +271,24 @@ try to be clever.
 
 Three things, in this order: the route being built, the stats, the filters.
 
+**Before a ride starts, the stats stand down.** Distance and gain hold the sidebar's pinned slot —
+the one strip visible at every sheet detent — and before the first pick they are two zeros, which
+is not a reading but the absence of one. So the empty state gives that slot to the invitation
+instead: one amber-bordered line, _"Tap any road on the map to start building your route,"_ naming
+the gesture the machine at hand actually has (a tap without a hovering pointer, a click with one).
+The numbers take the slot back on the first pick, which is the moment they begin to mean something.
+
+It is set to wrap and sized to fill both lines. The sentence wants more width than the sidebar's
+text column has at any size worth reading, so one line is not on offer; balancing the two lines
+without also growing the type just empties the right half of the band. Balanced and large is what
+makes the break look chosen.
+
+Under it, in the scrolling body, the model in three lines — roads chain, the bright ones are the
+legal next moves, and a finished ride can be kept or exported. None of that is readable off a map
+of lines, and all of it is what a beginner is missing. Three is the budget: the body is below the
+fold on a phone at rest, so it has to reward a drag without being homework standing between anyone
+and their first pick.
+
 **Route stats** (only these — deliberately not an estimated ride time, which would be a guess
 dressed up as authority):
 
