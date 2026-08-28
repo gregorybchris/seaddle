@@ -161,8 +161,14 @@ function Reading({ segment }: { segment: SiteSegment }) {
         <h2 className="text-sand truncate text-lg leading-none md:text-xl md:leading-tight">
           {segment.name ?? "Unnamed road"}
         </h2>
+        {/* The arrow is set at full strength while the numbers stay dimmed:
+            at this size a ↑ in the same wash as the digits reads as a 1, and it
+            is nudged off them by less than a space so the pair still reads
+            as one figure. */}
         <p className="tabular text-sand/70 text-xs md:text-sm">
-          {formatMiles(segment.meters)} · ↑{formatFeet(climb(segment))}
+          {formatMiles(segment.meters)} ·{" "}
+          <span className="text-sand mr-0.5">↑</span>
+          {formatFeet(climb(segment))}
         </p>
       </div>
 

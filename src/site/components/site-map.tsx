@@ -902,7 +902,9 @@ function RoadTip({ hovered }: { hovered: Hovered }) {
         <p className="max-w-56 truncate text-xs">{hovered.name}</p>
       )}
       <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
-        {formatMiles(hovered.meters)} · ↑{formatFeet(hovered.climb)}
+        {formatMiles(hovered.meters)} ·{" "}
+        <span className="text-sand mr-0.5">↑</span>
+        {formatFeet(hovered.climb)}
       </p>
       <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
         {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}

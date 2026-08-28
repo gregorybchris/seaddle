@@ -115,7 +115,9 @@ function Row({
           aria-hidden
           className="tabular text-sand/70 shrink-0 text-[0.6875rem]"
         >
-          {formatMiles(segment.meters)} · &uarr;{formatFeet(climbMeters)}
+          {formatMiles(segment.meters)} ·{" "}
+          <span className="text-sand mr-0.5">&uarr;</span>
+          {formatFeet(climbMeters)}
         </span>
       </span>
       <span
