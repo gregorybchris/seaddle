@@ -44,9 +44,9 @@ function segment(
   elevations: [number, number],
 ): SiteSegment {
   const points: ElevCoord[] = [
-    [-122.35, 47.65, elevations[0]],
-    [-122.34, 47.65, (elevations[0] + elevations[1]) / 2],
-    [-122.33, 47.65, elevations[1]],
+    [-122.33, 47.68, elevations[0]],
+    [-122.32, 47.68, (elevations[0] + elevations[1]) / 2],
+    [-122.31, 47.68, elevations[1]],
   ];
   return {
     id,
@@ -75,7 +75,7 @@ function graph(): SiteGraph {
   return {
     segments: new Map(all.map((s) => [s.id, s])),
     adjacency: buildAdjacency(all),
-    bounds: { minLon: -122.35, minLat: 47.65, maxLon: -122.33, maxLat: 47.65 },
+    bounds: { minLon: -122.33, minLat: 47.68, maxLon: -122.31, maxLat: 47.68 },
   };
 }
 

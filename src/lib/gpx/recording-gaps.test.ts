@@ -5,8 +5,8 @@ import { findRecordingGaps, insideGap, splitAtGaps } from "./recording-gaps";
 /** Points a kilometer apart, so distance is never the reason a gap is missed. */
 function line(count: number): ElevCoord[] {
   return Array.from({ length: count }, (_, i) => [
-    -122.35 + i * 0.01,
-    47.65,
+    -122.33 + i * 0.01,
+    47.68,
     10,
   ]);
 }
@@ -29,9 +29,9 @@ describe("findRecordingGaps", () => {
   it("ignores a long stop where the rider did not move", () => {
     // An hour outside a coffee shop leaves a pause and no fabricated line.
     const still: ElevCoord[] = [
-      [-122.35, 47.65, 10],
-      [-122.35, 47.65, 10],
-      [-122.3501, 47.65, 10],
+      [-122.33, 47.68, 10],
+      [-122.33, 47.68, 10],
+      [-122.3301, 47.68, 10],
     ];
     expect(findRecordingGaps(still, [0, 60 * MINUTE, 61 * MINUTE])).toEqual([]);
   });

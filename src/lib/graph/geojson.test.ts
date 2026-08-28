@@ -23,8 +23,8 @@ describe("deriveSegment", () => {
 describe("buildGraphGeoJson", () => {
   const g = graph({
     nodes: [
-      { id: "nA", name: null, coord: [-122.35, 47.65] },
-      { id: "nB", name: null, coord: [-122.348, 47.65] },
+      { id: "nA", name: null, coord: [-122.33, 47.68] },
+      { id: "nB", name: null, coord: [-122.328, 47.68] },
     ],
     segments: [
       segment("s1", "nA", "nB", {
@@ -81,7 +81,7 @@ describe("buildPinsGeoJson", () => {
           kind: "drinkingWater",
           note: "north end of the lot",
           at: 0.25,
-          coord: [-122.349, 47.6502],
+          coord: [-122.329, 47.6802],
         },
       ],
     });
@@ -99,7 +99,7 @@ describe("buildPinsGeoJson", () => {
           kind: "drinkingWater",
           note: null,
           at: 0.5,
-          coord: [-122.35, 47.65],
+          coord: [-122.33, 47.68],
         },
       ],
     });

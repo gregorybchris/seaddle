@@ -10,8 +10,8 @@ function radians(degrees: number): number {
  * Great-circle distance in meters.
  *
  * Everything in this project is metric internally and converted only for
- * display. tuxc's version returned miles, which is exactly the kind of unit
- * ambiguity that produces a route claiming 6,000 feet of climbing.
+ * display. The earlier version returned miles, which is exactly the kind of
+ * unit ambiguity that produces a route claiming 6,000 feet of climbing.
  */
 export function haversineMeters(a: Coord, b: Coord): number {
   const dLat = radians(b[1] - a[1]);

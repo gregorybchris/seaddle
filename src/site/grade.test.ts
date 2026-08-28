@@ -4,10 +4,10 @@ import { GRADE_WINDOW_METERS, gradeRuns, gradesAlong } from "./grade";
 
 /** A line heading east at a fixed spacing, with the elevations given. */
 function line(elevations: number[], spacingMeters = 20): ElevCoord[] {
-  const perDegree = 111320 * Math.cos((47.65 * Math.PI) / 180);
+  const perDegree = 111320 * Math.cos((47.68 * Math.PI) / 180);
   return elevations.map((ele, i) => [
-    -122.35 + (i * spacingMeters) / perDegree,
-    47.65,
+    -122.33 + (i * spacingMeters) / perDegree,
+    47.68,
     ele,
   ]);
 }
@@ -54,7 +54,7 @@ describe("gradesAlong", () => {
 
   it("has no grade to report for a line too short to have one", () => {
     expect(gradesAlong([])).toEqual([]);
-    expect(gradesAlong([[-122.35, 47.65, 10]])).toEqual([0]);
+    expect(gradesAlong([[-122.33, 47.68, 10]])).toEqual([0]);
   });
 });
 
@@ -99,7 +99,7 @@ describe("gradeRuns", () => {
 
   it("has nothing to draw for a line with no length", () => {
     expect(gradeRuns([])).toEqual([]);
-    expect(gradeRuns([[-122.35, 47.65, 10]])).toEqual([]);
+    expect(gradeRuns([[-122.33, 47.68, 10]])).toEqual([]);
   });
 
   it("uses a window wide enough to outlast vertex spacing", () => {

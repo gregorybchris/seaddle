@@ -157,7 +157,7 @@ describe("swapSegmentDirection", () => {
         kind: "drinkingWater",
         note: null,
         at: 0.25,
-        coord: [-122.35, 47.65],
+        coord: [-122.33, 47.68],
       },
     ],
   });

@@ -462,9 +462,9 @@ site loads. A screen in the admin would be a second place to look for the same f
   segment color encoding. Development proceeds against **Mapbox Standard as a placeholder**; the
   Studio style is designed during the polish milestone and swapped in as a one-line style-URL
   change.
-- **Attribution stays on.** Mapbox requires it on every map — tuxc sets `attributionControl={false}`,
-  which is a licensing violation and must not be ported. It renders as the compact control,
-  styled to sit quietly in the corner.
+- **Attribution stays on.** Mapbox requires it on every map — the earlier codebase sets
+  `attributionControl={false}`, which is a licensing violation and must not be ported. It renders
+  as the compact control, styled to sit quietly in the corner.
 - **Segment color ramps** are per attribute and chosen for contrast against the muted basemap:
   steepness runs green → amber → rust with distinct lightness steps (so it survives deuteranopia,
   not just hue); protection is a single-hue sequential ramp across three steps; surroundings is a
@@ -494,11 +494,12 @@ A Mapbox token lives in `VITE_MAPBOX_TOKEN`. It ships to the browser by definiti
 restriction on the token is the only real protection** — it must be scoped to the production domain
 plus localhost before deploy.
 
-Structure mirrors the tuxc codebase (`components/` · `widgets/` · `lib/` · `db/`, kebab-case
-filenames, `@/` alias, eslint + prettier + prettier-plugin-tailwindcss, Radix primitives, Phosphor
-icons) with **modernized dependencies**: React 19, Tailwind v4, current Vite, flat eslint config.
+Structure mirrors an earlier project of mine (`components/` · `widgets/` · `lib/` · `db/`,
+kebab-case filenames, `@/` alias, eslint + prettier + prettier-plugin-tailwindcss, Radix
+primitives, Phosphor icons) with **modernized dependencies**: React 19, Tailwind v4, current Vite,
+flat eslint config.
 
-Ported from `/Users/chris/Documents/Code/Projects/Done/tuxc`:
+Ported from that project:
 
 - `lib/utilities/map-utils.ts` — haversine, bounds aggregation, fitting, GeoJSON line features
 - `lib/mapping/query-engine.ts` — the grid-cell spatial index, which is exactly the right structure

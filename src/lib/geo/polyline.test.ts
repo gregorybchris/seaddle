@@ -15,9 +15,9 @@ import {
 
 /** A straight run east along a parallel, so distances are easy to reason about. */
 const LINE: ElevCoord[] = [
-  [-122.35, 47.65, 10],
-  [-122.34, 47.65, 20],
-  [-122.33, 47.65, 15],
+  [-122.33, 47.68, 10],
+  [-122.32, 47.68, 20],
+  [-122.31, 47.68, 15],
 ];
 
 describe("polylineMeters", () => {
@@ -69,33 +69,33 @@ describe("elevationGain", () => {
 
 describe("projectOntoPolyline", () => {
   it("finds the foot of the perpendicular", () => {
-    const projection = projectOntoPolyline(LINE, [-122.345, 47.652]);
+    const projection = projectOntoPolyline(LINE, [-122.325, 47.682]);
     expect(projection.index).toBe(0);
-    expect(projection.coord[0]).toBeCloseTo(-122.345, 5);
-    expect(projection.coord[1]).toBeCloseTo(47.65, 5);
+    expect(projection.coord[0]).toBeCloseTo(-122.325, 5);
+    expect(projection.coord[1]).toBeCloseTo(47.68, 5);
     expect(projection.distanceMeters).toBeGreaterThan(220);
     expect(projection.distanceMeters).toBeLessThan(224);
   });
 
   it("clamps past the end rather than running off the line", () => {
-    const projection = projectOntoPolyline(LINE, [-122.2, 47.65]);
+    const projection = projectOntoPolyline(LINE, [-122.18, 47.68]);
     expect(projection.fraction).toBe(1);
-    expect(projection.coord[0]).toBeCloseTo(-122.33, 6);
+    expect(projection.coord[0]).toBeCloseTo(-122.31, 6);
   });
 
   it("reports position as a fraction usable as a pin's `at`", () => {
-    const projection = projectOntoPolyline(LINE, [-122.34, 47.65]);
+    const projection = projectOntoPolyline(LINE, [-122.32, 47.68]);
     expect(projection.fraction).toBeCloseTo(0.5, 2);
   });
 
   it("refuses an empty line", () => {
-    expect(() => projectOntoPolyline([], [-122.3, 47.6])).toThrow();
+    expect(() => projectOntoPolyline([], [-122.28, 47.63])).toThrow();
   });
 });
 
 describe("coordAtFraction", () => {
   it("inverts a projection", () => {
-    const target: [number, number] = [-122.3375, 47.65];
+    const target: [number, number] = [-122.3175, 47.68];
     const fraction = projectOntoPolyline(LINE, target).fraction;
     const [lon, lat] = coordAtFraction(LINE, fraction);
     expect(lon).toBeCloseTo(target[0], 5);
@@ -103,8 +103,8 @@ describe("coordAtFraction", () => {
   });
 
   it("clamps out-of-range fractions to the ends", () => {
-    expect(coordAtFraction(LINE, -1)[0]).toBeCloseTo(-122.35, 6);
-    expect(coordAtFraction(LINE, 2)[0]).toBeCloseTo(-122.33, 6);
+    expect(coordAtFraction(LINE, -1)[0]).toBeCloseTo(-122.33, 6);
+    expect(coordAtFraction(LINE, 2)[0]).toBeCloseTo(-122.31, 6);
   });
 });
 
@@ -128,14 +128,14 @@ describe("crop", () => {
 
 describe("snapEnds", () => {
   it("moves the endpoints onto the junctions and leaves the middle alone", () => {
-    const snapped = snapEnds(LINE, [-122.3501, 47.6501], [-122.3299, 47.6499]);
-    expect(snapped[0]).toEqual([-122.3501, 47.6501, 10]);
+    const snapped = snapEnds(LINE, [-122.3301, 47.6801], [-122.3099, 47.6799]);
+    expect(snapped[0]).toEqual([-122.3301, 47.6801, 10]);
     expect(snapped[1]).toEqual(LINE[1]);
-    expect(snapped[2]).toEqual([-122.3299, 47.6499, 15]);
+    expect(snapped[2]).toEqual([-122.3099, 47.6799, 15]);
   });
 
   it("keeps the original elevations", () => {
-    const snapped = snapEnds(LINE, [-122.4, 47.7], [-122.2, 47.6]);
+    const snapped = snapEnds(LINE, [-122.38, 47.73], [-122.18, 47.63]);
     expect(snapped[0][2]).toBe(10);
     expect(snapped[2][2]).toBe(15);
   });
@@ -143,13 +143,13 @@ describe("snapEnds", () => {
 
 /** Elevations along one arbitrary line — only the third value matters here. */
 function pts(elevations: number[]): ElevCoord[] {
-  return elevations.map((ele, i) => [-122.35 + i * 0.001, 47.65, ele]);
+  return elevations.map((ele, i) => [-122.33 + i * 0.001, 47.68, ele]);
 }
 
 describe("densify", () => {
   const sparse: ElevCoord[] = [
-    [-122.35, 47.65, 0],
-    [-122.34, 47.65, 60],
+    [-122.33, 47.68, 0],
+    [-122.32, 47.68, 60],
   ];
 
   it("leaves a line that is already dense enough alone", () => {

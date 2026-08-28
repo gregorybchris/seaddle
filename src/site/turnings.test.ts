@@ -5,7 +5,7 @@ import type { SiteGraph, SiteSegment } from "./graph-data";
 import { append, startRoute, EMPTY_ROUTE } from "./route";
 import { NEARBY, turnings } from "./turnings";
 
-const HUB: Coord = [-122.34, 47.65];
+const HUB: Coord = [-122.32, 47.68];
 const LAT = 111_320;
 const LON = 75_000;
 
@@ -52,7 +52,7 @@ function graph(): SiteGraph {
   return {
     segments: new Map(all.map((s) => [s.id, s])),
     adjacency: buildAdjacency(all),
-    bounds: { minLon: -122.35, minLat: 47.64, maxLon: -122.33, maxLat: 47.66 },
+    bounds: { minLon: -122.33, minLat: 47.67, maxLon: -122.31, maxLat: 47.69 },
   };
 }
 

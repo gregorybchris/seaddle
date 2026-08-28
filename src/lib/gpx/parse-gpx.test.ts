@@ -5,8 +5,8 @@ const MINIMAL = `<?xml version="1.0"?>
 <gpx version="1.1">
   <metadata><name><![CDATA[Green Lake]]></name></metadata>
   <trk><trkseg>
-    <trkpt lon="-122.35131" lat="47.64976"><ele>8.7</ele></trkpt>
-    <trkpt lon="-122.35127" lat="47.64975"><ele>8.8</ele></trkpt>
+    <trkpt lon="-122.331" lat="47.68"><ele>8.7</ele></trkpt>
+    <trkpt lon="-122.3309" lat="47.6799"><ele>8.8</ele></trkpt>
   </trkseg></trk>
 </gpx>`;
 
@@ -15,7 +15,7 @@ describe("parseGpx", () => {
     // Mapometer writes lon before lat. Reading positionally would put these
     // rides in Kazakhstan.
     const { points } = parseGpx(MINIMAL);
-    expect(points[0]).toEqual([-122.35131, 47.64976, 8.7]);
+    expect(points[0]).toEqual([-122.331, 47.68, 8.7]);
   });
 
   it("pulls the name out of CDATA", () => {

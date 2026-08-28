@@ -7,8 +7,8 @@ describe("sortGraph", () => {
     const sorted = sortGraph(
       graph({
         nodes: [
-          { id: "n2", name: null, coord: [-122.3, 47.6] },
-          { id: "n1", name: null, coord: [-122.3, 47.6] },
+          { id: "n2", name: null, coord: [-122.28, 47.63] },
+          { id: "n1", name: null, coord: [-122.28, 47.63] },
         ],
         segments: [segment("s2", "n1", "n2"), segment("s1", "n1", "n2")],
       }),
@@ -38,8 +38,8 @@ describe("validateGraph", () => {
   it("passes a clean graph", () => {
     const clean = graph({
       nodes: [
-        { id: "nA", name: null, coord: [-122.35, 47.65] },
-        { id: "nB", name: null, coord: [-122.34, 47.65] },
+        { id: "nA", name: null, coord: [-122.33, 47.68] },
+        { id: "nB", name: null, coord: [-122.32, 47.68] },
       ],
       segments: [segment("s1", "nA", "nB", { reviewed: true })],
     });
@@ -59,8 +59,8 @@ describe("validateGraph", () => {
     const problems = validateGraph(
       graph({
         nodes: [
-          { id: "nA", name: null, coord: [-122.35, 47.65] },
-          { id: "nB", name: null, coord: [-122.34, 47.65] },
+          { id: "nA", name: null, coord: [-122.33, 47.68] },
+          { id: "nB", name: null, coord: [-122.32, 47.68] },
         ],
         segments: [
           segment("s1", "nA", "nB", { reviewed: true }),
@@ -79,7 +79,7 @@ describe("validateGraph", () => {
 
   it("flags an orphan node", () => {
     const problems = validateGraph(
-      graph({ nodes: [{ id: "nLost", name: null, coord: [-122.35, 47.65] }] }),
+      graph({ nodes: [{ id: "nLost", name: null, coord: [-122.33, 47.68] }] }),
     );
     const orphan = problems.find((p) => /carry no segment/.test(p.message));
     // Naming it is the point: a warning is only useful if the thing it names
@@ -91,8 +91,8 @@ describe("validateGraph", () => {
     const problems = validateGraph(
       graph({
         nodes: [
-          { id: "nA", name: null, coord: [-122.35, 47.65] },
-          { id: "nB", name: null, coord: [-122.34, 47.65] },
+          { id: "nA", name: null, coord: [-122.33, 47.68] },
+          { id: "nB", name: null, coord: [-122.32, 47.68] },
         ],
         segments: [segment("s1", "nA", "nB", { reviewed: true })],
         pins: [
@@ -102,7 +102,7 @@ describe("validateGraph", () => {
             kind: "drinkingWater",
             note: null,
             at: 1.4,
-            coord: [-122.34, 47.65],
+            coord: [-122.32, 47.68],
           },
         ],
       }),
@@ -118,8 +118,8 @@ describe("validateGraph", () => {
     const problems = validateGraph(
       graph({
         nodes: [
-          { id: "nA", name: null, coord: [-122.35, 47.65] },
-          { id: "nB", name: null, coord: [-122.34, 47.65] },
+          { id: "nA", name: null, coord: [-122.33, 47.68] },
+          { id: "nB", name: null, coord: [-122.32, 47.68] },
         ],
         segments: [segment("s1", "nA", "nB")],
       }),
@@ -142,16 +142,16 @@ describe("serializeGraph formatting", () => {
     // numbers, and the file stops being reviewable in a diff.
     const serialized = serializeGraph(
       graph({
-        nodes: [{ id: "n1", name: null, coord: [-122.35123, 47.65123] }],
+        nodes: [{ id: "n1", name: null, coord: [-122.33123, 47.68123] }],
       }),
     );
-    expect(serialized).toContain('"coord": [-122.35123, 47.65123]');
+    expect(serialized).toContain('"coord": [-122.33123, 47.68123]');
   });
 
   it("still indents the structure around it", () => {
     const serialized = serializeGraph(
       graph({
-        nodes: [{ id: "n1", name: "Gas Works", coord: [-122.3, 47.6] }],
+        nodes: [{ id: "n1", name: "Gas Works", coord: [-122.28, 47.63] }],
       }),
     );
     expect(serialized).toContain('    "id": "n1"');
@@ -160,7 +160,7 @@ describe("serializeGraph formatting", () => {
 
   it("round-trips back to the same graph", () => {
     const original = graph({
-      nodes: [{ id: "n1", name: null, coord: [-122.35, 47.65] }],
+      nodes: [{ id: "n1", name: null, coord: [-122.33, 47.68] }],
       segments: [segment("s1", "n1", "n1")],
     });
     expect(JSON.parse(serializeGraph(original))).toEqual(sortGraph(original));
@@ -176,7 +176,7 @@ describe("unused junction reporting", () => {
         nodes: Array.from({ length: 12 }, (_, i) => ({
           id: `n${String(i + 1).padStart(3, "0")}`,
           name: null,
-          coord: [-122.35, 47.65] as [number, number],
+          coord: [-122.33, 47.68] as [number, number],
         })),
       }),
     );
@@ -190,8 +190,8 @@ describe("unused junction reporting", () => {
     const problems = validateGraph(
       graph({
         nodes: [
-          { id: "nA", name: null, coord: [-122.35, 47.65] },
-          { id: "nB", name: null, coord: [-122.34, 47.65] },
+          { id: "nA", name: null, coord: [-122.33, 47.68] },
+          { id: "nB", name: null, coord: [-122.32, 47.68] },
         ],
         segments: [segment("s1", "nA", "nB", { reviewed: true })],
       }),

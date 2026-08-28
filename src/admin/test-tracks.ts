@@ -2,7 +2,7 @@ import { fromLocalMeters, haversineMeters } from "@/lib/geo/distance";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
 import type { Track } from "@/lib/models/track";
 
-const ORIGIN: Coord = [-122.35, 47.65];
+const ORIGIN: Coord = [-122.33, 47.68];
 
 /** A coordinate a given number of meters east and north of a fixed origin. */
 export function at(east: number, north: number): Coord {

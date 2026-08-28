@@ -5,10 +5,10 @@ import { elevationProfile, sampleAt } from "./profile";
 /** A line whose vertices are deliberately uneven: dense, then one long jump. */
 function unevenClimb(): ElevCoord[] {
   return [
-    [-122.35, 47.65, 0],
-    [-122.3499, 47.65, 10],
-    [-122.3498, 47.65, 20],
-    [-122.34, 47.65, 30],
+    [-122.33, 47.68, 0],
+    [-122.3299, 47.68, 10],
+    [-122.3298, 47.68, 20],
+    [-122.32, 47.68, 30],
   ];
 }
 
@@ -42,8 +42,8 @@ describe("elevationProfile", () => {
 
   it("draws a flat line for flat ground", () => {
     const flat: ElevCoord[] = [
-      [-122.35, 47.65, 12],
-      [-122.34, 47.65, 12],
+      [-122.33, 47.68, 12],
+      [-122.32, 47.68, 12],
     ];
     const profile = elevationProfile(flat, 8);
     expect(new Set(profile.samples)).toEqual(new Set([12]));
@@ -52,7 +52,7 @@ describe("elevationProfile", () => {
 
   it("survives lines too short to have a shape", () => {
     expect(elevationProfile([], 8).samples).toEqual([]);
-    expect(elevationProfile([[-122.35, 47.65, 5]], 4).samples).toEqual([
+    expect(elevationProfile([[-122.33, 47.68, 5]], 4).samples).toEqual([
       5, 5, 5, 5,
     ]);
   });

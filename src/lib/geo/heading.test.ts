@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
 import { bearingDegrees, compassPoint, departureHeading } from "./heading";
 
-const HUB: Coord = [-122.34, 47.65];
+const HUB: Coord = [-122.32, 47.68];
 
 /** Roughly a degree of latitude and of longitude at Seattle, in meters. */
 const LAT = 111_320;

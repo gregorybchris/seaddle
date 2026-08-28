@@ -24,5 +24,5 @@ export function graph(overrides: Partial<GraphFile> = {}): GraphFile {
 
 /** A short line climbing east, so forward and backward gain differ. */
 export function line(elevations: number[] = [0, 10, 20]): ElevCoord[] {
-  return elevations.map((ele, i) => [-122.35 + i * 0.001, 47.65, ele]);
+  return elevations.map((ele, i) => [-122.33 + i * 0.001, 47.68, ele]);
 }

@@ -10,7 +10,7 @@ describe("writeGpx", () => {
   });
 
   it("writes latitude and longitude the way GPX readers expect", () => {
-    expect(gpx).toContain('<trkpt lat="47.65" lon="-122.35">');
+    expect(gpx).toContain('<trkpt lat="47.68" lon="-122.33">');
   });
 
   it("carries elevation, which is half the reason to export at all", () => {

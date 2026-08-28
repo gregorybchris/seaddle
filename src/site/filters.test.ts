@@ -18,8 +18,8 @@ function segment(over: Partial<SiteSegment> = {}): SiteSegment {
     from: "nA",
     to: "nB",
     points: [
-      [-122.35, 47.65, 0],
-      [-122.34, 47.65, 0],
+      [-122.33, 47.68, 0],
+      [-122.32, 47.68, 0],
     ],
     meters: 1000,
     gainForward: 0,

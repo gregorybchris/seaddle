@@ -15,10 +15,10 @@ type Cell<T> = { coord: Coord; item: T }[];
  * and scanning them all would be visible. Cells are sized to the query radius,
  * so a query only ever has to look at the 3×3 block around its center.
  *
- * Adapted from tuxc's QueryEngine, with one change: that version inserted every
- * point into all nine of its neighboring cells, which made the index nine
- * times larger than the data. Fanning out at query time instead of insert time
- * gives the same answers.
+ * Adapted from an earlier project's QueryEngine, with one change: that version
+ * inserted every point into all nine of its neighboring cells, which made the
+ * index nine times larger than the data. Fanning out at query time instead of
+ * insert time gives the same answers.
  */
 export class SpatialIndex<T> {
   private readonly cells: Map<string, Cell<T>> = new Map();
