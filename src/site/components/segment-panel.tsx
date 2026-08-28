@@ -171,16 +171,22 @@ function Reading({ segment }: { segment: SiteSegment }) {
         >
           {segment.name ?? "Unnamed road"}
         </h2>
-        {/* Held off the name rather than sitting straight under it: they are a
-            different question — how big is this road, not which road is this —
-            and butted together at these two sizes they read as one wrapped
-            heading. The gap is what says the name has finished.
+        {/* Held well off the name rather than sitting straight under it: they
+            are a different question — how big is this road, not which road is
+            this — and butted together at these two sizes they read as one
+            wrapped heading. The gap is what says the name has finished.
+
+            Eight pixels, which is more than it sounds like it should need: a
+            first pass at four disappeared into the leading, and the eye reads
+            the distance from the name's baseline rather than from the bottom of
+            its line box. Twelve is too many — by then the figures have stopped
+            belonging to the name above them.
 
             The arrow is set at full strength while the numbers stay dimmed: at
             this size a ↑ in the same wash as the digits reads as a 1, and it is
             nudged off them by less than a space so the pair still reads as one
             figure. */}
-        <p className="tabular text-sand/70 mt-1 text-xs md:mt-1.5 md:text-sm">
+        <p className="tabular text-sand/70 mt-2 text-xs md:mt-2.5 md:text-sm">
           {distance(segment.meters)} ·{" "}
           <span className="text-sand mr-0.5">↑</span>
           {climb(climbOf(segment))}
