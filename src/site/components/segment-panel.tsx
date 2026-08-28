@@ -66,7 +66,9 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
         segment ? (
           <Reading segment={segment} />
         ) : (
-          <StartHere>{PICK} any road to see what it is like.</StartHere>
+          <StartHere headline="Get to know a road">
+            {PICK} any road to see what it is like.
+          </StartHere>
         )
       }
     >
@@ -78,17 +80,17 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
         </p>
 
         {segment ? (
-          <>
+          // Chart and caption together, because the caption is about the
+          // chart. Both are gone while the sheet is down, where all the chart
+          // could show is its own top inch — and a sentence explaining a
+          // picture that is not on screen is worse than either of them alone.
+          <div className="flex flex-col gap-2 max-md:group-data-[collapsed]/sheet:hidden">
             {/* Keyed on the road, so the marker and the reading under the chart
-                start again rather than carrying over from the last one.
-
-                Gone while the sheet is down, where all it could show is the top
-                inch of itself under the panel's own edge. */}
+                start again rather than carrying over from the last one. */}
             <ElevationProfile
               key={segment.id}
               points={segment.points}
               onScrub={onScrub}
-              className="max-md:group-data-[collapsed]/sheet:hidden"
             />
             {/* The chart is a road laid out left to right and the map is not,
                 so this is the sentence that joins them. It names the two marks
@@ -98,7 +100,7 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
               The chart runs from the green dot to the checkered flag. You can
               ride it either way.
             </p>
-          </>
+          </div>
         ) : (
           <HowExploringWorks />
         )}
