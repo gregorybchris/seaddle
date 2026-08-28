@@ -6,4 +6,5 @@ src/db/tracks
 src/db/geometry
 public/*.geojson
 specs
+planning
 logos
