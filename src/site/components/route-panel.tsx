@@ -1,7 +1,6 @@
 import {
   ArrowUUpLeft,
   ArrowUUpRight,
-  ArrowsLeftRight,
   DownloadSimple,
   Trash,
   X,
@@ -48,7 +47,6 @@ type RoutePanelProps = {
   canUndo: boolean;
   canRedo: boolean;
   onClear: () => void;
-  onOutAndBack: () => void;
   onLoad: (encoded: string) => void;
   onScrub: (fraction: number | null) => void;
   /** The roads that can be taken next, for picking without the map. */
@@ -66,7 +64,6 @@ export function RoutePanel({
   canUndo,
   canRedo,
   onClear,
-  onOutAndBack,
   onLoad,
   onScrub,
   turnings,
@@ -186,23 +183,14 @@ export function RoutePanel({
               Redo
             </Button>
             {started && (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={onOutAndBack}
-                  title="Ride the same way home"
-                >
-                  <ArrowsLeftRight weight="bold" className="h-4 w-4" />
-                  And back
-                </Button>
-                <Button
-                  variant="quiet"
-                  onClick={onClear}
-                  aria-label="Start over"
-                >
-                  <Trash weight="bold" className="h-4 w-4" />
-                </Button>
-              </>
+              <Button
+                variant="danger"
+                className="px-2 text-xs"
+                onClick={onClear}
+              >
+                <Trash weight="bold" className="h-4 w-4" />
+                Start over
+              </Button>
             )}
           </div>
         )}

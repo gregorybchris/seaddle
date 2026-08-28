@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 
-type Variant = "primary" | "outline" | "quiet";
+type Variant = "primary" | "outline" | "quiet" | "danger";
 
 /**
  * Chunky and obviously pressable: a solid fill, a defined edge, and a hard
@@ -20,6 +20,11 @@ const VARIANTS: Record<Variant, string> = {
   outline:
     "border-sand/25 bg-forest-lift/40 text-sand shadow-[2px_2px_0_0_var(--color-forest-deep)] hover:bg-forest-lift/70",
   quiet: "border-transparent text-sand/70 hover:bg-sand/10 hover:text-sand",
+  // Built like primary, and pale-lettered where primary is dark: forest type on
+  // clay lands at 3:1, which is under the floor for text this size, while paper
+  // on the same fill clears it.
+  danger:
+    "border-clay-deep bg-clay text-paper shadow-[2px_2px_0_0_var(--color-clay-deep)] hover:brightness-110",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

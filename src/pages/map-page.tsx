@@ -15,7 +15,6 @@ import {
   append,
   EMPTY_ROUTE,
   isEmpty,
-  outAndBack,
   routePoints,
   startRoute,
 } from "@/site/route";
@@ -154,7 +153,6 @@ export function MapPage() {
         canUndo={canUndo}
         canRedo={canRedo}
         onClear={() => changeRoute(EMPTY_ROUTE)}
-        onOutAndBack={() => changeRoute(outAndBack(route))}
         // A saved ride is finished, so it is shown whole rather than framed
         // on wherever it could still go.
         onLoad={load}
