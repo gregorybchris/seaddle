@@ -925,12 +925,12 @@
     },
     {
       "id": "s027",
-      "from": "n042",
-      "to": "n027",
+      "from": "n027",
+      "to": "n042",
       "source": {
         "track": "afternoon-ride",
-        "startIndex": 2222,
-        "endIndex": 1748
+        "startIndex": 1748,
+        "endIndex": 2222
       },
       "name": "Burke Gilman Through Kenmore",
       "steepness": "flat",
@@ -1240,12 +1240,12 @@
     },
     {
       "id": "s050",
-      "from": "n071",
-      "to": "n026",
+      "from": "n026",
+      "to": "n071",
       "source": {
         "track": "interurban-to-lake-wa",
-        "startIndex": 946,
-        "endIndex": 918
+        "startIndex": 918,
+        "endIndex": 946
       },
       "name": "Ballinger Commons South",
       "steepness": "flat",
@@ -2395,12 +2395,12 @@
     },
     {
       "id": "s132",
-      "from": "n088",
-      "to": "n043",
+      "from": "n043",
+      "to": "n088",
       "source": {
         "track": "2026-07-05-morning-ride",
-        "startIndex": 4860,
-        "endIndex": 4571
+        "startIndex": 4571,
+        "endIndex": 4860
       },
       "name": "North Bellevue to 520 Bridge",
       "steepness": "rolling",
@@ -2725,12 +2725,12 @@
     },
     {
       "id": "s155",
-      "from": "n113",
-      "to": "n043",
+      "from": "n043",
+      "to": "n113",
       "source": {
         "track": "2026-07-05-morning-ride",
-        "startIndex": 4367,
-        "endIndex": 4571
+        "startIndex": 4571,
+        "endIndex": 4367
       },
       "name": "Northup to North Bellevue",
       "steepness": "rolling",
@@ -2875,12 +2875,12 @@
     },
     {
       "id": "s165",
-      "from": "n125",
-      "to": "n126",
+      "from": "n126",
+      "to": "n125",
       "source": {
         "track": "2026-07-06-morning-ride",
-        "startIndex": 8555,
-        "endIndex": 6679
+        "startIndex": 6679,
+        "endIndex": 8555
       },
       "name": "Bainbridge SE",
       "steepness": "flat",
@@ -2890,12 +2890,12 @@
     },
     {
       "id": "s166",
-      "from": "n127",
-      "to": "n124",
+      "from": "n124",
+      "to": "n127",
       "source": {
         "track": "2026-07-06-morning-ride",
-        "startIndex": 4224,
-        "endIndex": 2355
+        "startIndex": 2355,
+        "endIndex": 4224
       },
       "name": "Bainbridge NE",
       "steepness": "rolling",
@@ -3130,7 +3130,7 @@
       "segment": "s027",
       "kind": "drinkingWater",
       "note": "This fountain could be cleaner, but it does have water",
-      "at": 0.9408194572509971,
+      "at": 0.05918054274900286,
       "coord": [-122.276573, 47.753283]
     },
     {
@@ -3210,7 +3210,7 @@
       "segment": "s165",
       "kind": "restStop",
       "note": null,
-      "at": 0.9996530084887466,
+      "at": 0.00034699151125339167,
       "coord": [-122.547398, 47.60444]
     },
     {
@@ -3292,6 +3292,14 @@
       "note": "Trail narrows, keep right",
       "at": 0.6267472398435208,
       "coord": [-122.304547, 47.647335]
+    },
+    {
+      "id": "p042",
+      "segment": "s058",
+      "kind": "hazard",
+      "note": "Construction barrels narrow trail. Slow down and keep right",
+      "at": 0.003020522602627385,
+      "coord": [-122.386258, 47.65588]
     }
   ]
 }
