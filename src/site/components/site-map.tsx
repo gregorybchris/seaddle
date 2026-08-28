@@ -1,6 +1,6 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAP_STYLE } from "@/lib/map-style";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, {
   AttributionControl,
   Layer,
@@ -34,8 +34,20 @@ import {
   type Route,
 } from "../route";
 import type { Framing } from "../use-route-history";
+import { closedNotice, whyClosed } from "../why-closed";
+import { MapNotice, type Notice } from "./map-notice";
 
+/**
+ * The two invisible bands a pointer actually hits: one over the roads that can
+ * be picked, one over the roads that cannot.
+ *
+ * Two rather than one, because a hit on either has a different answer — a pick,
+ * or an explanation of why not — and because the open band being consulted
+ * first is what keeps a closed road running a few meters away from stealing a
+ * click meant for the bright one beside it.
+ */
 const CLICKABLE = "segments-hit";
+const CLOSED = "segments-hit-closed";
 
 /** Every line on this map is a road, and a road has rounded ends and corners. */
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
@@ -139,6 +151,25 @@ type SiteMapProps = {
 };
 
 /**
+ * The roads one of the hit bands caught, which is not the same as the roads
+ * caught in total.
+ *
+ * Sorted by which layer they came from rather than checked against the list of
+ * open segments afterwards, because the layers already hold that distinction
+ * and asking them is cheaper than asking again.
+ */
+function hitsIn(event: MapLayerMouseEvent, layer: string): SegmentId[] {
+  return (event.features ?? [])
+    .filter((feature) => feature.layer?.id === layer)
+    .map((feature) => String(feature.properties?.id ?? ""))
+    .filter(Boolean);
+}
+
+function pointOf(event: MapLayerMouseEvent): [number, number] {
+  return [event.lngLat.lng, event.lngLat.lat];
+}
+
+/**
  * Which road the tap meant, when a wide target caught more than one.
  *
  * Two roads running a few meters apart both fall inside a 22-pixel band, and
@@ -146,16 +177,13 @@ type SiteMapProps = {
  * by distance instead, which is what the person aiming meant.
  */
 function nearestOf(
-  event: MapLayerMouseEvent,
+  hits: SegmentId[],
+  at: [number, number],
   graph: SiteGraph,
 ): SegmentId | null {
-  const hits = (event.features ?? [])
-    .map((feature) => String(feature.properties?.id ?? ""))
-    .filter(Boolean);
   if (hits.length === 0) return null;
   if (hits.length === 1) return hits[0];
 
-  const at: [number, number] = [event.lngLat.lng, event.lngLat.lat];
   let best = hits[0];
   let closest = Infinity;
   for (const id of hits) {
@@ -201,6 +229,9 @@ export function SiteMap({
   /** Whether the map exists yet, which is not the same as this having rendered. */
   const [ready, setReady] = useState(false);
   const [openPin, setOpenPin] = useState<string | null>(null);
+  /** Why the last tap landed on nothing, if it landed on a road at all. */
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const clearNotice = useCallback(() => setNotice(null), []);
 
   /**
    * Which pins to draw.
@@ -366,6 +397,11 @@ export function SiteMap({
     );
   }, [framing, route, graph]);
 
+  // No message outlives the ride it was about. Undoing back to a junction can
+  // make the road it named perfectly pickable, and a note still insisting
+  // otherwise is worse than no note at all.
+  useEffect(() => setNotice(null), [route]);
+
   const opened = shown.find(({ pin }) => pin.id === openPin)?.pin ?? null;
 
   /**
@@ -376,7 +412,7 @@ export function SiteMap({
    * instead would let the label name one road and the click take another.
    */
   function roadUnder(event: MapLayerMouseEvent): Hovered | null {
-    const id = nearestOf(event, graph);
+    const id = nearestOf(hitsIn(event, CLICKABLE), pointOf(event), graph);
     const segment = id ? graph.segments.get(id) : null;
     if (!segment) return null;
 
@@ -414,9 +450,12 @@ export function SiteMap({
         // is clickable teaches a beginner nothing about where they may go.
         cursor={overRoad ? "pointer" : "grab"}
         onLoad={() => setReady(true)}
-        interactiveLayerIds={[CLICKABLE]}
+        interactiveLayerIds={[CLICKABLE, CLOSED]}
         onMouseMove={(event: MapLayerMouseEvent) => {
-          setOverRoad(Boolean(event.features?.length));
+          // Only the open band counts. A road that is out of play is now under
+          // a hit target too, and answering a hover on it with a pointer and a
+          // label would say it can be picked at the moment it cannot.
+          setOverRoad(hitsIn(event, CLICKABLE).length > 0);
           setHovered(roadUnder(event));
         }}
         onMouseOut={() => {
@@ -439,8 +478,28 @@ export function SiteMap({
           // A tap fires this without ever hovering, and the label would then sit
           // over the map with nothing under it until something else cleared it.
           setHovered(null);
-          const id = nearestOf(event, graph);
-          if (id) onPick(id);
+          const at = pointOf(event);
+
+          const picked = nearestOf(hitsIn(event, CLICKABLE), at, graph);
+          if (picked) {
+            setNotice(null);
+            onPick(picked);
+            return;
+          }
+
+          // Nothing pickable was under the tap. If a road was, say why it did
+          // nothing — that a route has to join up is the one rule of this map,
+          // and a beginner has no way to guess it from a line going faint.
+          const missed = nearestOf(hitsIn(event, CLOSED), at, graph);
+          const reason = missed ? whyClosed(route, missed, graph) : null;
+          setNotice(
+            missed && reason
+              ? {
+                  ...closedNotice(reason, route, dimmed.includes(missed)),
+                  at: Date.now(),
+                }
+              : null,
+          );
         }}
       >
         <Source id="graph" type="geojson" data={data}>
@@ -469,6 +528,21 @@ export function SiteMap({
                 ? dimming(dimmed, 0.25, 1)
                 : 0) as never,
               "line-width": openWidth(route),
+            }}
+            layout={ROUNDED}
+          />
+          {/* The same wide band over everything that cannot be picked, and
+            underneath the one that can. Nothing here is ever selected — it is
+            only what lets a tap on a faded road be answered with a reason
+            rather than with silence. */}
+          <Layer
+            id={CLOSED}
+            type="line"
+            filter={["!", ["in", ["get", "id"], ["literal", open]]]}
+            paint={{
+              "line-color": "#000000",
+              "line-opacity": 0,
+              "line-width": HIT_WIDTH,
             }}
             layout={ROUNDED}
           />
@@ -597,6 +671,7 @@ export function SiteMap({
       </Map>
 
       {hovered && <RoadTip hovered={hovered} />}
+      <MapNotice notice={notice} onDone={clearNotice} />
     </div>
   );
 }

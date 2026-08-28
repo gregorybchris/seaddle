@@ -10,13 +10,17 @@ import { cn } from "@/lib/utilities/style-utils";
 export type Detent = "peek" | "half" | "full";
 
 /**
- * How much of the viewport the sheet shows at each resting height.
+ * The resting height the sheet spends most of its time at.
  *
- * `peek` is sized to clear the pinned header — the counts and the mode switch —
- * because a resting height that cuts the mode switch in half would make the
- * control you need most the one you have to drag for.
+ * Sized to clear the pinned header — the counts and the mode switch — because
+ * a resting height that cuts the mode switch in half would make the control
+ * you need most the one you have to drag for. Exported because anything laid
+ * over the map has to sit clear of it.
  */
-const DETENT_VH: Record<Detent, number> = { peek: 22, half: 52, full: 88 };
+export const PEEK_VH = 22;
+
+/** How much of the viewport the sheet shows at each resting height. */
+const DETENT_VH: Record<Detent, number> = { peek: PEEK_VH, half: 52, full: 88 };
 const ORDER: Detent[] = ["peek", "half", "full"];
 
 /**
