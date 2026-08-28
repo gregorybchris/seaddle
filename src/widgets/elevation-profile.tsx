@@ -1,4 +1,5 @@
 import { useId, useRef, useState } from "react";
+import { spanBetween, type Span } from "@/lib/geo/polyline";
 import { elevationProfile, sampleAt } from "@/lib/geo/profile";
 import type { ElevCoord } from "@/lib/models/geo";
 import { cn } from "@/lib/utilities/style-utils";
@@ -6,6 +7,16 @@ import { useUnits } from "@/lib/use-units";
 
 const WIDTH = 300;
 const HEIGHT = 64;
+
+/**
+ * How far a press has to travel before it counts as a band rather than a tap.
+ *
+ * Three samples of ninety-six is about a tenth of an inch on the drawn chart:
+ * enough that a thumb landing untidily still gets the point reading it asked
+ * for, and little enough that a deliberate drag is a band from the moment it
+ * starts to look like one.
+ */
+const MIN_BAND = 3;
 
 /**
  * The shape of the ride, drawn to scale along its length, and readable at any
@@ -16,6 +27,15 @@ const HEIGHT = 64;
  * question the picture immediately provokes. The vertical range is held to a
  * floor so a flat trail does not draw like a mountain range just because the
  * axis was fitted to three meters of noise.
+ *
+ * A press that travels reads a stretch rather than a point, and only while it
+ * is held. The caption keeps its two slots — a distance on the left and a
+ * climb on the right — and they answer about the band instead of the ride: how
+ * long is that hill, and how much climbing is in it. The climb is the one the
+ * drag was going in, so sweeping back across a hill you just measured gives
+ * you the other side of it rather than the same number again. The question is
+ * asked of a piece of road with no name, so there is nowhere to put a lasting
+ * answer and nothing to dismiss afterwards.
  */
 export function ElevationProfile({
   points,
@@ -36,6 +56,10 @@ export function ElevationProfile({
   const gradientId = useId();
   const chart = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState<number | null>(null);
+  // Where the press landed, held for as long as it is down. Doubles as "a drag
+  // is in progress", which is the only thing that separates reading a stretch
+  // from reading a point.
+  const [from, setFrom] = useState<number | null>(null);
   // Above the early return below, where a hook cannot go.
   const { distance, climb } = useUnits();
 
@@ -63,21 +87,36 @@ export function ElevationProfile({
   const steps = profile.samples.length - 1;
   const reading = at === null ? null : sampleAt(profile, at / steps);
 
+  /**
+   * Measured off the real points, not the ninety-six drawn samples, which would
+   * quietly shave the climbing off every band. Anchor first and pointer second,
+   * so a drag back down the chart is measured back down the road.
+   */
+  function bandOf(start: number, end: number): Span | null {
+    if (Math.abs(start - end) < MIN_BAND) return null;
+    return spanBetween(points, start / steps, end / steps);
+  }
+
+  const band = at === null || from === null ? null : bandOf(from, at);
+
   /** Reported from the handlers rather than during render, where it would be a side effect. */
-  function scrubTo(index: number | null) {
+  function scrubTo(index: number | null, start: number | null = null) {
     setAt(index);
+    setFrom(start);
     onScrub?.(index === null ? null : index / steps);
   }
 
-  function moveTo(event: React.PointerEvent) {
+  function indexAt(event: React.PointerEvent): number | null {
     const box = chart.current?.getBoundingClientRect();
-    if (!box || box.width === 0) return;
+    if (!box || box.width === 0) return null;
     const fraction = (event.clientX - box.left) / box.width;
-    scrubTo(Math.round(Math.max(0, Math.min(1, fraction)) * steps));
+    return Math.round(Math.max(0, Math.min(1, fraction)) * steps);
   }
 
-  function nudge(by: number) {
-    scrubTo(Math.max(0, Math.min(steps, (at ?? Math.round(steps / 2)) + by)));
+  function nudge(by: number, extend = false) {
+    const now = at ?? Math.round(steps / 2);
+    const next = Math.max(0, Math.min(steps, now + by));
+    scrubTo(next, extend ? (from ?? now) : null);
   }
 
   return (
@@ -93,19 +132,40 @@ export function ElevationProfile({
         aria-valuemax={Math.round(profile.meters)}
         aria-valuenow={Math.round(reading?.meters ?? 0)}
         aria-valuetext={
-          reading
-            ? `${distance(reading.meters)}, ${climb(reading.elevation)}`
-            : "Nothing selected"
+          band
+            ? `${distance(band.meters)} and ${climb(band.gain)} of climbing, from ${distance(band.fromMeters)} to ${distance(band.toMeters)}`
+            : reading
+              ? `${distance(reading.meters)}, ${climb(reading.elevation)}`
+              : "Nothing selected"
         }
-        onPointerMove={moveTo}
-        onPointerDown={moveTo}
+        onPointerMove={(event) => {
+          const index = indexAt(event);
+          // `from` is set only while the press is down, so a pointer merely
+          // passing over the chart reads a point and nothing more.
+          if (index !== null) scrubTo(index, from);
+        }}
+        onPointerDown={(event) => {
+          const index = indexAt(event);
+          if (index === null) return;
+          // Captured so a drag that strays off these sixty-four pixels — which
+          // a mouse sweeping sideways does constantly — keeps reading the band
+          // instead of cancelling it.
+          event.currentTarget.setPointerCapture(event.pointerId);
+          scrubTo(index, index);
+        }}
+        // Letting go drops the band and leaves the point under the pointer,
+        // which is where a desktop reader still is. A finger is not: lifting it
+        // ends the touch, and the leave that follows clears the rest.
+        onPointerUp={() => scrubTo(at, null)}
+        onPointerCancel={() => scrubTo(null)}
         onPointerLeave={() => scrubTo(null)}
         onBlur={() => scrubTo(null)}
         onKeyDown={(event) => {
-          if (event.key === "ArrowRight") nudge(1);
-          else if (event.key === "ArrowLeft") nudge(-1);
+          if (event.key === "ArrowRight") nudge(1, event.shiftKey);
+          else if (event.key === "ArrowLeft") nudge(-1, event.shiftKey);
           else if (event.key === "Home") scrubTo(0);
           else if (event.key === "End") scrubTo(steps);
+          else if (event.key === "Escape") scrubTo(null);
           else return;
           event.preventDefault();
         }}
@@ -142,13 +202,27 @@ export function ElevationProfile({
 
         {/* Drawn over the chart rather than inside it: the SVG is stretched to
             fit, so a circle in its coordinates would come out an ellipse. */}
+        {band && at !== null && from !== null && (
+          // Both edges ruled, because a band with one edge is a marker with a
+          // wash beside it and says nothing about where it began.
+          <span
+            aria-hidden
+            className="border-blaze/60 bg-blaze/15 pointer-events-none absolute inset-y-0 border-x"
+            style={{
+              left: `${(Math.min(from, at) / steps) * 100}%`,
+              width: `${(Math.abs(at - from) / steps) * 100}%`,
+            }}
+          />
+        )}
         {at !== null && reading && (
           <>
-            <span
-              aria-hidden
-              className="bg-blaze/50 pointer-events-none absolute inset-y-0 w-px"
-              style={{ left: `${(at / steps) * 100}%` }}
-            />
+            {!band && (
+              <span
+                aria-hidden
+                className="bg-blaze/50 pointer-events-none absolute inset-y-0 w-px"
+                style={{ left: `${(at / steps) * 100}%` }}
+              />
+            )}
             <span
               aria-hidden
               className="bg-blaze border-forest pointer-events-none absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border"
@@ -162,9 +236,16 @@ export function ElevationProfile({
       </div>
 
       {/* Same two slots either way, so reading the hill does not shift the
-          panel under the pointer. */}
+          panel under the pointer — and the same two questions, distance on the
+          left and climb on the right, whether the subject is a point on the
+          ride or a band of it. */}
       <figcaption className="tabular flex justify-between text-[0.625rem]">
-        {reading ? (
+        {band ? (
+          <>
+            <span className="text-blaze">{distance(band.meters)}</span>
+            <span className="text-blaze">{climb(band.gain)}</span>
+          </>
+        ) : reading ? (
           <>
             <span className="text-blaze">{distance(reading.meters)}</span>
             <span className="text-blaze">{climb(reading.elevation)}</span>

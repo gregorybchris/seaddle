@@ -11,6 +11,7 @@ import {
   projectOntoPolyline,
   reversed,
   snapEnds,
+  spanBetween,
 } from "./polyline";
 
 /** A straight run east along a parallel, so distances are easy to reason about. */
@@ -185,5 +186,62 @@ describe("densify", () => {
   it("passes through lines too short to have a gap", () => {
     expect(densify([], 15)).toEqual([]);
     expect(densify([sparse[0]], 15)).toEqual([sparse[0]]);
+  });
+});
+
+describe("spanBetween", () => {
+  // Eleven evenly spaced points climbing to a peak halfway and back down.
+  const HILL = pts([0, 10, 20, 30, 40, 50, 40, 30, 20, 10, 0]);
+
+  it("measures the whole line the way the pipeline does", () => {
+    const span = spanBetween(HILL, 0, 1);
+    expect(span.meters).toBeCloseTo(polylineMeters(HILL), 6);
+    expect(span.gain).toBe(elevationGain(HILL));
+  });
+
+  it("climbs only what is inside the band", () => {
+    // The first half is all up, the second half all down.
+    expect(spanBetween(HILL, 0, 0.5).gain).toBeCloseTo(50, 6);
+    expect(spanBetween(HILL, 0.5, 1).gain).toBe(0);
+  });
+
+  it("climbs the way it was read, not the way it was drawn", () => {
+    // The descent off the back of the hill, dragged right to left: read that
+    // way it is the climb up the back of it.
+    expect(spanBetween(HILL, 1, 0.5).gain).toBeCloseTo(50, 6);
+    expect(spanBetween(HILL, 0.5, 0).gain).toBe(0);
+  });
+
+  it("is the same length whichever way it was read", () => {
+    expect(spanBetween(HILL, 0.7, 0.2).meters).toBeCloseTo(
+      spanBetween(HILL, 0.2, 0.7).meters,
+      6,
+    );
+  });
+
+  it("cuts between vertices rather than snapping to them", () => {
+    // A tenth of the way into the first leg, where there is no point.
+    const span = spanBetween(HILL, 0, 0.01);
+    expect(span.meters).toBeCloseTo(polylineMeters(HILL) * 0.01, 6);
+  });
+
+  it("clamps a drag that ran off the end", () => {
+    expect(spanBetween(HILL, -0.5, 2)).toEqual(spanBetween(HILL, 0, 1));
+  });
+
+  it("reports the ends the way round they were given", () => {
+    const span = spanBetween(HILL, 0.7, 0.2);
+    expect(span.fromMeters).toBeGreaterThan(span.toMeters);
+  });
+
+  it("is empty when both ends landed in the same place", () => {
+    const span = spanBetween(HILL, 0.4, 0.4);
+    expect(span.meters).toBeCloseTo(0, 6);
+    expect(span.gain).toBe(0);
+  });
+
+  it("has nothing to measure on a line too short to have a length", () => {
+    expect(spanBetween([], 0, 1).meters).toBe(0);
+    expect(spanBetween([HILL[0]], 0, 1).meters).toBe(0);
   });
 });

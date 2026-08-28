@@ -57,6 +57,86 @@ export function reversed(points: ElevCoord[]): ElevCoord[] {
   return [...points].reverse();
 }
 
+export type Span = {
+  /** How far along the line the stretch was started and ended from. */
+  fromMeters: number;
+  toMeters: number;
+  /** The stretch's own length, and what it climbs read `from` → `to`. */
+  meters: number;
+  gain: number;
+};
+
+/** The point a given distance along a line, elevation included. */
+function atMeters(
+  points: ElevCoord[],
+  cumulative: number[],
+  meters: number,
+): ElevCoord {
+  let i = 1;
+  while (i < cumulative.length - 1 && cumulative[i] < meters) i++;
+  const span = cumulative[i] - cumulative[i - 1];
+  const t = span === 0 ? 0 : (meters - cumulative[i - 1]) / span;
+  const from = points[i - 1];
+  const to = points[i];
+  return [
+    from[0] + (to[0] - from[0]) * t,
+    from[1] + (to[1] - from[1]) * t,
+    from[2] + (to[2] - from[2]) * t,
+  ];
+}
+
+/**
+ * Measure one stretch of a line, cut at two fractions along it.
+ *
+ * This is the one place the site works out a distance and a climb for itself
+ * rather than reading what the build computed, and it has to: a rider dragging
+ * across the elevation chart is asking about a piece of road nobody authored,
+ * so there is no stored answer to look up. It climbs with the same
+ * `elevationGain` the pipeline uses, so a drag across the whole chart lands
+ * back on the number already on the panel.
+ *
+ * The order of the two fractions is the direction the stretch is being read,
+ * and it decides the climb — the same reason `crop` lets its indices run
+ * backwards. Half a mile of hill climbs a few hundred feet one way round and
+ * almost nothing the other, so a caller dragging right to left is asking about
+ * the descent as a climb and has to be answered about the road it drew, not
+ * the road drawn left to right. The length is the same either way.
+ *
+ * The ends are interpolated rather than snapped to the nearest vertex, so the
+ * numbers describe the stretch that was actually asked for instead of the
+ * vertices nearest to it.
+ */
+export function spanBetween(
+  points: ElevCoord[],
+  fromFraction: number,
+  toFraction: number,
+): Span {
+  const clamp = (fraction: number) => Math.max(0, Math.min(1, fraction));
+  if (points.length < 2) {
+    return { fromMeters: 0, toMeters: 0, meters: 0, gain: 0 };
+  }
+
+  const cumulative = cumulativeMeters(points);
+  const total = cumulative[cumulative.length - 1];
+  const fromMeters = clamp(fromFraction) * total;
+  const toMeters = clamp(toFraction) * total;
+  const low = Math.min(fromMeters, toMeters);
+  const high = Math.max(fromMeters, toMeters);
+
+  const slice: ElevCoord[] = [atMeters(points, cumulative, low)];
+  for (let i = 0; i < points.length; i++) {
+    if (cumulative[i] > low && cumulative[i] < high) slice.push(points[i]);
+  }
+  slice.push(atMeters(points, cumulative, high));
+
+  return {
+    fromMeters,
+    toMeters,
+    meters: high - low,
+    gain: elevationGain(fromMeters <= toMeters ? slice : reversed(slice)),
+  };
+}
+
 /**
  * Insert points so no two neighbors are further apart than `maxSpacingMeters`.
  *
