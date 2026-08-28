@@ -16,7 +16,7 @@ import type { Map as MapboxMap } from "mapbox-gl";
  * mid green, an amber, or a rust anywhere, and land stays light enough that the
  * olive still reads against it.
  */
-export type BasemapId = "paper" | "sand" | "field" | "harbor" | "lagoon";
+export type BasemapId = "paper" | "field" | "harbor" | "lagoon";
 
 type Palette = {
   /** Everything that is not water, park, or building. */
@@ -52,20 +52,6 @@ type Palette = {
 export type Basemap = {
   id: BasemapId;
   name: string;
-  /**
-   * One saturated color standing for the whole style, for picking between them.
-   *
-   * Not sampled from the palette, because nothing in a palette can do the job:
-   * land is near-white in all five and the waters of the three muted ones are
-   * the same pale blue-grey. These are exaggerated on purpose — a swatch has a
-   * dozen pixels to say what a whole map says at a glance, so it names the
-   * thing each style is *about* rather than reporting a color it contains.
-   *
-   * Exaggerated, not loud: they sit at 20-38% saturation, which is where the
-   * forest and the segment ramps already live, so a row of them still belongs
-   * to this site rather than to a color picker.
-   */
-  accent: string;
   palette: Palette;
 };
 
@@ -75,7 +61,6 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "paper",
     name: "Paper",
-    accent: "#c8b797",
     palette: {
       land: "#faf7f1",
       road: "#ffffff",
@@ -95,37 +80,11 @@ export const BASEMAPS: Basemap[] = [
       poi: false,
     },
   },
-  // Sand land against a slate-blue Puget Sound. Water gets real presence,
-  // which is most of how anyone orients in Seattle.
-  {
-    id: "sand",
-    name: "Sand & slate",
-    accent: "#8c94b3",
-    palette: {
-      land: "#f4eee1",
-      road: "#fffdf7",
-      roadCase: "#e5dbc6",
-      path: "#ece3d2",
-      water: "#c7d3d9",
-      green: "#e1e5d3",
-      greenOpacity: 0.7,
-      building: "#ebe3d2",
-      buildingEdge: "#dbcfba",
-      buildingOpacity: 1,
-      boundary: "#c2b7a3",
-      labelStrong: "#5d5850",
-      labelMid: "#837c6f",
-      labelSoft: "#a09786",
-      halo: "#f6f1e6",
-      poi: false,
-    },
-  },
   // Trail-map convention: cream land, parks that read, pale blue water,
   // landmarks left on. The closest to the wta.org spirit the spec names.
   {
     id: "field",
     name: "Field guide",
-    accent: "#89a77a",
     palette: {
       land: "#f8f3e8",
       road: "#ffffff",
@@ -146,7 +105,7 @@ export const BASEMAPS: Basemap[] = [
     },
   },
 
-  // The three above are quiet by design. These two put a hue on the ground on
+  // The two above are quiet by design. These two put a hue on the ground on
   // purpose, and both still keep land above 90% lightness and borrow a hue the
   // route encoding does not use — which is the only reason a colored ground can
   // work here at all. Saturating toward green, amber, or rust would start
@@ -157,7 +116,6 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "harbor",
     name: "Harbor",
-    accent: "#6292b9",
     palette: {
       land: "#eef3f7",
       road: "#ffffff",
@@ -183,7 +141,6 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "lagoon",
     name: "Lagoon",
-    accent: "#54a29b",
     palette: {
       land: "#fdf6e8",
       road: "#ffffff",

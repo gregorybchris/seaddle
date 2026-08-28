@@ -39,7 +39,13 @@ export function SettingsPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      <BasemapChoices value={basemap} onChange={onBasemap} />
+      {/* Its own heading, which the picker does not carry: it is one section of
+          three here, while the admin opens it alone into a dialog that has
+          already named it. */}
+      <div className="flex flex-col gap-1.5">
+        <span className="eyebrow text-sand/70">Map style</span>
+        <BasemapChoices value={basemap} onChange={onBasemap} />
+      </div>
 
       <div className="border-sand/10 border-t pt-4">
         {/* A joined bar rather than two chips: they are the two halves of one

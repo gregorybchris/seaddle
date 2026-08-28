@@ -18,14 +18,6 @@ type ChipGroupProps<T extends string> = {
    */
   labelFor?: (option: T) => string;
   /**
-   * A CSS background for a dot drawn before each label.
-   *
-   * For a set whose values are colors as much as they are words — the label
-   * still carries the meaning, and the dot is decorative, so a reader who
-   * cannot make out the difference between two of them loses nothing.
-   */
-  swatchFor?: (option: T) => string;
-  /**
    * Draw the options as one joined bar rather than as separate chips.
    *
    * For a scale — flat, rolling, steep — where the options are ordered, few and
@@ -53,16 +45,7 @@ export function ChipGroup<T extends string>({
   mixed = false,
   joined = false,
   labelFor = humanize,
-  swatchFor,
 }: ChipGroupProps<T>) {
-  const swatch = (option: T) =>
-    swatchFor && (
-      <span
-        aria-hidden
-        className="ring-forest-deep/40 h-3 w-3 shrink-0 rounded-full ring-1"
-        style={{ background: swatchFor(option) }}
-      />
-    );
   const heading = (
     <span className="eyebrow text-sand/70">
       {label}
@@ -85,7 +68,7 @@ export function ChipGroup<T extends string>({
                 aria-checked={active}
                 onClick={() => onChange(option)}
                 className={cn(
-                  "focus-visible:ring-blaze relative flex min-h-11 flex-1 items-center justify-center gap-1.5 border px-2 text-xs transition-colors focus-visible:z-20 focus-visible:ring-2 focus-visible:outline-none",
+                  "focus-visible:ring-blaze relative flex min-h-11 flex-1 items-center justify-center border px-2 text-xs transition-colors focus-visible:z-20 focus-visible:ring-2 focus-visible:outline-none",
                   // Only the ends of the bar are round. A corner anywhere else
                   // would cut the row into pieces, which is the reading this
                   // shape exists to avoid.
@@ -102,7 +85,6 @@ export function ChipGroup<T extends string>({
                     : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand hover:z-10",
                 )}
               >
-                {swatch(option)}
                 {labelFor(option)}
               </button>
             );
@@ -140,13 +122,12 @@ export function ChipGroup<T extends string>({
                   // Inline-flex rather than inline-block: still inline-level,
                   // so the balancing above still sees a line of words, but the
                   // label centres in a box tall enough for a fingertip.
-                  "focus-visible:ring-blaze mx-0.5 mb-1 inline-flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                  "focus-visible:ring-blaze mx-0.5 mb-1 inline-flex min-h-11 items-center rounded-md border px-3 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
                   active
                     ? "border-blaze-deep bg-blaze text-forest-deep"
                     : "border-sand/15 text-sand/70 hover:border-sand/40 hover:text-sand",
                 )}
               >
-                {swatch(option)}
                 {labelFor(option)}
               </button>{" "}
             </Fragment>

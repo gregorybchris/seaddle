@@ -410,6 +410,15 @@ these three are set by taste and forgotten. The basemap moved across that line; 
 with the encoding because both were colors, which is a fact about the code rather than about anyone
 using it.
 
+- **Map style** is picked from four small maps, two by two, rather than four named chips. Every
+  ground here is land above 90% lightness and the quiet ones part company mainly in what the water
+  does, so a swatch had to invent a color that was nowhere in the palette to tell them apart at all.
+  Each option draws its own map instead — the same shoreline, street web, and park, painted from its
+  own table — and carries a ride across it, cased and green, because surviving a route drawn on top
+  is the one thing every ground on this site has to do. The four are being compared rather than read
+  down, which is what puts them in a block and the name above each drawing rather than beside it —
+  and the drawings are letterboxed, because four previews are most of what stands between this
+  dialog and a scrollbar.
 - **Units** are one choice covering distance and height together — miles & feet, or km & meters —
   because nobody holds "miles, with the climbing in meters". The default is imperial, since this is
   a map of Seattle, unless the browser names a region that rides in kilometers.
