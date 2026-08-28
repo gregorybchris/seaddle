@@ -472,8 +472,12 @@ export function SiteMap({
             filter={["in", ["get", "id"], ["literal", chosen]]}
             paint={{
               // The route wins over the encoding: it is the subject, and a
-              // chosen road has to be findable at a glance.
-              "line-color": "#d97b2e",
+              // chosen road has to be findable at a glance. Deep forest rather
+              // than blaze, which sat a few degrees off the amber in the middle
+              // of the steepness ramp — the road already picked and the roads
+              // that could be picked next were coming out the same color, which
+              // is the one distinction this map cannot afford to lose.
+              "line-color": "#1c4632",
               "line-opacity": 1,
               "line-width": 6,
             }}

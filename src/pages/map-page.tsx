@@ -45,7 +45,15 @@ export function MapPage() {
   } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
-  const [encoding, setEncoding] = useState<Encoding>("grade");
+  /**
+   * What the map is colored by before anyone asks for something else.
+   *
+   * Steepness rather than grade: grade is the finer reading, but it is drawn
+   * as a continuous ramp along each road, and a rider opening the map is
+   * deciding which roads to take rather than reading a hill. Three named steps
+   * answer that at a glance.
+   */
+  const [encoding, setEncoding] = useState<Encoding>("steepness");
   /**
    * The road the panel is pointing at, and where the map is looking.
    *

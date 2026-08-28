@@ -106,10 +106,14 @@ export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
  */
 export const RAMPS: Record<Attribute, Record<string, string>> = {
   steepness: { flat: "#86b06a", rolling: "#c98a2e", steep: "#9c3b25" },
+  // Protection leaves the greens to the route itself, which is drawn in the
+  // deep forest this scale used to end on. Magenta then violet keeps the
+  // lightness stepping down the way every scale here does, and puts the two
+  // protected steps on a hue nothing else on the map uses.
   protection: {
     unprotected: "#cf9b57",
-    bikeLane: "#5f9358",
-    bikePath: "#1c4632",
+    bikeLane: "#b04a86",
+    bikePath: "#533178",
   },
   surroundings: { plain: "#97967f", pleasant: "#6d9464", scenic: "#2f6b48" },
 };
