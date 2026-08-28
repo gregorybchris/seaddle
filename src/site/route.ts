@@ -1,7 +1,6 @@
 import { boundsOf } from "@/lib/geo/bounds";
 import { coordAtFraction } from "@/lib/geo/polyline";
-import { elevationProfile, type Profile } from "@/lib/geo/profile";
-import { otherEnd } from "@/lib/graph/adjacency";
+import { continuationsFrom, otherEnd } from "@/lib/graph/adjacency";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
@@ -78,16 +77,19 @@ export function continuations(route: Route, graph: SiteGraph): Set<SegmentId> {
 
   const first = route.steps[0];
   const last = route.steps[route.steps.length - 1];
-  const next = new Set<SegmentId>();
 
-  const gather = (node: NodeId, arrivedOn: SegmentId) => {
-    for (const id of graph.adjacency.get(node) ?? []) {
-      if (id !== arrivedOn) next.add(id);
+  const next = new Set(
+    continuationsFrom(graph.adjacency, last.to, last.segment),
+  );
+  if (route.ambiguous) {
+    for (const id of continuationsFrom(
+      graph.adjacency,
+      first.from,
+      first.segment,
+    )) {
+      next.add(id);
     }
-  };
-
-  gather(last.to, last.segment);
-  if (route.ambiguous) gather(first.from, first.segment);
+  }
   return next;
 }
 
@@ -220,14 +222,21 @@ export function outAndBack(route: Route): Route {
 }
 
 /**
+ * The token an out-and-back leaves in a link.
+ *
+ * Nothing writes one any more — the button that turned a ride around is gone —
+ * but a link shared before it went still carries the token, so both halves of
+ * the format stay here to read and re-write it.
+ */
+const TURN = "~";
+
+/**
  * The route as the decisions that made it, which is all a link has to carry.
  *
  * Only what was chosen: everything the route ran through by itself comes back
  * on its own when the choices are replayed, so storing it would be storing
  * something the graph already knows.
  */
-export const TURN = "~";
-
 export function encodeRoute(route: Route): string {
   return route.steps
     .filter((step) => !step.auto)
@@ -279,15 +288,54 @@ function replay(route: Route, token: string, graph: SiteGraph): Route {
   return isEmpty(route) ? startRoute(segment) : append(route, segment, graph);
 }
 
+/**
+ * Each step beside the road it names.
+ *
+ * One place resolves a step against the graph, and one place decides what to do
+ * about a step the graph no longer has — it is dropped, because a link outlives
+ * the segments it was cut from and half a remembered ride beats an exception.
+ */
+function ridden(
+  route: Route,
+  graph: SiteGraph,
+): { step: Step; segment: SiteSegment }[] {
+  return route.steps.flatMap((step) => {
+    const segment = graph.segments.get(step.segment);
+    return segment ? [{ step, segment }] : [];
+  });
+}
+
+/** The roads of the ride, in the order they are taken. */
+export function routeSegments(route: Route, graph: SiteGraph): SiteSegment[] {
+  return ridden(route, graph).map(({ segment }) => segment);
+}
+
+/**
+ * Which way round each road is ridden, for anything laid out along the route.
+ *
+ * A segment is stored one way and can be taken either, so anything placed at a
+ * fraction along it — a pin, a marker — needs to be told which end that
+ * fraction counts from.
+ */
+export function riddenOrder(
+  route: Route,
+  graph: SiteGraph,
+): { segment: SegmentId; reversed: boolean }[] {
+  return ridden(route, graph).map(({ step, segment }) => ({
+    segment: segment.id,
+    reversed: step.from !== segment.from,
+  }));
+}
+
 export function routeMeters(route: Route, graph: SiteGraph): number {
-  return route.steps.reduce(
-    (total, step) => total + (graph.segments.get(step.segment)?.meters ?? 0),
+  return ridden(route, graph).reduce(
+    (total, { segment }) => total + segment.meters,
     0,
   );
 }
 
 /** Climbing in the direction each segment is actually being ridden. */
-export function stepGain(step: Step, segment: SiteSegment): number {
+function stepGain(step: Step, segment: SiteSegment): number {
   return step.from === segment.from
     ? segment.gainForward
     : segment.gainBackward;
@@ -312,10 +360,10 @@ export function routeGain(
       max: Math.max(segment.gainForward, segment.gainBackward),
     };
   }
-  const total = route.steps.reduce((sum, step) => {
-    const segment = graph.segments.get(step.segment);
-    return segment ? sum + stepGain(step, segment) : sum;
-  }, 0);
+  const total = ridden(route, graph).reduce(
+    (sum, { step, segment }) => sum + stepGain(step, segment),
+    0,
+  );
   return { min: total, max: total };
 }
 
@@ -328,9 +376,7 @@ export function routeGain(
  */
 export function routePoints(route: Route, graph: SiteGraph): ElevCoord[] {
   const points: ElevCoord[] = [];
-  for (const step of route.steps) {
-    const segment = graph.segments.get(step.segment);
-    if (!segment) continue;
+  for (const { step, segment } of ridden(route, graph)) {
     const ordered =
       step.from === segment.from
         ? segment.points
@@ -376,8 +422,4 @@ export function focusAnchor(route: Route, graph: SiteGraph): Coord | null {
 export function routeBounds(route: Route, graph: SiteGraph): Bounds | null {
   const points = routePoints(route, graph);
   return points.length > 0 ? boundsOf(points) : null;
-}
-
-export function routeProfile(route: Route, graph: SiteGraph): Profile {
-  return elevationProfile(routePoints(route, graph), 96);
 }

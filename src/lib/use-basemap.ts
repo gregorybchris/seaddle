@@ -2,25 +2,21 @@ import { useEffect, useState } from "react";
 import type { MapRef } from "react-map-gl";
 import {
   applyBasemap,
-  BASEMAPS,
+  basemapById,
   DEFAULT_BASEMAP,
   type BasemapId,
 } from "@/lib/basemap";
+import { readStored, writeStored } from "@/lib/utilities/storage";
 
 /** Kept in the browser, so a rider's choice of ground survives a reload and is
  *  the same ground on both maps. */
 const STORE_KEY = "seaddle:map-theme";
 
 function remembered(): BasemapId {
-  try {
-    const saved = window.localStorage.getItem(STORE_KEY);
-    if (BASEMAPS.some((basemap) => basemap.id === saved)) {
-      return saved as BasemapId;
-    }
-  } catch {
-    // A browser refusing storage is not a reason to lose the map.
-  }
-  return DEFAULT_BASEMAP;
+  const saved = readStored(STORE_KEY);
+  // Validated rather than trusted: the value is whatever is in that browser,
+  // and a ground this build no longer has would paint nothing at all.
+  return saved && basemapById(saved) ? (saved as BasemapId) : DEFAULT_BASEMAP;
 }
 
 /**
@@ -35,11 +31,7 @@ export function useBasemapChoice(): [BasemapId, (id: BasemapId) => void] {
 
   function choose(id: BasemapId) {
     setChoice(id);
-    try {
-      window.localStorage.setItem(STORE_KEY, id);
-    } catch {
-      // A lost preference is not worth an exception.
-    }
+    writeStored(STORE_KEY, id);
   }
 
   return [choice, choose];
@@ -78,7 +70,7 @@ export function useBasemapPaint(
     let dropped = false;
     const apply = () => {
       if (dropped) return;
-      const chosen = BASEMAPS.find((basemap) => basemap.id === choice);
+      const chosen = basemapById(choice);
       if (!chosen) return;
       try {
         // Every theme writes the same set of properties, so a switch leaves no

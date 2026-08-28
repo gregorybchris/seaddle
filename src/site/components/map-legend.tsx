@@ -7,7 +7,7 @@ import {
   isAttribute,
   RAMPS,
   type Encoding,
-} from "../filters";
+} from "../encoding";
 
 /**
  * What the colors on the map currently mean.

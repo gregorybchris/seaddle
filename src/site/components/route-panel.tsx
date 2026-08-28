@@ -5,16 +5,17 @@ import {
   Trash,
   X,
 } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
 import { feet, formatFeet, formatMiles } from "@/lib/utilities/units";
 import { Button } from "@/widgets/button";
+import { ConfirmDialog } from "@/widgets/confirm-dialog";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { InfoPopover } from "@/widgets/info-popover";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
-import type { Encoding } from "../filters";
+import type { Encoding } from "../encoding";
 import type { SiteGraph } from "../graph-data";
 import {
   continuations,
@@ -23,8 +24,10 @@ import {
   routeGain,
   routeMeters,
   routePoints,
+  routeSegments,
   type Route,
 } from "../route";
+import type { ElevCoord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import { SHOW_TURNINGS } from "../flags";
 import type { Turning } from "../turnings";
@@ -73,14 +76,15 @@ export function RoutePanel({
   // One owner for the saved list: a copy per component would let saving in one
   // place leave the other showing a stale list.
   const saved = useSavedRides();
+  // Every point of the ride, and the reader drags along the chart: recomputing
+  // it on each of those renders is walking the whole route per pointer move.
+  const points = useMemo(() => routePoints(route, graph), [route, graph]);
   const meters = routeMeters(route, graph);
   const gain = routeGain(route, graph);
   const started = !isEmpty(route);
   const onward = started ? continuations(route, graph).size : 0;
   const stuck = started && onward === 0;
-  const ridden = route.steps
-    .map((step) => graph.segments.get(step.segment))
-    .filter((segment): segment is NonNullable<typeof segment> => !!segment);
+  const ridden = routeSegments(route, graph);
 
   /**
    * Nothing on first arrival — there is no news in a page having just loaded,
@@ -137,10 +141,7 @@ export function RoutePanel({
 
         {started ? (
           <>
-            <ElevationProfile
-              points={routePoints(route, graph)}
-              onScrub={onScrub}
-            />
+            <ElevationProfile points={points} onScrub={onScrub} />
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
 
@@ -153,8 +154,8 @@ export function RoutePanel({
           </>
         ) : (
           <p className="text-sand/75 text-sm leading-relaxed">
-            Tap any road to start a ride. Keep tapping to add on new segments.
-            Then save or export your route.
+            Tap any segment to start. Continue to append connected segments to
+            build your route.
           </p>
         )}
 
@@ -207,8 +208,8 @@ export function RoutePanel({
         {started && (
           <SaveRide
             route={route}
+            points={points}
             meters={meters}
-            graph={graph}
             onSave={saved.save}
           />
         )}
@@ -232,16 +233,22 @@ export function RoutePanel({
  */
 function SaveRide({
   route,
+  points,
   meters,
-  graph,
   onSave,
 }: {
   route: Route;
+  points: ElevCoord[];
   meters: number;
-  graph: SiteGraph;
   onSave: (name: string, route: string) => void;
 }) {
   const [name, setName] = useState("");
+
+  /** Enter and the button are the same act, so they are the same code. */
+  function keep() {
+    onSave(name, encodeRoute(route));
+    setName("");
+  }
 
   return (
     <div className="border-sand/10 flex gap-2 border-t pt-3">
@@ -249,22 +256,13 @@ function SaveRide({
         value={name}
         onChange={(event) => setName(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key !== "Enter") return;
-          onSave(name, encodeRoute(route));
-          setName("");
+          if (event.key === "Enter") keep();
         }}
         placeholder="Name this ride"
         aria-label="Name this ride"
         className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 focus:ring-blaze min-h-11 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:ring-2 focus:outline-none"
       />
-      <Button
-        variant="outline"
-        className="px-2 text-xs"
-        onClick={() => {
-          onSave(name, encodeRoute(route));
-          setName("");
-        }}
-      >
+      <Button variant="outline" className="px-2 text-xs" onClick={keep}>
         Save
       </Button>
       <Button
@@ -273,10 +271,7 @@ function SaveRide({
         aria-label="Download as GPX"
         title="Download as GPX"
         onClick={() =>
-          downloadGpx(
-            routePoints(route, graph),
-            name.trim() || `Seaddle ${formatMiles(meters)}`,
-          )
+          downloadGpx(points, name.trim() || `Seaddle ${formatMiles(meters)}`)
         }
       >
         <DownloadSimple weight="bold" className="h-4 w-4" />
@@ -298,6 +293,10 @@ function SavedRides({
   onLoad: (encoded: string) => void;
   current: string;
 }) {
+  // Held rather than acted on: a saved ride lives in this browser and nowhere
+  // else, so the X asks before it is the end of one.
+  const [forgetting, setForgetting] = useState<SavedRide | null>(null);
+
   if (rides.length === 0) return null;
 
   return (
@@ -331,7 +330,7 @@ function SavedRides({
             </button>
             <button
               type="button"
-              onClick={() => onForget(ride.id)}
+              onClick={() => setForgetting(ride)}
               aria-label={`Forget ${ride.name}`}
               className="text-sand/70 hover:text-blaze focus-visible:ring-blaze flex h-11 w-11 shrink-0 items-center justify-center rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
@@ -340,6 +339,20 @@ function SavedRides({
           </li>
         ))}
       </ul>
+
+      <ConfirmDialog
+        open={forgetting !== null}
+        onOpenChange={(open) => !open && setForgetting(null)}
+        title="Forget this ride?"
+        confirm="Forget"
+        onConfirm={() => {
+          if (forgetting) onForget(forgetting.id);
+          setForgetting(null);
+        }}
+      >
+        “{forgetting?.name}” is saved in this browser only, so forgetting it
+        here is the end of it.
+      </ConfirmDialog>
     </section>
   );
 }

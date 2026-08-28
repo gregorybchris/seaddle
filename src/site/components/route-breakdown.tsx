@@ -1,6 +1,6 @@
 import { formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
-import { breakdown, isAttribute, RAMPS, type Encoding } from "../filters";
+import { breakdown, isAttribute, RAMPS, type Encoding } from "../encoding";
 import type { SiteSegment } from "../graph-data";
 
 /**

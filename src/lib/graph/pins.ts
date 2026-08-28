@@ -1,5 +1,3 @@
-import { coordAtFraction } from "../geo/polyline";
-import type { Coord, ElevCoord } from "../models/geo";
 import type { SegmentId } from "../models/graph";
 
 /** Enough of a pin to place it along a road. Both halves of the app have more. */
@@ -20,13 +18,4 @@ export function pinsAlong<T extends Placed>(
     here.sort((a, b) => (reversed ? b.at - a.at : a.at - b.at));
     return here;
   });
-}
-
-/** Where a pin sits along its road, for drawing it without storing a duplicate. */
-export function pinOnLine(
-  pin: Placed,
-  points: ElevCoord[],
-  fallback: Coord,
-): Coord {
-  return points.length > 1 ? coordAtFraction(points, pin.at) : fallback;
 }

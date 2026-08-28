@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildAdjacency } from "@/lib/graph/adjacency";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import { append, startRoute, EMPTY_ROUTE } from "./route";
+import { siteGraph, siteSegment } from "./test-fixtures";
 import { NEARBY, turnings } from "./turnings";
 
 const HUB: Coord = [-122.32, 47.68];
@@ -20,19 +20,16 @@ function road(
   points: ElevCoord[],
 ): SiteSegment {
   const climb = points[points.length - 1][2] - points[0][2];
-  return {
+  return siteSegment({
     id,
-    name: null,
     from,
     to,
     points,
     meters: 200,
     gainForward: Math.max(0, climb),
     gainBackward: Math.max(0, -climb),
-    steepness: "flat",
-    protection: "unprotected",
     surroundings: "plain",
-  };
+  });
 }
 
 /**
@@ -42,21 +39,12 @@ function road(
  * that reading it from nB means reading its points backwards — which is the
  * case a version that trusted `from` would get exactly wrong.
  */
-function graph(): SiteGraph {
-  const all = [
-    road("sIn", "nS", "nB", [at(-200, 0), at(-100, 0), at(0, 0)]),
-    road("sNorth", "nB", "nN", [at(0, 0), at(100, 0, 30), at(200, 0, 60)]),
-    road("sEast", "nB", "nE", [at(0, 0), at(0, 100), at(0, 200)]),
-    road("sWest", "nW", "nB", [at(0, -200, 40), at(0, -100, 20), at(0, 0)]),
-  ];
-  return {
-    segments: new Map(all.map((s) => [s.id, s])),
-    adjacency: buildAdjacency(all),
-    bounds: { minLon: -122.33, minLat: 47.67, maxLon: -122.31, maxLat: 47.69 },
-  };
-}
-
-const G = graph();
+const G: SiteGraph = siteGraph([
+  road("sIn", "nS", "nB", [at(-200, 0), at(-100, 0), at(0, 0)]),
+  road("sNorth", "nB", "nN", [at(0, 0), at(100, 0, 30), at(200, 0, 60)]),
+  road("sEast", "nB", "nE", [at(0, 0), at(0, 100), at(0, 200)]),
+  road("sWest", "nW", "nB", [at(0, -200, 40), at(0, -100, 20), at(0, 0)]),
+]);
 const seg = (id: string) => G.segments.get(id)!;
 const headings = (list: ReturnType<typeof turnings>) =>
   list.map((t) => `${t.segment.id}:${t.heading}`);
@@ -133,15 +121,10 @@ describe("before a ride has started", () => {
   });
 
   it("stays a list rather than becoming the map again", () => {
-    const many = graph();
-    for (let i = 0; i < 40; i++) {
-      const id = `x${i}`;
-      many.segments.set(
-        id,
-        road(id, `p${i}`, `q${i}`, [at(i, 0), at(i, 100), at(i, 200)]),
-      );
-    }
-    many.adjacency = buildAdjacency([...many.segments.values()]);
+    const crowd = Array.from({ length: 40 }, (_, i) =>
+      road(`x${i}`, `p${i}`, `q${i}`, [at(i, 0), at(i, 100), at(i, 200)]),
+    );
+    const many = siteGraph([...G.segments.values(), ...crowd]);
     expect(turnings(EMPTY_ROUTE, many, HUB)).toHaveLength(NEARBY);
   });
 

@@ -1,13 +1,15 @@
 import type { Feature, FeatureCollection, LineString } from "geojson";
 import { boundsOf } from "@/lib/geo/bounds";
 import { buildAdjacency, type Adjacency } from "@/lib/graph/adjacency";
-import type { Bounds, ElevCoord } from "@/lib/models/geo";
-import type {
-  Protection,
-  NodeId,
-  Surroundings,
-  SegmentId,
-  Steepness,
+import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
+import {
+  isPinKind,
+  type PinKind,
+  type Protection,
+  type NodeId,
+  type Surroundings,
+  type SegmentId,
+  type Steepness,
 } from "@/lib/models/graph";
 
 /**
@@ -70,4 +72,35 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     protection: p.protection as Protection,
     surroundings: p.surroundings as Surroundings,
   };
+}
+
+/** A point of interest as the site holds it. */
+export type SitePin = {
+  id: string;
+  segment: string;
+  kind: PinKind;
+  note: string | null;
+  at: number;
+  coord: Coord;
+};
+
+export function parsePins(collection: FeatureCollection): SitePin[] {
+  return collection.features.flatMap((feature) => {
+    const p = feature.properties;
+    const where = feature.geometry;
+    if (!p?.id || where.type !== "Point") return [];
+    // Dropping one pin the build cannot draw, rather than rendering an icon
+    // that does not exist and losing the map with it.
+    if (!isPinKind(p.kind)) return [];
+    return [
+      {
+        id: String(p.id),
+        segment: String(p.segment),
+        kind: p.kind,
+        note: p.note ? String(p.note) : null,
+        at: Number(p.at ?? 0),
+        coord: where.coordinates as Coord,
+      },
+    ];
+  });
 }

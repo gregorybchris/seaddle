@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { boundsOf } from "@/lib/geo/bounds";
-import { buildAdjacency } from "@/lib/graph/adjacency";
 import type { ElevCoord } from "@/lib/models/geo";
 import type { SiteGraph, SiteSegment } from "./graph-data";
+import { siteGraph, siteSegment } from "./test-fixtures";
 import {
   append,
   canAppend,
@@ -19,8 +19,9 @@ import {
   routeBounds,
   routeGain,
   routeMeters,
+  riddenOrder,
   routePoints,
-  routeProfile,
+  routeSegments,
   startRoute,
 } from "./route";
 
@@ -48,38 +49,24 @@ function segment(
     [-122.32, 47.68, (elevations[0] + elevations[1]) / 2],
     [-122.31, 47.68, elevations[1]],
   ];
-  return {
+  return siteSegment({
     id,
-    name: null,
     from,
     to,
     points,
-    meters: 1000,
     gainForward: Math.max(0, elevations[1] - elevations[0]),
     gainBackward: Math.max(0, elevations[0] - elevations[1]),
-    steepness: "flat",
-    protection: "unprotected",
-    surroundings: "pleasant",
-  };
+  });
 }
 
-function graph(): SiteGraph {
-  const all = [
-    segment("s1", "nA", "nB", [0, 50]),
-    segment("s2", "nB", "nC", [50, 60]),
-    segment("s3", "nC", "nD", [60, 20]),
-    segment("s4", "nB", "nE", [50, 90]),
-    segment("s5", "nD", "nF", [20, 30]),
-    segment("s6", "nD", "nG", [20, 10]),
-  ];
-  return {
-    segments: new Map(all.map((s) => [s.id, s])),
-    adjacency: buildAdjacency(all),
-    bounds: { minLon: -122.33, minLat: 47.68, maxLon: -122.31, maxLat: 47.68 },
-  };
-}
-
-const G = graph();
+const G: SiteGraph = siteGraph([
+  segment("s1", "nA", "nB", [0, 50]),
+  segment("s2", "nB", "nC", [50, 60]),
+  segment("s3", "nC", "nD", [60, 20]),
+  segment("s4", "nB", "nE", [50, 90]),
+  segment("s5", "nD", "nF", [20, 30]),
+  segment("s6", "nD", "nG", [20, 10]),
+]);
 const seg = (id: string) => G.segments.get(id)!;
 const ids = (route: { steps: { segment: string }[] }) =>
   route.steps.map((step) => step.segment);
@@ -186,16 +173,11 @@ describe("junctions with nothing to decide", () => {
   it("does not circle forever around a ring with no forks", () => {
     // Every junction on a loop can carry exactly two segments, in which case
     // there is never a fork to stop at.
-    const ring = [
+    const looped = siteGraph([
       segment("r1", "n1", "n2", [0, 0]),
       segment("r2", "n2", "n3", [0, 0]),
       segment("r3", "n3", "n1", [0, 0]),
-    ];
-    const looped: SiteGraph = {
-      segments: new Map(ring.map((s) => [s.id, s])),
-      adjacency: buildAdjacency(ring),
-      bounds: G.bounds,
-    };
+    ]);
     const route = append(
       startRoute(looped.segments.get("r1")!),
       looped.segments.get("r2")!,
@@ -273,15 +255,32 @@ describe("route geometry", () => {
     expect(points[points.length - 1][2]).toBe(0);
   });
 
-  it("profiles the whole route, not each segment", () => {
-    const route = append(startRoute(seg("s1")), seg("s4"), G);
-    const profile = routeProfile(route, G);
-    expect(profile.samples[0]).toBeCloseTo(0, 6);
-    expect(profile.samples[profile.samples.length - 1]).toBeCloseTo(90, 6);
-  });
-
   it("has nothing to draw for an empty route", () => {
     expect(routePoints(EMPTY_ROUTE, G)).toEqual([]);
+  });
+});
+
+describe("the roads of a ride", () => {
+  it("lists them in the order they are taken", () => {
+    const route = append(startRoute(seg("s1")), seg("s4"), G);
+    expect(routeSegments(route, G).map((s) => s.id)).toEqual(["s1", "s4"]);
+  });
+
+  it("says which way round each one is ridden", () => {
+    // s1 is stored nA → nB, so arriving at nB from s4 means riding it backwards.
+    const route = append(startRoute(seg("s4")), seg("s1"), G);
+    expect(riddenOrder(route, G)).toEqual([
+      { segment: "s4", reversed: true },
+      { segment: "s1", reversed: true },
+    ]);
+  });
+
+  it("drops a step whose road the graph no longer has", () => {
+    const route = decodeRoute("s1,s4", G);
+    const thinner = siteGraph(
+      [...G.segments.values()].filter((s) => s.id !== "s4"),
+    );
+    expect(routeSegments(route, thinner).map((s) => s.id)).toEqual(["s1"]);
   });
 });
 

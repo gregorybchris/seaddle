@@ -1,7 +1,7 @@
 import { compassPoint, departureHeading } from "@/lib/geo/heading";
 import { projectOntoPolyline, reversed } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
-import type { NodeId } from "@/lib/models/graph";
+import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import { continuations, isEmpty, liveEnds, type Route } from "./route";
 
@@ -60,32 +60,52 @@ export function turnings(
   near: Coord | null,
 ): Turning[] {
   const open = continuations(route, graph);
+  return isEmpty(route)
+    ? nearest(open, graph, near)
+    : atJunction(route, open, graph);
+}
 
-  if (isEmpty(route)) {
-    if (!near) return [];
-    return [...open]
-      .flatMap((id) => {
-        const segment = graph.segments.get(id);
-        if (!segment) return [];
-        return [
-          {
-            segment,
-            away: projectOntoPolyline(segment.points, near).distanceMeters,
-          },
-        ];
-      })
-      .sort((a, b) => a.away - b.away)
-      .slice(0, NEARBY)
-      .map(({ segment }) => ({
-        segment,
-        heading: null,
-        // No direction settled yet, so the honest figure is the harder of the
-        // two — the same one the map's hover label shows.
-        climbMeters: Math.max(segment.gainForward, segment.gainBackward),
-      }));
-  }
+/**
+ * The roads closest to the middle of the map, before a ride has a direction.
+ *
+ * Every road in the network is a legal first pick, so the list is cut to a
+ * screenful and panning is how the reader says which screenful they mean.
+ */
+function nearest(
+  open: Set<SegmentId>,
+  graph: SiteGraph,
+  near: Coord | null,
+): Turning[] {
+  if (!near) return [];
+  return [...open]
+    .flatMap((id) => {
+      const segment = graph.segments.get(id);
+      if (!segment) return [];
+      return [
+        {
+          segment,
+          away: projectOntoPolyline(segment.points, near).distanceMeters,
+        },
+      ];
+    })
+    .sort((a, b) => a.away - b.away)
+    .slice(0, NEARBY)
+    .map(({ segment }) => ({
+      segment,
+      heading: null,
+      // No direction settled yet, so the honest figure is the harder of the
+      // two — the same one the map's hover label shows.
+      climbMeters: Math.max(segment.gainForward, segment.gainBackward),
+    }));
+}
 
-  const found = new Map<string, Turning>();
+/** The arms of the junction the rider is standing at, read clockwise from north. */
+function atJunction(
+  route: Route,
+  open: Set<SegmentId>,
+  graph: SiteGraph,
+): Turning[] {
+  const found = new Map<SegmentId, Turning>();
   for (const node of liveEnds(route)) {
     for (const id of graph.adjacency.get(node) ?? []) {
       if (!open.has(id) || found.has(id)) continue;

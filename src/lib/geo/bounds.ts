@@ -16,18 +16,6 @@ export function boundsOf(points: (Coord | ElevCoord)[]): Bounds {
   return { minLon, minLat, maxLon, maxLat };
 }
 
-export function aggregateBounds(all: Bounds[]): Bounds {
-  if (all.length === 0) {
-    throw new Error("Cannot aggregate zero bounds");
-  }
-  return {
-    minLon: Math.min(...all.map((b) => b.minLon)),
-    minLat: Math.min(...all.map((b) => b.minLat)),
-    maxLon: Math.max(...all.map((b) => b.maxLon)),
-    maxLat: Math.max(...all.map((b) => b.maxLat)),
-  };
-}
-
 /** Grow a box by a distance in meters, converted per-axis at the box's latitude. */
 export function padBounds(bounds: Bounds, meters: number): Bounds {
   const midLat = (bounds.minLat + bounds.maxLat) / 2;
@@ -65,15 +53,6 @@ export function centeredOn(anchor: Coord, bounds: Bounds): Bounds {
     minLat: anchor[1] - reachLat,
     maxLat: anchor[1] + reachLat,
   };
-}
-
-export function boundsContain(bounds: Bounds, coord: Coord): boolean {
-  return (
-    coord[0] >= bounds.minLon &&
-    coord[0] <= bounds.maxLon &&
-    coord[1] >= bounds.minLat &&
-    coord[1] <= bounds.maxLat
-  );
 }
 
 export function boundsCenter(bounds: Bounds): Coord {

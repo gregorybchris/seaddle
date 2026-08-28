@@ -15,7 +15,7 @@ import { centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
-import type { SiteGraph } from "../graph-data";
+import type { SiteGraph, SitePin } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import type { BasemapId } from "@/lib/basemap";
 import { useBasemapPaint } from "@/lib/use-basemap";
@@ -23,9 +23,8 @@ import { PinMark } from "@/widgets/pin-mark";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
-import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../filters";
+import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../encoding";
 import { gradeRuns } from "../grade";
-import type { SitePin } from "../use-graph";
 import {
   choiceBounds,
   continuations,
@@ -34,8 +33,29 @@ import {
   routeBounds,
   type Route,
 } from "../route";
+import type { Framing } from "../use-route-history";
 
 const CLICKABLE = "segments-hit";
+
+/** Every line on this map is a road, and a road has rounded ends and corners. */
+const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
+
+/**
+ * How faintly a road that failed a filter is drawn.
+ *
+ * The same rule for the network and for the grade lines over it, because they
+ * are two drawings of the same roads and a filter has to reach both. Dimming
+ * rather than hiding: a removed road would break the network into islands with
+ * no visible reason.
+ */
+function dimming(dimmed: SegmentId[], faded: number, full: number) {
+  return ["case", ["in", ["get", "id"], ["literal", dimmed]], faded, full];
+}
+
+/** Wider once a ride is under way, when the open roads are the few to pick from. */
+function openWidth(route: Route): number {
+  return isEmpty(route) ? 3.5 : 4.5;
+}
 
 /**
  * How wide the invisible target around each road is, in screen pixels.
@@ -104,7 +124,7 @@ type SiteMapProps = {
    * "choices" while a route is being built, "route" when one is being looked
    * at — arriving on a shared link, or opening a saved ride.
    */
-  framing: { mode: "choices" | "route"; at: number };
+  framing: Framing;
   /** The road the panel is pointing at, drawn so a keyboard can see where it is. */
   highlighted: SegmentId | null;
   onPick: (id: SegmentId) => void;
@@ -193,12 +213,16 @@ export function SiteMap({
    * a water stop to decide where to go.
    */
   const shown = useMemo(() => {
-    const chosen = new Set(pins.map((pin) => pin.id));
+    const onRoute = new Set(pins.map((pin) => pin.id));
     const nearby =
       zoom >= PINS_FROM_ZOOM
-        ? allPins.filter((pin) => !chosen.has(pin.id))
+        ? allPins.filter((pin) => !onRoute.has(pin.id))
         : [];
-    return { chosen: pins, nearby };
+    // Off-route first, so a pin on the ride is drawn over one that is not.
+    return [...nearby, ...pins].map((pin) => ({
+      pin,
+      onRoute: onRoute.has(pin.id),
+    }));
   }, [pins, allPins, zoom]);
 
   const data = useMemo<FeatureCollection<LineString>>(
@@ -342,9 +366,7 @@ export function SiteMap({
     );
   }, [framing, route, graph]);
 
-  const opened =
-    [...shown.nearby, ...shown.chosen].find((pin) => pin.id === openPin) ??
-    null;
+  const opened = shown.find(({ pin }) => pin.id === openPin)?.pin ?? null;
 
   /**
    * What the cursor is over, if it is over a road that can be picked.
@@ -423,27 +445,19 @@ export function SiteMap({
       >
         <Source id="graph" type="geojson" data={data}>
           {/* Out of play: still drawn, so the shape of the network stays
-            readable and a dead end is visibly a dead end. */}
-          {/* Out of play: still drawn, so the shape of the network stays
-            readable and a dead end is visibly a dead end. Roads that fail a
-            filter fade further, but are never removed — hiding them would
-            break the network into islands with no visible reason. */}
+            readable and a dead end is visibly a dead end. Drawn at no opacity
+            at all under the grade encoding, which has its own lines below. */}
           <Layer
             id="segments-closed"
             type="line"
             paint={{
               "line-color": color as never,
               "line-opacity": (attribute
-                ? [
-                    "case",
-                    ["in", ["get", "id"], ["literal", dimmed]],
-                    0.08,
-                    0.45,
-                  ]
+                ? dimming(dimmed, 0.08, 0.45)
                 : 0) as never,
               "line-width": 3,
             }}
-            layout={{ "line-cap": "round", "line-join": "round" }}
+            layout={ROUNDED}
           />
           <Layer
             id="segments-open"
@@ -452,11 +466,11 @@ export function SiteMap({
             paint={{
               "line-color": color as never,
               "line-opacity": (attribute
-                ? ["case", ["in", ["get", "id"], ["literal", dimmed]], 0.25, 1]
+                ? dimming(dimmed, 0.25, 1)
                 : 0) as never,
-              "line-width": isEmpty(route) ? 3.5 : 4.5,
+              "line-width": openWidth(route),
             }}
-            layout={{ "line-cap": "round", "line-join": "round" }}
+            layout={ROUNDED}
           />
           {/* Invisible and wide: the thing a finger actually has to hit. Only
             what may be picked is in it, so a fat target cannot catch a road
@@ -470,7 +484,7 @@ export function SiteMap({
               "line-opacity": 0,
               "line-width": HIT_WIDTH,
             }}
-            layout={{ "line-cap": "round", "line-join": "round" }}
+            layout={ROUNDED}
           />
           <Layer
             id="segments-chosen"
@@ -487,7 +501,7 @@ export function SiteMap({
               "line-opacity": 1,
               "line-width": 6,
             }}
-            layout={{ "line-cap": "round", "line-join": "round" }}
+            layout={ROUNDED}
           />
 
           {/* The road the panel is pointing at, drawn like a highlighter over
@@ -505,7 +519,7 @@ export function SiteMap({
               "line-width": 14,
               "line-blur": 2,
             }}
-            layout={{ "line-cap": "round", "line-join": "round" }}
+            layout={ROUNDED}
           />
         </Source>
 
@@ -522,15 +536,10 @@ export function SiteMap({
               beforeId={CLICKABLE}
               paint={{
                 "line-color": gradeColor as never,
-                "line-opacity": [
-                  "case",
-                  ["in", ["get", "id"], ["literal", dimmed]],
-                  0.08,
-                  0.45,
-                ],
+                "line-opacity": dimming(dimmed, 0.08, 0.45) as never,
                 "line-width": 3,
               }}
-              layout={{ "line-cap": "round", "line-join": "round" }}
+              layout={ROUNDED}
             />
             <Layer
               id="grade-open"
@@ -539,67 +548,15 @@ export function SiteMap({
               filter={["in", ["get", "id"], ["literal", open]]}
               paint={{
                 "line-color": gradeColor as never,
-                "line-opacity": [
-                  "case",
-                  ["in", ["get", "id"], ["literal", dimmed]],
-                  0.25,
-                  1,
-                ],
-                "line-width": isEmpty(route) ? 3.5 : 4.5,
+                "line-opacity": dimming(dimmed, 0.25, 1) as never,
+                "line-width": openWidth(route),
               }}
-              layout={{ "line-cap": "round", "line-join": "round" }}
+              layout={ROUNDED}
             />
           </Source>
         )}
 
-        {[...shown.nearby, ...shown.chosen].map((pin) => (
-          <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
-            {/* Hover on a mouse, tap on a phone — and the two have to be told
-              apart. A tap fires the enter handler before the click, so a
-              toggle would close what the enter had just opened; hovering is
-              therefore limited to pointers that can actually hover. Clicking
-              must not fall through to the road underneath either. */}
-            <button
-              type="button"
-              // A button because it does something, and named because Mapbox's
-              // own marker wrapper is an image called "Map marker" — nesting an
-              // unnamed control inside that would leave a keyboard reader with
-              // no idea which pin they were on.
-              aria-label={pin.note ?? PIN_LABELS[pin.kind]}
-              aria-expanded={openPin === pin.id}
-              // Mapbox wraps every marker in a div it calls "Map marker" and
-              // gives the image role, which makes anything inside it
-              // presentational — so a control in there is both unreachable and
-              // invalid. The wrapper is a plain div; this button is the thing.
-              ref={(element) => {
-                const wrapper = element?.closest(".mapboxgl-marker");
-                wrapper?.removeAttribute("role");
-                wrapper?.removeAttribute("aria-label");
-              }}
-              className="focus-visible:ring-blaze block rounded-full focus-visible:ring-2 focus-visible:outline-none"
-              onPointerEnter={(event) => {
-                if (event.pointerType === "mouse") setOpenPin(pin.id);
-              }}
-              onPointerLeave={(event) => {
-                if (event.pointerType === "mouse") setOpenPin(null);
-              }}
-              onFocus={() => setOpenPin(pin.id)}
-              onBlur={() => setOpenPin(null)}
-              onClick={(event) => {
-                event.stopPropagation();
-                setOpenPin((current) => (current === pin.id ? null : pin.id));
-              }}
-            >
-              <PinMark
-                decorative
-                kind={pin.kind}
-                className={
-                  shown.chosen.includes(pin) ? "h-5 w-5" : "h-4 w-4 opacity-70"
-                }
-              />
-            </button>
-          </Marker>
-        ))}
+        <PinMarkers pins={shown} openPin={openPin} onOpen={setOpenPin} />
 
         {opened && (
           <Popup
@@ -639,32 +596,102 @@ export function SiteMap({
         <AttributionControl compact />
       </Map>
 
-      {/* Offset off the cursor so the label never sits under the pointer, and
-          thrown to the other side near an edge so it cannot run off the map —
-          which it otherwise would, since the map reaches the window. */}
-      {hovered && (
-        <div
-          style={{
-            left: hovered.x + (hovered.flipX ? -14 : 14),
-            top: hovered.y + (hovered.flipY ? -14 : 14),
-            transform: `translate(${hovered.flipX ? "-100%" : "0"}, ${
-              hovered.flipY ? "-100%" : "0"
-            })`,
-          }}
-          className="border-forest-deep bg-forest text-sand pointer-events-none absolute z-10 rounded-md border px-2 py-1.5 shadow-lg"
-        >
-          {hovered.name && (
-            <p className="max-w-56 truncate text-xs">{hovered.name}</p>
-          )}
-          <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
-            {formatMiles(hovered.meters)} · ↑{formatFeet(hovered.climb)}
-          </p>
-          <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
-            {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
-            {humanize(hovered.surroundings)}
-          </p>
-        </div>
+      {hovered && <RoadTip hovered={hovered} />}
+    </div>
+  );
+}
+
+/**
+ * The points of interest currently on the map.
+ *
+ * Hover on a mouse, tap on a phone — and the two have to be told apart. A tap
+ * fires the enter handler before the click, so a toggle would close what the
+ * enter had just opened; hovering is therefore limited to pointers that can
+ * actually hover. Clicking must not fall through to the road underneath either.
+ */
+function PinMarkers({
+  pins,
+  openPin,
+  onOpen,
+}: {
+  pins: { pin: SitePin; onRoute: boolean }[];
+  openPin: string | null;
+  onOpen: (id: string | null) => void;
+}) {
+  return pins.map(({ pin, onRoute }) => (
+    <Marker key={pin.id} longitude={pin.coord[0]} latitude={pin.coord[1]}>
+      <button
+        type="button"
+        // A button because it does something, and named because Mapbox's own
+        // marker wrapper is an image called "Map marker" — nesting an unnamed
+        // control inside that would leave a keyboard reader with no idea which
+        // pin they were on.
+        aria-label={pin.note ?? PIN_LABELS[pin.kind]}
+        aria-expanded={openPin === pin.id}
+        // Mapbox wraps every marker in a div it calls "Map marker" and gives
+        // the image role, which makes anything inside it presentational — so a
+        // control in there is both unreachable and invalid. The wrapper is a
+        // plain div; this button is the thing.
+        ref={(element) => {
+          const wrapper = element?.closest(".mapboxgl-marker");
+          wrapper?.removeAttribute("role");
+          wrapper?.removeAttribute("aria-label");
+        }}
+        className="focus-visible:ring-blaze block rounded-full focus-visible:ring-2 focus-visible:outline-none"
+        onPointerEnter={(event) => {
+          if (event.pointerType === "mouse") onOpen(pin.id);
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === "mouse") onOpen(null);
+        }}
+        onFocus={() => onOpen(pin.id)}
+        onBlur={() => onOpen(null)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpen(openPin === pin.id ? null : pin.id);
+        }}
+      >
+        {/* A pin on the ride is drawn full strength, one merely nearby is
+            smaller and faded: the ride is the subject and the rest is context. */}
+        <PinMark
+          decorative
+          kind={pin.kind}
+          className={onRoute ? "h-5 w-5" : "h-4 w-4 opacity-70"}
+        />
+      </button>
+    </Marker>
+  ));
+}
+
+/**
+ * What the road under the cursor says about itself.
+ *
+ * Offset off the cursor so the label never sits under the pointer, and thrown
+ * to the other side near an edge so it cannot run off the map — which it
+ * otherwise would, since the map reaches the window.
+ */
+function RoadTip({ hovered }: { hovered: Hovered }) {
+  return (
+    <div
+      style={{
+        left: hovered.x + (hovered.flipX ? -14 : 14),
+        top: hovered.y + (hovered.flipY ? -14 : 14),
+        transform: `translate(${hovered.flipX ? "-100%" : "0"}, ${
+          hovered.flipY ? "-100%" : "0"
+        })`,
+      }}
+      className="border-forest-deep bg-forest text-sand pointer-events-none absolute z-10 rounded-md border px-2 py-1.5 shadow-lg"
+    >
+      {hovered.name && (
+        <p className="max-w-56 truncate text-xs">{hovered.name}</p>
       )}
+      <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
+        {formatMiles(hovered.meters)} · ↑{formatFeet(hovered.climb)}
+      </p>
+      <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
+        {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
+        {humanize(hovered.surroundings)}
+      </p>
     </div>
   );
 }

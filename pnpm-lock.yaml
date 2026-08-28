@@ -14,6 +14,9 @@ dependencies:
   '@phosphor-icons/react':
     specifier: ^2.1.7
     version: 2.1.7(react-dom@19.0.0)(react@19.0.0)
+  '@radix-ui/react-alert-dialog':
+    specifier: ^1.1.23
+    version: 1.1.23(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0)
   '@radix-ui/react-collapsible':
     specifier: ^1.1.20
     version: 1.1.20(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0)
@@ -939,6 +942,30 @@ packages:
 
   /@radix-ui/primitive@1.1.7:
     resolution: {integrity: sha512-rqWnm76nYT8HoNNqEjpgJ7Pw/DrBj5iBTrmEPo6HTX5+VJyBNOqTdv4g89G63HuR5g0AaENoAcH7Is5fF2kZ8Q==}
+    dev: false
+
+  /@radix-ui/react-alert-dialog@1.1.23(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-VAYOiQRqj3GPpYJE0I9J+X8Ip05cyVlNdKOFeiGS2Ou1HHGfpl0BxOyZm6nmVDyU+W+NF3/XLzmjHmVGydhwgA==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@radix-ui/primitive': 1.1.7
+      '@radix-ui/react-compose-refs': 1.1.5(@types/react@19.0.0)(react@19.0.0)
+      '@radix-ui/react-context': 1.2.2(@types/react@19.0.0)(react@19.0.0)
+      '@radix-ui/react-dialog': 1.1.23(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0)
+      '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0)
+      '@types/react': 19.0.0
+      '@types/react-dom': 19.0.0
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
     dev: false
 
   /@radix-ui/react-collapsible@1.1.20(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0):

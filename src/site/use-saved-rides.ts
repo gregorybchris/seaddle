@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { readStoredJson, writeStoredJson } from "@/lib/utilities/storage";
 
 const KEY = "seaddle.rides";
 
@@ -10,32 +11,13 @@ export type SavedRide = {
   savedAt: number;
 };
 
-/**
- * Storage can be missing or refuse to answer — a private window, a browser set
- * to block site data — and a saved-rides list is a convenience, not a reason
- * for the page to fail. An unavailable store behaves as an empty one.
- */
-function read(): SavedRide[] {
-  try {
-    const raw = window.localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as SavedRide[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function write(rides: SavedRide[]): void {
-  try {
-    window.localStorage.setItem(KEY, JSON.stringify(rides));
-  } catch {
-    // Nothing to do about it, and nothing worth interrupting the ride for.
-  }
-}
-
 export function useSavedRides() {
   const [rides, setRides] = useState<SavedRide[]>([]);
 
-  useEffect(() => setRides(read()), []);
+  // Read after mounting rather than as the initial state: the list is only in
+  // the browser, and reading it during the first render would be reading it
+  // before there is one.
+  useEffect(() => setRides(readStoredJson<SavedRide[]>(KEY, [])), []);
 
   const save = useCallback((name: string, route: string) => {
     setRides((current) => {
@@ -49,7 +31,7 @@ export function useSavedRides() {
         },
         ...current.filter((ride) => ride.route !== route),
       ];
-      write(next);
+      writeStoredJson(KEY, next);
       return next;
     });
   }, []);
@@ -57,7 +39,7 @@ export function useSavedRides() {
   const remove = useCallback((id: string) => {
     setRides((current) => {
       const next = current.filter((ride) => ride.id !== id);
-      write(next);
+      writeStoredJson(KEY, next);
       return next;
     });
   }, []);

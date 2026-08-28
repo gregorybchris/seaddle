@@ -66,13 +66,12 @@ way:
 - **Filters** are thresholds, not checkboxes — nothing steeper than rolling, at
   least a bike lane, at least pleasant — because that is how a limit is actually
   held in someone's head.
-- **The route lives in the URL** (`/?r=s017,s042,~,s088`), so a link is the
+- **The route lives in the URL** (`/?r=s017,s042,s088`), so a link is the
   whole share mechanism and there is nothing server-side to keep.
 - **Undo is the back button.** Every move pushes a history entry, so back
   unbuilds the route; ⌘Z / ⌘⇧Z (and the control spellings) do the same from the
   keyboard.
-- **Out-and-back** turns the ride around at the far end, and **Save** keeps a
-  named route in `localStorage`.
+- **Save** keeps a named route in `localStorage`.
 - **Download** writes a GPX in the browser — the page already holds every point,
   so no round trip is involved.
 - **Pins** — water, restrooms, viewpoints, rest stops, bike shops — are shown

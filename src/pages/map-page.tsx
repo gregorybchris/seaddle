@@ -1,20 +1,18 @@
 import { useCallback, useMemo, useState } from "react";
 import { coordAtFraction } from "@/lib/geo/polyline";
+import { cn } from "@/lib/utilities/style-utils";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
-import {
-  NO_FILTERS,
-  passes,
-  type Encoding,
-  type Filters,
-} from "@/site/filters";
+import type { Encoding } from "@/site/encoding";
+import { NO_FILTERS, passes, type Filters } from "@/site/filters";
 import {
   append,
   EMPTY_ROUTE,
   isEmpty,
+  riddenOrder,
   routePoints,
   startRoute,
 } from "@/site/route";
@@ -106,14 +104,7 @@ export function MapPage() {
 
   /** The pins on the roads chosen so far, in the order they are ridden past. */
   const routePins = useMemo(
-    () =>
-      pinsAlong(
-        pins,
-        route.steps.map((step) => ({
-          segment: step.segment,
-          reversed: graph?.segments.get(step.segment)?.from !== step.from,
-        })),
-      ),
+    () => (graph ? pinsAlong(pins, riddenOrder(route, graph)) : []),
     [pins, route, graph],
   );
 
@@ -216,11 +207,10 @@ function Splash({
     <div className="bg-forest flex h-full items-center justify-center p-8">
       <div className="flex max-w-sm flex-col items-center text-center">
         <SeaddleMark
-          className={
-            waiting
-              ? "text-sand/80 mb-5 h-12 w-12 animate-[breathe_1.8s_ease-in-out_infinite]"
-              : "text-sand/80 mb-5 h-12 w-12"
-          }
+          className={cn(
+            "text-sand/80 mb-5 h-12 w-12",
+            waiting && "animate-[breathe_1.8s_ease-in-out_infinite]",
+          )}
         />
         <h1 className="text-sand text-lg tracking-[0.14em] uppercase">
           {title}

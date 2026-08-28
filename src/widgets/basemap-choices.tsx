@@ -1,4 +1,4 @@
-import { BASEMAPS, type BasemapId } from "@/lib/basemap";
+import { basemapById, BASEMAPS, type BasemapId } from "@/lib/basemap";
 import { ChipGroup } from "@/widgets/chip-group";
 
 /**
@@ -22,17 +22,11 @@ export function BasemapChoices({
       options={BASEMAPS.map((basemap) => basemap.id)}
       value={value}
       onChange={onChange}
-      swatchFor={(id) =>
-        BASEMAPS.find((basemap) => basemap.id === id)?.accent ?? "transparent"
-      }
+      swatchFor={(id) => basemapById(id)?.accent ?? "transparent"}
       // Lowercased at the point of display, the way `humanize` leaves every
       // other chip on the site — the names stay capitalised where they are
       // defined, because that is what they are called.
-      labelFor={(id) =>
-        (
-          BASEMAPS.find((basemap) => basemap.id === id)?.name ?? id
-        ).toLowerCase()
-      }
+      labelFor={(id) => (basemapById(id)?.name ?? id).toLowerCase()}
     />
   );
 }

@@ -205,6 +205,11 @@ export const BASEMAPS: Basemap[] = [
   },
 ];
 
+/** Looked up by id, which is the only way anything outside this file has one. */
+export function basemapById(id: string): Basemap | undefined {
+  return BASEMAPS.find((basemap) => basemap.id === id);
+}
+
 /**
  * What a rider gets before they have chosen anything.
  *

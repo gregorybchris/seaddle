@@ -5,7 +5,8 @@ import { BasemapChoices } from "@/widgets/basemap-choices";
 import { ChipGroup } from "@/widgets/chip-group";
 import { Dialog } from "@/widgets/dialog";
 import { MapButton } from "@/widgets/map-button";
-import { ENCODINGS, type Encoding, type Filters } from "../filters";
+import { ENCODINGS, type Encoding } from "../encoding";
+import type { Filters } from "../filters";
 import { FilterPanel } from "./filter-panel";
 
 type MapControlsProps = {
