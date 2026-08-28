@@ -1,4 +1,10 @@
-import { Mountains, Shield, Tree, type Icon } from "@phosphor-icons/react";
+import {
+  Binoculars,
+  Mountains,
+  Shield,
+  Tree,
+  type Icon,
+} from "@phosphor-icons/react";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import { humanize } from "@/lib/utilities/words";
 import { Badge } from "@/widgets/badge";
@@ -66,8 +72,8 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
         segment ? (
           <Reading segment={segment} />
         ) : (
-          <StartHere headline="Get to know a road">
-            {PICK} any road to see what it is like.
+          <StartHere headline="Getting started">
+            {PICK} any segment to view details.
           </StartHere>
         )
       }
@@ -150,9 +156,9 @@ const ATTRIBUTES: { key: Attribute; label: string; Icon: Icon }[] = [
  */
 function Reading({ segment }: { segment: SiteSegment }) {
   return (
-    <div className="border-sand/10 flex flex-col gap-2 border-t pt-3 max-md:border-t-0 max-md:pt-0">
+    <div className="border-sand/10 flex flex-col gap-1.5 border-t pt-3 max-md:border-t-0 max-md:pt-0 md:gap-2">
       <div>
-        <h2 className="text-sand truncate text-lg leading-tight md:text-xl">
+        <h2 className="text-sand truncate text-lg leading-none md:text-xl md:leading-tight">
           {segment.name ?? "Unnamed road"}
         </h2>
         <p className="tabular text-sand/70 text-xs md:text-sm">
@@ -171,16 +177,18 @@ function Reading({ segment }: { segment: SiteSegment }) {
           that suits a beginner, and the red one is the thing to look at.
 
           A step larger on a wide screen, where the sidebar is a full-height
-          column with room to spare. On a phone it holds the smaller step, and
-          goes entirely if the sheet is dragged back down over it — the panel
-          comes up by itself when a road is tapped, so anyone putting it back is
-          asking for the map, and three rows clipped off the bottom edge of the
-          screen are worse than none. */}
-      <dl className="border-sand/10 flex flex-col border-t max-md:group-data-[collapsed]/sheet:hidden">
+          column with room to spare. On a phone the whole block is squeezed —
+          tighter rows, a badge cut back to its own line box, the title on its
+          cap height — so that all three answers clear the sheet's lowest
+          resting height. They stay put when it is dragged down there, unlike
+          the chart: the chart at that height would be a strip of its own top
+          inch, while these are three short lines that are either all there or
+          not worth showing, and they are the reason anyone is in this mode. */}
+      <dl className="border-sand/10 flex flex-col border-t">
         {ATTRIBUTES.map(({ key, label, Icon }) => (
           <div
             key={key}
-            className="border-sand/10 flex items-center gap-2 border-b py-1.5 last:border-b-0 md:py-2.5"
+            className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5"
           >
             <Icon
               aria-hidden
@@ -191,7 +199,7 @@ function Reading({ segment }: { segment: SiteSegment }) {
             <dd className="ml-auto">
               <Badge
                 tone={TONES[key][segment[key]]}
-                className="text-sm md:text-base"
+                className="py-0 text-sm md:py-0.5 md:text-base"
               >
                 {humanize(segment[key])}
               </Badge>
@@ -207,29 +215,58 @@ function Reading({ segment }: { segment: SiteSegment }) {
  * What this mode is for, on the screen where nothing is selected yet.
  *
  * A rider who has just switched here from building has no reason to expect the
- * whole map to have gone live, and no reason to expect the shovel to bring
- * their half-built route back untouched. One line each, and no more: this sits
- * below the fold on a phone, so it has to reward a drag rather than be homework.
+ * whole map to have gone live, and no reason to expect the way back to bring
+ * their half-built route with it. Short, because it sits below the fold on a
+ * phone: it has to reward a drag rather than be homework.
+ *
+ * The way out is named three ways — the word, the mark, and the corner — because
+ * a beginner has none of them. The button carries the mode it is *in* rather
+ * than the one a press would reach, so the icon to look for while exploring is
+ * the binoculars, and telling anyone to find a shovel sends them hunting for a
+ * picture that is not on the screen.
  */
-const NOTES = [
-  `Explore mode lets you view the attributes of individual segments. When you're ready to design a full route, ${PICK.toLocaleLowerCase()} the shovel to enter build mode.`,
-];
-
 function HowExploringWorks() {
   return (
     <section className="flex flex-col gap-2">
       <h2 className="eyebrow text-sand/70">Explore mode</h2>
-      <ul className="flex flex-col gap-1.5">
-        {NOTES.map((note) => (
-          <li
-            key={note}
-            className="text-sand/75 text-[0.8125rem] leading-relaxed"
-          >
-            {note}
-          </li>
-        ))}
-      </ul>
+      <p className="text-sand/75 text-[0.8125rem] leading-relaxed">
+        Explore mode lets you view the attributes of individual segments. When
+        you&rsquo;re ready to design a full route, {PICK.toLocaleLowerCase()}{" "}
+        the binoculars <ControlMark Mark={Binoculars} /> in the top right to
+        enter build mode.
+      </p>
     </section>
+  );
+}
+
+/**
+ * One of the map's own buttons, shrunk to sit on a line of text.
+ *
+ * Drawn the way it is drawn out there — pale paper, dark keyline, the same
+ * mark — rather than as a bare glyph in the panel's own sand, so the thing
+ * being described and the thing to press look like each other. The hard shadow
+ * the real button carries is dropped: at this size it reads as a smudge.
+ *
+ * Centred on the text rather than sat on its baseline. A box this size has no
+ * baseline worth using — an inline grid takes one from whatever is inside it,
+ * so the mark's own bottom edge ends up standing in for a letter's, and the
+ * chip hangs low. `middle` aligns the two centres instead, which is the thing
+ * being asked for anyway and needs no number to be tuned per icon.
+ *
+ * Not a transform: that would leave the box laid out where it was and only
+ * paint it lower, which moves the mark off the ring it is drawn in.
+ *
+ * Hidden from a reader who is not looking at either, and who has just been
+ * given the button's name in words.
+ */
+function ControlMark({ Mark }: { Mark: Icon }) {
+  return (
+    <span
+      aria-hidden
+      className="border-forest-deep bg-paper text-forest-deep mx-0.5 inline-grid h-[1.25em] w-[1.25em] place-items-center rounded border align-middle"
+    >
+      <Mark weight="bold" className="h-[0.8em] w-[0.8em]" />
+    </span>
   );
 }
 
