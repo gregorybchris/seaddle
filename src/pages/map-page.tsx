@@ -27,6 +27,7 @@ import { useMode } from "@/site/use-mode";
 import { useGraph } from "@/site/use-graph";
 import { useRouteHistory } from "@/site/use-route-history";
 import { useAutoZoom } from "@/site/use-auto-zoom";
+import { useSelection } from "@/site/use-selection";
 
 export function MapPage() {
   const { graph, pins, error } = useGraph();
@@ -60,7 +61,12 @@ export function MapPage() {
    * step into mid-ride, which is exactly when the question it answers comes up.
    */
   const [mode, setMode] = useMode();
-  const [selected, setSelected] = useState<SegmentId | null>(null);
+  /**
+   * The road being read, which the link carries so it can be sent to someone.
+   * Kept across a trip into build mode and back, but only named in the URL
+   * while exploring — see `use-selection`.
+   */
+  const [selected, setSelected] = useSelection(mode, graph);
   /**
    * What the map is colored by before anyone asks for something else.
    *

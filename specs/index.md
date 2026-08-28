@@ -427,11 +427,34 @@ an editor field nobody ever changes is a field that eventually gets set wrong.
 
 ### Sharing and saving
 
-The segment chain lives in the **URL**: `seaddle.com/?r=s017,s042,s043,s088`. Copy-paste shares a
-route, refresh is lossless, and a bookmark is a saved ride. No accounts, no backend.
+The segment chain lives in the **URL**: `seaddle.com/?r=17-42-43-88`. Copy-paste shares a route,
+refresh is lossless, and a bookmark is a saved ride. No accounts, no backend.
+
+Spelled for the address bar rather than for the parser. A query string is written in form encoding,
+which leaves alone exactly the letters, digits and `*-._` — so the comma this used to join on
+arrived as `%2C` and the out-and-back token `~` as `%7E`, and the one thing a rider is meant to copy
+and send read like a mistake. Hyphens survive, and dropping the `s` and the zero padding makes the
+link *shorter* than the format that kept them. Ids are reconstructed by padding back to three
+digits, which is what `nextId` writes and is a no-op above 999 — so there is no ceiling to walk into
+and no build-time guard to remember. The decoder reads the old spelling too: links outlive their
+formats, and rides written `s017,s042` are in bookmarks and in the saved list in people's browsers.
 
 Because appends push history entries, back-navigating past the empty route leaves the site
 normally — history is undo _within_ a route, never a trap.
+
+A second parameter shares a **road** rather than a ride: `?s=42` is the one being read in explore
+mode, written on every tap and spelled the same way the roads in a ride are. It is only ever
+*replaced* into the current history entry, never pushed — back and forward walk the route timeline,
+and spending them on un-selecting roads would bury the turns worth taking back. Both parameters coexist, so stepping into explore mid-build does not cost a
+rider the ride out of their own address bar; `?s=` is dropped while building, because it would
+otherwise open a stranger on a road nobody is looking at.
+
+**The link outranks what the browser remembers.** Mode is stored in `localStorage`, but a link that
+names something is somebody handing over a specific thing to look at, so it is read first: `?s=`
+opens in explore on that road, `?r=` alone opens in build on the route panel, and only a link
+carrying neither falls back to the stored choice. Arriving on someone else's link never writes that
+mode back to storage. A link naming a road also frames the map on it, ahead of any ride it carries —
+the road is what the panel is about.
 
 On top of that, **named saves in localStorage**: "Save this ride," give it a name, and it lists in
 the sidebar on return visits. Each saved ride is just its URL plus a name and a timestamp.

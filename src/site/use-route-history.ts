@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { typingIn } from "@/lib/utilities/keys";
 import type { SiteGraph } from "./graph-data";
+import { readLink, writeLink } from "./link";
 import { decodeStages, EMPTY_ROUTE, encodeRoute, type Route } from "./route";
 
 /**
@@ -23,12 +24,6 @@ export type Framing = { mode: "choices" | "route"; at: number };
 type Timeline = { entries: Route[]; index: number };
 
 const START: Timeline = { entries: [EMPTY_ROUTE], index: 0 };
-
-/** The ride in the link, if the link carries one. Also read by `use-mode`,
- *  which opens on the route panel when someone has been sent a ride. */
-export function encodedFromUrl(): string {
-  return new URLSearchParams(window.location.search).get("r") ?? "";
-}
 
 /**
  * The route, and the ability to take back what made it.
@@ -53,11 +48,11 @@ export function useRouteHistory(graph: SiteGraph | null) {
       setTimeline(next);
       setFraming({ mode, at: Date.now() });
 
-      const encoded = encodeRoute(next.entries[next.index]);
-      const url = encoded ? `?r=${encoded}` : window.location.pathname;
-      const state = { index: next.index };
-      if (write === "push") window.history.pushState(state, "", url);
-      else window.history.replaceState(state, "", url);
+      // Only the ride: whichever road is being read is the selection's to
+      // write, and it survives a pick rather than being cleared by one.
+      writeLink({ route: encodeRoute(next.entries[next.index]) }, write, {
+        index: next.index,
+      });
     },
     [],
   );
@@ -110,7 +105,7 @@ export function useRouteHistory(graph: SiteGraph | null) {
     if (!graph) return;
 
     const restore = () => {
-      const encoded = encodedFromUrl();
+      const encoded = readLink().route;
       const { entries } = live.current;
       const index = (window.history.state as { index?: number } | null)?.index;
 

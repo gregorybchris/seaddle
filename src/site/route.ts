@@ -222,13 +222,69 @@ export function outAndBack(route: Route): Route {
 }
 
 /**
- * The token an out-and-back leaves in a link.
+ * How a link is spelled: bare numbers, hyphens between them.
  *
- * Nothing writes one any more — the button that turned a ride around is gone —
- * but a link shared before it went still carries the token, so both halves of
- * the format stay here to read and re-write it.
+ * Both of these are chosen for the address bar rather than for the parser. A
+ * query string is written in form encoding, which leaves alone exactly the
+ * letters, the digits, and `*-._` — so the comma this used to join on arrived
+ * as `%2C` and the tilde below as `%7E`, and the one thing a rider is meant to
+ * copy and send read like a mistake. A hyphen survives, and dropping the `s`
+ * and the padding makes the link shorter than the format that kept them:
+ * `17-42-43-88` against `s017,s042,s043,s088`.
+ *
+ * The turn is a letter for the same reason. It is not a road, and every other
+ * token is a number, so there is nothing for it to be confused with.
  */
-const TURN = "~";
+const SEPARATOR = "-";
+const TURN = "t";
+
+/**
+ * The spellings a link may arrive in, which is more than the one it leaves in.
+ *
+ * Links outlive their formats. Rides written `s017,s042` with `~` for the turn
+ * are in bookmarks, in messages, and in the saved list in people's browsers,
+ * and a prettier URL is not worth losing one to. Reading both costs a character
+ * class and a `replace`; every link is written back out in the current spelling
+ * the moment it is opened.
+ */
+const TOKENS = /[-,]/;
+const TURNS = ["t", "~"];
+
+/** `s042` as a link spells it. */
+export function encodeSegmentId(id: SegmentId): string {
+  return String(Number(id.replace(/^s/, "")));
+}
+
+/**
+ * A link's spelling of a road back into the id the graph knows it by.
+ *
+ * Null for anything that is not one, rather than an id built out of nonsense —
+ * a hand-trimmed URL should give back a shorter ride, never a different one.
+ */
+export function decodeSegmentId(token: string): SegmentId | null {
+  const digits = token.replace(/^s/, "");
+  return /^\d+$/.test(digits) ? `s${digits.padStart(3, "0")}` : null;
+}
+
+/**
+ * The same link in the current spelling, whatever spelling it arrived in.
+ *
+ * Only used on the saved list, where the rides are strings that were written
+ * down before the format changed — and where two spellings of one ride would
+ * otherwise stop `save` from recognising it as one it already has.
+ */
+export function respell(encoded: string): string {
+  return encoded
+    .split(TOKENS)
+    .filter(Boolean)
+    .map((token) => {
+      if (TURNS.includes(token)) return TURN;
+      const id = decodeSegmentId(token);
+      return id ? encodeSegmentId(id) : null;
+    })
+    .filter((token) => token !== null)
+    .join(SEPARATOR);
+}
 
 /**
  * The route as the decisions that made it, which is all a link has to carry.
@@ -240,8 +296,8 @@ const TURN = "~";
 export function encodeRoute(route: Route): string {
   return route.steps
     .filter((step) => !step.auto)
-    .map((step) => (step.turn ? TURN : step.segment))
-    .join(",");
+    .map((step) => (step.turn ? TURN : encodeSegmentId(step.segment)))
+    .join(SEPARATOR);
 }
 
 /**
@@ -272,7 +328,7 @@ export function decodeRoute(encoded: string, graph: SiteGraph): Route {
  */
 export function decodeStages(encoded: string, graph: SiteGraph): Route[] {
   const stages: Route[] = [EMPTY_ROUTE];
-  for (const token of encoded.split(",").filter(Boolean)) {
+  for (const token of encoded.split(TOKENS).filter(Boolean)) {
     const current = stages[stages.length - 1];
     const next = replay(current, token, graph);
     if (next !== current) stages.push(next);
@@ -282,8 +338,9 @@ export function decodeStages(encoded: string, graph: SiteGraph): Route[] {
 
 /** One token of a link, applied by the same rules a rider's click goes through. */
 function replay(route: Route, token: string, graph: SiteGraph): Route {
-  if (token === TURN) return outAndBack(route);
-  const segment = graph.segments.get(token);
+  if (TURNS.includes(token)) return outAndBack(route);
+  const id = decodeSegmentId(token);
+  const segment = id ? graph.segments.get(id) : undefined;
   if (!segment) return route;
   return isEmpty(route) ? startRoute(segment) : append(route, segment, graph);
 }

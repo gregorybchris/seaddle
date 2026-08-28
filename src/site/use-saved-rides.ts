@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { readStoredJson, writeStoredJson } from "@/lib/utilities/storage";
+import { respell } from "./route";
 
 const KEY = "seaddle.rides";
 
@@ -17,7 +18,21 @@ export function useSavedRides() {
   // Read after mounting rather than as the initial state: the list is only in
   // the browser, and reading it during the first render would be reading it
   // before there is one.
-  useEffect(() => setRides(readStoredJson<SavedRide[]>(KEY, [])), []);
+  //
+  // Re-spelled on the way in. Each of these was written down in whatever
+  // format the link used at the time, and one still in the old spelling would
+  // never match the ride the rider is currently looking at — so saving that
+  // ride again would list it twice instead of renaming the one already there.
+  useEffect(
+    () =>
+      setRides(
+        readStoredJson<SavedRide[]>(KEY, []).map((ride) => ({
+          ...ride,
+          route: respell(ride.route),
+        })),
+      ),
+    [],
+  );
 
   const save = useCallback((name: string, route: string) => {
     setRides((current) => {

@@ -11,7 +11,7 @@ import Map, {
   type MapRef,
 } from "react-map-gl";
 import type { FeatureCollection, LineString } from "geojson";
-import { centeredOn } from "@/lib/geo/bounds";
+import { boundsOf, centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
@@ -403,8 +403,21 @@ export function SiteMap({
     return { start: points[0], finish: points[points.length - 1] };
   }, [exploring, selected, graph]);
 
-  // Frame the whole network on arrival. There is no geolocation, so this is
-  // the only thing that tells a first-time visitor what is covered.
+  /**
+   * The road the link named, if it named one.
+   *
+   * Read once and held, because its only job is to settle the opening view.
+   * Every selection after this one is the reader tapping a road already on
+   * their screen, and refitting the camera around each of those would take the
+   * map away from someone who is using it.
+   */
+  const arrivedOn = useRef(selected);
+
+  // Frame what the link was about on arrival: the road it named, or the whole
+  // network if it named none. There is no geolocation, so the network fit is
+  // the only thing that tells a first-time visitor what is covered — and a
+  // link to one road that opened on all of it would be showing them the wrong
+  // thing entirely.
   //
   // Waits for the map to say it is there rather than trusting the ref to be
   // populated by the time this runs — it is not, reliably, and the version
@@ -412,16 +425,26 @@ export function SiteMap({
   // leaving the opening view wherever `initialViewState` had put it.
   useEffect(() => {
     if (!mapRef.current || !ready) return;
+    const named = arrivedOn.current
+      ? graph.segments.get(arrivedOn.current)?.points
+      : null;
+    const opening = named && named.length > 1 ? boundsOf(named) : graph.bounds;
     mapRef.current.fitBounds(
       [
-        [graph.bounds.minLon, graph.bounds.minLat],
-        [graph.bounds.maxLon, graph.bounds.maxLat],
+        [opening.minLon, opening.minLat],
+        [opening.maxLon, opening.maxLat],
       ],
-      { padding: 48, duration: 0 },
+      // Capped, or a link to a hundred meters of side street opens at a zoom
+      // where the basemap has run out of things to draw. Nothing near it for
+      // the network fit, which sits far below.
+      { padding: 48, duration: 0, maxZoom: 15 },
     );
     const middle = mapRef.current.getCenter();
     onCenter([middle.lng, middle.lat]);
   }, [graph, ready, onCenter]);
+
+  /** Whether the opening view belongs to a road the link named. */
+  const openedOnRoad = useRef(selected !== null);
 
   // Frame where the route can go next, not where it has been.
   //
@@ -449,6 +472,15 @@ export function SiteMap({
       ? routeBounds(route, graph)
       : choiceBounds(route, graph);
     if (!target) return;
+
+    // A link that named a road opens on that road, and a ride carried in the
+    // same link arrives a beat later — unchecked, it would pull the camera
+    // straight off the road the panel is talking about. Only that first
+    // framing gives way; every one after it is something the rider just did.
+    if (openedOnRoad.current) {
+      openedOnRoad.current = false;
+      return;
+    }
 
     const anchor = looking ? null : focusAnchor(route, graph);
     const bounds = anchor ? centeredOn(anchor, target) : target;
