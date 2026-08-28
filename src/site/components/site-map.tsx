@@ -17,7 +17,8 @@ import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
-import { MapTheme } from "@/widgets/map-theme";
+import type { BasemapId } from "@/lib/basemap";
+import { useBasemapPaint } from "@/lib/use-basemap";
 import { PinMark } from "@/widgets/pin-mark";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
@@ -86,6 +87,9 @@ type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
   encoding: Encoding;
+  /** Which ground to draw everything on. Chosen elsewhere; painted here,
+   *  because painting it needs the map instance and choosing it does not. */
+  basemap: BasemapId;
   /** Roads that fail the filters: dimmed, never hidden. */
   dimmed: SegmentId[];
   /** Every point of interest on the graph. */
@@ -158,6 +162,7 @@ export function SiteMap({
   graph,
   route,
   encoding,
+  basemap,
   dimmed,
   allPins,
   pins,
@@ -168,6 +173,7 @@ export function SiteMap({
   onCenter,
 }: SiteMapProps) {
   const mapRef = useRef<MapRef>(null);
+  useBasemapPaint(mapRef, basemap);
   const wrap = useRef<HTMLDivElement>(null);
   const [overRoad, setOverRoad] = useState(false);
   const [hovered, setHovered] = useState<Hovered | null>(null);
@@ -632,8 +638,6 @@ export function SiteMap({
         )}
         <AttributionControl compact />
       </Map>
-
-      <MapTheme mapRef={mapRef} />
 
       {/* Offset off the cursor so the label never sits under the pointer, and
           thrown to the other side near an edge so it cannot run off the map —

@@ -129,13 +129,13 @@ body {
   animation: collapsible-close 200ms var(--ease-settle);
 }
 
-/* A menu arriving under the control that opened it. Radix hands us the side it
-   chose, so the panel always grows away from its trigger rather than through
-   it. Same settle curve as everything else that moves on this site. */
-@keyframes menu-in {
+/* A dialog arriving over the map. It grows from its own centre rather than from
+   a trigger, because it is not anchored to one — the button that opened it is in
+   a corner and the panel is in the middle. Same settle curve as the sheet. */
+@keyframes dialog-in {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(-4px);
+    transform: scale(0.96) translateY(-6px);
   }
   to {
     opacity: 1;
@@ -143,32 +143,56 @@ body {
   }
 }
 
-@keyframes menu-out {
+@keyframes dialog-out {
   from {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
   to {
     opacity: 0;
-    transform: scale(0.96) translateY(-4px);
+    transform: scale(0.96) translateY(-6px);
   }
 }
 
-.menu-panel {
-  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+@keyframes veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.menu-panel[data-state="open"] {
-  animation: menu-in 160ms var(--ease-settle);
+@keyframes veil-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-.menu-panel[data-state="closed"] {
-  animation: menu-out 120ms var(--ease-settle);
+.dialog-panel[data-state="open"] {
+  animation: dialog-in 180ms var(--ease-settle);
+}
+
+.dialog-panel[data-state="closed"] {
+  animation: dialog-out 130ms var(--ease-settle);
+}
+
+.dialog-veil[data-state="open"] {
+  animation: veil-in 180ms var(--ease-settle);
+}
+
+.dialog-veil[data-state="closed"] {
+  animation: veil-out 130ms var(--ease-settle);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .menu-panel[data-state="open"],
-  .menu-panel[data-state="closed"] {
+  .dialog-panel[data-state="open"],
+  .dialog-panel[data-state="closed"],
+  .dialog-veil[data-state="open"],
+  .dialog-veil[data-state="closed"] {
     animation: none;
   }
 }

@@ -20,6 +20,10 @@ import {
   startRoute,
 } from "@/site/route";
 import { pinsAlong } from "@/lib/graph/pins";
+import { useBasemapChoice } from "@/lib/use-basemap";
+import { MapControls } from "@/site/components/map-controls";
+import { MapLegend } from "@/site/components/map-legend";
+import { MapWatermark } from "@/site/components/map-watermark";
 import { SHOW_TURNINGS } from "@/site/flags";
 import { turnings } from "@/site/turnings";
 import { useGraph } from "@/site/use-graph";
@@ -54,6 +58,7 @@ export function MapPage() {
    * answer that at a glance.
    */
   const [encoding, setEncoding] = useState<Encoding>("steepness");
+  const [basemap, setBasemap] = useBasemapChoice();
   /**
    * The road the panel is pointing at, and where the map is looking.
    *
@@ -144,11 +149,6 @@ export function MapPage() {
         graph={graph}
         route={route}
         encoding={encoding}
-        onEncoding={setEncoding}
-        filters={filters}
-        onFilters={setFilters}
-        passing={graph.segments.size - dimmed.length}
-        total={graph.segments.size}
         onUndo={undo}
         onRedo={redo}
         canUndo={canUndo}
@@ -163,11 +163,15 @@ export function MapPage() {
         onPick={pick}
         onHighlight={setHighlighted}
       />
-      <main className="h-full md:min-w-0 md:flex-1">
+      {/* The map's own box, and so the frame everything laid over it is
+          positioned against — the controls read their state straight from here
+          rather than being drilled through the map to reach it. */}
+      <main className="relative h-full md:min-w-0 md:flex-1">
         <SiteMap
           graph={graph}
           route={route}
           encoding={encoding}
+          basemap={basemap}
           dimmed={dimmed}
           scrubbed={scrubbed}
           allPins={pins}
@@ -176,6 +180,25 @@ export function MapPage() {
           highlighted={highlighted}
           onPick={pick}
           onCenter={noteCenter}
+        />
+
+        <MapWatermark />
+        {/* Under the mark on a phone, where the only free edge is; down with the
+            map's own credits on desktop, where the sidebar has just ended and
+            the top-left would read as belonging to it. */}
+        <MapLegend
+          encoding={encoding}
+          className="absolute top-14 left-3 z-10 md:top-auto md:bottom-9"
+        />
+        <MapControls
+          encoding={encoding}
+          onEncoding={setEncoding}
+          basemap={basemap}
+          onBasemap={setBasemap}
+          filters={filters}
+          onFilters={setFilters}
+          passing={graph.segments.size - dimmed.length}
+          total={graph.segments.size}
         />
       </main>
     </div>

@@ -84,6 +84,15 @@ type SheetProps = {
    * and nothing else.
    */
   label?: string;
+  /**
+   * Where the header block is shown.
+   *
+   * "desktop" hands the phone's top corner to whatever is behind the sheet —
+   * the site's map carries the mark there instead, and the sheet keeps the room
+   * for what changes. It has to be decided here rather than by hiding the
+   * caller's own node, because the padding around the slot is the sheet's.
+   */
+  headerAt?: "all" | "desktop";
   children: ReactNode;
 };
 
@@ -103,6 +112,7 @@ export function Sheet({
   restingAt = "half",
   lowerOn,
   label,
+  headerAt = "all",
   children,
 }: SheetProps) {
   const [detent, setDetent] = useState<Detent>(restingAt);
@@ -234,7 +244,7 @@ export function Sheet({
     <aside
       aria-label={label}
       className={cn(
-        "sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-10 flex flex-col rounded-t-2xl",
+        "sheet bg-forest text-sand fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl",
         "shadow-[0_-8px_32px_rgba(18,48,31,0.28)]",
         "md:static md:w-[22rem] md:rounded-none md:shadow-none lg:w-96",
         // Only between resting heights. Under the thumb it tracks the drag
@@ -276,7 +286,10 @@ export function Sheet({
       {header && (
         <div
           {...dragHandlers}
-          className="shrink-0 px-5 pb-4 max-md:cursor-grab max-md:touch-none max-md:select-none max-md:active:cursor-grabbing md:pt-5"
+          className={cn(
+            "shrink-0 px-5 pb-4 max-md:cursor-grab max-md:touch-none max-md:select-none max-md:active:cursor-grabbing md:pt-5",
+            headerAt === "desktop" && "max-md:hidden",
+          )}
         >
           {header}
         </div>

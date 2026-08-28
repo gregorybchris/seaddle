@@ -52,6 +52,20 @@ type Palette = {
 export type Basemap = {
   id: BasemapId;
   name: string;
+  /**
+   * One saturated color standing for the whole style, for picking between them.
+   *
+   * Not sampled from the palette, because nothing in a palette can do the job:
+   * land is near-white in all five and the waters of the three muted ones are
+   * the same pale blue-grey. These are exaggerated on purpose — a swatch has a
+   * dozen pixels to say what a whole map says at a glance, so it names the
+   * thing each style is *about* rather than reporting a color it contains.
+   *
+   * Exaggerated, not loud: they sit at 20-38% saturation, which is where the
+   * forest and the segment ramps already live, so a row of them still belongs
+   * to this site rather than to a color picker.
+   */
+  accent: string;
   palette: Palette;
 };
 
@@ -61,6 +75,7 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "paper",
     name: "Paper",
+    accent: "#c8b797",
     palette: {
       land: "#faf7f1",
       road: "#ffffff",
@@ -85,6 +100,7 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "sand",
     name: "Sand & slate",
+    accent: "#8c94b3",
     palette: {
       land: "#f4eee1",
       road: "#fffdf7",
@@ -109,6 +125,7 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "field",
     name: "Field guide",
+    accent: "#89a77a",
     palette: {
       land: "#f8f3e8",
       road: "#ffffff",
@@ -140,6 +157,7 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "harbor",
     name: "Harbor",
+    accent: "#6292b9",
     palette: {
       land: "#eef3f7",
       road: "#ffffff",
@@ -165,6 +183,7 @@ export const BASEMAPS: Basemap[] = [
   {
     id: "lagoon",
     name: "Lagoon",
+    accent: "#54a29b",
     palette: {
       land: "#fdf6e8",
       road: "#ffffff",

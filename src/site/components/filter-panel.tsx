@@ -6,34 +6,20 @@ import {
   type Protection,
   type Surroundings,
 } from "@/lib/models/graph";
-import { humanize } from "@/lib/utilities/words";
 import { Button } from "@/widgets/button";
 import { ChipGroup } from "@/widgets/chip-group";
-import { STEEPEST_GRADE } from "../grade";
-import {
-  ENCODING_VALUES,
-  ENCODINGS,
-  GRADE_STOPS,
-  isAttribute,
-  isFiltering,
-  NO_FILTERS,
-  RAMPS,
-  type Encoding,
-  type Filters,
-} from "../filters";
+import { isFiltering, NO_FILTERS, type Filters } from "../filters";
 
 type FilterPanelProps = {
   filters: Filters;
   onFilters: (filters: Filters) => void;
-  encoding: Encoding;
-  onEncoding: (encoding: Encoding) => void;
   /** How many segments currently clear the bar, out of how many there are. */
   passing: number;
   total: number;
 };
 
 /**
- * What a rider will put up with, and what the map should be colored by.
+ * What a rider will put up with.
  *
  * Nothing here hides a road. Failing a filter dims it, because hiding would
  * break the network into islands and leave someone staring at a gap with no
@@ -42,24 +28,12 @@ type FilterPanelProps = {
 export function FilterPanel({
   filters,
   onFilters,
-  encoding,
-  onEncoding,
   passing,
   total,
 }: FilterPanelProps) {
-  const on = isFiltering(filters);
-
   return (
-    <div className="border-sand/10 flex flex-col gap-4 border-t pt-3">
-      <ChipGroup
-        label="Color the map by"
-        options={ENCODINGS}
-        value={encoding}
-        onChange={onEncoding}
-      />
-      <Legend encoding={encoding} />
-
-      <div className="border-sand/10 flex flex-col gap-3 border-t pt-3">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <ChipGroup
           label="Nothing steeper than"
           joined
@@ -89,72 +63,23 @@ export function FilterPanel({
         />
       </div>
 
-      {on && (
-        <div className="flex items-center gap-2">
+      {/* The count is the only thing that says a filter is doing anything —
+          the map dims rather than hides, so a rider who set one and forgot has
+          this to come back to. */}
+      {isFiltering(filters) && (
+        <div className="border-sand/10 flex items-center gap-2 border-t pt-3">
           <span className="tabular text-sand/70 flex-1 text-[0.6875rem]">
             {passing} of {total} segments
           </span>
           <Button
             variant="quiet"
-            className="px-2 text-xs"
+            className="min-h-0 px-2 py-1 text-xs"
             onClick={() => onFilters(NO_FILTERS)}
           >
             Clear
           </Button>
         </div>
       )}
-    </div>
-  );
-}
-
-/** What the colors on the map currently mean. */
-function Legend({ encoding }: { encoding: Encoding }) {
-  if (!isAttribute(encoding)) return <GradeLegend />;
-
-  return (
-    <ul className="flex flex-wrap gap-x-3 gap-y-1">
-      {ENCODING_VALUES[encoding].map((value) => (
-        <li key={value} className="flex items-center gap-1.5">
-          {/* Outlined, because the dark end of a ramp tuned for a pale
-              basemap is exactly this panel's own color. */}
-          <span
-            aria-hidden
-            className="ring-sand/30 h-1.5 w-4 rounded-full ring-1"
-            style={{ backgroundColor: RAMPS[encoding][value] }}
-          />
-          <span className="text-sand/70 text-[0.6875rem]">
-            {humanize(value)}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/**
- * A bar rather than a row of swatches, because grade is continuous.
- *
- * Only the ends are labeled. The exact percentage under any one stretch of
- * road is not a thing anyone is going to read off a legend, and the elevation
- * chart gives the real number for a route once one is built; what this has to
- * say is which end of the bar is the hard one.
- */
-function GradeLegend() {
-  const ramp = GRADE_STOPS.map(
-    ([grade, color]) => `${color} ${(grade / STEEPEST_GRADE) * 100}%`,
-  ).join(", ");
-
-  return (
-    <div className="flex flex-col gap-1">
-      <span
-        aria-hidden
-        className="ring-sand/30 h-1.5 w-full rounded-full ring-1"
-        style={{ backgroundImage: `linear-gradient(to right, ${ramp})` }}
-      />
-      <div className="text-sand/70 flex justify-between text-[0.6875rem]">
-        <span>flat</span>
-        <span className="tabular">{STEEPEST_GRADE}%+</span>
-      </div>
     </div>
   );
 }

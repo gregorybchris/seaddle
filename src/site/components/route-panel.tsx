@@ -15,7 +15,7 @@ import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { InfoPopover } from "@/widgets/info-popover";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
-import type { Encoding, Filters } from "../filters";
+import type { Encoding } from "../filters";
 import type { SiteGraph } from "../graph-data";
 import {
   continuations,
@@ -30,7 +30,6 @@ import type { SegmentId } from "@/lib/models/graph";
 import { SHOW_TURNINGS } from "../flags";
 import type { Turning } from "../turnings";
 import { useSavedRides, type SavedRide } from "../use-saved-rides";
-import { FilterPanel } from "./filter-panel";
 import { RouteBreakdown } from "./route-breakdown";
 import { TurningsList } from "./turnings-list";
 
@@ -44,11 +43,6 @@ type RoutePanelProps = {
   graph: SiteGraph;
   route: Route;
   encoding: Encoding;
-  onEncoding: (encoding: Encoding) => void;
-  filters: Filters;
-  onFilters: (filters: Filters) => void;
-  passing: number;
-  total: number;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
@@ -67,11 +61,6 @@ export function RoutePanel({
   graph,
   route,
   encoding,
-  onEncoding,
-  filters,
-  onFilters,
-  passing,
-  total,
   onUndo,
   onRedo,
   canUndo,
@@ -113,6 +102,7 @@ export function RoutePanel({
   return (
     <Sheet
       label="Your ride"
+      headerAt="desktop"
       raisedWhen={started}
       // The map is the thing here. Resting low keeps it in view while a start
       // is chosen, and rising only to half leaves the change a pick just made
@@ -134,7 +124,7 @@ export function RoutePanel({
          compounds: 70% type inside a 70% wrapper lands near half strength and
          stops being readable. "0.0 mi" says "not yet" by itself. */
       peek={
-        <div className="border-sand/10 flex items-end gap-6 border-t pt-3">
+        <div className="border-sand/10 flex items-end gap-6 border-t pt-3 max-md:border-t-0 max-md:pt-0">
           <Figure label="distance" value={formatMiles(meters)} />
           <Figure label="climbing" value={climbText(gain)} />
         </div>
@@ -225,15 +215,6 @@ export function RoutePanel({
             onHighlight={onHighlight}
           />
         )}
-
-        <FilterPanel
-          filters={filters}
-          onFilters={onFilters}
-          encoding={encoding}
-          onEncoding={onEncoding}
-          passing={passing}
-          total={total}
-        />
 
         {started && (
           <SaveRide

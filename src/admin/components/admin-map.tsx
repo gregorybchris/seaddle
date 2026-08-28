@@ -18,7 +18,11 @@ import type {
 } from "@/lib/models/graph";
 import type { Track } from "@/lib/models/track";
 import { cn } from "@/lib/utilities/style-utils";
-import { MapTheme } from "@/widgets/map-theme";
+import { Palette } from "@phosphor-icons/react";
+import { useBasemapChoice, useBasemapPaint } from "@/lib/use-basemap";
+import { BasemapChoices } from "@/widgets/basemap-choices";
+import { Dialog } from "@/widgets/dialog";
+import { MapButton } from "@/widgets/map-button";
 import { PinMark } from "@/widgets/pin-mark";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import {
@@ -87,6 +91,13 @@ export function AdminMap({
   onMapClick,
 }: AdminMapProps) {
   const mapRef = useRef<MapRef>(null);
+  // The admin picks its own ground and keeps it in the same place the site
+  // does, so switching between the two does not switch the map out from under
+  // you. There is no encoding here to co-locate it with, so the dialog holds
+  // the one setting.
+  const [basemap, setBasemap] = useBasemapChoice();
+  const [themeOpen, setThemeOpen] = useState(false);
+  useBasemapPaint(mapRef, basemap);
   const wrap = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState<Hovered | null>(null);
   const [labeled, setLabeled] = useState(false);
@@ -316,7 +327,22 @@ export function AdminMap({
       </Map>
 
       {/* A row below the labels toggle, which already holds the top corner. */}
-      <MapTheme mapRef={mapRef} className="top-13" />
+      <MapButton
+        aria-label="Map theme"
+        aria-haspopup="dialog"
+        onClick={() => setThemeOpen(true)}
+        className="absolute top-13 right-3 z-10"
+      >
+        <Palette size={17} weight="bold" />
+      </MapButton>
+      <Dialog
+        open={themeOpen}
+        onOpenChange={setThemeOpen}
+        title="Map theme"
+        description="Which style the map is drawn in."
+      >
+        <BasemapChoices value={basemap} onChange={setBasemap} />
+      </Dialog>
 
       <button
         type="button"
