@@ -489,17 +489,22 @@ export function SiteMap({
    * and neither says the rules just changed. Nobody has switched anything on
    * the first render, though, so a banner there would be the site explaining
    * itself before it had been asked a question — which is what the panel is
-   * for.
+   * for. That goes for a mode restored from the last visit too: it is where
+   * the rider left off rather than something they just did.
+   *
+   * What is remembered is the mode already announced, not whether this has run
+   * before. A flag for the first render is spent by the first render — and in
+   * development there are two of those against one component, so the guard was
+   * gone by the time the second one asked, and the banner it exists to prevent
+   * was the one every visit opened with.
    *
    * It replaces whatever was up rather than queueing behind it. A refusal
    * about a road that just became pickable is the message least worth keeping.
    */
-  const firstRender = useRef(true);
+  const announced = useRef(mode);
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
+    if (announced.current === mode) return;
+    announced.current = mode;
     setNotice({
       ...modeNotice(mode, PICK),
       at: Date.now(),
