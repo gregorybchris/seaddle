@@ -193,9 +193,9 @@ public/pins.geojson            FeatureCollection, one Point per pin
 
 ### Why GeoJSON at runtime
 
-Handing Mapbox a pre-built FeatureCollection means **filtering and color-coding are data-driven
-style expressions**, not React state. Dimming a filtered-out segment or recoloring the whole map
-by a different attribute is a paint-property change on the GPU — instant with hundreds of
+Handing Mapbox a pre-built FeatureCollection means **color-coding and reachability are data-driven
+style expressions**, not React state. Recoloring the whole map by a different attribute, or fading
+every road the ride cannot reach, is a paint-property change on the GPU — instant with hundreds of
 segments, and no per-segment React components to reconcile.
 
 ```js
@@ -203,8 +203,8 @@ segments, and no per-segment React components to reconcile.
 "line-color": ["match", ["get", "protection"],
   "poor", C.poor, "fair", C.fair, "good", C.good, "great", C.great, C.unknown]
 
-// filters dim, never hide
-"line-opacity": ["case", ["boolean", ["feature-state", "passesFilter"], true], 1, 0.15]
+// the roads a ride can still take, bright and wider than the rest
+"filter": ["in", ["get", "id"], ["literal", continuations]]
 ```
 
 Adjacency (`nodeId → SegmentId[]`) is derived on load from the feature properties. At this scale
@@ -274,7 +274,7 @@ try to be clever.
 
 ### Sidebar
 
-Three things, in this order: the route being built, the stats, the filters.
+Three things, in this order: the route being built, the stats, and what can be done with it.
 
 **Before a ride starts, the stats stand down.** Distance and gain hold the sidebar's pinned slot —
 the one strip visible at every sheet detent — and before the first pick they are two zeros, which
@@ -305,7 +305,7 @@ dressed up as authority):
 
 **Segment detail** is a **mode**, not a second meaning for the same click. A click on a road cannot
 both add it and describe it, so the map has two: **build** (a shovel) and **explore** (binoculars),
-toggled from a third button beside filters and colors. The choice is kept in `localStorage` like the
+toggled from the first of three buttons on the map — mode, colors, settings. The choice is kept in `localStorage` like the
 choice of basemap — it is a setting rather than a step in anything, and being put back into a mode
 you deliberately left is the kind of small insult a reload should not be able to deliver. Which road
 was being read is *not* kept: that is where the reader had got to, not a preference, and restoring it
@@ -385,28 +385,44 @@ out left to right and a line on a map has no visible direction, so without them 
 end the climb starts from — and the direction shown is the recorded one, which is not necessarily
 the one anybody would ride.
 
-**Filters** style, never hide. A segment failing an active filter renders dim and thin but stays
-present and clickable. Hiding would fragment the graph and strand a user in a disconnected island
-with no way to see why.
-
-Steepness, protection, and surroundings are ordered scales, so they are **threshold** controls —
-"nothing steeper than rolling," "at least a bike lane" — which is how the constraint is actually
-held in someone's head. A set of checkboxes would permit nonsense states like _flat and steep but
-not rolling_.
-
-```
-Nothing steeper than    flat ──●── steep       (rolling)
-At least this protected unprotected ──●── bike path  (bike lane)
-At least this pretty    plain       ●──── scenic     (any)
-```
-
 **Color encoding** is user-selectable: steepness, protection, surroundings, or grade. Grade is the
 one that is not a segment attribute: it is read from the recorded elevation point by point and
-colors *within* a segment, which is also why it is the one you cannot filter on.
+colors *within* a segment, which is why it is the only one the key draws as a bar rather than as a
+row of named steps.
 
-Surface is gone entirely — from the filters, from the color encodings, from the admin editor, and
-from the stored record. Every road in the network is asphalt, so the attribute only ever had one
-honest answer, and an editor field nobody ever changes is a field that eventually gets set wrong.
+It is chosen from four cards rather than four chips, each carrying its mark, the question it
+answers, and its own ramp with the values named under it. A row of chips gave the names and nothing
+else, so the choice had to be made by guessing what "surroundings" would look like and then closing
+the dialog to find out. The card is the key to the map before the map has changed.
+
+**Filters are gone.** They were threshold controls over the same three scales — "nothing steeper
+than rolling," "at least a bike lane" — dimming rather than hiding, since hiding would fragment the
+graph and strand a rider in a disconnected island with no way to see why. They worked, and almost
+nobody opened them: the roads a beginner would have filtered out are already colored on the map,
+already badged in the explore panel, and already counted in the breakdown of their own ride, so the
+dialog was a second, slower way to learn what the map says at a glance. A control nobody opens is
+not free — it is a button in a row that every other button then has to be told apart from.
+
+**Settings** hold what is answered once and lived with: the ground the map is drawn on, the units
+every number is read in, and whether a pick moves the camera. The line against colors is how often
+the question comes back — what the map is *colored by* changes as a rider's question changes, while
+these three are set by taste and forgotten. The basemap moved across that line; it had been sitting
+with the encoding because both were colors, which is a fact about the code rather than about anyone
+using it.
+
+- **Units** are one choice covering distance and height together — miles & feet, or km & meters —
+  because nobody holds "miles, with the climbing in meters". The default is imperial, since this is
+  a map of Seattle, unless the browser names a region that rides in kilometers.
+- **Auto-zoom** is on by default: a rider who has just added a road is looking for what comes after
+  it. Turning it off stops the camera following a ride being built, but still frames a finished one
+  arriving from a link or the saved list — that one is being *shown* to them.
+- The dialog ends in a **colophon**: the mark, the byline, and the year. Worth finding, not worth a
+  permanent line of the screen, and whoever went looking for the settings is already the person who
+  wondered where this came from.
+
+Surface is gone entirely — from the color encodings, from the admin editor, and from the stored
+record. Every road in the network is asphalt, so the attribute only ever had one honest answer, and
+an editor field nobody ever changes is a field that eventually gets set wrong.
 
 
 ### Sharing and saving
@@ -626,17 +642,17 @@ typecheck, lint, and tests.
    segments), ~~pin editor~~. Still open: **manual connect** — merging two nodes is built, forcing
    a join across the snap tolerance and reassigning a segment endpoint are not. The coverage view
    and validation panel that stood here are dropped, for the reasons in §5.
-5. ~~**Site completion**~~ — filters, color encoding, attribute summary, out-and-back, URL
-   sharing, localStorage saves, GPX export.
+5. ~~**Site completion**~~ — color encoding, attribute summary, out-and-back, URL sharing,
+   localStorage saves, GPX export. Filters were built here and later removed; §4 says why.
 6. **Polish** — ~~mobile bottom sheet~~. Still open: **custom Studio basemap** (both maps are
-   still on the stock light style), **accessibility pass**, **performance** — app JS is 106 kB
+   still on the stock light style), **accessibility pass**, **performance** — app JS is 131 kB
    gzipped against a 100 kB budget.
 
 Beyond these, [`auto-routing.md`](auto-routing.md) specifies connectors — routing a rider from
 their front door to the graph — and is unbuilt. It gates itself on milestone 5, which is now done.
 
 The review pass gates the rest of the site's value: every segment still carries default
-attributes, so filters and color encoding work correctly against data that says nothing yet.
+attributes, so the color encoding works correctly against data that says nothing yet.
 
 Admin leads because the site has nothing to render without a real graph, and every interaction
 decision made against fake data is a guess. But it cuts over to the site at ~10 segments (step 3)

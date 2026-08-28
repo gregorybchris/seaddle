@@ -1,4 +1,4 @@
-import { formatMiles } from "@/lib/utilities/units";
+import { useUnits } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { breakdown, isAttribute, RAMPS, type Encoding } from "../encoding";
 import type { SiteSegment } from "../graph-data";
@@ -23,6 +23,7 @@ export function RouteBreakdown({
   segments: SiteSegment[];
   encoding: Encoding;
 }) {
+  const { distance } = useUnits();
   const attribute = isAttribute(encoding) ? encoding : "steepness";
   const shares = breakdown(segments, attribute);
   if (shares.length === 0) return null;
@@ -35,7 +36,7 @@ export function RouteBreakdown({
         aria-label={shares
           .map(
             (share) =>
-              `${Math.round(share.share * 100)}% ${share.value}, ${formatMiles(share.meters)}`,
+              `${Math.round(share.share * 100)}% ${share.value}, ${distance(share.meters)}`,
           )
           .join("; ")}
       >
@@ -61,7 +62,7 @@ export function RouteBreakdown({
               {humanize(share.value)}
             </span>
             <span className="tabular text-sand/70 text-[0.6875rem]">
-              {formatMiles(share.meters)}
+              {distance(share.meters)}
             </span>
           </li>
         ))}

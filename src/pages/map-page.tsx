@@ -7,7 +7,6 @@ import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
 import type { Encoding } from "@/site/encoding";
-import { NO_FILTERS, passes, type Filters } from "@/site/filters";
 import {
   append,
   EMPTY_ROUTE,
@@ -27,6 +26,7 @@ import { SegmentPanel } from "@/site/components/segment-panel";
 import { useMode } from "@/site/use-mode";
 import { useGraph } from "@/site/use-graph";
 import { useRouteHistory } from "@/site/use-route-history";
+import { useAutoZoom } from "@/site/use-auto-zoom";
 
 export function MapPage() {
   const { graph, pins, error } = useGraph();
@@ -47,7 +47,6 @@ export function MapPage() {
     canRedo,
   } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
-  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   /**
    * What a click on a road does, and which road is being read if it reads.
    *
@@ -72,6 +71,7 @@ export function MapPage() {
    */
   const [encoding, setEncoding] = useState<Encoding>("steepness");
   const [basemap, setBasemap] = useBasemapChoice();
+  const [autoZoom, setAutoZoom] = useAutoZoom();
   /**
    * The road the panel is pointing at, and where the map is looking.
    *
@@ -149,16 +149,6 @@ export function MapPage() {
     [route, graph, center],
   );
 
-  const dimmed = useMemo(
-    () =>
-      graph
-        ? [...graph.segments.values()]
-            .filter((segment) => !passes(segment, filters))
-            .map((segment) => segment.id)
-        : [],
-    [graph, filters],
-  );
-
   if (error) return <Splash title="Map unavailable">{error}</Splash>;
   if (!graph) return <Splash title="Seaddle" waiting />;
 
@@ -195,7 +185,7 @@ export function MapPage() {
           mode={mode}
           encoding={encoding}
           basemap={basemap}
-          dimmed={dimmed}
+          autoZoom={autoZoom}
           scrubbed={scrubbed}
           allPins={pins}
           pins={routePins}
@@ -222,10 +212,8 @@ export function MapPage() {
           onEncoding={setEncoding}
           basemap={basemap}
           onBasemap={setBasemap}
-          filters={filters}
-          onFilters={setFilters}
-          passing={graph.segments.size - dimmed.length}
-          total={graph.segments.size}
+          autoZoom={autoZoom}
+          onAutoZoom={setAutoZoom}
         />
       </main>
     </div>

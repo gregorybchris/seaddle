@@ -1,14 +1,12 @@
-import { Binoculars, Funnel, Palette, Shovel } from "@phosphor-icons/react";
+import { Binoculars, GearSix, Palette, Shovel } from "@phosphor-icons/react";
 import { useState } from "react";
 import type { BasemapId } from "@/lib/basemap";
-import { BasemapChoices } from "@/widgets/basemap-choices";
-import { ChipGroup } from "@/widgets/chip-group";
 import { Dialog } from "@/widgets/dialog";
 import { MapButton } from "@/widgets/map-button";
-import { ENCODINGS, type Encoding } from "../encoding";
-import type { Filters } from "../filters";
+import type { Encoding } from "../encoding";
 import type { Mode } from "../mode";
-import { FilterPanel } from "./filter-panel";
+import { ColorPanel } from "./color-panel";
+import { SettingsPanel } from "./settings-panel";
 
 type MapControlsProps = {
   mode: Mode;
@@ -17,17 +15,15 @@ type MapControlsProps = {
   onEncoding: (encoding: Encoding) => void;
   basemap: BasemapId;
   onBasemap: (id: BasemapId) => void;
-  filters: Filters;
-  onFilters: (filters: Filters) => void;
-  passing: number;
-  total: number;
+  autoZoom: boolean;
+  onAutoZoom: (on: boolean) => void;
 };
 
 /**
- * The settings that used to sit in the panel, as buttons on the map.
+ * The controls that are not part of building a route, as buttons on the map.
  *
- * They left the panel because neither is part of building a route: a rider sets
- * a filter or a color once and then spends the rest of the session picking
+ * They are not in the panel because none of them is a step in anything: a rider
+ * sets a color or a ground once and then spends the rest of the session picking
  * roads, with the controls for both taking up room the whole time. Behind a
  * button they cost nothing until they are wanted.
  *
@@ -35,10 +31,20 @@ type MapControlsProps = {
  * once, then lived with — even though it is the one control here that changes
  * what a click on the map does rather than what the map looks like.
  *
- * Both colors live in one dialog. What the map is colored *by* and what it is
- * drawn *on* were in different places for no reason other than having been
- * built at different times, and the second is only ever adjusted because of how
- * it sits under the first.
+ * Three, and there used to be a fourth. The filters went: they were a real
+ * feature answering a real question, and almost nobody asked it — the roads a
+ * beginner would have filtered out are already colored, already badged, and
+ * already named in the breakdown of their own ride, so the dialog was a second
+ * way to learn what the map says at a glance. A control nobody opens is not
+ * free; it is a button in the row that every other button has to be told apart
+ * from.
+ *
+ * The two dialogs divide on how often the question comes back. Colors is what
+ * the map is being asked about the roads, which changes as a rider's question
+ * changes; settings is the shape of the site — ground, units, camera — which
+ * is answered once. The ground moved across that line: it had been sitting with
+ * colors because both were colors, which is a fact about the implementation
+ * rather than about anyone using it.
  */
 export function MapControls({
   mode,
@@ -47,13 +53,11 @@ export function MapControls({
   onEncoding,
   basemap,
   onBasemap,
-  filters,
-  onFilters,
-  passing,
-  total,
+  autoZoom,
+  onAutoZoom,
 }: MapControlsProps) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const [colorsOpen, setColorsOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const exploring = mode === "explore";
 
   return (
@@ -72,7 +76,7 @@ export function MapControls({
               ? "Exploring roads. Switch to building a route."
               : "Building a route. Switch to exploring roads."
           }
-          title={exploring ? "Exploring" : "Building"}
+          title={exploring ? "Explore mode" : "Build mode"}
           onClick={() => onMode(exploring ? "build" : "explore")}
         >
           {exploring ? (
@@ -82,47 +86,42 @@ export function MapControls({
           )}
         </MapButton>
         <MapButton
-          aria-label="Filters"
-          aria-haspopup="dialog"
-          onClick={() => setFiltersOpen(true)}
-        >
-          <Funnel size={17} weight="bold" />
-        </MapButton>
-        <MapButton
-          aria-label="Map colors"
+          aria-label="Segment color"
+          title="Segment color"
           aria-haspopup="dialog"
           onClick={() => setColorsOpen(true)}
         >
           <Palette size={17} weight="bold" />
         </MapButton>
+        <MapButton
+          aria-label="Settings"
+          title="Settings"
+          aria-haspopup="dialog"
+          onClick={() => setSettingsOpen(true)}
+        >
+          <GearSix size={17} weight="bold" />
+        </MapButton>
       </div>
 
       <Dialog
-        open={filtersOpen}
-        onOpenChange={setFiltersOpen}
-        title="Filters"
-        description="Segments that do not meet the selected criteria are dimmed."
+        open={colorsOpen}
+        onOpenChange={setColorsOpen}
+        title="Segment color"
       >
-        <FilterPanel
-          filters={filters}
-          onFilters={onFilters}
-          passing={passing}
-          total={total}
-        />
+        <ColorPanel value={encoding} onChange={onEncoding} />
       </Dialog>
 
-      <Dialog open={colorsOpen} onOpenChange={setColorsOpen} title="Map colors">
-        <div className="flex flex-col gap-4">
-          <ChipGroup
-            label="Segment color"
-            options={ENCODINGS}
-            value={encoding}
-            onChange={onEncoding}
-          />
-          <div className="border-sand/10 border-t pt-4">
-            <BasemapChoices value={basemap} onChange={onBasemap} />
-          </div>
-        </div>
+      <Dialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        title="Settings"
+      >
+        <SettingsPanel
+          basemap={basemap}
+          onBasemap={onBasemap}
+          autoZoom={autoZoom}
+          onAutoZoom={onAutoZoom}
+        />
       </Dialog>
     </>
   );

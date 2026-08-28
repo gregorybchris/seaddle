@@ -69,26 +69,13 @@ describe("why a road cannot be picked", () => {
 
 describe("what the map says about it", () => {
   it("names both live ends while the direction is undecided", () => {
-    const notice = closedNotice("elsewhere", startRoute(seg("s1")), false);
+    const notice = closedNotice("elsewhere", startRoute(seg("s1")));
     expect(notice.detail).toContain("the one you started on");
   });
 
   it("names one once a second road has picked a side", () => {
     const route = append(startRoute(seg("s1")), seg("s5"), G);
-    const notice = closedNotice("elsewhere", route, false);
+    const notice = closedNotice("elsewhere", route);
     expect(notice.detail).toContain("your last selected segment");
-  });
-
-  it("adds the filter when that is fading the road too", () => {
-    const route = startRoute(seg("s1"));
-    expect(closedNotice("elsewhere", route, true).detail).toContain("filters");
-    expect(closedNotice("elsewhere", route, false).detail).not.toContain(
-      "filters",
-    );
-  });
-
-  it("leaves the filter out for a road in the ride, which is not faded", () => {
-    const route = startRoute(seg("s1"));
-    expect(closedNotice("ridden", route, true).detail).not.toContain("filters");
   });
 });

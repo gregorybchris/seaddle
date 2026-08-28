@@ -1,6 +1,6 @@
 import type { SegmentId } from "@/lib/models/graph";
 import { cn } from "@/lib/utilities/style-utils";
-import { formatFeet, formatMiles } from "@/lib/utilities/units";
+import { useUnits } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import type { Turning } from "../turnings";
 
@@ -62,6 +62,7 @@ function Row({
   onHighlight: (id: SegmentId | null) => void;
 }) {
   const { segment, heading, climbMeters } = turning;
+  const { distance, climb } = useUnits();
   const character = [
     segment.steepness,
     segment.protection,
@@ -85,8 +86,8 @@ function Row({
       aria-label={[
         lead,
         under,
-        formatMiles(segment.meters),
-        `${formatFeet(climbMeters)} of climbing`,
+        distance(segment.meters),
+        `${climb(climbMeters)} of climbing`,
         character,
       ]
         .filter(Boolean)
@@ -115,9 +116,9 @@ function Row({
           aria-hidden
           className="tabular text-sand/70 shrink-0 text-[0.6875rem]"
         >
-          {formatMiles(segment.meters)} ·{" "}
+          {distance(segment.meters)} ·{" "}
           <span className="text-sand mr-0.5">&uarr;</span>
-          {formatFeet(climbMeters)}
+          {climb(climbMeters)}
         </span>
       </span>
       <span

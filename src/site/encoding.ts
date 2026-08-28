@@ -1,5 +1,13 @@
+import {
+  ChartLineUp,
+  Mountains,
+  Shield,
+  Tree,
+  type Icon,
+} from "@phosphor-icons/react";
 import { PROTECTIONS, STEEPNESSES, SURROUNDINGS } from "@/lib/models/graph";
 import type { Tone } from "@/widgets/badge";
+import { STEEPEST_GRADE } from "./grade";
 import type { SiteSegment } from "./graph-data";
 
 /**
@@ -16,9 +24,8 @@ export type Attribute = "steepness" | "protection" | "surroundings";
  * Grade is the odd one and deliberately so: it is not an attribute of a
  * segment at all but of the ground under it, read off the recorded elevation
  * point by point, so it colors *within* a segment rather than coloring the
- * whole of one. That also makes it the only encoding you cannot filter on —
- * there is no set of values to pick from, and half a road passing a filter
- * would mean nothing.
+ * whole of one. It is also the only one with no set of values to name, which is
+ * why the key draws it as a bar and the others as a row of swatches.
  */
 export type Encoding = Attribute | "grade";
 
@@ -38,6 +45,32 @@ export const ENCODINGS: Encoding[] = [
 export function isAttribute(encoding: Encoding): encoding is Attribute {
   return encoding !== "grade";
 }
+
+/**
+ * The mark that stands for each, and a line saying what it answers.
+ *
+ * Two tables, which everything else about these avoids: the legend and the
+ * breakdown read the values through `humanize` precisely so there is no second
+ * list to keep in step. These earn it because no rule turns "surroundings" into
+ * a tree, and because the picker offers all four at once — a rider choosing
+ * between them is comparing four questions, and the names alone do not say that
+ * grade is read along a road while the other three are one word about the whole
+ * of it. Keyed on `Encoding`, so a fifth cannot be added without these failing
+ * to compile.
+ */
+export const ENCODING_ICONS: Record<Encoding, Icon> = {
+  grade: ChartLineUp,
+  steepness: Mountains,
+  protection: Shield,
+  surroundings: Tree,
+};
+
+export const ENCODING_BLURBS: Record<Encoding, string> = {
+  grade: "The slope of the ground, read along each road.",
+  steepness: "One word for the whole road.",
+  protection: "How much of the road is yours.",
+  surroundings: "Whether it is worth looking at.",
+};
 
 export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
   steepness: STEEPNESSES,
@@ -113,6 +146,19 @@ export const GRADE_STOPS: [number, string][] = [
   [7, "#a85228"],
   [12, "#7d2b1c"],
 ];
+
+/**
+ * The grade ramp as CSS gradient stops.
+ *
+ * Shared by the key on the map and the card that turns it on, so the bar a
+ * rider picks from is the bar they then read the roads against. Scaled to
+ * `STEEPEST_GRADE`, which is where the ramp stops distinguishing anyway.
+ */
+export function gradeRamp(): string {
+  return GRADE_STOPS.map(
+    ([grade, color]) => `${color} ${(grade / STEEPEST_GRADE) * 100}%`,
+  ).join(", ");
+}
 
 /** Anything lighter than this disappears into the basemap. */
 export const LIGHTEST_STEP = 170;

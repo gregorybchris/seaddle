@@ -121,6 +121,20 @@ export function Sheet({
 }: SheetProps) {
   const [detent, setDetent] = useState<Detent>(restingAt);
   const [dragVh, setDragVh] = useState<number | null>(null);
+  /**
+   * How tall the pinned part actually is, so `peek` can never cut it off.
+   *
+   * The resting heights are fractions of the viewport and the thing they have
+   * to clear is measured in pixels, which are two different scales: 22% of a
+   * tall phone is a comfortable strip and 22% of a short one is 147px, and the
+   * road being read needs about 190. So the panel's lowest height is a floor
+   * under the vh rather than the vh itself — whichever is taller wins. Nothing
+   * up here decides what is worth showing; the pinned slot is by definition the
+   * part that is always visible, and this is what keeps that promise on a
+   * screen the fraction was never checked against.
+   */
+  const pinned = useRef<HTMLDivElement>(null);
+  const [floorPx, setFloorPx] = useState(0);
   const drag = useRef<{
     startY: number;
     startVh: number;
@@ -143,6 +157,17 @@ export function Sheet({
    * `max-md:`.
    */
   const collapsed = visibleVh <= PEEK_VH;
+
+  // Watched rather than measured once: the pinned slot holds whatever road was
+  // last tapped, and a name that wraps to two lines is a taller floor than the
+  // one before it.
+  useEffect(() => {
+    const node = pinned.current;
+    if (!node) return;
+    const observer = new ResizeObserver(() => setFloorPx(node.offsetHeight));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setDetent(raisedWhen ? raisedTo : restingAt);
@@ -271,51 +296,59 @@ export function Sheet({
         dragVh === null &&
           "transition-[height] duration-300 ease-[var(--ease-settle)]",
       )}
-      style={{ "--sheet-visible": visibleVh } as React.CSSProperties}
+      style={
+        {
+          "--sheet-visible": visibleVh,
+          "--sheet-floor": `${floorPx}px`,
+        } as React.CSSProperties
+      }
     >
-      {/* The bar is four pixels of it and the rest is padding, because what has
+      {/* The handle, the header and the pinned slot in one box, because their
+          combined height is the floor above — and a floor measured off three
+          separate elements is three numbers to keep in step. */}
+      <div ref={pinned} className="shrink-0">
+        {/* The bar is four pixels of it and the rest is padding, because what has
           to be 44px is the thing a thumb aims at, not the thing it can see. */}
-      <div
-        role="separator"
-        aria-label="Resize panel"
-        aria-orientation="horizontal"
-        tabIndex={0}
-        {...handleHandlers}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowUp") step(1);
-          else if (event.key === "ArrowDown") step(-1);
-          // The same shortcut the tap is: the keyboard should not be the one
-          // input that has to ask for the top a step at a time.
-          else if (event.key === "Enter" || event.key === " ") toggle();
-          else return;
-          event.preventDefault();
-        }}
-        className="group flex cursor-grab touch-none justify-center py-5 outline-none active:cursor-grabbing md:hidden"
-      >
-        {/* The ring goes on the bar, not on the 44px box around it — the box is
+        <div
+          role="separator"
+          aria-label="Resize panel"
+          aria-orientation="horizontal"
+          tabIndex={0}
+          {...handleHandlers}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowUp") step(1);
+            else if (event.key === "ArrowDown") step(-1);
+            // The same shortcut the tap is: the keyboard should not be the one
+            // input that has to ask for the top a step at a time.
+            else if (event.key === "Enter" || event.key === " ") toggle();
+            else return;
+            event.preventDefault();
+          }}
+          className="group flex cursor-grab touch-none justify-center py-5 outline-none active:cursor-grabbing md:hidden"
+        >
+          {/* The ring goes on the bar, not on the 44px box around it — the box is
             the full width of the panel, and a ring on that reads as two rules
             across the panel rather than as a control being focused. */}
-        <span className="bg-sand/30 group-active:bg-sand/60 group-focus-visible:ring-blaze h-1 w-10 rounded-full transition-colors group-focus-visible:ring-2 group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-[var(--color-forest)]" />
-      </div>
+          <span className="bg-sand/30 group-active:bg-sand/60 group-focus-visible:ring-blaze h-1 w-10 rounded-full transition-colors group-focus-visible:ring-2 group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-[var(--color-forest)]" />
+        </div>
 
-      {/* Draggable alongside the grab bar rather than instead of it: the bar
+        {/* Draggable alongside the grab bar rather than instead of it: the bar
           says the panel moves, and the block under it gives a thumb somewhere
           big enough to say so to. The keyboard control stays on the bar, which
           is the part that is only a handle. */}
-      {header && (
-        <div
-          {...dragHandlers}
-          className={cn(
-            "shrink-0 px-5 pb-4 max-md:cursor-grab max-md:touch-none max-md:select-none max-md:active:cursor-grabbing md:pt-5",
-            headerAt === "desktop" && "max-md:hidden",
-          )}
-        >
-          {header}
-        </div>
-      )}
+        {header && (
+          <div
+            {...dragHandlers}
+            className={cn(
+              "shrink-0 px-5 pb-4 max-md:cursor-grab max-md:touch-none max-md:select-none max-md:active:cursor-grabbing md:pt-5",
+              headerAt === "desktop" && "max-md:hidden",
+            )}
+          >
+            {header}
+          </div>
+        )}
 
-      <div className={cn("shrink-0 px-5 pb-3", !header && "md:pt-5")}>
-        {peek}
+        <div className={cn("px-5 pb-3", !header && "md:pt-5")}>{peek}</div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6">

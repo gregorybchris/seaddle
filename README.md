@@ -63,9 +63,10 @@ A rider clicks a segment to start, then clicks their way outward: each junction
 offers whatever leaves it, and the route grows one choice at a time. Along the
 way:
 
-- **Filters** are thresholds, not checkboxes — nothing steeper than rolling, at
-  least a bike lane, at least pleasant — because that is how a limit is actually
-  held in someone's head.
+- **Color the map** by steepness, protection, surroundings, or grade — picked
+  from four cards that each show the ramp they turn on.
+- **Settings** hold the ground the map is drawn on, whether numbers read in
+  miles or kilometers, and whether a pick moves the camera.
 - **The route lives in the URL** (`/?r=s017,s042,s088`), so a link is the
   whole share mechanism and there is nothing server-side to keep.
 - **Undo is the back button.** Every move pushes a history entry, so back

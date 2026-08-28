@@ -2,7 +2,7 @@ import { useId, useRef, useState } from "react";
 import { elevationProfile, sampleAt } from "@/lib/geo/profile";
 import type { ElevCoord } from "@/lib/models/geo";
 import { cn } from "@/lib/utilities/style-utils";
-import { formatFeet, formatMiles } from "@/lib/utilities/units";
+import { useUnits } from "@/lib/use-units";
 
 const WIDTH = 300;
 const HEIGHT = 64;
@@ -36,6 +36,8 @@ export function ElevationProfile({
   const gradientId = useId();
   const chart = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState<number | null>(null);
+  // Above the early return below, where a hook cannot go.
+  const { distance, climb } = useUnits();
 
   const profile = elevationProfile(points, 96);
   if (profile.samples.length < 2) return null;
@@ -92,7 +94,7 @@ export function ElevationProfile({
         aria-valuenow={Math.round(reading?.meters ?? 0)}
         aria-valuetext={
           reading
-            ? `${formatMiles(reading.meters)}, ${formatFeet(reading.elevation)}`
+            ? `${distance(reading.meters)}, ${climb(reading.elevation)}`
             : "Nothing selected"
         }
         onPointerMove={moveTo}
@@ -164,17 +166,13 @@ export function ElevationProfile({
       <figcaption className="tabular flex justify-between text-[0.625rem]">
         {reading ? (
           <>
-            <span className="text-blaze">{formatMiles(reading.meters)}</span>
-            <span className="text-blaze">{formatFeet(reading.elevation)}</span>
+            <span className="text-blaze">{distance(reading.meters)}</span>
+            <span className="text-blaze">{climb(reading.elevation)}</span>
           </>
         ) : (
           <>
-            <span className="text-sand/70">
-              {formatFeet(profile.minMeters)}
-            </span>
-            <span className="text-sand/70">
-              {formatFeet(profile.maxMeters)}
-            </span>
+            <span className="text-sand/70">{climb(profile.minMeters)}</span>
+            <span className="text-sand/70">{climb(profile.maxMeters)}</span>
           </>
         )}
       </figcaption>

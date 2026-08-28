@@ -1,17 +1,11 @@
-import {
-  Binoculars,
-  Mountains,
-  Shield,
-  Tree,
-  type Icon,
-} from "@phosphor-icons/react";
-import { formatFeet, formatMiles } from "@/lib/utilities/units";
+import { Binoculars, type Icon } from "@phosphor-icons/react";
+import { useUnits, type Units } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { Badge } from "@/widgets/badge";
 import { ElevationProfile } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
-import { TONES, type Attribute } from "../encoding";
+import { ENCODING_ICONS, TONES, type Attribute } from "../encoding";
 import type { SiteSegment } from "../graph-data";
 import { PICK } from "../pointing";
 import { StartHere } from "./start-here";
@@ -35,6 +29,8 @@ type SegmentPanelProps = {
  * followed by a descent; the profile is the only thing that tells them apart.
  */
 export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
+  const units = useUnits();
+
   return (
     <Sheet
       label="This road"
@@ -82,7 +78,7 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
         {/* Picking a road is a click on a canvas: nothing about it lands in the
             document, so without this the whole interaction is silent. */}
         <p role="status" aria-live="polite" className="sr-only">
-          {segment ? spoken(segment) : ""}
+          {segment ? spoken(segment, units) : ""}
         </p>
 
         {segment ? (
@@ -116,20 +112,21 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
 }
 
 /**
- * What the three stored words are called, and the mark that stands for each.
+ * What the three stored words are called here.
  *
  * A table, which everything else about these avoids: the legend and the color
  * picker read them through `humanize` precisely so there is no second list to
  * keep in step. It is worth one here because a bare "pleasant" is unreadable
  * to anyone who has not already met the scale it comes from — the value alone
- * says nothing about what was being judged — and because no rule turns an
- * attribute into an icon. Keyed on `Attribute`, so a fourth one cannot be
- * added to the map without this failing to compile.
+ * says nothing about what was being judged, and these are headings rather than
+ * chips. The marks come from `ENCODING_ICONS`, where the color picker gets the
+ * same three: the icon a rider meets beside "protection" in one place is the
+ * one they should meet in the other.
  */
-const ATTRIBUTES: { key: Attribute; label: string; Icon: Icon }[] = [
-  { key: "steepness", label: "Steepness", Icon: Mountains },
-  { key: "protection", label: "Protection", Icon: Shield },
-  { key: "surroundings", label: "Surroundings", Icon: Tree },
+const ATTRIBUTES: { key: Attribute; label: string }[] = [
+  { key: "steepness", label: "Steepness" },
+  { key: "protection", label: "Protection" },
+  { key: "surroundings", label: "Surroundings" },
 ];
 
 /**
@@ -155,20 +152,38 @@ const ATTRIBUTES: { key: Attribute; label: string; Icon: Icon }[] = [
  * reading roads, and these three words are the reading.
  */
 function Reading({ segment }: { segment: SiteSegment }) {
+  const { distance, climb } = useUnits();
+
   return (
     <div className="border-sand/10 flex flex-col gap-1.5 border-t pt-3 max-md:border-t-0 max-md:pt-0 md:gap-2">
       <div>
-        <h2 className="text-sand truncate text-lg leading-none md:text-xl md:leading-tight">
+        {/* The name is the one thing here that can outrun its line, so the
+            truncated version carries the whole of it in a tooltip.
+
+            Set on its normal leading rather than on its cap height, which is
+            where it was to save four pixels the sheet now finds for itself.
+            Those four were coming out of the name's own descenders — `truncate`
+            clips whatever leaves the line box, so the tail of a "y" in a street
+            name was being cut off square. */}
+        <h2
+          title={segment.name ?? undefined}
+          className="text-sand truncate text-lg leading-tight md:text-xl"
+        >
           {segment.name ?? "Unnamed road"}
         </h2>
-        {/* The arrow is set at full strength while the numbers stay dimmed:
-            at this size a ↑ in the same wash as the digits reads as a 1, and it
-            is nudged off them by less than a space so the pair still reads
-            as one figure. */}
-        <p className="tabular text-sand/70 text-xs md:text-sm">
-          {formatMiles(segment.meters)} ·{" "}
+        {/* Held off the name rather than sitting straight under it: they are a
+            different question — how big is this road, not which road is this —
+            and butted together at these two sizes they read as one wrapped
+            heading. The gap is what says the name has finished.
+
+            The arrow is set at full strength while the numbers stay dimmed: at
+            this size a ↑ in the same wash as the digits reads as a 1, and it is
+            nudged off them by less than a space so the pair still reads as one
+            figure. */}
+        <p className="tabular text-sand/70 mt-1 text-xs md:mt-1.5 md:text-sm">
+          {distance(segment.meters)} ·{" "}
           <span className="text-sand mr-0.5">↑</span>
-          {formatFeet(climb(segment))}
+          {climb(climbOf(segment))}
         </p>
       </div>
 
@@ -183,35 +198,43 @@ function Reading({ segment }: { segment: SiteSegment }) {
           that suits a beginner, and the red one is the thing to look at.
 
           A step larger on a wide screen, where the sidebar is a full-height
-          column with room to spare. On a phone the whole block is squeezed —
-          tighter rows, a badge cut back to its own line box, the title on its
-          cap height — so that all three answers clear the sheet's lowest
-          resting height. They stay put when it is dragged down there, unlike
-          the chart: the chart at that height would be a strip of its own top
-          inch, while these are three short lines that are either all there or
-          not worth showing, and they are the reason anyone is in this mode. */}
+          column with room to spare. On a phone the rows stay tight and the
+          badge is cut back to its own line box, but they are no longer being
+          squeezed to fit a height: the sheet's lowest resting position is a
+          floor under its pinned slot rather than a flat share of the viewport,
+          so what this block needs is what it gets. It was worth checking — at
+          22% of a 667px phone the third answer was finishing 36px below the
+          bottom of the screen.
+
+          They stay put when the sheet is dragged down there, unlike the chart:
+          the chart at that height would be a strip of its own top inch, while
+          these are three short lines that are either all there or not worth
+          showing, and they are the reason anyone is in this mode. */}
       <dl className="border-sand/10 flex flex-col border-t">
-        {ATTRIBUTES.map(({ key, label, Icon }) => (
-          <div
-            key={key}
-            className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5"
-          >
-            <Icon
-              aria-hidden
-              weight="bold"
-              className="text-sand/45 h-3.5 w-3.5 shrink-0 md:h-4 md:w-4"
-            />
-            <dt className="eyebrow text-sand/60">{label}</dt>
-            <dd className="ml-auto">
-              <Badge
-                tone={TONES[key][segment[key]]}
-                className="py-0 text-sm md:py-0.5 md:text-base"
-              >
-                {humanize(segment[key])}
-              </Badge>
-            </dd>
-          </div>
-        ))}
+        {ATTRIBUTES.map(({ key, label }) => {
+          const Mark = ENCODING_ICONS[key];
+          return (
+            <div
+              key={key}
+              className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5"
+            >
+              <Mark
+                aria-hidden
+                weight="bold"
+                className="text-sand/45 h-3.5 w-3.5 shrink-0 md:h-4 md:w-4"
+              />
+              <dt className="eyebrow text-sand/60">{label}</dt>
+              <dd className="ml-auto">
+                <Badge
+                  tone={TONES[key][segment[key]]}
+                  className="py-0 text-sm md:py-0.5 md:text-base"
+                >
+                  {humanize(segment[key])}
+                </Badge>
+              </dd>
+            </div>
+          );
+        })}
       </dl>
     </div>
   );
@@ -283,7 +306,7 @@ function ControlMark({ Mark }: { Mark: Icon }) {
  * since a road being read has not been ridden in either direction yet and the
  * harder answer is the one worth planning around.
  */
-function climb(segment: SiteSegment): number {
+function climbOf(segment: SiteSegment): number {
   return Math.max(segment.gainForward, segment.gainBackward);
 }
 
@@ -294,13 +317,13 @@ function climb(segment: SiteSegment): number {
  * in a row are worse than they are on screen: there are no columns to tell a
  * listener that they answer three different questions.
  */
-function spoken(segment: SiteSegment): string {
+function spoken(segment: SiteSegment, units: Units): string {
   const attributes = ATTRIBUTES.map(
     ({ key, label }) => `${label} ${humanize(segment[key])}`,
   ).join(". ");
   return (
     `${segment.name ?? "Unnamed road"}. ` +
-    `${formatMiles(segment.meters)}, ${formatFeet(climb(segment))} of climbing. ` +
+    `${units.distance(segment.meters)}, ${units.climb(climbOf(segment))} of climbing. ` +
     `${attributes}.`
   );
 }

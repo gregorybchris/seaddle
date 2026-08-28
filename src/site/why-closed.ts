@@ -40,26 +40,8 @@ export type ClosedNotice = { headline: string; detail: string };
  *
  * Every one of them names the way out — undo, or pick a bright road — because
  * a message that only says no leaves the rider exactly where they were.
- *
- * A road that fails the filters as well gets that said too. The two kinds of
- * fading look alike on purpose, and someone who has just been told their ride
- * does not reach a road would otherwise reach it and find it still faint.
  */
-export function closedNotice(
-  reason: ClosedReason,
-  route: Route,
-  filtered: boolean,
-): ClosedNotice {
-  const notice = wording(reason, route);
-  return reason === "ridden" || !filtered
-    ? notice
-    : {
-        ...notice,
-        detail: `${notice.detail} It is outside your filters, too.`,
-      };
-}
-
-function wording(reason: ClosedReason, route: Route): ClosedNotice {
+export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
   switch (reason) {
     case "ridden":
       return {

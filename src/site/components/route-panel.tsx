@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utilities/style-utils";
-import { feet, formatFeet, formatMiles } from "@/lib/utilities/units";
+import { useUnits, type Units } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
 import { ConfirmDialog } from "@/widgets/confirm-dialog";
 import { ElevationProfile } from "@/widgets/elevation-profile";
@@ -78,6 +78,7 @@ export function RoutePanel({
   // One owner for the saved list: a copy per component would let saving in one
   // place leave the other showing a stale list.
   const saved = useSavedRides();
+  const units = useUnits();
   // Every point of the ride, and the reader drags along the chart: recomputing
   // it on each of those renders is walking the whole route per pointer move.
   const points = useMemo(() => routePoints(route, graph), [route, graph]);
@@ -98,8 +99,8 @@ export function RoutePanel({
       ? "Ride cleared."
       : ""
     : stuck
-      ? `${formatMiles(meters)}, ${climbText(gain)} of climbing. No roads continue from here.`
-      : `${formatMiles(meters)}, ${climbText(gain)} of climbing. ` +
+      ? `${units.distance(meters)}, ${climbText(gain, units)} of climbing. No roads continue from here.`
+      : `${units.distance(meters)}, ${climbText(gain, units)} of climbing. ` +
         `${onward} ${onward === 1 ? "road" : "roads"} on from here.`;
 
   return (
@@ -131,8 +132,8 @@ export function RoutePanel({
       peek={
         started ? (
           <div className="border-sand/10 flex items-end gap-6 border-t pt-3 max-md:border-t-0 max-md:pt-0">
-            <Figure label="distance" value={formatMiles(meters)} />
-            <Figure label="climbing" value={climbText(gain)} />
+            <Figure label="distance" value={units.distance(meters)} />
+            <Figure label="climbing" value={climbText(gain, units)} />
           </div>
         ) : (
           <StartHere headline="Build your route">
@@ -311,6 +312,7 @@ function SaveRide({
   onSave: (name: string, route: string) => void;
 }) {
   const [name, setName] = useState("");
+  const { distance } = useUnits();
 
   /** Enter and the button are the same act, so they are the same code. */
   function keep() {
@@ -339,7 +341,7 @@ function SaveRide({
         aria-label="Download as GPX"
         title="Download as GPX"
         onClick={() =>
-          downloadGpx(points, name.trim() || `Seaddle ${formatMiles(meters)}`)
+          downloadGpx(points, name.trim() || `Seaddle ${distance(meters)}`)
         }
       >
         <DownloadSimple weight="bold" className="h-4 w-4" />
@@ -433,9 +435,9 @@ function SavedRides({
  * quietly lying. Shared between the figure and what gets read aloud, because
  * the two disagreeing would be worse than either being wrong.
  */
-function climbText(gain: { min: number; max: number }): string {
-  if (gain.min === gain.max) return formatFeet(gain.max);
-  return `${Math.round(feet(gain.min))}–${formatFeet(gain.max)}`;
+function climbText(gain: { min: number; max: number }, units: Units): string {
+  if (gain.min === gain.max) return units.climb(gain.max);
+  return `${units.climbValue(gain.min)}–${units.climb(gain.max)}`;
 }
 
 function Figure({ label, value }: { label: string; value: string }) {

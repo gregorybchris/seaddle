@@ -21,7 +21,7 @@ import type { BasemapId } from "@/lib/basemap";
 import { useBasemapPaint } from "@/lib/use-basemap";
 import { PinMark } from "@/widgets/pin-mark";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
-import { formatFeet, formatMiles } from "@/lib/utilities/units";
+import { useUnits } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../encoding";
 import { modeNotice, type Mode } from "../mode";
@@ -53,18 +53,6 @@ const CLOSED = "segments-hit-closed";
 
 /** Every line on this map is a road, and a road has rounded ends and corners. */
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
-
-/**
- * How faintly a road that failed a filter is drawn.
- *
- * The same rule for the network and for the grade lines over it, because they
- * are two drawings of the same roads and a filter has to reach both. Dimming
- * rather than hiding: a removed road would break the network into islands with
- * no visible reason.
- */
-function dimming(dimmed: SegmentId[], faded: number, full: number) {
-  return ["case", ["in", ["get", "id"], ["literal", dimmed]], faded, full];
-}
 
 /**
  * Wider once a ride is under way, when the open roads are the few to pick from.
@@ -132,8 +120,8 @@ type SiteMapProps = {
   /** Which ground to draw everything on. Chosen elsewhere; painted here,
    *  because painting it needs the map instance and choosing it does not. */
   basemap: BasemapId;
-  /** Roads that fail the filters: dimmed, never hidden. */
-  dimmed: SegmentId[];
+  /** Whether a pick moves the camera to the roads that could come next. */
+  autoZoom: boolean;
   /** Every point of interest on the graph. */
   allPins: SitePin[];
   /** Those on the roads already chosen, which are shown at any zoom. */
@@ -226,7 +214,7 @@ export function SiteMap({
   mode,
   encoding,
   basemap,
-  dimmed,
+  autoZoom,
   allPins,
   pins,
   scrubbed,
@@ -450,6 +438,13 @@ export function SiteMap({
     if (!mapRef.current) return;
 
     const looking = framing.mode === "route";
+    // A rider who turned the camera off still gets a finished ride framed —
+    // one arriving from a link or off the saved list is being *shown* to them,
+    // and leaving it half off the screen would be showing them nothing. What
+    // they turned off is the map moving out from under a ride they are
+    // building, which is the other half of this.
+    if (!autoZoom && !looking) return;
+
     const target = looking
       ? routeBounds(route, graph)
       : choiceBounds(route, graph);
@@ -474,7 +469,7 @@ export function SiteMap({
         maxZoom: 15,
       },
     );
-  }, [framing, route, graph]);
+  }, [framing, route, graph, autoZoom]);
 
   // No message outlives the ride it was about. Undoing back to a junction can
   // make the road it named perfectly pickable, and a note still insisting
@@ -616,7 +611,7 @@ export function SiteMap({
           setNotice(
             missed && reason
               ? {
-                  ...closedNotice(reason, route, dimmed.includes(missed)),
+                  ...closedNotice(reason, route),
                   at: Date.now(),
                 }
               : null,
@@ -652,9 +647,7 @@ export function SiteMap({
             type="line"
             paint={{
               "line-color": color as never,
-              "line-opacity": (attribute
-                ? dimming(dimmed, 0.08, 0.45)
-                : 0) as never,
+              "line-opacity": attribute ? 0.45 : 0,
               "line-width": 3,
             }}
             layout={ROUNDED}
@@ -665,9 +658,7 @@ export function SiteMap({
             filter={["in", ["get", "id"], ["literal", bright]]}
             paint={{
               "line-color": color as never,
-              "line-opacity": (attribute
-                ? dimming(dimmed, 0.25, 1)
-                : 0) as never,
+              "line-opacity": attribute ? 1 : 0,
               "line-width": openWidth(route, exploring),
             }}
             layout={ROUNDED}
@@ -733,7 +724,7 @@ export function SiteMap({
               beforeId={CLICKABLE}
               paint={{
                 "line-color": gradeColor as never,
-                "line-opacity": dimming(dimmed, 0.08, 0.45) as never,
+                "line-opacity": 0.45,
                 "line-width": 3,
               }}
               layout={ROUNDED}
@@ -745,7 +736,7 @@ export function SiteMap({
               filter={["in", ["get", "id"], ["literal", bright]]}
               paint={{
                 "line-color": gradeColor as never,
-                "line-opacity": dimming(dimmed, 0.25, 1) as never,
+                "line-opacity": 1,
                 "line-width": openWidth(route, exploring),
               }}
               layout={ROUNDED}
@@ -887,6 +878,8 @@ function PinMarkers({
  * otherwise would, since the map reaches the window.
  */
 function RoadTip({ hovered }: { hovered: Hovered }) {
+  const { distance, climb } = useUnits();
+
   return (
     <div
       style={{
@@ -902,9 +895,8 @@ function RoadTip({ hovered }: { hovered: Hovered }) {
         <p className="max-w-56 truncate text-xs">{hovered.name}</p>
       )}
       <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
-        {formatMiles(hovered.meters)} ·{" "}
-        <span className="text-sand mr-0.5">↑</span>
-        {formatFeet(hovered.climb)}
+        {distance(hovered.meters)} · <span className="text-sand mr-0.5">↑</span>
+        {climb(hovered.climb)}
       </p>
       <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
         {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
