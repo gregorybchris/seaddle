@@ -1184,7 +1184,7 @@ function SegmentTip({ hovered }: { hovered: Hovered }) {
           ferry. */}
       {hovered.crossing ? (
         <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
-          {hovered.crossing} · {distance(hovered.meters)} aboard, not ridden
+          {hovered.crossing} · {distance(hovered.meters)} aboard
         </p>
       ) : (
         <>

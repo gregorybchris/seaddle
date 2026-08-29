@@ -188,7 +188,7 @@ function Reading({ segment }: { segment: SiteSegment }) {
             panel would be eight miles a rider plans to pedal. */}
         <p className="tabular text-sand/70 mt-2 text-xs md:mt-2.5 md:text-sm">
           {segment.crossing ? (
-            <>{distance(segment.meters)} across, not ridden</>
+            <>{distance(segment.meters)} across</>
           ) : (
             <>
               {distance(segment.meters)} ·{" "}
@@ -290,9 +290,7 @@ function CrossingNote() {
       <h2 className="eyebrow text-sand/70">On the boat</h2>
       <p className="text-sand/75 text-[0.8125rem] leading-relaxed">
         You ride on at one end and off at the other, so none of this stretch is
-        pedalled. It joins the two halves of the map, and it is left out of a
-        route&rsquo;s distance, its climbing and its mix — those are numbers
-        about riding.
+        pedalled.
       </p>
     </section>
   );
@@ -379,7 +377,7 @@ function spoken(segment: SiteSegment, units: Units): string {
   if (segment.crossing) {
     return (
       `${segment.name ?? "Unnamed segment"}. ` +
-      `${units.distance(segment.meters)} by ${segment.crossing}, not ridden.`
+      `${units.distance(segment.meters)} by ${segment.crossing}.`
     );
   }
   const attributes = ATTRIBUTES.map(

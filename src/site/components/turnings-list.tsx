@@ -70,7 +70,7 @@ function Row({
   // The three scales say nothing about a stretch nobody rides, so a crossing
   // says what it is instead of claiming to be flat and unprotected.
   const character = segment.crossing
-    ? `${humanize(segment.crossing)}, not ridden`
+    ? humanize(segment.crossing)
     : [segment.steepness, segment.protection, segment.surroundings]
         .map(humanize)
         .join(", ");
