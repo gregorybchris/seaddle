@@ -510,9 +510,10 @@ using it.
 - **Units** are one choice covering distance and height together — miles & feet, or km & meters —
   because nobody holds "miles, with the climbing in meters". The default is imperial, since this is
   a map of Seattle, unless the browser names a region that rides in kilometers.
-- **Auto-zoom** is on by default: a rider who has just added a segment is looking for what comes
-  after it. Turning it off stops the camera following a route being built, but still frames a
-  finished one arriving from a link or the saved list — that one is being *shown* to them.
+- **Auto-zoom** is off by default: a map that moves itself is taking the map away from a rider who
+  put it where they wanted it. Turning it on has the camera follow a route being built, to the next
+  set of turnings after every pick. Either way a finished route arriving from a link or the saved
+  list is framed — that one is being *shown* to them.
 - The dialog ends in a **colophon**: the mark, the byline, and the year. Worth finding, not worth a
   permanent line of the screen, and whoever went looking for the settings is already the person who
   wondered where this came from.
