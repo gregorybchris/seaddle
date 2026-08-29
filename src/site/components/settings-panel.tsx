@@ -1,7 +1,7 @@
 import { TreeEvergreen } from "@phosphor-icons/react";
 import { Fragment } from "react";
 import type { BasemapId } from "@/lib/basemap";
-import { MOD } from "@/lib/utilities/keys";
+import { IS_MAC } from "@/lib/utilities/keys";
 import { useUnits } from "@/lib/use-units";
 import { UNIT_LABELS, UNIT_SYSTEMS } from "@/lib/utilities/units";
 import { BasemapChoices } from "@/widgets/basemap-choices";
@@ -100,18 +100,24 @@ function Shortcuts() {
     <div className="border-sand/10 hidden border-t pt-4 md:block">
       <span className="eyebrow text-sand/70">Keyboard</span>
       <ul className="mt-2.5 flex flex-col gap-2">
-        {SHORTCUTS.map(({ keys, does }) => (
+        {SHORTCUTS.map(({ chords, does }) => (
           <li key={does} className="flex items-center justify-between gap-3">
             <span className="text-sand/80 text-xs leading-snug">{does}</span>
             {/* Right-aligned and never wrapping: the keys are the column being
-                scanned, and a cap that drops to its own line stops being one. */}
-            <span className="flex shrink-0 items-center gap-1.5">
-              {keys.map((key, at) => (
-                <Fragment key={key}>
+                scanned, and a cap that drops to its own line stops being one.
+                A chord holds its caps close and the alternates stand apart, so
+                two keys pressed together never read as two ways to do it. */}
+            <span className="flex shrink-0 items-center gap-2">
+              {chords.map((chord, at) => (
+                <Fragment key={chord.join()}>
                   {at > 0 && (
                     <span className="text-sand/40 text-[0.625rem]">or</span>
                   )}
-                  <Keycap>{key}</Keycap>
+                  <span className="flex items-center gap-1">
+                    {chord.map((key) => (
+                      <Keycap key={key}>{key}</Keycap>
+                    ))}
+                  </span>
                 </Fragment>
               ))}
             </span>
@@ -122,19 +128,23 @@ function Shortcuts() {
   );
 }
 
+/** What the two keys the platforms disagree about are called on this one. */
+const CMD = IS_MAC ? "Cmd" : "Ctrl";
+const RUBOUT = IS_MAC ? "Delete" : "Backspace";
+
 /**
  * What each key does, in the words the button already uses where there is one
  * — a list of shortcuts is read down rather than across, and a sentence per
  * row makes that a paragraph.
  */
-const SHORTCUTS: { keys: string[]; does: string }[] = [
-  { keys: [`${MOD}Z`, "\u232b"], does: "Undo" },
-  { keys: [`${MOD}\u21e7Z`], does: "Redo" },
-  { keys: [`${MOD}\u232b`], does: "Start over" },
-  { keys: ["E"], does: "Switch mode" },
-  { keys: ["C"], does: "Next segment color" },
-  { keys: ["T"], does: "Next map style" },
-  { keys: ["Esc"], does: "Deselect" },
+const SHORTCUTS: { chords: string[][]; does: string }[] = [
+  { chords: [[CMD, "Z"], [RUBOUT]], does: "Undo" },
+  { chords: [[CMD, "Shift", "Z"]], does: "Redo" },
+  { chords: [[CMD, RUBOUT]], does: "Start over" },
+  { chords: [["E"]], does: "Switch mode" },
+  { chords: [["C"]], does: "Next segment color" },
+  { chords: [["T"]], does: "Next map style" },
+  { chords: [["Esc"]], does: "Deselect" },
 ];
 
 /**
