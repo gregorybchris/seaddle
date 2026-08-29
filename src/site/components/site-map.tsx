@@ -600,6 +600,9 @@ export function SiteMap({
    * Only while exploring, where there is something being read. Anything that
    * answers Escape itself — a dialog, the elevation chart mid-drag — says so
    * by preventing the default, and a dialog holds focus besides.
+   *
+   * Listed in `SHORTCUTS` in the settings dialog, which is the only place this
+   * one is named — it hangs off no button. Bind a key here and name it there.
    */
   useEffect(() => {
     if (!exploring) return;

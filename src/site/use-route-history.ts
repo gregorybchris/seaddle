@@ -143,7 +143,8 @@ export function useRouteHistory(graph: SiteGraph | null) {
       // ⌫ on its own, which is what every other route builder spells as "take
       // back the last segment" — and what a rider who has never met ⌘Z reaches
       // for first. Starting over wears the same key with a modifier, so the
-      // habit lands on the reversible one.
+      // habit lands on the reversible one. Undo, redo and this one are listed
+      // in `SHORTCUTS` in the settings dialog: bind a key here, name it there.
       if (
         event.key === "Backspace" &&
         !event.metaKey &&

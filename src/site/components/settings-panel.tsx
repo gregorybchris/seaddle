@@ -136,12 +136,23 @@ const RUBOUT = IS_MAC ? "Delete" : "Backspace";
  * What each key does, in the words the button already uses where there is one
  * — a list of shortcuts is read down rather than across, and a sentence per
  * row makes that a paragraph.
+ *
+ * This is the only place the whole set is written down, and nothing reads it —
+ * each key is bound beside the control it works, four files away from here:
+ *
+ * - `use-route-history.ts` — undo and redo, and the bare rubout that undoes.
+ * - `route-panel.tsx` — the modified rubout that starts over.
+ * - `map-controls.tsx` — mode, segment color, map style.
+ * - `site-map.tsx` — escape, which deselects.
+ *
+ * So a key bound in one of those and left out of this list is a key nobody
+ * finds. Change either end and change this one with it.
  */
 const SHORTCUTS: { chords: string[][]; does: string }[] = [
   { chords: [[CMD, "Z"], [RUBOUT]], does: "Undo" },
   { chords: [[CMD, "Shift", "Z"]], does: "Redo" },
   { chords: [[CMD, RUBOUT]], does: "Start over" },
-  { chords: [["E"]], does: "Switch mode" },
+  { chords: [["E"], ["M"]], does: "Switch mode" },
   { chords: [["C"]], does: "Next segment color" },
   { chords: [["T"]], does: "Next map style" },
   { chords: [["Esc"]], does: "Deselect" },

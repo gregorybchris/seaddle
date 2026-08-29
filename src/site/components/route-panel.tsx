@@ -99,7 +99,8 @@ export function RoutePanel({
   // Both spellings of the key, since the one labelled "delete" sends Backspace
   // on a laptop and Delete on a full keyboard. Bound beside the button so the
   // two cannot drift apart, and stood aside from while someone is naming a
-  // route, where ⌘⌫ is a rubout.
+  // route, where ⌘⌫ is a rubout. Listed in `SHORTCUTS` in the settings dialog:
+  // bind a key here and name it there.
   useEffect(() => {
     if (!started) return;
 

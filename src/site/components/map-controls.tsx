@@ -74,9 +74,18 @@ export function MapControls({
    * Forward only, and around. A reverse on the shift key would be four more
    * lines for a fourth press, which is the whole way around a list of four.
    *
+   * The mode answers to M as well as E, since it is the one control here whose
+   * name and whose letter disagree — E is explore, one of the two modes, and a
+   * rider already building reaches for the mode rather than for the half of it
+   * they are not in. Both, rather than a swap: E is the letter the tooltip has
+   * been teaching.
+   *
    * Unmodified letters, so they stand aside while someone is naming a route,
    * and a dialog holds focus while it is open — a ground changing behind one
    * is a change nobody can see happen.
+   *
+   * All three are listed in `SHORTCUTS` in the settings dialog, which is where
+   * a rider goes looking for them. Bind a key here and name it there.
    */
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -89,7 +98,7 @@ export function MapControls({
         return;
 
       const key = event.key.toLowerCase();
-      if (key === "e") onMode(exploring ? "build" : "explore");
+      if (key === "e" || key === "m") onMode(exploring ? "build" : "explore");
       else if (key === "c") onEncoding(next(ENCODINGS, encoding));
       else if (key === "t") onBasemap(next(BASEMAP_IDS, basemap));
       else return;
