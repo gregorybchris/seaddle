@@ -16,6 +16,7 @@
  * Requires: rsvg-convert (librsvg). Run `pnpm graph:build` first.
  */
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -25,6 +26,37 @@ import { BLAZE, FOREST, MARK, SAND, markPaths } from "./lib/mark";
 import { fontEnvironment } from "./lib/webfont";
 
 const publicDir = fileURLToPath(new URL("../public", import.meta.url));
+const indexHtml = fileURLToPath(new URL("../index.html", import.meta.url));
+
+/**
+ * The `v` on the `og:image` tag, which is a fingerprint of the card itself.
+ *
+ * A scraper caches the image against its URL, and most of them will never
+ * fetch it again: Facebook and LinkedIn have debuggers, WhatsApp and iMessage
+ * have nothing at all. So a redrawn card left at the same address is the old
+ * card in every preview for as long as those caches hold it — months, with no
+ * way to ask.
+ *
+ * Stamped here rather than typed into the markup because this script is run
+ * once in a blue moon, which is exactly when a "remember to bump the version"
+ * step is not remembered. The hash of the bytes changes when the card does and
+ * never otherwise, so a rebuild that draws the same image leaves the markup —
+ * and everyone's cached preview — alone.
+ *
+ * Eight hex digits, because the tag is written to the width Prettier keeps and
+ * a fingerprint that changed length would reflow the line under it.
+ */
+const STAMP = /(content="https:\/\/seaddle\.com\/og\.png)(\?v=[0-9a-f]+)?(")/;
+
+function stamp(png: Buffer): string {
+  const version = createHash("sha256").update(png).digest("hex").slice(0, 8);
+  const html = readFileSync(indexHtml, "utf8");
+  if (!STAMP.test(html)) {
+    throw new Error("no og:image tag in index.html to stamp the card into");
+  }
+  writeFileSync(indexHtml, html.replace(STAMP, `$1?v=${version}$3`));
+  return version;
+}
 
 /** The size every scraper expects; anything else gets letterboxed by someone. */
 const WIDTH = 1200;
@@ -196,6 +228,7 @@ ${structure.map((d) => `    <path fill="${SAND}" d="${d}"/>`).join("\n")}
 </svg>
 `;
 
+const png = join(publicDir, "og.png");
 const work = mkdtempSync(join(tmpdir(), "seaddle-og-"));
 try {
   const { env, listed } = fontEnvironment(work, [
@@ -212,13 +245,14 @@ try {
 
   const source = join(work, "og.svg");
   writeFileSync(source, card);
-  execFileSync("rsvg-convert", [source, "-o", join(publicDir, "og.png")], {
-    env,
-  });
+  execFileSync("rsvg-convert", [source, "-o", png], { env });
 } finally {
   rmSync(work, { recursive: true, force: true });
 }
 
+const version = stamp(readFileSync(png));
+
 console.log(
   `og.png written to public/ (${highlighted.size} of ${all.length} segments highlighted)`,
 );
+console.log(`index.html stamped with ?v=${version} — commit both`);

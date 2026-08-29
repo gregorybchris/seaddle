@@ -42,8 +42,17 @@
       property="og:description"
       content="Over 300 miles of beginner to intermediate cycling routes around Seattle."
     />
-    <!-- Absolute: a scraper reads this markup without a page to resolve against. -->
-    <meta property="og:image" content="https://seaddle.com/og.png" />
+    <!--
+      Absolute: a scraper reads this markup without a page to resolve against.
+
+      The `v` is the card's own fingerprint, stamped by `pnpm og:build`. Every
+      scraper caches the image against its URL and most offer no way to ask for
+      it again — Facebook and LinkedIn have debuggers, WhatsApp and iMessage
+      have nothing — so a redrawn card at the same address stays the old card
+      for as long as their cache holds it. Hand-editing a version number would
+      be the step forgotten precisely because the card is redrawn so rarely.
+    -->
+    <meta property="og:image" content="https://seaddle.com/og.png?v=14cbebb5" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
