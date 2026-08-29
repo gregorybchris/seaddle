@@ -33,6 +33,7 @@ import {
   previewOf,
   reachable,
   routeBounds,
+  routeStart,
   type Route,
 } from "../route";
 import type { Framing } from "../use-route-history";
@@ -468,6 +469,20 @@ export function SiteMap({
     if (!exploring || !points || points.length < 2) return null;
     return { start: points[0], finish: points[points.length - 1] };
   }, [exploring, selected, graph]);
+
+  /**
+   * Where the route being built set off from.
+   *
+   * Only the start, where a segment being read gets both ends. The far end of a
+   * route is where the next pick goes and already has the rider looking at it;
+   * the start is a mile behind them and otherwise unmarked, which is what makes
+   * it the one worth drawing. Nothing until direction resolves — see
+   * `routeStart`.
+   */
+  const began = useMemo(
+    () => (exploring ? null : routeStart(route, graph)),
+    [exploring, route, graph],
+  );
 
   /**
    * The segment the link named, if it named one.
@@ -951,6 +966,15 @@ export function SiteMap({
               <span aria-label="Segment finish" className="checkered block" />
             </Marker>
           </>
+        )}
+
+        {began && (
+          <Marker longitude={began[0]} latitude={began[1]}>
+            <span
+              aria-label="Route start"
+              className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
+            />
+          </Marker>
         )}
 
         {/* The same place the chart is reporting, so a height on the graph has

@@ -561,6 +561,36 @@ export function focusAnchor(route: Route, graph: SiteGraph): Coord | null {
   return [last[0], last[1]];
 }
 
+/**
+ * Where the route sets off from, once it is settled where that is.
+ *
+ * A line on a map has no visible direction, and a route long enough to be worth
+ * building is long enough that its two ends are nowhere near each other — so
+ * without this the rider has to remember which end they started at. The same
+ * green dot the admin and the explore panel use, because it is the same
+ * question being answered.
+ *
+ * Null while the route is a single segment: both ends are still live and which
+ * one is the start is exactly what has not been decided. Marking one anyway
+ * would be the map picking a direction and presenting it as fact, which is the
+ * same lie the climbing range exists to avoid.
+ *
+ * No mark at the far end to match it. The end of a route being built is where
+ * the next choice is, it already has the rider's attention, and a flag planted
+ * on it would say the route was finished when it is the one part still moving.
+ */
+export function routeStart(route: Route, graph: SiteGraph): Coord | null {
+  if (isEmpty(route) || route.ambiguous) return null;
+  const step = route.steps[0];
+  const segment = graph.segments.get(step.segment);
+  if (!segment || segment.points.length === 0) return null;
+  const point =
+    step.from === segment.from
+      ? segment.points[0]
+      : segment.points[segment.points.length - 1];
+  return [point[0], point[1]];
+}
+
 /** The whole route, for when it is being looked at rather than built. */
 export function routeBounds(route: Route, graph: SiteGraph): Bounds | null {
   const points = routePoints(route, graph);

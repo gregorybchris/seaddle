@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { boundsOf } from "@/lib/geo/bounds";
+import { flat } from "@/lib/geo/distance";
 import type { ElevCoord } from "@/lib/models/geo";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import { siteGraph, siteSegment } from "./test-fixtures";
@@ -24,6 +25,7 @@ import {
   riddenOrder,
   routePoints,
   routeSegments,
+  routeStart,
   startRoute,
 } from "./route";
 
@@ -206,6 +208,37 @@ describe("picking a segment that is not next door", () => {
     ]);
     const route = startRoute(split.segments.get("s001")!);
     expect(append(route, split.segments.get("s002")!, split)).toBe(route);
+  });
+});
+
+describe("where the route set off from", () => {
+  it("says nothing while the direction is still undecided", () => {
+    // Both ends are live, so naming one the start would be the map picking a
+    // direction and presenting it as fact.
+    expect(routeStart(EMPTY_ROUTE, G)).toBeNull();
+    expect(routeStart(startRoute(seg("s001")), G)).toBeNull();
+  });
+
+  it("marks the far end of the opening segment once a side is picked", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    // Lon and lat only: this is a place on the map, not a point on a profile.
+    expect(routeStart(route, G)).toEqual(
+      flat(G.segments.get("s001")!.points[0]),
+    );
+  });
+
+  it("follows the opening segment when a pick flips it round", () => {
+    // s003 is ridden nD to nC here, so the route begins at the end the segment
+    // is stored as finishing at.
+    const route = append(startRoute(seg("s003")), seg("s001"), G);
+    const points = G.segments.get("s003")!.points;
+    expect(routeStart(route, G)).toEqual(flat(points[points.length - 1]));
+  });
+
+  it("stays put as the route grows past it", () => {
+    const two = append(startRoute(seg("s001")), seg("s004"), G);
+    const more = append(two, seg("s002"), G);
+    expect(routeStart(more, G)).toEqual(routeStart(two, G));
   });
 });
 

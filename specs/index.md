@@ -293,6 +293,15 @@ elevation gain is not — it depends on which way you go. The stats show distanc
 a range (`↑40–180 ft`) rather than picking a direction and quietly lying. It collapses to a single
 number on the second click.
 
+The second click is also when the **green start dot** appears, on the end the route now sets off
+from — the same mark the explore panel puts on a segment, answering the same question, since a line
+on a map has no visible direction and by twenty miles in the two ends of a route are nowhere near
+each other. Not before: which end is the start is exactly what one segment has not decided, and
+marking one anyway would be the same lie the gain range exists to avoid. There is deliberately **no
+checkered flag** at the far end to match it. That end is where the next pick goes, it already has
+the rider's attention, and a flag on it would say the route was finished when it is the one part
+still moving.
+
 Every append and undo calls `pushState`, so the **browser back button is undo**. That's free on
 desktop and it's the natural gesture on Android, where the system back button is where a user's
 thumb already is.
