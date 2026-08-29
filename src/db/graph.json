@@ -625,6 +625,31 @@
       "id": "n139",
       "name": null,
       "coord": [-122.310837, 47.63966]
+    },
+    {
+      "id": "n140",
+      "name": null,
+      "coord": [-122.348307, 47.722329]
+    },
+    {
+      "id": "n141",
+      "name": null,
+      "coord": [-122.347712, 47.734166]
+    },
+    {
+      "id": "n142",
+      "name": null,
+      "coord": [-122.347689, 47.727693]
+    },
+    {
+      "id": "n143",
+      "name": null,
+      "coord": [-122.360901, 47.728762]
+    },
+    {
+      "id": "n144",
+      "name": null,
+      "coord": [-122.33789, 47.8315]
     }
   ],
   "segments": [
@@ -1285,22 +1310,6 @@
       "crossing": null
     },
     {
-      "id": "s047",
-      "from": "n015",
-      "to": "n017",
-      "source": {
-        "track": "edmonds",
-        "startIndex": 145,
-        "endIndex": 2028
-      },
-      "name": "Ballard to Edmonds",
-      "steepness": "flat",
-      "protection": "unprotected",
-      "surroundings": "beautiful",
-      "reviewed": true,
-      "crossing": null
-    },
-    {
       "id": "s049",
       "from": "n071",
       "to": "n027",
@@ -1361,22 +1370,6 @@
       "steepness": "steep",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true,
-      "crossing": null
-    },
-    {
-      "id": "s054",
-      "from": "n028",
-      "to": "n075",
-      "source": {
-        "track": "interurban-to-lake-wa",
-        "startIndex": 373,
-        "endIndex": 882
-      },
-      "name": "Interurban to Echo Lake",
-      "steepness": "flat",
-      "protection": "bikePath",
-      "surroundings": "plain",
       "reviewed": true,
       "crossing": null
     },
@@ -3395,6 +3388,118 @@
       "surroundings": "plain",
       "reviewed": true,
       "crossing": null
+    },
+    {
+      "id": "s195",
+      "from": "n028",
+      "to": "n140",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 985,
+        "endIndex": 1125
+      },
+      "name": "Interurban to Bitter Lake",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s197",
+      "from": "n141",
+      "to": "n075",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 1247,
+        "endIndex": 1699
+      },
+      "name": "Interurban to Echo Lake",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikePath",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s198",
+      "from": "n140",
+      "to": "n142",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 1125,
+        "endIndex": 1182
+      },
+      "name": "Linden Interurban Connector S",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikeLane",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s199",
+      "from": "n142",
+      "to": "n141",
+      "source": {
+        "track": "2026-07-22-evening-ride",
+        "startIndex": 1182,
+        "endIndex": 1247
+      },
+      "name": "Linden Interurban Connector N",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikeLane",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s200",
+      "from": "n015",
+      "to": "n143",
+      "source": {
+        "track": "2026-07-25-afternoon-ride",
+        "startIndex": 1572,
+        "endIndex": 2028
+      },
+      "name": "Ballard to Edmonds S",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s201",
+      "from": "n143",
+      "to": "n144",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 458,
+        "endIndex": 1700
+      },
+      "name": "Ballard to Edmonds N",
+      "crossing": null,
+      "steepness": "rolling",
+      "protection": "unprotected",
+      "surroundings": "beautiful",
+      "reviewed": true
+    },
+    {
+      "id": "s202",
+      "from": "n144",
+      "to": "n017",
+      "source": {
+        "track": "edmonds",
+        "startIndex": 1700,
+        "endIndex": 2028
+      },
+      "name": "Edmonds to Lake Ballinger",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
     }
   ],
   "pins": [
@@ -3525,14 +3630,6 @@
       "note": "A couple benches and picnic tables",
       "at": 0.8388549530845876,
       "coord": [-122.206344, 47.660139]
-    },
-    {
-      "id": "p018",
-      "segment": "s047",
-      "kind": "viewpoint",
-      "note": null,
-      "at": 0.35727839375526554,
-      "coord": [-122.374759, 47.758563]
     },
     {
       "id": "p019",
