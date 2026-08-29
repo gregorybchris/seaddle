@@ -585,6 +585,46 @@
       "id": "n128",
       "name": null,
       "coord": [-122.567734, 47.591217]
+    },
+    {
+      "id": "n129",
+      "name": null,
+      "coord": [-122.297209, 47.630896]
+    },
+    {
+      "id": "n130",
+      "name": null,
+      "coord": [-122.29672, 47.631798]
+    },
+    {
+      "id": "n131",
+      "name": null,
+      "coord": [-122.292524, 47.626103]
+    },
+    {
+      "id": "n132",
+      "name": null,
+      "coord": [-122.30159, 47.63458]
+    },
+    {
+      "id": "n134",
+      "name": null,
+      "coord": [-122.30207, 47.63953]
+    },
+    {
+      "id": "n136",
+      "name": null,
+      "coord": [-122.297191, 47.631649]
+    },
+    {
+      "id": "n138",
+      "name": null,
+      "coord": [-122.307337, 47.639595]
+    },
+    {
+      "id": "n139",
+      "name": null,
+      "coord": [-122.310837, 47.63966]
     }
   ],
   "segments": [
@@ -600,7 +640,7 @@
       "name": "Arboretum West",
       "steepness": "rolling",
       "protection": "bikePath",
-      "surroundings": "pleasant",
+      "surroundings": "beautiful",
       "reviewed": true
     },
     {
@@ -1504,21 +1544,6 @@
       "reviewed": true
     },
     {
-      "id": "s069",
-      "from": "n070",
-      "to": "n030",
-      "source": {
-        "track": "2026-05-31-afternoon-ride",
-        "startIndex": 3902,
-        "endIndex": 4071
-      },
-      "name": "Montlake to S Interlaken",
-      "steepness": "rolling",
-      "protection": "unprotected",
-      "surroundings": "pleasant",
-      "reviewed": true
-    },
-    {
       "id": "s070",
       "from": "n083",
       "to": "n070",
@@ -1999,21 +2024,6 @@
       "reviewed": true
     },
     {
-      "id": "s104",
-      "from": "n105",
-      "to": "n001",
-      "source": {
-        "track": "two-bridges-mercer-and-bellevue",
-        "startIndex": 1107,
-        "endIndex": 758
-      },
-      "name": "Arboretum to Leschi",
-      "steepness": "flat",
-      "protection": "unprotected",
-      "surroundings": "pleasant",
-      "reviewed": true
-    },
-    {
       "id": "s105",
       "from": "n106",
       "to": "n001",
@@ -2040,7 +2050,7 @@
       "name": "Arboretum NE",
       "steepness": "rolling",
       "protection": "bikePath",
-      "surroundings": "pleasant",
+      "surroundings": "beautiful",
       "reviewed": true
     },
     {
@@ -2942,6 +2952,246 @@
       "protection": "unprotected",
       "surroundings": "pleasant",
       "reviewed": true
+    },
+    {
+      "id": "s171",
+      "from": "n029",
+      "to": "n132",
+      "source": {
+        "track": "arboretum-u-district",
+        "startIndex": 0,
+        "endIndex": 135
+      },
+      "name": "Interlaken East",
+      "steepness": "rolling",
+      "protection": "bikePath",
+      "surroundings": "beautiful",
+      "reviewed": true
+    },
+    {
+      "id": "s172",
+      "from": "n029",
+      "to": "n132",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 180,
+        "endIndex": 267
+      },
+      "name": "Crescent to 24th",
+      "steepness": "rolling",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s173",
+      "from": "n132",
+      "to": "n129",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 267,
+        "endIndex": 331
+      },
+      "name": "Interlaken to Arborteum",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s176",
+      "from": "n130",
+      "to": "n136",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 3631,
+        "endIndex": 3618
+      },
+      "name": null,
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s177",
+      "from": "n136",
+      "to": "n129",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 3618,
+        "endIndex": 3610
+      },
+      "name": "Lake Washington Blvd at Arboretum Center",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s182",
+      "from": "n001",
+      "to": "n131",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 758,
+        "endIndex": 797
+      },
+      "name": "Arboretum to E Madison",
+      "steepness": "flat",
+      "protection": "bikePath",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s183",
+      "from": "n131",
+      "to": "n105",
+      "source": {
+        "track": "two-bridges-mercer-and-bellevue",
+        "startIndex": 797,
+        "endIndex": 1107
+      },
+      "name": "E Madison to Leschi",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s184",
+      "from": "n139",
+      "to": "n030",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 4000,
+        "endIndex": 4071
+      },
+      "name": "Delmar Hill",
+      "steepness": "rolling",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true
+    },
+    {
+      "id": "s185",
+      "from": "n139",
+      "to": "n138",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 4000,
+        "endIndex": 3970
+      },
+      "name": "Lynn St W at Montlake",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s186",
+      "from": "n138",
+      "to": "n134",
+      "source": {
+        "track": "arboretum-u-district",
+        "startIndex": 230,
+        "endIndex": 184
+      },
+      "name": "Lynn St E at Montlake",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s187",
+      "from": "n138",
+      "to": "n070",
+      "source": {
+        "track": "2026-05-31-afternoon-ride",
+        "startIndex": 3970,
+        "endIndex": 3902
+      },
+      "name": "Montlake Place Detour",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s188",
+      "from": "n129",
+      "to": "n131",
+      "source": {
+        "track": "2026-07-03-afternoon-ride",
+        "startIndex": 331,
+        "endIndex": 411
+      },
+      "name": "Lake Washington Blvd at Arboretum S",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s189",
+      "from": "n070",
+      "to": "n134",
+      "source": {
+        "track": "2025-06-04-afternoon-ride",
+        "startIndex": 3651,
+        "endIndex": 3614
+      },
+      "name": "Montlake Crossing to 24th",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s190",
+      "from": "n134",
+      "to": "n132",
+      "source": {
+        "track": "arboretum-u-district",
+        "startIndex": 184,
+        "endIndex": 135
+      },
+      "name": null,
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s191",
+      "from": "n020",
+      "to": "n136",
+      "source": {
+        "track": "2026-08-06-afternoon-ride",
+        "startIndex": 597,
+        "endIndex": 692
+      },
+      "name": "Lake Washington Blvd at Arboretum N",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s192",
+      "from": "n031",
+      "to": "n139",
+      "source": {
+        "track": "arboretum-u-district",
+        "startIndex": 424,
+        "endIndex": 258
+      },
+      "name": "Fuhrman at Portage Bay",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
     }
   ],
   "pins": [
@@ -3048,14 +3298,6 @@
       "note": "Get some ice cream with a view",
       "at": 0.018973106715392207,
       "coord": [-122.336094, 47.600933]
-    },
-    {
-      "id": "p014",
-      "segment": "s069",
-      "kind": "restroom",
-      "note": "Turn off here for restrooms at Montlake Playfield",
-      "at": 0.5007720872353347,
-      "coord": [-122.309009, 47.63958]
     },
     {
       "id": "p015",
@@ -3280,6 +3522,14 @@
       "note": "Construction barrels narrow trail. Slow down and keep right",
       "at": 0.003020522602627385,
       "coord": [-122.386258, 47.65588]
+    },
+    {
+      "id": "p043",
+      "segment": "s185",
+      "kind": "restroom",
+      "note": "Turn off here to use the restrooms at Montlake Playfield",
+      "at": 0.5293264045474283,
+      "coord": [-122.308993, 47.639581]
     }
   ]
 }
