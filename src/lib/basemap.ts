@@ -16,7 +16,7 @@ import type { Map as MapboxMap } from "mapbox-gl";
  * mid green, an amber, or a rust anywhere, and land stays light enough that the
  * olive still reads against it.
  */
-export type BasemapId = "paper" | "field" | "harbor" | "lagoon";
+export type BasemapId = "field" | "paper" | "harbor" | "lagoon";
 
 type Palette = {
   /** Everything that is not water, park, or building. */
@@ -56,30 +56,6 @@ export type Basemap = {
 };
 
 export const BASEMAPS: Basemap[] = [
-  // Warm and near-monochrome. Recedes hardest, so the route carries every
-  // bit of the color on screen.
-  {
-    id: "paper",
-    name: "Paper",
-    palette: {
-      land: "#faf7f1",
-      road: "#ffffff",
-      roadCase: "#ece4d6",
-      path: "#f3ece1",
-      water: "#dae0e0",
-      green: "#ebeade",
-      greenOpacity: 0.55,
-      building: "#f2ece1",
-      buildingEdge: "#e8dfd0",
-      buildingOpacity: 0.9,
-      boundary: "#cfc7b8",
-      labelStrong: "#6a635a",
-      labelMid: "#8b8478",
-      labelSoft: "#a49c8f",
-      halo: "#faf7f1",
-      poi: false,
-    },
-  },
   // Trail-map convention: cream land, parks that read, pale blue water,
   // landmarks left on. The closest to the wta.org spirit the spec names.
   {
@@ -102,6 +78,30 @@ export const BASEMAPS: Basemap[] = [
       labelSoft: "#a69d89",
       halo: "#f8f3e8",
       poi: true,
+    },
+  },
+  // Warm and near-monochrome. Recedes hardest, so the route carries every
+  // bit of the color on screen.
+  {
+    id: "paper",
+    name: "Paper",
+    palette: {
+      land: "#faf7f1",
+      road: "#ffffff",
+      roadCase: "#ece4d6",
+      path: "#f3ece1",
+      water: "#dae0e0",
+      green: "#ebeade",
+      greenOpacity: 0.55,
+      building: "#f2ece1",
+      buildingEdge: "#e8dfd0",
+      buildingOpacity: 0.9,
+      boundary: "#cfc7b8",
+      labelStrong: "#6a635a",
+      labelMid: "#8b8478",
+      labelSoft: "#a49c8f",
+      halo: "#faf7f1",
+      poi: false,
     },
   },
 
