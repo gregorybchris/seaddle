@@ -468,7 +468,14 @@ mode back to storage. A link naming a segment also frames the map on it, ahead o
 carries — the segment is what the panel is about.
 
 On top of that, **named saves in localStorage**: "Name this route," give it a name, and it lists in
-the sidebar on return visits. Each saved route is just its URL plus a name and a timestamp.
+the sidebar on return visits. Each saved route is just its URL plus a name and a timestamp. The
+distance and climbing each row shows are read back out of the graph as the list is drawn rather
+than stored beside the name — segments get recut, and a distance written down last
+month would go on being shown long after it stopped being true.
+
+A row is renamed in place, and **names are unique**, because the list is read by them: saving or
+renaming onto a name already in the list asks first, then takes the name and forgets the route that
+held it.
 
 ### GPX export
 
@@ -679,7 +686,7 @@ typecheck, lint, and tests.
 5. ~~**Site completion**~~ — color encoding, attribute summary, out-and-back, URL sharing,
    localStorage saves, GPX export. Filters were built here and later removed; §4 says why.
 6. **Polish** — ~~mobile bottom sheet~~. Still open: **custom Studio basemap** (both maps are
-   still on the stock light style), **accessibility pass**, **performance** — app JS is 131 kB
+   still on the stock light style), **accessibility pass**, **performance** — app JS is 136 kB
    gzipped against a 100 kB budget.
 
 Beyond these, [`auto-routing.md`](auto-routing.md) specifies connectors — routing a rider from

@@ -67,8 +67,8 @@ dead code in production. Don't undermine that by importing admin code from site
 code.
 
 **No router, and no new dependency without a reason.** There are two pages and
-one comparison decides between them. The bundle is 131 kB gzipped against a
-100 kB budget (spec §6), so weight is a live concern.
+one comparison decides between them. The bundle is already over the gzipped
+budget spec §6 sets for it, so weight is a live concern.
 
 ## Conventions
 

@@ -97,3 +97,26 @@ export function formatClimbRate(
 export function climbValue(meters: number, system: UnitSystem): number {
   return Math.round(system === "metric" ? meters : feet(meters));
 }
+
+/**
+ * How much climbing, in one phrase: "840 ft", or "600–840 ft".
+ *
+ * A single segment has no direction yet and the two answers can differ by
+ * hundreds of feet, so it reads as a range rather than picking a side and
+ * quietly lying. One unit word across both ends, because it is a range of one
+ * quantity rather than two numbers that happen to sit together.
+ *
+ * The two ends are compared after rounding: a difference of half a foot is not
+ * a range a rider can act on, and printing it as one reads as "600–600 ft".
+ */
+export function formatClimbRange(
+  minMeters: number,
+  maxMeters: number,
+  system: UnitSystem,
+): string {
+  const low = climbValue(minMeters, system);
+  if (low === climbValue(maxMeters, system)) {
+    return formatClimb(maxMeters, system);
+  }
+  return `${low.toLocaleString()}–${formatClimb(maxMeters, system)}`;
+}

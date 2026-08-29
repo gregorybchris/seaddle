@@ -3,17 +3,14 @@ import {
   ArrowUUpRight,
   DownloadSimple,
   Trash,
-  X,
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
 import { MOD, typingIn } from "@/lib/utilities/keys";
-import { cn } from "@/lib/utilities/style-utils";
-import { useUnits, type Units } from "@/lib/use-units";
+import { useUnits } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
 import { ConfirmDialog } from "@/widgets/confirm-dialog";
 import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
-import { InfoPopover } from "@/widgets/info-popover";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding } from "../encoding";
@@ -32,8 +29,14 @@ import type { ElevCoord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import { SHOW_TURNINGS } from "../flags";
 import type { Turning } from "../turnings";
-import { useSavedRoutes, type SavedRoute } from "../use-saved-routes";
+import {
+  chosenName,
+  routeNamed,
+  useSavedRoutes,
+  type SavedRoute,
+} from "../use-saved-routes";
 import { RouteBreakdown } from "./route-breakdown";
+import { SavedRoutes } from "./saved-routes";
 import { PICK } from "../pointing";
 import { StartHere } from "./start-here";
 import { TurningsList } from "./turnings-list";
@@ -123,8 +126,8 @@ export function RoutePanel({
       ? "Route cleared."
       : ""
     : stuck
-      ? `${units.distance(meters)}, ${climbText(gain, units)} of climbing. No segments continue from here.`
-      : `${units.distance(meters)}, ${climbText(gain, units)} of climbing. ` +
+      ? `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. No segments continue from here.`
+      : `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. ` +
         `${onward} ${onward === 1 ? "segment" : "segments"} on from here.`;
 
   return (
@@ -157,7 +160,10 @@ export function RoutePanel({
         started ? (
           <div className="border-sand/10 flex items-end gap-6 border-t pt-3 max-md:border-t-0 max-md:pt-0">
             <Figure label="distance" value={units.distance(meters)} />
-            <Figure label="climbing" value={climbText(gain, units)} />
+            <Figure
+              label="climbing"
+              value={units.climbRange(gain.min, gain.max)}
+            />
           </div>
         ) : (
           <StartHere headline="Build your route">
@@ -256,15 +262,18 @@ export function RoutePanel({
             route={route}
             points={points}
             meters={meters}
+            saved={saved.routes}
             onSave={saved.save}
           />
         )}
 
         <SavedRoutes
           routes={saved.routes}
-          onForget={saved.remove}
-          onLoad={onLoad}
+          graph={graph}
           current={encodeRoute(route)}
+          onLoad={onLoad}
+          onRename={saved.rename}
+          onForget={saved.remove}
         />
 
         <ConfirmDialog
@@ -343,20 +352,42 @@ function SaveRoute({
   route,
   points,
   meters,
+  saved,
   onSave,
 }: {
   route: Route;
   points: ElevCoord[];
   meters: number;
+  /** What is already kept, to see whether this name is spoken for. */
+  saved: SavedRoute[];
   onSave: (name: string, route: string) => void;
 }) {
   const [name, setName] = useState("");
+  // Held rather than acted on: the list is read by name, so a second route
+  // under a name already in it would have to push the first one out — and
+  // nobody types a name expecting to lose the route that had it.
+  const [replacing, setReplacing] = useState(false);
   const { distance } = useUnits();
+
+  const encoded = encodeRoute(route);
+  const clash = routeNamed(saved, chosenName(name));
+  // Saving this same route again under its own name is the rename the list
+  // already does, not an overwrite, so it is not worth a question.
+  const overwrites = clash && clash.route !== encoded ? clash : null;
 
   /** Enter and the button are the same act, so they are the same code. */
   function keep() {
-    onSave(name, encodeRoute(route));
+    if (overwrites) {
+      setReplacing(true);
+      return;
+    }
+    commit();
+  }
+
+  function commit() {
+    onSave(name, encoded);
     setName("");
+    setReplacing(false);
   }
 
   return (
@@ -386,97 +417,20 @@ function SaveRoute({
         <DownloadSimple weight="bold" className="h-4 w-4" />
         GPX
       </Button>
-    </div>
-  );
-}
-
-/** Routes kept in this browser, newest first. */
-function SavedRoutes({
-  routes,
-  onForget,
-  onLoad,
-  current,
-}: {
-  routes: SavedRoute[];
-  onForget: (id: string) => void;
-  onLoad: (encoded: string) => void;
-  current: string;
-}) {
-  // Held rather than acted on: a saved route lives in this browser and nowhere
-  // else, so the X asks before it is the end of one.
-  const [forgetting, setForgetting] = useState<SavedRoute | null>(null);
-
-  if (routes.length === 0) return null;
-
-  return (
-    <section className="flex flex-col gap-2">
-      <h2 className="eyebrow text-sand/70 flex items-center gap-1.5">
-        Your routes
-        <InfoPopover label="About saved routes">
-          These live in this browser only — not in an account. Clearing your
-          site data, or opening Seaddle somewhere else, will not bring them with
-          you. Download a route as GPX to keep it for good.
-        </InfoPopover>
-      </h2>
-      <ul className="flex flex-col">
-        {routes.map((saved) => (
-          <li
-            key={saved.id}
-            className="border-sand/10 group flex items-center gap-2 border-b py-1.5 last:border-b-0"
-          >
-            <button
-              type="button"
-              onClick={() => onLoad(saved.route)}
-              aria-current={saved.route === current ? "true" : undefined}
-              className={cn(
-                "hover:text-blaze focus-visible:ring-blaze min-h-11 min-w-0 flex-1 truncate",
-                "rounded text-left text-xs transition-colors",
-                "focus-visible:ring-2 focus-visible:outline-none",
-                saved.route === current ? "text-blaze" : "text-sand",
-              )}
-            >
-              {saved.name}
-            </button>
-            <button
-              type="button"
-              onClick={() => setForgetting(saved)}
-              aria-label={`Forget ${saved.name}`}
-              className="text-sand/70 hover:text-blaze focus-visible:ring-blaze flex h-11 w-11 shrink-0 items-center justify-center rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
-            >
-              <X weight="bold" aria-hidden className="h-3.5 w-3.5" />
-            </button>
-          </li>
-        ))}
-      </ul>
 
       <ConfirmDialog
-        open={forgetting !== null}
-        onOpenChange={(open) => !open && setForgetting(null)}
-        title="Forget this route?"
-        confirm="Forget"
-        onConfirm={() => {
-          if (forgetting) onForget(forgetting.id);
-          setForgetting(null);
-        }}
+        open={replacing}
+        onOpenChange={setReplacing}
+        title="Replace that route?"
+        confirm="Replace"
+        onConfirm={commit}
       >
-        “{forgetting?.name}” is saved in this browser only, so forgetting it
-        here is the end of it.
+        “{overwrites?.name}” is already saved under that name. Saving this route
+        as “{chosenName(name)}” takes the name and forgets the route that had
+        it.
       </ConfirmDialog>
-    </section>
+    </div>
   );
-}
-
-/**
- * How much climbing, in one phrase.
- *
- * A single segment has no direction yet and the two answers can differ by
- * hundreds of feet, so it reads as a range rather than picking a side and
- * quietly lying. Shared between the figure and what gets read aloud, because
- * the two disagreeing would be worse than either being wrong.
- */
-function climbText(gain: { min: number; max: number }, units: Units): string {
-  if (gain.min === gain.max) return units.climb(gain.max);
-  return `${units.climbValue(gain.min)}–${units.climb(gain.max)}`;
 }
 
 function Figure({ label, value }: { label: string; value: string }) {

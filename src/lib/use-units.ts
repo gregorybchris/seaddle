@@ -1,8 +1,8 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { readStored, writeStored } from "./utilities/storage";
 import {
-  climbValue,
   formatClimb,
+  formatClimbRange,
   formatClimbRate,
   formatDistance,
   type UnitSystem,
@@ -28,8 +28,8 @@ export type Units = {
   climb: (meters: number) => string;
   /** How steeply a stretch climbs over its length: "84 ft/mi" or "16 m/km". */
   climbRate: (gainMeters: number, overMeters: number) => string | null;
-  /** The bare climb, for a range that shares one unit word: "600–840 ft". */
-  climbValue: (meters: number) => number;
+  /** A climb that is not one number, where both ends share the unit word. */
+  climbRange: (minMeters: number, maxMeters: number) => string;
 };
 
 /**
@@ -104,7 +104,8 @@ export function useUnits(): Units {
       climb: (meters: number) => formatClimb(meters, system),
       climbRate: (gainMeters: number, overMeters: number) =>
         formatClimbRate(gainMeters, overMeters, system),
-      climbValue: (meters: number) => climbValue(meters, system),
+      climbRange: (minMeters: number, maxMeters: number) =>
+        formatClimbRange(minMeters, maxMeters, system),
     }),
     [system],
   );
