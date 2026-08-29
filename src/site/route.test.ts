@@ -5,7 +5,6 @@ import type { SiteGraph, SiteSegment } from "./graph-data";
 import { siteGraph, siteSegment } from "./test-fixtures";
 import {
   append,
-  canAppend,
   choiceBounds,
   continuations,
   decodeRoute,
@@ -16,6 +15,8 @@ import {
   isEmpty,
   liveEnds,
   outAndBack,
+  previewOf,
+  reachable,
   respell,
   routeBounds,
   routeGain,
@@ -131,22 +132,121 @@ describe("growing a route", () => {
     });
   });
 
-  it("will not attach a segment that touches nothing live", () => {
-    const route = append(startRoute(seg("s001")), seg("s004"), G);
-    expect(canAppend(route, seg("s002"), G)).toBe(false);
-    expect(append(route, seg("s002"), G)).toEqual(route);
-  });
-
-  it("refuses to double back down the segment it arrived on", () => {
-    // The highlighting says this is not allowed, so the model must agree —
-    // otherwise the two disagree the moment a caller forgets to check.
-    const route = append(startRoute(seg("s001")), seg("s004"), G);
-    expect(append(route, seg("s004"), G)).toEqual(route);
-  });
-
-  it("reports a dead end as nothing to offer", () => {
+  it("reports a dead end as nothing directly on from here", () => {
+    // Still nothing at this junction, which is what the camera and the spoken
+    // list are asking about — not what may be picked, which is everything.
     const route = append(startRoute(seg("s001")), seg("s004"), G);
     expect(continuations(route, G).size).toBe(0);
+  });
+});
+
+describe("picking a segment that is not next door", () => {
+  it("rides the shortest way there, then the segment picked", () => {
+    // At the dead end nE, and s002 is two junctions away: back down s004 to
+    // nB, and on. Nothing about that is a decision, so none of it is one.
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    const reached = append(route, seg("s002"), G);
+    expect(ids(reached)).toEqual(["s001", "s004", "s004", "s002", "s003"]);
+    expect(reached.steps.map((step) => step.auto)).toEqual([
+      false,
+      false,
+      true,
+      false,
+      true,
+    ]);
+  });
+
+  it("arrives at whichever end of it is nearer", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    const reached = append(route, seg("s002"), G);
+    // nB, not nC — the far end would mean riding right around the graph.
+    expect(reached.steps[3]).toEqual({
+      segment: "s002",
+      from: "nB",
+      to: "nC",
+      auto: false,
+    });
+  });
+
+  it("costs a link one number however far away it was", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    const reached = append(route, seg("s002"), G);
+    expect(encodeRoute(reached)).toBe("1-4-2");
+    expect(decodeRoute("1-4-2", G)).toEqual(reached);
+  });
+
+  it("turns the route around when the pick is behind the rider", () => {
+    // A route is a walk, not a simple path, and picking the segment you just
+    // rode says plainly enough that you meant to come back down it.
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    expect(ids(append(route, seg("s004"), G))).toEqual([
+      "s001",
+      "s004",
+      "s004",
+    ]);
+  });
+
+  it("flips an undecided opening segment to set off the shorter way", () => {
+    // s003 is still undecided, and s001 is nearer its nC end, so the route
+    // reads nD to nC and on rather than adding a break.
+    const reached = append(startRoute(seg("s003")), seg("s001"), G);
+    expect(ids(reached)).toEqual(["s003", "s002", "s001"]);
+    expect(reached.steps[0]).toEqual({
+      segment: "s003",
+      from: "nD",
+      to: "nC",
+      auto: false,
+    });
+  });
+
+  it("leaves the route alone for a segment on another island", () => {
+    const split = siteGraph([
+      segment("s001", "nA", "nB", [0, 0]),
+      segment("s002", "nY", "nZ", [0, 0]),
+    ]);
+    const route = startRoute(split.segments.get("s001")!);
+    expect(append(route, split.segments.get("s002")!, split)).toBe(route);
+  });
+});
+
+describe("what a pick would reach, and what it would add", () => {
+  it("opens the whole network before a route starts", () => {
+    expect(reachable(EMPTY_ROUTE, G).size).toBe(6);
+  });
+
+  it("shows the first pick as the one segment it would start from", () => {
+    // Nothing to fill in yet, but the mark a hover puts on the map has to mean
+    // the same thing on the pick a rider has not made yet as on every other.
+    expect(previewOf(EMPTY_ROUTE, seg("s001"), G)).toEqual(["s001"]);
+    expect(previewOf(EMPTY_ROUTE, seg("s002"), G)).toEqual(["s002"]);
+  });
+
+  it("opens everything a route can be ridden to", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    expect(reachable(route, G).size).toBe(6);
+  });
+
+  it("closes only the islands the route is not on", () => {
+    const split = siteGraph([
+      segment("s001", "nA", "nB", [0, 0]),
+      segment("s002", "nY", "nZ", [0, 0]),
+    ]);
+    const route = startRoute(split.segments.get("s001")!);
+    expect([...reachable(route, split)]).toEqual(["s001"]);
+  });
+
+  it("shows every segment the pick would add, run-on included", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    expect(previewOf(route, seg("s002"), G)).toEqual(["s004", "s002", "s003"]);
+  });
+
+  it("shows nothing for a segment that cannot be reached", () => {
+    const split = siteGraph([
+      segment("s001", "nA", "nB", [0, 0]),
+      segment("s002", "nY", "nZ", [0, 0]),
+    ]);
+    const route = startRoute(split.segments.get("s001")!);
+    expect(previewOf(route, split.segments.get("s002")!, split)).toEqual([]);
   });
 });
 

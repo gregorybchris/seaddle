@@ -10,10 +10,11 @@ import type { Turning } from "../turnings";
  * The map is where this decision is normally made, and it is a canvas: a
  * segment drawn on it is not a thing that can be tabbed to, focused, or read
  * aloud, so on the map alone a rider who does not use a mouse cannot build a
- * route at all. This is the same set of segments the map is highlighting at
- * that moment — not a reduced version of it — described in the words someone
- * would use at a junction, and picking one here is the same act as clicking it
- * there.
+ * route at all. This is the junction in front of them, described in the words
+ * someone would use standing at one, and picking a row is the same act as
+ * clicking that segment on the map. The map will take a pick from anywhere and
+ * fill in the way there; a list cannot, because a hundred and fifty rows is the
+ * map again in a worse form.
  *
  * Focusing a row lights the segment up on the map, which is what keeps the two
  * halves of the interface talking to each other: the list says which way,

@@ -203,8 +203,8 @@ of segments, and no per-segment React components to reconcile.
 "line-color": ["match", ["get", "protection"],
   "poor", C.poor, "fair", C.fair, "good", C.good, "great", C.great, C.unknown]
 
-// the segments a route can still take, bright and wider than the rest
-"filter": ["in", ["get", "id"], ["literal", continuations]]
+// the segments a route can still be ridden to, in full colour
+"filter": ["in", ["get", "id"], ["literal", reachable]]
 ```
 
 Adjacency (`nodeId → SegmentId[]`) is derived on load from the feature properties. At this scale
@@ -233,20 +233,52 @@ copy, no content. The site name in the sidebar is the only prose.
 
 ### Building a route
 
-Clicking chains segments together. The route is **append + undo only** — no mid-route editing, no
-auto-routing, no pathfinding.
+Clicking chains segments together. The route is still **append + undo only** — no mid-route
+editing — but a click is no longer restricted to a neighbour: **any segment on the map can be
+picked, and the shortest way to it fills itself in.**
 
 ```
-click a segment          → it becomes the route; BOTH its ends are live,
-                           and every neighbor of either end highlights
-click a second segment   → direction resolves; the far end of the chain is now the single live end
-click any highlighted    → appends
-undo (⌘Z / button)       → pops the last segment; back at one segment, both ends go live again
+click a segment          → it becomes the route; BOTH its ends are live
+click a second segment   → direction resolves; the far end of the chain is the single live end
+click anything at all    → the shortest ride to its nearer end is added, then it is
+undo (⌘Z / button)       → takes back the whole of the last click, fill included
 ```
 
-Three visual states while building, and only three: **in the route** (cased in dark), **a viable
-continuation** (full colour, clickable), **everything else** (dimmed, not clickable). A beginner
-should never have to wonder which click is legal.
+Neighbours-only was honest and it was tedious. A rider who could see the road they wanted on the
+far side of the lake had to zoom in far enough to hit every short segment between here and there,
+and the broad strokes they actually had in mind — the Burke, the bridge, the loop round the lake —
+were the one thing they could not pick. Now they say **where** and the graph works out **how**: a
+Dijkstra pass over the network, weighted by segment length, from whichever end of the route is live
+to whichever end of the picked segment is nearer.
+
+The fill is **shortest distance and nothing cleverer**. A comfort-weighted search would be
+defensible and unpredictable, and a rider cannot undo a preference they were never told about; what
+the detour would have cost them in hills or bike lane is already on the map in colour. Ties break on
+node id, because the search has to give the same answer when a shared link replays it and the click
+that asked for it is long gone.
+
+**Nothing is refused except what cannot be reached.** Riding back over your own wheel tracks is
+allowed — a route is a walk, not a simple path — so a rider who picks a segment behind them turns
+round, which is what picking it meant.
+
+Two visual states while building where there were three: **in the route** (cased in dark) and
+**everywhere it can be ridden to** (full colour, clickable). The third survives only for a segment
+on a *different connected component* — Everett, Edmonds, Burien, which no ride joins to Seattle.
+Those stay dimmed and answer a tap with why. On most routes that is nothing at all.
+
+**A pick is previewed before it is a pick.** Hovering a segment ghosts the whole chain that click
+would add, in the route's own casing at a third of its weight. One click can now be worth a dozen
+segments, and a map that only says which dozen afterwards is a map asking to be undone. There is no
+hover on a phone, which is the price; one undo takes the whole fill back, which is the answer.
+
+The first pick gets the same mark, showing the single segment it would start from. It says nothing
+the cursor does not — but the ghost has to mean one thing, and a rider who has learned it is what
+they are about to get should not find it missing on the one pick they have not made yet.
+
+A fill costs a link nothing. Only the **decisions** are encoded, and everything ridden through on
+the way is marked as such and rebuilt when the decisions are replayed — so eleven miles across the
+city from `s001` to `s131` is six segments on the map and `?r=1-131` in the address bar. Every link
+written before this still opens to exactly the route it named, because a neighbour fills in nothing.
 
 The route is **cased, not recoloured**. Painting it a flat accent said "chosen" by throwing away the
 steepness or the bike lane that made it worth choosing — which is the one thing this map exists to
@@ -266,11 +298,12 @@ desktop and it's the natural gesture on Android, where the system back button is
 thumb already is.
 
 **Out and back** is a single button: it appends the mirror of the current chain, so the route
-returns to where it started. Given append-only editing this composes perfectly and needs no
-routing engine.
+returns to where it started. Given append-only editing this composes perfectly, and it stays a
+button rather than becoming a special case of the fill — the mirror is exact where a shortest path
+would quietly take a different way home.
 
-If the live end has no continuations, the sidebar says so plainly and offers undo. It does not
-try to be clever.
+If the live end has nothing directly on from it, the sidebar says so — but as a fact about the
+junction rather than as a dead stop, since a pick anywhere rides back out of it.
 
 ### Sidebar
 
@@ -288,9 +321,9 @@ text column has at any size worth reading, so one line is not on offer; balancin
 without also growing the type just empties the right half of the band. Balanced and large is what
 makes the break look chosen.
 
-Under it, in the scrolling body, the model in three lines — segments chain, the bright ones are the
-legal next moves, and a finished route can be kept or exported. None of that is readable off a map
-of lines, and all of it is what a beginner is missing. Three is the budget: the body is below the
+Under it, in the scrolling body, the model in three lines — segments chain, a segment picked from
+across town brings the way there with it, and a finished route can be kept or exported. None of that
+is readable off a map of lines, and all of it is what a beginner is missing. Three is the budget: the body is below the
 fold on a phone at rest, so it has to reward a drag without being homework standing between anyone
 and their first pick.
 
@@ -335,11 +368,12 @@ Clicking the ground between segments puts it down again. The route is left alone
 comes back untouched under the shovel, so exploring is free to step into mid-route, which is when
 the question it answers actually comes up.
 
-That the whole network goes live is the point. In build mode a rider can only interrogate the
-segments that happen to join their route, which is exactly backwards: the segments worth reading
-about are ones you have not committed to. And hovering — the only way to read a segment while
-building — does not exist on a phone and is gone the moment the pointer moves, so it can neither be
-read at leisure nor compared between two segments.
+Hovering is the only way to read a segment while building, and it does not exist on a phone and is
+gone the moment the pointer moves — so it can neither be read at leisure nor compared between two
+segments. That is the whole of the case now. It used to rest on reach as well: build mode would only
+answer for the segments that happened to join the route, which was exactly backwards, since the
+segments worth reading about are the ones you have not committed to. The fill fixed that half by
+itself.
 
 The panel **comes up to meet a tapped segment**, which is the opposite of what it does while
 building and for the same reason. A pick while building is a change on the map, so rising would
@@ -685,7 +719,8 @@ typecheck, lint, and tests.
    and validation panel that stood here are dropped, for the reasons in §5.
 5. ~~**Site completion**~~ — color encoding, attribute summary, out-and-back, URL sharing,
    localStorage saves, GPX export. Filters were built here and later removed; §4 says why.
-6. **Polish** — ~~mobile bottom sheet~~. Still open: **custom Studio basemap** (both maps are
+6. **Polish** — ~~mobile bottom sheet~~, ~~pick any segment and fill in the way there~~
+   (`lib/graph/paths.ts`). Still open: **custom Studio basemap** (both maps are
    still on the stock light style), **accessibility pass**, **performance** — app JS is 136 kB
    gzipped against a 100 kB budget.
 
@@ -705,8 +740,8 @@ complete dataset.
 ## 9. Open questions
 
 - **Close the loop.** A "get me back to the start" button needs a Dijkstra pass over the graph.
-  It's maybe 40 lines and genuinely useful, but it's the one piece of pathfinding in an otherwise
-  click-only design. Deferred, not rejected.
+  That pass now exists — `lib/graph/paths.ts`, built for the fill in §4 — so what is left is the
+  button and what it does about the fact that the shortest way home is usually the way you came.
 - **Duplicate geometry.** Where two source tracks cover the same road, the extraction workflow
   picks the cleaner one — but nothing prevents creating two segments for the same stretch between
   different node pairs. Detecting near-parallel duplicate geometry would want to live in

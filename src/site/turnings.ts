@@ -20,10 +20,14 @@ export const NEARBY = 8;
  * A segment that could be taken next, described from where the rider is
  * standing.
  *
- * The map answers this by highlighting; this answers it in words, because a
+ * The map answers this by being pointed at; this answers it in words, because a
  * segment on a canvas cannot be reached with a keyboard and cannot be read
  * aloud. Everything here is what you would tell someone at a junction: which
  * way it goes, how far, how much of a climb that way, and what it is like.
+ *
+ * The junction only, where a pick on the map may land anywhere. Reading out a
+ * hundred and fifty segments is not reading out a list, and the turn in front
+ * of the rider is the decision they are actually at.
  */
 export type Turning = {
   segment: SiteSegment;

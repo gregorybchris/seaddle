@@ -50,7 +50,7 @@ export type Notice = {
  *
  * Two kinds so far: why the segment you tapped did nothing, and which mode you
  * have just switched into. Both belong here rather than in a dialog, because
- * both are about the lines underneath — which ones are bright, which end of
+ * both are about the lines underneath — which ones are in play, which end of
  * the route they leave from, what a click on one now does — and a modal would
  * cover the very thing it was describing while demanding a click to get out of
  * the way.

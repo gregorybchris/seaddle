@@ -126,7 +126,7 @@ export function RoutePanel({
       ? "Route cleared."
       : ""
     : stuck
-      ? `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. No segments continue from here.`
+      ? `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. Nothing continues from here — pick any segment and the way there fills in.`
       : `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. ` +
         `${onward} ${onward === 1 ? "segment" : "segments"} on from here.`;
 
@@ -195,8 +195,8 @@ export function RoutePanel({
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
-                This is as far as the map goes that way. Undo and try another
-                turn.
+                This is as far as the map goes that way. Pick a segment anywhere
+                and the way there fills in.
               </p>
             )}
           </>
@@ -297,16 +297,17 @@ export function RoutePanel({
  * The whole of how this works, in three lines.
  *
  * A rider who has never seen the site does not know that segments chain, that
- * the bright ones are the legal next moves, or that a route can leave here as a
- * file — and none of that is discoverable from a map of lines. Three lines is
- * the budget: it is under the fold on a phone at rest, so it has to be worth
- * finding without being what anyone has to read before their first pick.
+ * a segment picked from across town brings the way there with it, or that a
+ * route can leave here as a file — and none of that is discoverable from a map
+ * of lines. Three lines is the budget: it is under the fold on a phone at rest,
+ * so it has to be worth finding without being what anyone has to read before
+ * their first pick.
  *
  * It starts from the pick rather than repeating it, because the sentence
  * telling them to pick is already pinned above this and always in view.
  */
 const STEPS = [
-  "Select a segment and unreachable segments will dim",
+  "Pick any segment — the way there fills itself in",
   "Keep picking to add on to the route",
   "Save or export the route",
 ];

@@ -29,9 +29,9 @@ import { modeNotice, type Mode } from "../mode";
 import { gradeRuns } from "../grade";
 import {
   choiceBounds,
-  continuations,
   focusAnchor,
-  isEmpty,
+  previewOf,
+  reachable,
   routeBounds,
   type Route,
 } from "../route";
@@ -47,7 +47,9 @@ import { MapNotice, type Notice } from "./map-notice";
  * Two rather than one, because a hit on either has a different answer — a pick,
  * or an explanation of why not — and because the open band being consulted
  * first is what keeps a closed segment running a few meters away from stealing
- * a click meant for the bright one beside it.
+ * a click meant for the bright one beside it. Building leaves almost nothing in
+ * the closed band now that a pick fills in the way to wherever it lands; what
+ * is in it is another island of the network, which genuinely cannot be joined.
  */
 const CLICKABLE = "segments-hit";
 const CLOSED = "segments-hit-closed";
@@ -57,16 +59,16 @@ const CLOSED = "segments-hit-closed";
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
 
 /**
- * Wider once a route is under way, when the open segments are the few to pick
- * from.
+ * How wide an in-play segment is drawn.
  *
- * Never while exploring: there every segment is open, so the wider line would
- * say nothing about which ones are in play and only make a map of the whole
- * network heavier to read.
+ * One width now, where building once drew a heavier line mid-route to pick the
+ * few continuations out of the network behind them. There is no such few any
+ * more — a pick fills in the way to wherever it lands, so nearly every segment
+ * is in play — and a whole city drawn at the heavier weight says nothing while
+ * making the map harder to read, which is the same reason exploring never used
+ * it.
  */
-function openWidth(route: Route, exploring: boolean): number {
-  return exploring || isEmpty(route) ? 3.5 : 4.5;
-}
+const OPEN_WIDTH = 3.5;
 
 /**
  * How wide the invisible target around each segment is, in screen pixels.
@@ -97,6 +99,7 @@ const PINS_FROM_ZOOM = 12.5;
  * taking at all.
  */
 type Hovered = {
+  id: SegmentId;
   name: string | null;
   meters: number;
   climb: number;
@@ -210,12 +213,15 @@ function nearestOf(
 }
 
 /**
- * Three states and only three: in the route, a place it could go next, and
- * everything else.
+ * Two states where there were three: in the route, and everywhere the route can
+ * still be ridden to — which, the far islands aside, is the whole map.
  *
- * A beginner should never have to wonder which click is legal, so what is
- * clickable is what is bright, and what is not is visibly out of play rather
- * than merely unresponsive.
+ * The third state was the network dimmed down to the handful of segments
+ * touching the end of the route, and it was honest but small: reaching a road
+ * across town meant zooming in far enough to pick every short segment on the
+ * way to it. A pick now carries the route to wherever it lands, so what is
+ * clickable is what is drawn, and the only thing left visibly out of play is a
+ * piece of the network that no ride connects to this one.
  */
 export function SiteMap({
   graph,
@@ -376,15 +382,16 @@ export function SiteMap({
   /**
    * The segments a click may land on.
    *
-   * Exploring drops the rule that a route has to join up, because nothing is
-   * being joined: the whole network goes live, which is the only way a rider
-   * mid-route can read a segment that does not happen to continue it. That
-   * falls straight out of the layers — the open band, the bright lines and the
-   * wider stroke are all filtered on this one list.
+   * Both modes now say almost everything. Exploring says everything outright,
+   * because nothing is being joined and a rider mid-route has to be able to
+   * read a segment that does not continue their route. Building says everything
+   * the route could be ridden to, which is the same list minus whichever
+   * islands of the network it is not on. The open band, the full-colour lines
+   * and the cursor are all filtered on this one list.
    */
   const open = useMemo(
     () =>
-      exploring ? [...graph.segments.keys()] : [...continuations(route, graph)],
+      exploring ? [...graph.segments.keys()] : [...reachable(route, graph)],
     [exploring, route, graph],
   );
   const chosen = useMemo(
@@ -425,6 +432,28 @@ export function SiteMap({
     () => (exploring ? open : [...new Set([...open, ...chosen])]),
     [exploring, open, chosen],
   );
+
+  /**
+   * What the segment under the cursor would add, drawn before it is added.
+   *
+   * A pick is worth a dozen segments now rather than one, and a map that only
+   * says which dozen after the fact is a map asking to be undone. So the way
+   * there is ghosted in the route's own casing under the pointer: the same mark
+   * the route already wears, at a fraction of its weight, which reads as "this
+   * becomes yours" without inventing a fifth thing a line on this map can be.
+   *
+   * A hover, so a phone gets nothing — there is no gesture there between
+   * pointing and picking, and one Undo takes the whole fill back anyway, which
+   * is the cheaper answer than asking for a second tap to confirm every pick.
+   */
+  const under = hovered?.id ?? null;
+  const ghosted = useMemo(() => {
+    // Keyed on which segment is under the pointer rather than on the label,
+    // which carries the cursor's own coordinates and so changes every pixel.
+    if (exploring || !under) return [];
+    const segment = graph.segments.get(under);
+    return segment ? previewOf(route, segment, graph) : [];
+  }, [exploring, under, route, graph]);
 
   /**
    * Which way the segment being read runs, drawn on its two ends.
@@ -626,6 +655,7 @@ export function SiteMap({
 
     const box = wrap.current?.getBoundingClientRect();
     return {
+      id: segment.id,
       name: segment.name,
       meters: segment.meters,
       // Undirected, like the steepness it agrees with: the bigger of the two
@@ -706,14 +736,14 @@ export function SiteMap({
             return;
           }
 
-          // Nothing pickable was under the tap. If a segment was, say why it
-          // did nothing — that a route has to join up is the one rule of this
-          // map, and a beginner has no way to guess it from a line going faint.
-          // If no segment was, the ground answers for itself.
+          // Nothing pickable was under the tap. If a segment was, it is on
+          // another island of the network, which is the one thing left that a
+          // pick cannot reach and the one thing a beginner cannot guess from a
+          // line going faint. If no segment was, the ground answers for itself.
           const missed = nearestOf(hitsIn(event, CLOSED), at, graph);
           const reason = missed ? whyClosed(route, missed, graph) : null;
           setNotice({
-            ...(reason ? closedNotice(reason, route) : groundNotice(route)),
+            ...(reason ? closedNotice(reason) : groundNotice(route)),
             at: Date.now(),
           });
         }}
@@ -739,8 +769,24 @@ export function SiteMap({
             }}
             layout={ROUNDED}
           />
+          {/* The casing the route would gain, at a third of its weight. Over the
+            casing rather than under it so a fill that doubles back over ridden
+            road still shows, and under everything else for the same reason the
+            casing is: it is a mark about these segments, not a repaint of
+            them. */}
+          <Layer
+            id="segments-ghosted"
+            type="line"
+            filter={["in", ["get", "id"], ["literal", ghosted]]}
+            paint={{
+              "line-color": "#12301f",
+              "line-opacity": 0.3,
+              "line-width": 11,
+            }}
+            layout={ROUNDED}
+          />
           {/* Out of play: still drawn, so the shape of the network stays
-            readable and a dead end is visibly a dead end. Drawn at no opacity
+            readable and an island is visibly an island. Drawn at no opacity
             at all under the grade encoding, which has its own lines below. */}
           <Layer
             id="segments-closed"
@@ -759,7 +805,7 @@ export function SiteMap({
             paint={{
               "line-color": color as never,
               "line-opacity": attribute ? 1 : 0,
-              "line-width": openWidth(route, exploring),
+              "line-width": OPEN_WIDTH,
             }}
             layout={ROUNDED}
           />
@@ -858,7 +904,7 @@ export function SiteMap({
               paint={{
                 "line-color": gradeColor as never,
                 "line-opacity": 1,
-                "line-width": openWidth(route, exploring),
+                "line-width": OPEN_WIDTH,
               }}
               layout={ROUNDED}
             />

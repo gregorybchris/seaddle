@@ -1,6 +1,7 @@
 import { boundsOf } from "@/lib/geo/bounds";
 import { coordAtFraction } from "@/lib/geo/polyline";
 import { continuationsFrom, otherEnd } from "@/lib/graph/adjacency";
+import { pathTo, reachFrom, type Reach } from "@/lib/graph/paths";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import type { NodeId, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SiteSegment } from "./graph-data";
@@ -11,7 +12,12 @@ export type Step = {
   from: NodeId;
   to: NodeId;
   /**
-   * Added by following the segment rather than by being picked.
+   * Ridden through on the way to something, rather than picked.
+   *
+   * Two things fill steps in: a junction with nothing to decide at it, and the
+   * way to a segment picked from further off. Neither is a decision, so neither
+   * is written into a link — they come back on their own when the decisions are
+   * replayed.
    *
    * Recorded rather than worked out later, because whether a segment was a
    * choice depends on the state of the route when it was added, not on the
@@ -66,11 +72,16 @@ export function liveEnds(route: Route): NodeId[] {
 }
 
 /**
- * Segments that may be clicked next.
+ * The arms of the junction the route is standing at.
+ *
+ * Not what may be clicked — every segment on the map may be clicked, and
+ * anything further off is reached by `append` filling in the way there. This is
+ * the smaller question of what leads directly on from here, which is what the
+ * camera frames after a pick, what the panel counts, what the spoken list reads
+ * out, and what `runOn` consults to decide whether there was a choice at all.
  *
  * With nothing started, that is everything. Otherwise it is whatever touches a
- * live end, minus the segment already occupying it — which is what stops a
- * route from doubling back on itself in place.
+ * live end, minus the segment already occupying it.
  */
 export function continuations(route: Route, graph: SiteGraph): Set<SegmentId> {
   if (isEmpty(route)) return new Set(graph.segments.keys());
@@ -93,25 +104,30 @@ export function continuations(route: Route, graph: SiteGraph): Set<SegmentId> {
   return next;
 }
 
-export function canAppend(
-  route: Route,
-  segment: SiteSegment,
-  graph: SiteGraph,
-): boolean {
-  return continuations(route, graph).has(segment.id);
-}
-
 /**
- * Add a segment to whichever live end it touches.
+ * Add a segment, riding whatever it takes to get to it.
+ *
+ * Neighbours only, once: a rider who could see the far side of the lake had to
+ * zoom in and click their way there one short segment at a time, and the broad
+ * strokes they actually had in mind were the one thing they could not pick. So
+ * a segment anywhere is a legal pick, and the shortest way to it fills itself
+ * in — the rider says where, the graph works out how.
+ *
+ * Which end of the picked segment gets ridden into is whichever is nearer
+ * through the network, so picking a line on the map means the same thing as
+ * pointing at it: take me along that. A dead heat goes to the lower node id,
+ * because the answer has to survive being replayed out of a link, where the
+ * click that asked for it is long gone.
+ *
+ * Nothing is refused except a segment on an island the route cannot reach at
+ * all. Riding back over your own wheel tracks is allowed and always was — a
+ * route is a walk through the graph, not a simple path, which is the whole of
+ * why out-and-backs work — and a rider who picks a segment behind them has said
+ * plainly enough that they want to turn round.
  *
  * Attaching to the far end of an undecided single segment flips that segment
- * rather than refusing: clicking the neighbor behind you means you meant to
- * ride the other way, not that you made a mistake.
- *
- * Refuses anything that is not a legal continuation. The rule lives here rather
- * than in each caller, because a version that merely checked whether a segment
- * touched the live end would let a route double straight back down the segment
- * it arrived on — which the highlighting says is not allowed.
+ * rather than refusing: picking the neighbor behind you means you meant to ride
+ * the other way, not that you made a mistake.
  */
 export function append(
   route: Route,
@@ -119,32 +135,100 @@ export function append(
   graph: SiteGraph,
 ): Route {
   if (isEmpty(route)) return startRoute(segment);
-  if (!canAppend(route, segment, graph)) return route;
 
+  const reach = reachFrom(graph.adjacency, graph.segments, liveEnds(route));
+  const arrival = nearerEnd(reach, segment);
+  if (arrival === null) return route;
+
+  const way = pathTo(reach, arrival);
   const first = route.steps[0];
-  const last = route.steps[route.steps.length - 1];
+  // Where the way there set off from, which for a segment already touching the
+  // route is the end it touches.
+  const source = way.length > 0 ? way[0].from : arrival;
 
-  if (touches(segment, last.to)) {
-    return runOn(
-      { steps: [...route.steps, orient(segment, last.to)], ambiguous: false },
-      graph,
-    );
+  const opening =
+    route.ambiguous && source === first.from
+      ? [
+          {
+            segment: first.segment,
+            from: first.to,
+            to: first.from,
+            auto: false,
+          },
+        ]
+      : route.steps;
+
+  return runOn(
+    {
+      steps: [
+        ...opening,
+        ...way.map((leg) => ({ ...leg, auto: true })),
+        orient(segment, arrival),
+      ],
+      ambiguous: false,
+    },
+    graph,
+  );
+}
+
+/**
+ * The end of a segment the route can get to soonest, or null for one it cannot
+ * get to at all.
+ */
+function nearerEnd(reach: Reach, segment: SiteSegment): NodeId | null {
+  const here = reach.metersTo.get(segment.from);
+  const there = reach.metersTo.get(segment.to);
+  if (here === undefined) return there === undefined ? null : segment.to;
+  if (there === undefined) return segment.from;
+  if (here !== there) return here < there ? segment.from : segment.to;
+  return segment.from < segment.to ? segment.from : segment.to;
+}
+
+/**
+ * Every segment a pick could still reach, which is everything until a route
+ * starts.
+ *
+ * The one thing left that the map has to draw as out of play. The network is
+ * not all one piece — the source rides cover Everett, Edmonds and Burien, and
+ * those never touch Seattle — so once a route is under way there are segments
+ * no amount of riding joins it to, and a rider who taps one is owed that answer
+ * rather than silence.
+ */
+export function reachable(route: Route, graph: SiteGraph): Set<SegmentId> {
+  if (isEmpty(route)) return new Set(graph.segments.keys());
+
+  const reach = reachFrom(graph.adjacency, graph.segments, liveEnds(route));
+  const open = new Set<SegmentId>();
+  for (const segment of graph.segments.values()) {
+    if (reach.metersTo.has(segment.from) || reach.metersTo.has(segment.to)) {
+      open.add(segment.id);
+    }
   }
+  return open;
+}
 
-  if (route.ambiguous && touches(segment, first.from)) {
-    const flipped: Step = {
-      segment: first.segment,
-      from: first.to,
-      to: first.from,
-      auto: false,
-    };
-    return runOn(
-      { steps: [flipped, orient(segment, first.from)], ambiguous: false },
-      graph,
-    );
-  }
-
-  return route;
+/**
+ * What a pick would add, for the map to show before it is one.
+ *
+ * A pick can now be worth a dozen segments, and a map that only reveals that
+ * afterwards is asking to be undone. Defined as what the route would gain
+ * rather than worked out separately, so it cannot drift from what the pick
+ * actually does — and so it picks up the run-on through junctions too.
+ *
+ * The first pick answers the same way, with the one segment it would start
+ * from. It says nothing the cursor does not, which was the argument for leaving
+ * it out — but the mark a hover puts on the map has to mean one thing, and a
+ * rider who has learned that the ghost is what they are about to get should not
+ * find it missing on the only pick they have not made yet.
+ */
+export function previewOf(
+  route: Route,
+  segment: SiteSegment,
+  graph: SiteGraph,
+): SegmentId[] {
+  const next = append(route, segment, graph);
+  if (next === route) return [];
+  return next.steps.slice(route.steps.length).map((step) => step.segment);
 }
 
 /**
@@ -183,10 +267,6 @@ function runOn(route: Route, graph: SiteGraph): Route {
   }
 
   return current;
-}
-
-function touches(segment: SiteSegment, node: NodeId): boolean {
-  return segment.from === node || segment.to === node;
 }
 
 function orient(segment: SiteSegment, from: NodeId): Step {
@@ -445,13 +525,18 @@ export function routePoints(route: Route, graph: SiteGraph): ElevCoord[] {
 }
 
 /**
- * The area the choices occupy: every segment the route could grow into.
+ * The area the turnings occupy: the junction the route has arrived at.
  *
  * This, rather than the route so far, is what the map should be showing. The
  * segment already ridden is settled; the decision in front of the rider is
  * which way to go next, and a view framed on twenty miles of history can leave
- * the turnings too small to tell apart. Null when the route has not started, or
- * has run out of segment — in both cases there is nothing to frame.
+ * the turnings too small to tell apart.
+ *
+ * The junction rather than everywhere a pick could now reach, which since
+ * `append` learned to fill in the way to a segment is most of the city — and
+ * framing all of it would pull the camera back to the network fit on every
+ * pick, which is the opposite of following a route being built. Null when the
+ * route has not started, or has run out of segment.
  */
 export function choiceBounds(route: Route, graph: SiteGraph): Bounds | null {
   if (isEmpty(route)) return null;
