@@ -58,7 +58,7 @@ export function Dialog({
             className,
           )}
         >
-          <div className="flex items-start gap-3 px-5 pt-4 pb-3">
+          <div className="flex items-start gap-3 px-5 pt-4 pb-2">
             <div className="min-w-0 flex-1">
               <Modal.Title className="text-sand text-sm tracking-[0.14em] uppercase">
                 {title}
@@ -78,8 +78,12 @@ export function Dialog({
           </div>
 
           {/* Scrolls rather than growing, so a long list cannot push the panel
-              off a short viewport. */}
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5">
+              off a short viewport. The hairline of headroom is the cost of
+              that: a focus ring is drawn outside the control it belongs to, so
+              a field sitting first in a scroll box has the top of its ring
+              sheared off. Taken back off the header above, so the gap under the
+              title is the one it always was. */}
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-1 pb-5">
             {children}
           </div>
         </Modal.Content>
