@@ -441,7 +441,7 @@ function SaveRoute({
         Save
       </Button>
       <Button
-        variant="primary"
+        variant="outline"
         className="flex-1 px-2 text-xs"
         // Named for what it does rather than for what comes out of it: GPX
         // means nothing to a rider who has not yet put one on a computer.
@@ -550,7 +550,7 @@ function ShareButton({ route, title }: { route: string; title: string }) {
   return (
     <>
       <Button
-        variant="outline"
+        variant="primary"
         className="flex-1 px-2 text-xs"
         aria-label={label}
         title={label}
@@ -565,9 +565,10 @@ function ShareButton({ route, title }: { route: string; title: string }) {
         {copied ? (
           <Check weight="bold" className="h-4 w-4" />
         ) : failed ? (
-          // Blaze rather than clay: clay is the site's red, and a red this
-          // dark on the button's own fill is a shape rather than a warning.
-          <WarningCircle weight="bold" className="text-blaze h-4 w-4" />
+          // The deep clay, which is the only red left once the button itself
+          // is blaze: the site's ordinary clay is close enough to the fill
+          // under it to read as a shape rather than as a warning.
+          <WarningCircle weight="bold" className="text-clay-deep h-4 w-4" />
         ) : (
           <Export weight="bold" className="h-4 w-4" />
         )}
