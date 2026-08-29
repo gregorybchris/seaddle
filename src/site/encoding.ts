@@ -66,10 +66,10 @@ export const ENCODING_ICONS: Record<Encoding, Icon> = {
 };
 
 export const ENCODING_BLURBS: Record<Encoding, string> = {
-  grade: "The slope of the ground, read along each segment.",
-  steepness: "One word for the whole segment.",
-  protection: "How much of the segment is yours.",
-  surroundings: "Whether it is worth looking at.",
+  grade: "The slope of the ground -- 45° is 100%.",
+  steepness: "Approximate steepness of the segment.",
+  protection: "Kind of lane or path protection on the segment.",
+  surroundings: "How beautiful the surroundings of the segment are.",
 };
 
 export const ENCODING_VALUES: Record<Attribute, readonly string[]> = {
