@@ -4,15 +4,17 @@ import {
   Boat,
   Check,
   DownloadSimple,
-  ShareNetwork,
+  Export,
+  FloppyDisk,
   Trash,
   WarningCircle,
 } from "@phosphor-icons/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { isRubout, MOD, typingIn } from "@/lib/utilities/keys";
 import { useUnits } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
 import { ConfirmDialog } from "@/widgets/confirm-dialog";
+import { Dialog } from "@/widgets/dialog";
 import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
@@ -369,10 +371,13 @@ function HowBuildingWorks() {
 }
 
 /**
- * Keep this route, and export it as a file.
+ * Keep this route, and send it somewhere.
  *
- * Both are the same act from a rider's side — "I want this later" — so they sit
- * together rather than being scattered around the panel.
+ * Share, save, export: three ways of saying "I want this later", so they sit
+ * together in one row rather than being scattered around the panel. The name a
+ * saved route goes under is asked for in a panel of its own — a text field
+ * standing open beside the buttons was a question nobody had asked yet, and it
+ * left the three acts sharing a row with a box wide enough to type in.
  */
 function SaveRoute({
   route,
@@ -388,17 +393,21 @@ function SaveRoute({
   saved: SavedRoute[];
   onSave: (name: string, route: string) => void;
 }) {
+  const [naming, setNaming] = useState(false);
   const [name, setName] = useState("");
   // Held rather than acted on: the list is read by name, so a second route
   // under a name already in it would have to push the first one out — and
   // nobody types a name expecting to lose the route that had it.
   const [replacing, setReplacing] = useState(false);
+  const field = useRef<HTMLInputElement>(null);
   const { distance } = useUnits();
 
   const encoded = encodeRoute(route);
   // What this route is called by anything that leaves the page — the file and
-  // the share sheet — before it has been given a name.
-  const title = name.trim() || `Seaddle ${distance(meters)}`;
+  // the share sheet. The name it was saved under if it has one, since that is
+  // what the rider already calls it, and its length otherwise.
+  const kept = saved.find((route) => route.route === encoded);
+  const title = kept?.name ?? `Seaddle ${distance(meters)}`;
   const clash = routeNamed(saved, chosenName(name));
   // Saving this same route again under its own name is the rename the list
   // already does, not an overwrite, so it is not worth a question.
@@ -417,35 +426,76 @@ function SaveRoute({
     onSave(name, encoded);
     setName("");
     setReplacing(false);
+    setNaming(false);
   }
 
   return (
     <div className="border-sand/10 flex gap-2 border-t pt-3">
-      <input
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") keep();
-        }}
-        placeholder="Name this route"
-        aria-label="Name this route"
-        className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 focus:ring-blaze min-h-11 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:ring-2 focus:outline-none"
-      />
-      <Button variant="outline" className="px-2 text-xs" onClick={keep}>
-        Save
-      </Button>
       <ShareButton route={encoded} title={title} />
       <Button
+        variant="outline"
+        className="flex-1 px-2 text-xs"
+        onClick={() => setNaming(true)}
+      >
+        <FloppyDisk weight="bold" className="h-4 w-4" />
+        Save
+      </Button>
+      <Button
         variant="primary"
-        className="px-2 text-xs"
-        aria-label="Download as GPX"
-        title="Download as GPX"
+        className="flex-1 px-2 text-xs"
+        // Named for what it does rather than for what comes out of it: GPX
+        // means nothing to a rider who has not yet put one on a computer.
+        aria-label="Export as a GPX file"
+        title="Export as a GPX file"
         onClick={() => downloadGpx(legs, title)}
       >
         <DownloadSimple weight="bold" className="h-4 w-4" />
-        GPX
+        Export
       </Button>
 
+      <Dialog
+        open={naming}
+        onOpenChange={setNaming}
+        title="Save this route"
+        description="Saved in this browser only."
+        // The caret belongs in the field this panel exists for, and the name
+        // already in it is there to be typed over rather than backspaced out.
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          field.current?.focus();
+          field.current?.select();
+        }}
+      >
+        <input
+          ref={field}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") keep();
+          }}
+          placeholder="Name this route"
+          aria-label="Name this route"
+          className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 focus:ring-blaze min-h-11 w-full rounded-md border px-2 py-1.5 text-sm transition-colors focus:ring-2 focus:outline-none"
+        />
+        {/* The way out comes first, the way it does on every other panel
+            here. */}
+        <div className="mt-4 flex justify-end gap-2">
+          <Button
+            variant="outline"
+            className="px-3 text-xs"
+            onClick={() => setNaming(false)}
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" className="px-3 text-xs" onClick={keep}>
+            Save
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* After the panel it interrupts, so it lands on top of it: the name
+          stays in view behind the question, and cancelling goes back to the
+          field rather than to a route with no name being typed for it. */}
       <ConfirmDialog
         open={replacing}
         onOpenChange={setReplacing}
@@ -501,7 +551,7 @@ function ShareButton({ route, title }: { route: string; title: string }) {
     <>
       <Button
         variant="outline"
-        className="px-2 text-xs"
+        className="flex-1 px-2 text-xs"
         aria-label={label}
         title={label}
         onClick={async () => {
@@ -519,8 +569,9 @@ function ShareButton({ route, title }: { route: string; title: string }) {
           // dark on the button's own fill is a shape rather than a warning.
           <WarningCircle weight="bold" className="text-blaze h-4 w-4" />
         ) : (
-          <ShareNetwork weight="bold" className="h-4 w-4" />
+          <Export weight="bold" className="h-4 w-4" />
         )}
+        Share
       </Button>
       {/* The button's own label carries this, but a label changing under a
           reader is not reliably read back to them. */}

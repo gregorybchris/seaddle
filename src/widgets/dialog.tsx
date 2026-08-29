@@ -11,6 +11,14 @@ type DialogProps = {
   description?: string;
   children: ReactNode;
   className?: string;
+  /**
+   * Where the caret goes when the panel opens.
+   *
+   * Radix hands focus to the first control inside, which here is always the
+   * close button. A panel that exists to be typed into wants the field
+   * instead, and only the caller knows which field that is.
+   */
+  onOpenAutoFocus?: (event: Event) => void;
 };
 
 /**
@@ -33,12 +41,14 @@ export function Dialog({
   description,
   children,
   className,
+  onOpenAutoFocus,
 }: DialogProps) {
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
       <Modal.Portal>
         <Modal.Overlay className="dialog-veil bg-forest-deep/50 fixed inset-0 z-40 backdrop-blur-[2px]" />
         <Modal.Content
+          onOpenAutoFocus={onOpenAutoFocus}
           // Radix warns when a dialog has no description. Most of these are a
           // named list of settings and the title says everything; opting out is
           // the honest answer rather than writing a sentence to silence it.
