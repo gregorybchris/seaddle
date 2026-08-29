@@ -13,7 +13,7 @@ import Map, {
 import type { FeatureCollection, LineString } from "geojson";
 import { boundsOf, centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
-import type { Coord } from "@/lib/models/geo";
+import type { Coord, ElevCoord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SitePin } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
@@ -131,8 +131,11 @@ type SiteMapProps = {
   allPins: SitePin[];
   /** Those on the segments already chosen, which are shown at any zoom. */
   pins: SitePin[];
-  /** Where the reader is pointing on the elevation chart, if anywhere. */
-  scrubbed: Coord | null;
+  /**
+   * Where the reader is pointing on the elevation chart, if anywhere: the point
+   * under the pointer, and the stretch of road a drag has covered so far.
+   */
+  scrubbed: { at: Coord; band: ElevCoord[] | null } | null;
   /**
    * What the map should be showing, and a nonce so asking twice works.
    *
@@ -337,6 +340,32 @@ export function SiteMap({
       ),
     };
   }, [graph, attribute]);
+
+  /**
+   * The stretch of road under a drag on the elevation chart.
+   *
+   * Its own geometry rather than a filter over the graph: a band is cut at two
+   * fractions along the line and stops mid-segment far more often than it lands
+   * on a junction, so there is no set of segment ids that describes it.
+   */
+  const bandData = useMemo<FeatureCollection<LineString>>(
+    () => ({
+      type: "FeatureCollection",
+      features: scrubbed?.band
+        ? [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "LineString",
+                coordinates: scrubbed.band as number[][],
+              },
+            },
+          ]
+        : [],
+    }),
+    [scrubbed],
+  );
 
   // Continuous, so a hill easing off looks like it is easing off.
   const gradeColor = useMemo(
@@ -783,6 +812,26 @@ export function SiteMap({
           />
         </Source>
 
+        {/* The stretch the chart is measuring, in the same pale highlighter the
+            panel's own segment gets — it is the same statement, that this is
+            what the reader is looking at, and saying it a second way would be a
+            second thing to learn. Over the lines rather than cased under them,
+            because a band cuts across segments mid-way and a casing would draw
+            as a widened piece of one. */}
+        <Source id="scrub-band" type="geojson" data={bandData}>
+          <Layer
+            id="scrub-band-line"
+            type="line"
+            paint={{
+              "line-color": "#e9e0d0",
+              "line-opacity": 0.5,
+              "line-width": 14,
+              "line-blur": 2,
+            }}
+            layout={ROUNDED}
+          />
+        </Source>
+
         {/* Elevation, drawn as its own set of lines rather than as a color on
           the ones above. The steepness of a segment changes along it, and a
           feature can only hold one color, so the segment is cut into stretches
@@ -863,7 +912,7 @@ export function SiteMap({
             chart's amber, because the route it sits on is amber and a marker
             has to be visible against the thing it marks. */}
         {scrubbed && (
-          <Marker longitude={scrubbed[0]} latitude={scrubbed[1]}>
+          <Marker longitude={scrubbed.at[0]} latitude={scrubbed.at[1]}>
             <span
               aria-hidden
               className="bg-forest-deep border-paper block h-3.5 w-3.5 rounded-full border-2 shadow-[0_1px_4px_rgba(18,48,31,0.55)]"

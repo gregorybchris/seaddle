@@ -10,6 +10,7 @@ import {
   polylineMeters,
   projectOntoPolyline,
   reversed,
+  sliceBetween,
   snapEnds,
   spanBetween,
 } from "./polyline";
@@ -243,5 +244,45 @@ describe("spanBetween", () => {
   it("has nothing to measure on a line too short to have a length", () => {
     expect(spanBetween([], 0, 1).meters).toBe(0);
     expect(spanBetween([HILL[0]], 0, 1).meters).toBe(0);
+  });
+});
+
+describe("sliceBetween", () => {
+  const HILL = pts([0, 10, 20, 30, 40, 50, 40, 30, 20, 10, 0]);
+
+  it("keeps the vertices inside the band, plus a cut end at each edge", () => {
+    // Two vertices lie between a seventh and a third of the way along.
+    const slice = sliceBetween(HILL, 0.15, 0.35);
+    expect(slice).toHaveLength(4);
+    for (const [i, elevation] of [15, 20, 30, 35].entries()) {
+      expect(slice[i][2]).toBeCloseTo(elevation, 6);
+    }
+  });
+
+  it("interpolates an end that landed between vertices", () => {
+    // Five percent along the first tenth of the climb.
+    const slice = sliceBetween(HILL, 0.05, 0.1);
+    expect(slice[0][2]).toBeCloseTo(5, 6);
+  });
+
+  it("runs the way it was read", () => {
+    const forward = sliceBetween(HILL, 0.2, 0.7);
+    expect(sliceBetween(HILL, 0.7, 0.2)).toEqual(reversed(forward));
+  });
+
+  it("measures what spanBetween says it measured", () => {
+    const slice = sliceBetween(HILL, 0.15, 0.85);
+    const span = spanBetween(HILL, 0.15, 0.85);
+    expect(polylineMeters(slice)).toBeCloseTo(span.meters, 6);
+    expect(elevationGain(slice)).toBe(span.gain);
+  });
+
+  it("clamps a drag that ran off the end", () => {
+    expect(sliceBetween(HILL, -0.5, 2)).toEqual(sliceBetween(HILL, 0, 1));
+  });
+
+  it("has nothing to cut on a line too short to have a length", () => {
+    expect(sliceBetween([], 0, 1)).toEqual([]);
+    expect(sliceBetween([HILL[0]], 0, 1)).toEqual([HILL[0]]);
   });
 });

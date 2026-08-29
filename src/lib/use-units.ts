@@ -3,6 +3,7 @@ import { readStored, writeStored } from "./utilities/storage";
 import {
   climbValue,
   formatClimb,
+  formatClimbRate,
   formatDistance,
   type UnitSystem,
 } from "./utilities/units";
@@ -25,6 +26,8 @@ export type Units = {
   distance: (meters: number) => string;
   /** "840 ft" or "256 m". */
   climb: (meters: number) => string;
+  /** How steeply a stretch climbs over its length: "84 ft/mi" or "16 m/km". */
+  climbRate: (gainMeters: number, overMeters: number) => string | null;
   /** The bare climb, for a range that shares one unit word: "600–840 ft". */
   climbValue: (meters: number) => number;
 };
@@ -99,6 +102,8 @@ export function useUnits(): Units {
       choose,
       distance: (meters: number) => formatDistance(meters, system),
       climb: (meters: number) => formatClimb(meters, system),
+      climbRate: (gainMeters: number, overMeters: number) =>
+        formatClimbRate(gainMeters, overMeters, system),
       climbValue: (meters: number) => climbValue(meters, system),
     }),
     [system],

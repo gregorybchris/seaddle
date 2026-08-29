@@ -11,7 +11,7 @@ import { cn } from "@/lib/utilities/style-utils";
 import { useUnits, type Units } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
 import { ConfirmDialog } from "@/widgets/confirm-dialog";
-import { ElevationProfile } from "@/widgets/elevation-profile";
+import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { InfoPopover } from "@/widgets/info-popover";
 import { Sheet } from "@/widgets/sheet";
@@ -48,7 +48,7 @@ type RoutePanelProps = {
   canRedo: boolean;
   onClear: () => void;
   onLoad: (encoded: string) => void;
-  onScrub: (fraction: number | null) => void;
+  onScrub: (scrub: Scrub | null) => void;
   /** The segments that can be taken next, for picking without the map. */
   turnings: Turning[];
   onPick: (id: SegmentId) => void;

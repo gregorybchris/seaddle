@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { coordAtFraction } from "@/lib/geo/polyline";
+import { coordAtFraction, sliceBetween } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
 import type { Coord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
+import type { Scrub } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { RoutePanel } from "@/site/components/route-panel";
 import { SiteMap } from "@/site/components/site-map";
@@ -47,7 +48,7 @@ export function MapPage() {
     canUndo,
     canRedo,
   } = useRouteHistory(graph);
-  const [scrub, setScrub] = useState<number | null>(null);
+  const [scrub, setScrub] = useState<Scrub | null>(null);
   /**
    * What a click on a segment does, and which segment is being read if it
    * reads.
@@ -120,18 +121,28 @@ export function MapPage() {
   const reading = selected ? (graph?.segments.get(selected) ?? null) : null;
 
   /**
-   * The place on the map the reader is pointing at on the elevation chart.
+   * The place on the map the reader is pointing at on the elevation chart, and
+   * the stretch of it they are dragging across.
    *
    * Measured along whatever the visible panel is charting — the whole route, or
    * the one segment being read. There are two charts, so which line the
    * fraction runs along has to follow which panel is open, or scrubbing one
    * segment would put the marker somewhere along a route nobody is looking at.
+   *
+   * The band is cut with the same `sliceBetween` the chart's caption measures
+   * with, so the piece of road drawn on the map is the piece the numbers under
+   * the chart are about — down to the interpolated ends.
    */
   const scrubbed = useMemo(() => {
     const charted = mode === "explore" ? (reading?.points ?? []) : points;
-    return scrub === null || charted.length < 2
-      ? null
-      : coordAtFraction(charted, scrub);
+    if (scrub === null || charted.length < 2) return null;
+    return {
+      at: coordAtFraction(charted, scrub.at),
+      band:
+        scrub.from === null
+          ? null
+          : sliceBetween(charted, scrub.from, scrub.at),
+    };
   }, [scrub, mode, reading, points]);
 
   // A fraction along one segment means nothing along the next, and the chart

@@ -2,7 +2,7 @@ import { Binoculars, type Icon } from "@phosphor-icons/react";
 import { useUnits, type Units } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { Badge } from "@/widgets/badge";
-import { ElevationProfile } from "@/widgets/elevation-profile";
+import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
 import { ENCODING_ICONS, TONES, type Attribute } from "../encoding";
@@ -14,7 +14,7 @@ type SegmentPanelProps = {
   /** The segment being read, or nothing if the last click landed on the
    *  ground. */
   segment: SiteSegment | null;
-  onScrub: (fraction: number | null) => void;
+  onScrub: (scrub: Scrub | null) => void;
 };
 
 /**

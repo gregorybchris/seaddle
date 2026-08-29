@@ -18,6 +18,22 @@ const HEIGHT = 64;
  */
 const MIN_BAND = 3;
 
+/** Whether a press has travelled far enough to be reading a stretch rather
+ *  than a point. Asked before measuring one, and before reporting one. */
+function isBand(start: number, end: number): boolean {
+  return Math.abs(start - end) >= MIN_BAND;
+}
+
+/**
+ * Where along the line the reader is, as fractions from 0 to 1.
+ *
+ * `at` is the point under the pointer; `from` is where a drag began, and is
+ * null unless one is under way. The pair is reported rather than the band
+ * alone because the moving end is still a place worth marking while the band
+ * is being drawn.
+ */
+export type Scrub = { at: number; from: number | null };
+
 /**
  * The shape of the route, drawn to scale along its length, and readable at any
  * point along it.
@@ -29,13 +45,16 @@ const MIN_BAND = 3;
  * because the axis was fitted to three meters of noise.
  *
  * A press that travels reads a stretch rather than a point, and only while it
- * is held. The caption keeps its two slots — a distance on the left and a climb
- * on the right — and they answer about the band instead of the route: how long
- * is that hill, and how much climbing is in it. The climb is the one the drag
- * was going in, so sweeping back across a hill you just measured gives you the
- * other side of it rather than the same number again. The question is asked of
- * a piece of segment with no name, so there is nowhere to put a lasting answer
- * and nothing to dismiss afterwards.
+ * is held. The caption keeps its outer two slots — a distance on the left and a
+ * climb on the right — and they answer about the band instead of the route: how
+ * long is that hill, and how much climbing is in it. The climb is the one the
+ * drag was going in, so sweeping back across a hill you just measured gives you
+ * the other side of it rather than the same number again. A band also opens a
+ * middle slot for the rate the two outer numbers imply, which is the figure
+ * that says whether a hill is a hill; a whole route's average steepness is not
+ * a thing anyone rides, so the slot closes with the band. The question is asked
+ * of a piece of segment with no name, so there is nowhere to put a lasting
+ * answer and nothing to dismiss afterwards.
  */
 export function ElevationProfile({
   points,
@@ -47,11 +66,12 @@ export function ElevationProfile({
   className?: string;
   minRangeMeters?: number;
   /**
-   * Where along the route the reader is looking, 0 to 1, or null once they
-   * stop. Lets the map put the same place under a marker — a height without a
-   * "where" only answers half the question.
+   * What the reader is looking at, or null once they stop. Lets the map put
+   * the same place under a marker and the same stretch under a highlight — a
+   * height without a "where" only answers half the question, and a band
+   * measured in the caption without one is the same half-answer again.
    */
-  onScrub?: (fraction: number | null) => void;
+  onScrub?: (scrub: Scrub | null) => void;
 }) {
   const gradientId = useId();
   const chart = useRef<HTMLDivElement>(null);
@@ -61,7 +81,7 @@ export function ElevationProfile({
   // from reading a point.
   const [from, setFrom] = useState<number | null>(null);
   // Above the early return below, where a hook cannot go.
-  const { distance, climb } = useUnits();
+  const { distance, climb, climbRate } = useUnits();
 
   const profile = elevationProfile(points, 96);
   if (profile.samples.length < 2) return null;
@@ -93,17 +113,28 @@ export function ElevationProfile({
    * so a drag back down the chart is measured back down the segment.
    */
   function bandOf(start: number, end: number): Span | null {
-    if (Math.abs(start - end) < MIN_BAND) return null;
+    if (!isBand(start, end)) return null;
     return spanBetween(points, start / steps, end / steps);
   }
 
   const band = at === null || from === null ? null : bandOf(from, at);
+  const rate = band && climbRate(band.gain, band.meters);
 
   /** Reported from the handlers rather than during render, where it would be a side effect. */
   function scrubTo(index: number | null, start: number | null = null) {
     setAt(index);
     setFrom(start);
-    onScrub?.(index === null ? null : index / steps);
+    // Only a drag long enough to have drawn a band reports one, by the same
+    // measure the caption uses — so the map highlights a stretch exactly when
+    // the caption is describing one.
+    onScrub?.(
+      index === null
+        ? null
+        : {
+            at: index / steps,
+            from: start !== null && isBand(start, index) ? start / steps : null,
+          },
+    );
   }
 
   function indexAt(event: React.PointerEvent): number | null {
@@ -133,7 +164,7 @@ export function ElevationProfile({
         aria-valuenow={Math.round(reading?.meters ?? 0)}
         aria-valuetext={
           band
-            ? `${distance(band.meters)} and ${climb(band.gain)} of climbing, from ${distance(band.fromMeters)} to ${distance(band.toMeters)}`
+            ? `${distance(band.meters)} and ${climb(band.gain)} of climbing${rate ? `, at ${rate}` : ""}, from ${distance(band.fromMeters)} to ${distance(band.toMeters)}`
             : reading
               ? `${distance(reading.meters)}, ${climb(reading.elevation)}`
               : "Nothing selected"
@@ -235,14 +266,16 @@ export function ElevationProfile({
         )}
       </div>
 
-      {/* Same two slots either way, so reading the hill does not shift the
-          panel under the pointer — and the same two questions, distance on the
-          left and climb on the right, whether the subject is a point on the
-          route or a band of it. */}
+      {/* The outer two slots are the same either way, so reading the hill does
+          not shift the panel under the pointer — and the same two questions,
+          distance on the left and climb on the right, whether the subject is a
+          point on the route or a band of it. The rate between them appears only
+          for a band, and takes no width from the other two when it is absent. */}
       <figcaption className="tabular flex justify-between text-[0.625rem]">
         {band ? (
           <>
             <span className="text-blaze">{distance(band.meters)}</span>
+            {rate && <span className="text-blaze/70">{rate}</span>}
             <span className="text-blaze">{climb(band.gain)}</span>
           </>
         ) : reading ? (

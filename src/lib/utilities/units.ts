@@ -71,6 +71,28 @@ export function formatClimb(meters: number, system: UnitSystem): string {
   return system === "metric" ? formatMeters(meters) : formatFeet(meters);
 }
 
+/**
+ * How steadily a stretch climbs: height gained per unit of distance.
+ *
+ * Feet per mile rather than a percentage grade. The two say the same thing,
+ * but a rider reading a band on the chart has just been told a distance in
+ * miles and a climb in feet, and a rate in those same two units is one they can
+ * check against the pair beside it instead of taking on trust.
+ *
+ * A band of no length has no rate rather than an infinite one — the reader has
+ * not drawn anything to ask about yet.
+ */
+export function formatClimbRate(
+  gainMeters: number,
+  overMeters: number,
+  system: UnitSystem,
+): string | null {
+  if (overMeters <= 0) return null;
+  return system === "metric"
+    ? `${Math.round(gainMeters / kilometers(overMeters))} m/km`
+    : `${Math.round(feet(gainMeters) / miles(overMeters))} ft/mi`;
+}
+
 /** The bare number, for a range that carries one unit word across both ends. */
 export function climbValue(meters: number, system: UnitSystem): number {
   return Math.round(system === "metric" ? meters : feet(meters));

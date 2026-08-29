@@ -85,6 +85,8 @@ function atMeters(
   ];
 }
 
+const clampFraction = (fraction: number) => Math.max(0, Math.min(1, fraction));
+
 /**
  * Measure one stretch of a line, cut at two fractions along it.
  *
@@ -111,15 +113,45 @@ export function spanBetween(
   fromFraction: number,
   toFraction: number,
 ): Span {
-  const clamp = (fraction: number) => Math.max(0, Math.min(1, fraction));
   if (points.length < 2) {
     return { fromMeters: 0, toMeters: 0, meters: 0, gain: 0 };
   }
 
   const cumulative = cumulativeMeters(points);
   const total = cumulative[cumulative.length - 1];
-  const fromMeters = clamp(fromFraction) * total;
-  const toMeters = clamp(toFraction) * total;
+  const fromMeters = clampFraction(fromFraction) * total;
+  const toMeters = clampFraction(toFraction) * total;
+
+  return {
+    fromMeters,
+    toMeters,
+    meters: Math.abs(toMeters - fromMeters),
+    gain: elevationGain(sliceBetween(points, fromFraction, toFraction)),
+  };
+}
+
+/**
+ * The piece of a line between two fractions along it, ends interpolated.
+ *
+ * `spanBetween` measures this piece; this returns it, because the same drag
+ * that asks how long a stretch is also has to be shown as a stretch on the
+ * map. Cutting once and reading the answer off the cut keeps the two from
+ * disagreeing about where the band starts.
+ *
+ * Runs from → to, backwards included, for the same reason `crop` does: the
+ * direction is what the reader drew, and the climb is measured along it.
+ */
+export function sliceBetween(
+  points: ElevCoord[],
+  fromFraction: number,
+  toFraction: number,
+): ElevCoord[] {
+  if (points.length < 2) return [...points];
+
+  const cumulative = cumulativeMeters(points);
+  const total = cumulative[cumulative.length - 1];
+  const fromMeters = clampFraction(fromFraction) * total;
+  const toMeters = clampFraction(toFraction) * total;
   const low = Math.min(fromMeters, toMeters);
   const high = Math.max(fromMeters, toMeters);
 
@@ -129,12 +161,7 @@ export function spanBetween(
   }
   slice.push(atMeters(points, cumulative, high));
 
-  return {
-    fromMeters,
-    toMeters,
-    meters: high - low,
-    gain: elevationGain(fromMeters <= toMeters ? slice : reversed(slice)),
-  };
+  return fromMeters <= toMeters ? slice : reversed(slice);
 }
 
 /**
