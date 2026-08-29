@@ -2,8 +2,11 @@ import {
   ArrowUUpLeft,
   ArrowUUpRight,
   Boat,
+  Check,
   DownloadSimple,
+  ShareNetwork,
   Trash,
+  WarningCircle,
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
 import { isRubout, MOD, typingIn } from "@/lib/utilities/keys";
@@ -13,6 +16,12 @@ import { ConfirmDialog } from "@/widgets/confirm-dialog";
 import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
+import {
+  routeLink,
+  shareRoute,
+  sharesNatively,
+  type Handoff,
+} from "../share-route";
 import type { Encoding } from "../encoding";
 import type { SiteGraph } from "../graph-data";
 import {
@@ -387,6 +396,9 @@ function SaveRoute({
   const { distance } = useUnits();
 
   const encoded = encodeRoute(route);
+  // What this route is called by anything that leaves the page — the file and
+  // the share sheet — before it has been given a name.
+  const title = name.trim() || `Seaddle ${distance(meters)}`;
   const clash = routeNamed(saved, chosenName(name));
   // Saving this same route again under its own name is the rename the list
   // already does, not an overwrite, so it is not worth a question.
@@ -422,14 +434,13 @@ function SaveRoute({
       <Button variant="outline" className="px-2 text-xs" onClick={keep}>
         Save
       </Button>
+      <ShareButton route={encoded} title={title} />
       <Button
         variant="primary"
         className="px-2 text-xs"
         aria-label="Download as GPX"
         title="Download as GPX"
-        onClick={() =>
-          downloadGpx(legs, name.trim() || `Seaddle ${distance(meters)}`)
-        }
+        onClick={() => downloadGpx(legs, title)}
       >
         <DownloadSimple weight="bold" className="h-4 w-4" />
         GPX
@@ -447,6 +458,76 @@ function SaveRoute({
         it.
       </ConfirmDialog>
     </div>
+  );
+}
+
+/**
+ * Send this route to somebody.
+ *
+ * The route already lives in the URL, so sharing is handing over an address —
+ * but the address bar is not where anyone looks for one, and on a phone it is
+ * barely reachable. So the link is put wherever that device puts links: the
+ * share sheet on a phone, the clipboard everywhere else.
+ *
+ * Only the copy needs saying afterwards. A share sheet announces itself by
+ * opening; a clipboard write is silent, and a button that gives no sign of
+ * having worked gets pressed again.
+ */
+function ShareButton({ route, title }: { route: string; title: string }) {
+  const [handoff, setHandoff] = useState<Handoff | null>(null);
+  // Asked once rather than per render: the answer cannot change under a rider
+  // who is not swapping input devices mid-route, and it decides the wording.
+  const [native] = useState(sharesNatively);
+
+  // Wound back on a timer, because a check mark left sitting there stops being
+  // news about the last press and starts looking like the button's own face.
+  useEffect(() => {
+    if (handoff === null) return;
+    const timer = window.setTimeout(() => setHandoff(null), 2500);
+    return () => window.clearTimeout(timer);
+  }, [handoff]);
+
+  const copied = handoff === "copied";
+  const failed = handoff === "failed";
+  const label = failed
+    ? "Couldn't copy the link — copy it from the address bar"
+    : copied
+      ? "Link copied"
+      : native
+        ? "Share this route"
+        : "Copy link to this route";
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        className="px-2 text-xs"
+        aria-label={label}
+        title={label}
+        onClick={async () => {
+          const result = await shareRoute(routeLink(route), title);
+          // Shared and dismissed are both the rider having seen the sheet.
+          setHandoff(
+            result === "shared" || result === "dismissed" ? null : result,
+          );
+        }}
+      >
+        {copied ? (
+          <Check weight="bold" className="h-4 w-4" />
+        ) : failed ? (
+          // Blaze rather than clay: clay is the site's red, and a red this
+          // dark on the button's own fill is a shape rather than a warning.
+          <WarningCircle weight="bold" className="text-blaze h-4 w-4" />
+        ) : (
+          <ShareNetwork weight="bold" className="h-4 w-4" />
+        )}
+      </Button>
+      {/* The button's own label carries this, but a label changing under a
+          reader is not reliably read back to them. */}
+      <p role="status" aria-live="polite" className="sr-only">
+        {copied ? "Link copied." : failed ? "Couldn't copy the link." : ""}
+      </p>
+    </>
   );
 }
 
