@@ -528,6 +528,15 @@ and an editor field nobody ever changes is a field that eventually gets set wron
 The segment chain lives in the **URL**: `seaddle.com/?r=17-42-43-88`. Copy-paste shares a route,
 refresh is lossless, and a bookmark is a saved route. No accounts, no backend.
 
+A **share button** sits beside the GPX download, because a link that has to be scraped out of the
+address bar is a link only a desktop rider ever sends. It hands the link over the way the device
+does: the share sheet where there is one and the pointer is coarse — a phone, where that sheet is
+how every other link gets passed along — and the clipboard everywhere else, since desktop Safari and
+Edge answer to `navigator.share` too and would throw a modal chooser over the map for something that
+was meant to be a copy. What is handed over is rebuilt from the route rather than lifted off
+`location.href`, so a stale `?s=` or a tracking parameter picked up on the way in does not ride along
+to the friend. A copy says so for a couple of seconds; a share sheet says so by opening.
+
 Spelled for the address bar rather than for the parser. A query string is written in form encoding,
 which leaves alone exactly the letters, digits and `*-._` — so the comma this used to join on
 arrived as `%2C` and the out-and-back token `~` as `%7E`, and the one thing a rider is meant to copy

@@ -69,6 +69,8 @@ way:
   miles or kilometers, and whether a pick moves the camera.
 - **The route lives in the URL** (`/?r=s017,s042,s088`), so a link is the
   whole share mechanism and there is nothing server-side to keep.
+- **Share** hands that link over the way the device does — the native share
+  sheet on a phone, the clipboard on a desktop.
 - **Undo is the back button.** Every move pushes a history entry, so back
   unbuilds the route; ⌘Z / ⌘⇧Z (and the control spellings) do the same from the
   keyboard.
