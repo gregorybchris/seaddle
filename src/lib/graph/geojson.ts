@@ -22,6 +22,14 @@ export function buildGraphGeoJson(
       throw new Error(`Segment ${segment.id} has no geometry file`);
     }
     const derived = deriveSegment(points);
+    // A crossing climbs nothing. Its points were interpolated across a stretch
+    // the recorder never saw, so any rise in them is arithmetic between two
+    // docks rather than something a rider went up — and a route that gains
+    // forty feet on the boat is a route lying about the only number a beginner
+    // in Seattle actually plans around.
+    const measured = segment.crossing
+      ? { ...derived, gainForward: 0, gainBackward: 0 }
+      : derived;
     return {
       type: "Feature" as const,
       id: segment.id,
@@ -33,8 +41,9 @@ export function buildGraphGeoJson(
         steepness: segment.steepness,
         protection: segment.protection,
         surroundings: segment.surroundings,
+        crossing: segment.crossing,
         reviewed: segment.reviewed,
-        ...derived,
+        ...measured,
       },
       geometry: {
         type: "LineString" as const,

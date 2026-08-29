@@ -5,6 +5,7 @@
  * and the runtime format Mapbox can style directly. Every derived number the
  * site shows is computed exactly here, once.
  */
+import type { FeatureCollection, LineString } from "geojson";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -25,7 +26,10 @@ export type CompileResult = {
   segments: number;
   nodes: number;
   pins: number;
+  /** Ridden miles' worth of meters. A crossing is not ridden, so it is not in
+   *  this — it is counted beside it, the way the site counts it. */
   meters: number;
+  crossedMeters: number;
   components: number[];
   problems: GraphProblem[];
   orphanGeometry: string[];
@@ -68,14 +72,22 @@ export async function compileGraph(): Promise<CompileResult> {
     segments: graph.segments.length,
     nodes: graph.nodes.length,
     pins: graph.pins.length,
-    meters: graphGeoJson.features.reduce(
-      (sum: number, feature) => sum + Number(feature.properties?.meters ?? 0),
-      0,
-    ),
+    meters: sumMeters(graphGeoJson, (crossing) => crossing === null),
+    crossedMeters: sumMeters(graphGeoJson, (crossing) => crossing !== null),
     components: connectedComponents(graph.segments).map((c) => c.length),
     problems,
     orphanGeometry,
   };
+}
+
+function sumMeters(
+  collection: FeatureCollection<LineString>,
+  keep: (crossing: string | null) => boolean,
+): number {
+  return collection.features.reduce((sum, feature) => {
+    const crossing = (feature.properties?.crossing ?? null) as string | null;
+    return keep(crossing) ? sum + Number(feature.properties?.meters ?? 0) : sum;
+  }, 0);
 }
 
 async function loadGeometry(ids: SegmentId[]): Promise<{

@@ -8,9 +8,9 @@ import type { ElevCoord } from "@/lib/models/geo";
  * is string building and a Blob. A round trip would add a cold start to do
  * arithmetic that has already been done here.
  */
-export function downloadGpx(points: ElevCoord[], name: string): void {
+export function downloadGpx(legs: ElevCoord[][], name: string): void {
   const url = URL.createObjectURL(
-    new Blob([writeGpx(points, name)], { type: "application/gpx+xml" }),
+    new Blob([writeGpx(legs, name)], { type: "application/gpx+xml" }),
   );
   const link = document.createElement("a");
   link.href = url;

@@ -36,6 +36,15 @@ type SegmentEditorProps = {
 };
 
 /**
+ * The ways a segment is covered, which is riding it or being carried over it.
+ *
+ * "road" is not a stored value — a segment that is road stores nothing — but it
+ * has to be one of the chips, because a control with a single option offers no
+ * way to change your mind about having pressed it.
+ */
+const COVERINGS = ["road", "ferry"] as const;
+
+/**
  * Judging a segment: how hard, how safe, how pretty, what it is made of.
  *
  * Built for the pass rather than the single edit — a hundred and forty-five of
@@ -67,6 +76,7 @@ export function SegmentEditor({
     selected.length > 1 && shared(read) === null;
 
   const allReviewed = selected.every((segment) => segment.reviewed);
+  const crossed = selected.every((segment) => segment.crossing !== null);
 
   return (
     <section className="border-sand/15 bg-forest-deep/30 flex flex-col gap-4 rounded-lg border p-3">
@@ -104,7 +114,28 @@ export function SegmentEditor({
         </div>
       )}
 
-      <div className="flex flex-col gap-3">
+      {/* Which of two questions this segment is being asked. A crossing is not
+          ridden, so the three scales below have no answer for it — offering
+          them would be inviting somebody to judge the steepness of a boat, and
+          whatever they picked would be stored and never read. */}
+      <ChipGroup
+        label="Covered by"
+        joined
+        options={COVERINGS}
+        value={shared((s) => s.crossing ?? "road")}
+        mixed={disagree((s) => s.crossing ?? "road")}
+        onChange={(covering) =>
+          onPatch({ crossing: covering === "road" ? null : covering })
+        }
+      />
+
+      <div
+        className={cn(
+          "flex flex-col gap-3",
+          crossed && "pointer-events-none opacity-40",
+        )}
+        aria-hidden={crossed}
+      >
         <ChipGroup
           label="Steepness"
           joined

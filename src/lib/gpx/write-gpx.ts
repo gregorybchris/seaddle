@@ -11,16 +11,27 @@ function escapeXml(value: string): string {
 /**
  * Turn an assembled route into a GPX file, in the browser.
  *
+ * One track segment per continuous stretch of riding, which is what a `trkseg`
+ * is for. A route that takes the ferry is two of them with the crossing left
+ * out: a file carrying a straight line eight miles across Puget Sound is a file
+ * that will cheerfully navigate somebody into it, and count the water as
+ * distance ridden on the way.
+ *
  * No server is involved: the page already holds every point it needs, so
  * exporting is string building plus a Blob. A serverless round trip would add
  * a cold start and an API surface to do arithmetic the client has already done.
  */
-export function writeGpx(points: ElevCoord[], name: string): string {
-  const trkpts = points
-    .map(
-      ([lon, lat, ele]) =>
-        `      <trkpt lat="${lat}" lon="${lon}"><ele>${ele}</ele></trkpt>`,
-    )
+export function writeGpx(legs: ElevCoord[][], name: string): string {
+  const trksegs = legs
+    .map((points) => {
+      const trkpts = points
+        .map(
+          ([lon, lat, ele]) =>
+            `      <trkpt lat="${lat}" lon="${lon}"><ele>${ele}</ele></trkpt>`,
+        )
+        .join("\n");
+      return `    <trkseg>\n${trkpts}\n    </trkseg>`;
+    })
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -30,9 +41,7 @@ export function writeGpx(points: ElevCoord[], name: string): string {
   </metadata>
   <trk>
     <name>${escapeXml(name)}</name>
-    <trkseg>
-${trkpts}
-    </trkseg>
+${trksegs}
   </trk>
 </gpx>
 `;

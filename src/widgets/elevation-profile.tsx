@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from "react";
-import { spanBetween, type Span } from "@/lib/geo/polyline";
+import { spanBetween, type Span, type Uncounted } from "@/lib/geo/polyline";
 import { elevationProfile, sampleAt } from "@/lib/geo/profile";
 import type { ElevCoord } from "@/lib/models/geo";
 import { cn } from "@/lib/utilities/style-utils";
@@ -58,11 +58,23 @@ export type Scrub = { at: number; from: number | null };
  */
 export function ElevationProfile({
   points,
+  crossed,
   className,
   minRangeMeters = 30,
   onScrub,
 }: {
   points: ElevCoord[];
+  /**
+   * Legs of the line that are crossed rather than ridden, by the index of the
+   * point each arrives at.
+   *
+   * They are drawn to no width at all, so a route that takes the ferry runs
+   * from the Seattle shore straight on to the Bainbridge one. The alternative
+   * is eight flat miles across the middle of the chart, which squashes every
+   * hill the rider is actually going to meet in order to draw a stretch they
+   * will be sitting down for.
+   */
+  crossed?: Uncounted;
   className?: string;
   minRangeMeters?: number;
   /**
@@ -83,8 +95,10 @@ export function ElevationProfile({
   // Above the early return below, where a hook cannot go.
   const { distance, climb, climbRate } = useUnits();
 
-  const profile = elevationProfile(points, 96);
-  if (profile.samples.length < 2) return null;
+  const profile = elevationProfile(points, 96, crossed);
+  // A chart of nothing, which a route that is only a ferry crossing would draw
+  // as a flat line across the panel with no distance under it.
+  if (profile.samples.length < 2 || profile.meters === 0) return null;
 
   const range = Math.max(profile.maxMeters - profile.minMeters, minRangeMeters);
   const middle = (profile.maxMeters + profile.minMeters) / 2;
@@ -114,7 +128,7 @@ export function ElevationProfile({
    */
   function bandOf(start: number, end: number): Span | null {
     if (!isBand(start, end)) return null;
-    return spanBetween(points, start / steps, end / steps);
+    return spanBetween(points, start / steps, end / steps, crossed);
   }
 
   const band = at === null || from === null ? null : bandOf(from, at);

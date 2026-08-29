@@ -14,13 +14,33 @@ export function polylineMeters(points: (Coord | ElevCoord)[]): number {
   return total;
 }
 
-/** Distance from the start to each vertex. Same length as `points`, starting at 0. */
-export function cumulativeMeters(points: (Coord | ElevCoord)[]): number[] {
+/**
+ * Legs of a line that count for no distance, given as the index of the point
+ * each one arrives at.
+ *
+ * An assembled route can include a stretch nobody rides — the ferry across to
+ * Bainbridge is eight miles of it — and everything measured along the line has
+ * to skip that rather than lay eight flat miles across the middle of an
+ * elevation chart. Passing the crossing's legs through here is what makes the
+ * chart, the scrub, the band under a drag and the distance in the panel all
+ * agree, without any of them being taught what a ferry is.
+ */
+export type Uncounted = ReadonlySet<number>;
+
+/**
+ * Distance from the start to each vertex. Same length as `points`, starting at
+ * 0, and flat across any leg named in `uncounted`.
+ */
+export function cumulativeMeters(
+  points: (Coord | ElevCoord)[],
+  uncounted?: Uncounted,
+): number[] {
   const out = [0];
   for (let i = 1; i < points.length; i++) {
-    out.push(
-      out[i - 1] + haversineMeters(flat(points[i - 1]), flat(points[i])),
-    );
+    const leg = uncounted?.has(i)
+      ? 0
+      : haversineMeters(flat(points[i - 1]), flat(points[i]));
+    out.push(out[i - 1] + leg);
   }
   return out;
 }
@@ -112,12 +132,13 @@ export function spanBetween(
   points: ElevCoord[],
   fromFraction: number,
   toFraction: number,
+  uncounted?: Uncounted,
 ): Span {
   if (points.length < 2) {
     return { fromMeters: 0, toMeters: 0, meters: 0, gain: 0 };
   }
 
-  const cumulative = cumulativeMeters(points);
+  const cumulative = cumulativeMeters(points, uncounted);
   const total = cumulative[cumulative.length - 1];
   const fromMeters = clampFraction(fromFraction) * total;
   const toMeters = clampFraction(toFraction) * total;
@@ -126,7 +147,9 @@ export function spanBetween(
     fromMeters,
     toMeters,
     meters: Math.abs(toMeters - fromMeters),
-    gain: elevationGain(sliceBetween(points, fromFraction, toFraction)),
+    gain: elevationGain(
+      sliceBetween(points, fromFraction, toFraction, uncounted),
+    ),
   };
 }
 
@@ -145,10 +168,11 @@ export function sliceBetween(
   points: ElevCoord[],
   fromFraction: number,
   toFraction: number,
+  uncounted?: Uncounted,
 ): ElevCoord[] {
   if (points.length < 2) return [...points];
 
-  const cumulative = cumulativeMeters(points);
+  const cumulative = cumulativeMeters(points, uncounted);
   const total = cumulative[cumulative.length - 1];
   const fromMeters = clampFraction(fromFraction) * total;
   const toMeters = clampFraction(toFraction) * total;
@@ -274,13 +298,14 @@ export function projectOntoPolyline(
 export function coordAtFraction(
   points: (Coord | ElevCoord)[],
   fraction: number,
+  uncounted?: Uncounted,
 ): Coord {
   if (points.length === 0) {
     throw new Error("Cannot walk an empty polyline");
   }
   if (points.length === 1) return flat(points[0]);
 
-  const cumulative = cumulativeMeters(points);
+  const cumulative = cumulativeMeters(points, uncounted);
   const total = cumulative[cumulative.length - 1];
   const targetMeters = Math.max(0, Math.min(1, fraction)) * total;
 

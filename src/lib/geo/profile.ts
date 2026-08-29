@@ -1,5 +1,5 @@
 import type { ElevCoord } from "@/lib/models/geo";
-import { cumulativeMeters } from "./polyline";
+import { cumulativeMeters, type Uncounted } from "./polyline";
 
 export type Profile = {
   /** Elevations in meters, evenly spaced by distance along the line. */
@@ -43,6 +43,7 @@ export function sampleAt(
 export function elevationProfile(
   points: ElevCoord[],
   sampleCount = 48,
+  uncounted?: Uncounted,
 ): Profile {
   if (points.length === 0) {
     return { samples: [], minMeters: 0, maxMeters: 0, meters: 0 };
@@ -57,7 +58,7 @@ export function elevationProfile(
     };
   }
 
-  const cumulative = cumulativeMeters(points);
+  const cumulative = cumulativeMeters(points, uncounted);
   const meters = cumulative[cumulative.length - 1];
   const samples: number[] = [];
 

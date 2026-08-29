@@ -117,7 +117,7 @@ describe("segment extraction pipeline", () => {
     // What a user actually downloads. If export mangles coordinates, this is
     // where it shows up rather than in someone's bike computer.
     const geometry = simplify(crop(points, 100, 250), 6).map(roundPoint);
-    const reparsed = parseGpx(writeGpx(geometry, "Sample segment")).points;
+    const reparsed = parseGpx(writeGpx([geometry], "Sample segment")).points;
     expect(reparsed).toEqual(geometry);
   });
 });

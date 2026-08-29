@@ -35,10 +35,10 @@ export type Encoding = Attribute | "grade";
  * "protection" came to be shown to riders in the first place.
  */
 export const ENCODINGS: Encoding[] = [
-  "grade",
   "steepness",
   "protection",
   "surroundings",
+  "grade",
 ];
 
 /** Whether an encoding is something a segment carries, rather than terrain. */
@@ -102,6 +102,22 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
   },
   surroundings: { plain: "#97967f", pleasant: "#6d9464", beautiful: "#2f6b48" },
 };
+
+/**
+ * The one line on the map that no ramp applies to.
+ *
+ * A crossing is not a step of any scale — it is the stretch the scales have
+ * nothing to say about — so it takes a hue none of them use, which leaves blue
+ * once steepness has the greens and rusts, protection the magentas, and
+ * surroundings the greens again. It is pitched in the same band as the ramps
+ * rather than in ink: a near-black dash read as a fifth, heavier category, when
+ * what it should read as is one more kind of line on the same map.
+ *
+ * Held below `LIGHTEST_STEP` like everything else here, and well below the
+ * lightest water any of the four grounds paints (the blue one sits around 175),
+ * so the dashes hold their own over the sea they are drawn on.
+ */
+export const CROSSING_COLOR = "#4f8ba5";
 
 /**
  * Whether a value is good news, for the badges in the explore panel.
@@ -185,6 +201,10 @@ export function breakdown(
   const totals = new Map<string, number>();
   let total = 0;
   for (const segment of segments) {
+    // A crossing has no share of anything. The three scales are answers about
+    // riding a road, and eight miles of open water filed under "unprotected"
+    // would be the loudest bar on a route it says nothing true about.
+    if (segment.crossing) continue;
     const value = segment[attribute];
     totals.set(value, (totals.get(value) ?? 0) + segment.meters);
     total += segment.meters;

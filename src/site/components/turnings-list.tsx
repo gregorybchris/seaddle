@@ -67,13 +67,13 @@ function Row({
 }) {
   const { segment, heading, climbMeters } = turning;
   const { distance, climb } = useUnits();
-  const character = [
-    segment.steepness,
-    segment.protection,
-    segment.surroundings,
-  ]
-    .map(humanize)
-    .join(", ");
+  // The three scales say nothing about a stretch nobody rides, so a crossing
+  // says what it is instead of claiming to be flat and unprotected.
+  const character = segment.crossing
+    ? `${humanize(segment.crossing)}, not ridden`
+    : [segment.steepness, segment.protection, segment.surroundings]
+        .map(humanize)
+        .join(", ");
 
   // The compass point is already the words it should be read as: running it
   // through `humanize` turns "south-west" into "south west", which is two

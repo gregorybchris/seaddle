@@ -641,7 +641,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s002",
@@ -656,7 +657,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s003",
@@ -671,7 +673,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s005",
@@ -686,7 +689,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s006",
@@ -701,7 +705,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s007",
@@ -716,7 +721,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s008",
@@ -731,7 +737,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s009",
@@ -746,7 +753,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s010",
@@ -761,7 +769,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s011",
@@ -776,7 +785,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s012",
@@ -791,7 +801,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s013",
@@ -806,7 +817,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s014",
@@ -821,7 +833,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s015",
@@ -836,7 +849,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s016",
@@ -851,7 +865,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s020",
@@ -866,7 +881,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s021",
@@ -881,7 +897,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s022",
@@ -896,7 +913,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s023",
@@ -911,7 +929,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s024",
@@ -926,7 +945,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s025",
@@ -941,7 +961,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s026",
@@ -956,7 +977,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s027",
@@ -971,7 +993,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s028",
@@ -986,7 +1009,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s029",
@@ -1001,7 +1025,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s030",
@@ -1016,7 +1041,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s031",
@@ -1031,7 +1057,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s032",
@@ -1046,7 +1073,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s033",
@@ -1061,7 +1089,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s034",
@@ -1076,7 +1105,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s035",
@@ -1091,7 +1121,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s036",
@@ -1106,7 +1137,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s037",
@@ -1121,7 +1153,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s038",
@@ -1136,7 +1169,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s039",
@@ -1151,7 +1185,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s040",
@@ -1166,7 +1201,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s041",
@@ -1181,7 +1217,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s042",
@@ -1196,7 +1233,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s043",
@@ -1211,7 +1249,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s044",
@@ -1226,7 +1265,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s045",
@@ -1241,7 +1281,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s047",
@@ -1256,7 +1297,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s049",
@@ -1271,7 +1313,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s050",
@@ -1286,7 +1329,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s051",
@@ -1301,7 +1345,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s053",
@@ -1316,7 +1361,8 @@
       "steepness": "steep",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s054",
@@ -1331,7 +1377,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s055",
@@ -1346,7 +1393,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s056",
@@ -1361,7 +1409,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s057",
@@ -1376,7 +1425,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s058",
@@ -1391,7 +1441,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s059",
@@ -1406,7 +1457,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s060",
@@ -1421,7 +1473,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s061",
@@ -1436,7 +1489,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s062",
@@ -1451,7 +1505,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s063",
@@ -1466,7 +1521,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s064",
@@ -1481,7 +1537,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s065",
@@ -1496,7 +1553,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s066",
@@ -1511,7 +1569,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s067",
@@ -1526,7 +1585,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s068",
@@ -1541,7 +1601,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s070",
@@ -1556,7 +1617,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s071",
@@ -1571,7 +1633,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s072",
@@ -1586,7 +1649,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s073",
@@ -1601,7 +1665,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s074",
@@ -1616,7 +1681,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s075",
@@ -1631,7 +1697,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s076",
@@ -1646,7 +1713,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s077",
@@ -1661,7 +1729,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s078",
@@ -1676,7 +1745,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s079",
@@ -1691,7 +1761,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s080",
@@ -1706,7 +1777,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s082",
@@ -1721,7 +1793,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s083",
@@ -1736,7 +1809,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s084",
@@ -1751,7 +1825,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s085",
@@ -1766,7 +1841,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s086",
@@ -1781,7 +1857,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s087",
@@ -1796,7 +1873,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s088",
@@ -1811,7 +1889,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s089",
@@ -1826,7 +1905,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s090",
@@ -1841,7 +1921,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s092",
@@ -1856,7 +1937,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s093",
@@ -1871,7 +1953,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s094",
@@ -1886,7 +1969,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s095",
@@ -1901,7 +1985,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s096",
@@ -1916,7 +2001,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s097",
@@ -1931,7 +2017,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s098",
@@ -1946,7 +2033,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s099",
@@ -1961,7 +2049,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s100",
@@ -1976,7 +2065,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s101",
@@ -1991,7 +2081,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s102",
@@ -2006,7 +2097,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s103",
@@ -2021,7 +2113,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s105",
@@ -2036,7 +2129,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s106",
@@ -2051,7 +2145,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s107",
@@ -2066,7 +2161,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s108",
@@ -2081,7 +2177,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s109",
@@ -2096,7 +2193,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s110",
@@ -2111,7 +2209,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s111",
@@ -2126,7 +2225,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s112",
@@ -2141,7 +2241,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s113",
@@ -2156,7 +2257,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s114",
@@ -2171,7 +2273,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s115",
@@ -2186,7 +2289,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s116",
@@ -2201,7 +2305,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s117",
@@ -2216,7 +2321,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s118",
@@ -2231,7 +2337,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s121",
@@ -2246,7 +2353,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s122",
@@ -2261,7 +2369,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s123",
@@ -2276,7 +2385,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s124",
@@ -2291,7 +2401,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s125",
@@ -2306,7 +2417,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s126",
@@ -2321,7 +2433,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s127",
@@ -2336,7 +2449,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s128",
@@ -2351,7 +2465,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s129",
@@ -2366,7 +2481,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s130",
@@ -2381,7 +2497,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s131",
@@ -2396,7 +2513,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s132",
@@ -2411,7 +2529,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s133",
@@ -2426,7 +2545,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s134",
@@ -2441,7 +2561,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s135",
@@ -2456,7 +2577,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s136",
@@ -2471,7 +2593,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s137",
@@ -2486,7 +2609,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s138",
@@ -2501,7 +2625,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s139",
@@ -2516,7 +2641,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s140",
@@ -2531,7 +2657,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s142",
@@ -2546,7 +2673,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s144",
@@ -2561,7 +2689,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s145",
@@ -2576,7 +2705,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s146",
@@ -2591,7 +2721,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s147",
@@ -2606,7 +2737,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s148",
@@ -2621,7 +2753,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s149",
@@ -2636,7 +2769,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s150",
@@ -2651,7 +2785,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s151",
@@ -2666,7 +2801,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s152",
@@ -2681,7 +2817,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s153",
@@ -2696,7 +2833,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s154",
@@ -2711,7 +2849,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s155",
@@ -2726,7 +2865,8 @@
       "steepness": "rolling",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s156",
@@ -2741,7 +2881,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s157",
@@ -2756,7 +2897,8 @@
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s158",
@@ -2771,7 +2913,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s159",
@@ -2786,7 +2929,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s160",
@@ -2801,7 +2945,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s161",
@@ -2816,7 +2961,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s162",
@@ -2831,7 +2977,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s163",
@@ -2846,7 +2993,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s164",
@@ -2861,7 +3009,8 @@
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s165",
@@ -2876,7 +3025,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s166",
@@ -2891,7 +3041,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s167",
@@ -2906,7 +3057,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s168",
@@ -2921,7 +3073,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s169",
@@ -2936,7 +3089,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s170",
@@ -2951,7 +3105,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s171",
@@ -2966,7 +3121,8 @@
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s172",
@@ -2981,7 +3137,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s173",
@@ -2996,7 +3153,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s176",
@@ -3011,7 +3169,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s177",
@@ -3026,7 +3185,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s182",
@@ -3041,7 +3201,8 @@
       "steepness": "flat",
       "protection": "bikePath",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s183",
@@ -3056,7 +3217,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s184",
@@ -3071,7 +3233,8 @@
       "steepness": "rolling",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s185",
@@ -3086,7 +3249,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s186",
@@ -3101,7 +3265,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s187",
@@ -3116,7 +3281,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s188",
@@ -3131,7 +3297,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s189",
@@ -3146,7 +3313,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s190",
@@ -3161,7 +3329,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "plain",
-      "reviewed": false
+      "reviewed": false,
+      "crossing": null
     },
     {
       "id": "s191",
@@ -3176,7 +3345,8 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
     },
     {
       "id": "s192",
@@ -3191,7 +3361,40 @@
       "steepness": "flat",
       "protection": "unprotected",
       "surroundings": "pleasant",
-      "reviewed": true
+      "reviewed": true,
+      "crossing": null
+    },
+    {
+      "id": "s193",
+      "from": "n078",
+      "to": "n124",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 1486,
+        "endIndex": 2355
+      },
+      "name": "Colman Dock to Bainbridge",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "beautiful",
+      "reviewed": true,
+      "crossing": "ferry"
+    },
+    {
+      "id": "s194",
+      "from": "n124",
+      "to": "n125",
+      "source": {
+        "track": "2026-07-06-morning-ride",
+        "startIndex": 2355,
+        "endIndex": 2356
+      },
+      "name": "Bainbridge terminal",
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": true,
+      "crossing": null
     }
   ],
   "pins": [

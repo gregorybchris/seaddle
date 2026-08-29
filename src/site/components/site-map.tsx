@@ -14,7 +14,7 @@ import type { FeatureCollection, LineString } from "geojson";
 import { boundsOf, centeredOn } from "@/lib/geo/bounds";
 import { projectOntoPolyline } from "@/lib/geo/polyline";
 import type { Coord, ElevCoord } from "@/lib/models/geo";
-import type { SegmentId } from "@/lib/models/graph";
+import type { Crossing, SegmentId } from "@/lib/models/graph";
 import type { SiteGraph, SitePin } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import type { BasemapId } from "@/lib/basemap";
@@ -24,7 +24,13 @@ import { typingIn } from "@/lib/utilities/keys";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { useUnits } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
-import { GRADE_STOPS, isAttribute, RAMPS, type Encoding } from "../encoding";
+import {
+  CROSSING_COLOR,
+  GRADE_STOPS,
+  isAttribute,
+  RAMPS,
+  type Encoding,
+} from "../encoding";
 import { modeNotice, type Mode } from "../mode";
 import { gradeRuns } from "../grade";
 import {
@@ -59,6 +65,17 @@ const CLOSED = "segments-hit-closed";
 /** Every line on this map is a segment, and a segment has rounded ends and
  *  corners. */
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
+
+/**
+ * Road, and not-road.
+ *
+ * A crossing carries the same three attributes as everything else and means
+ * none of them, so coloring it by the encoding would have the map saying a boat
+ * is unprotected and flat. Every layer that paints an attribute leaves it out,
+ * and it is drawn by itself instead.
+ */
+const ROAD = ["!", ["to-boolean", ["get", "crossing"]]] as never;
+const CROSSED = ["to-boolean", ["get", "crossing"]] as never;
 
 /**
  * How wide an in-play segment is drawn.
@@ -103,6 +120,7 @@ const PINS_FROM_ZOOM = 12.5;
 type Hovered = {
   id: SegmentId;
   name: string | null;
+  crossing: Crossing | null;
   meters: number;
   climb: number;
   steepness: string;
@@ -295,6 +313,7 @@ export function SiteMap({
           steepness: segment.steepness,
           protection: segment.protection,
           surroundings: segment.surroundings,
+          crossing: segment.crossing,
         },
         geometry: {
           type: "LineString",
@@ -337,7 +356,9 @@ export function SiteMap({
     return {
       type: "FeatureCollection",
       features: [...graph.segments.values()].flatMap((segment) =>
-        gradeRuns(segment.points).map((run) => ({
+        // The water has no grade, and a line drawn from it would be reading
+        // the boat's altimeter.
+        (segment.crossing ? [] : gradeRuns(segment.points)).map((run) => ({
           type: "Feature" as const,
           properties: { id: segment.id, grade: run.grade },
           geometry: {
@@ -678,6 +699,7 @@ export function SiteMap({
     return {
       id: segment.id,
       name: segment.name,
+      crossing: segment.crossing,
       meters: segment.meters,
       // Undirected, like the steepness it agrees with: the bigger of the two
       // climbs, since which way this will be ridden is not decided yet.
@@ -812,6 +834,7 @@ export function SiteMap({
           <Layer
             id="segments-closed"
             type="line"
+            filter={ROAD}
             paint={{
               "line-color": color as never,
               "line-opacity": attribute ? 0.45 : 0,
@@ -822,11 +845,53 @@ export function SiteMap({
           <Layer
             id="segments-open"
             type="line"
-            filter={["in", ["get", "id"], ["literal", bright]]}
+            filter={
+              ["all", ROAD, ["in", ["get", "id"], ["literal", bright]]] as never
+            }
             paint={{
               "line-color": color as never,
               "line-opacity": attribute ? 1 : 0,
               "line-width": OPEN_WIDTH,
+            }}
+            layout={ROUNDED}
+          />
+          {/* A pale bed under the dashes, and the reason there are two layers
+            here rather than one. A crossing has to read as a crossing over the
+            water it is drawn on *and* over the dark casing it wears once it is
+            in a route, and one ink line cannot do both — on the casing it
+            simply disappears. The bed is what the dashes are read against
+            either way. */}
+          <Layer
+            id="segments-crossing-bed"
+            type="line"
+            filter={CROSSED}
+            paint={{
+              "line-color": "#faf7f1",
+              "line-opacity": 0.7,
+              "line-width": 5,
+            }}
+            layout={ROUNDED}
+          />
+          {/* Dashed, because the line is not a road and drawing it as one would
+            invite a beginner to ride onto it. It keeps its dashes under every
+            encoding, grade included: there is no lane, no hill and no scenery
+            to grade on a stretch nobody is riding, so it has nothing to say in
+            any of the four colorings and says the one thing it does have to say
+            instead. Faded like everything else the route cannot reach. */}
+          <Layer
+            id="segments-crossing"
+            type="line"
+            filter={CROSSED}
+            paint={{
+              "line-color": CROSSING_COLOR,
+              "line-opacity": [
+                "case",
+                ["in", ["get", "id"], ["literal", bright]],
+                0.9,
+                0.4,
+              ],
+              "line-width": 3,
+              "line-dasharray": [1.5, 1.75],
             }}
             layout={ROUNDED}
           />
@@ -1097,14 +1162,27 @@ function SegmentTip({ hovered }: { hovered: Hovered }) {
       {hovered.name && (
         <p className="max-w-56 truncate text-xs">{hovered.name}</p>
       )}
-      <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
-        {distance(hovered.meters)} · <span className="text-sand mr-0.5">↑</span>
-        {climb(hovered.climb)}
-      </p>
-      <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
-        {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
-        {humanize(hovered.surroundings)}
-      </p>
+      {/* A crossing answers none of the three questions the other two lines
+          ask — there is no lane on a boat and no hill on the water — so it says
+          what it is instead of saying "flat, unprotected, plain" about a
+          ferry. */}
+      {hovered.crossing ? (
+        <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
+          {hovered.crossing} · {distance(hovered.meters)} aboard, not ridden
+        </p>
+      ) : (
+        <>
+          <p className="tabular text-sand/70 text-[0.6875rem] whitespace-nowrap">
+            {distance(hovered.meters)} ·{" "}
+            <span className="text-sand mr-0.5">↑</span>
+            {climb(hovered.climb)}
+          </p>
+          <p className="text-sand/70 text-[0.6875rem] whitespace-nowrap">
+            {humanize(hovered.steepness)} · {humanize(hovered.protection)} ·{" "}
+            {humanize(hovered.surroundings)}
+          </p>
+        </>
+      )}
     </div>
   );
 }

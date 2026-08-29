@@ -70,6 +70,57 @@ describe("buildGraphGeoJson", () => {
   });
 });
 
+describe("buildGraphGeoJson on a crossing", () => {
+  const g = graph({
+    nodes: [
+      { id: "nA", name: null, coord: [-122.33, 47.68] },
+      { id: "nB", name: null, coord: [-122.328, 47.68] },
+    ],
+    segments: [
+      segment("s1", "nA", "nB", {
+        name: "Colman Dock to Bainbridge",
+        crossing: "ferry",
+      }),
+    ],
+  });
+  const properties = buildGraphGeoJson(
+    g,
+    new Map<string, ElevCoord[]>([["s1", line([0, 10, 20])]]),
+  ).features[0].properties!;
+
+  it("says so, so the map can draw it as one", () => {
+    expect(properties.crossing).toBe("ferry");
+  });
+
+  it("gives it no climb either way", () => {
+    // The recorder was below deck, so the elevations here are interpolated
+    // between two docks: any climb in them is arithmetic rather than a hill.
+    expect(properties.gainForward).toBe(0);
+    expect(properties.gainBackward).toBe(0);
+  });
+
+  it("still measures how far it is", () => {
+    // The graph search weights it at what it costs to cross. Only the numbers
+    // shown to a rider leave it out.
+    expect(properties.meters).toBeGreaterThan(0);
+  });
+
+  it("leaves road saying nothing about crossings", () => {
+    const road = buildGraphGeoJson(
+      graph({
+        nodes: [
+          { id: "nA", name: null, coord: [-122.33, 47.68] },
+          { id: "nB", name: null, coord: [-122.328, 47.68] },
+        ],
+        segments: [segment("s1", "nA", "nB")],
+      }),
+      new Map<string, ElevCoord[]>([["s1", line([0, 10, 20])]]),
+    ).features[0].properties!;
+    expect(road.crossing).toBeNull();
+    expect(road.gainForward).toBe(20);
+  });
+});
+
 describe("buildPinsGeoJson", () => {
   it("carries the kind and position along the segment", () => {
     const g = graph({

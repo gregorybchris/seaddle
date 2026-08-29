@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { coordAtFraction, sliceBetween } from "@/lib/geo/polyline";
 import { cn } from "@/lib/utilities/style-utils";
-import type { Coord } from "@/lib/models/geo";
+import type { Coord, ElevCoord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import type { Scrub } from "@/widgets/elevation-profile";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
@@ -13,7 +13,7 @@ import {
   EMPTY_ROUTE,
   isEmpty,
   riddenOrder,
-  routePoints,
+  routeLine,
   startRoute,
 } from "@/site/route";
 import { pinsAlong } from "@/lib/graph/pins";
@@ -116,8 +116,11 @@ export function MapPage() {
     [graph, route, changeRoute],
   );
 
-  const points = useMemo(
-    () => (graph ? routePoints(route, graph) : []),
+  const { points, crossed } = useMemo(
+    () =>
+      graph
+        ? routeLine(route, graph)
+        : { points: [] as ElevCoord[], crossed: new Set<number>() },
     [route, graph],
   );
 
@@ -137,21 +140,34 @@ export function MapPage() {
    * the chart are about — down to the interpolated ends.
    */
   const scrubbed = useMemo(() => {
-    const charted = mode === "explore" ? (reading?.points ?? []) : points;
+    const exploring = mode === "explore";
+    const charted = exploring ? (reading?.points ?? []) : points;
+    // The chart being read is the one whose legs count. A single segment has
+    // none that do not — you cannot pick up a boat from the explore panel.
+    const skipped = exploring ? undefined : crossed;
     if (scrub === null || charted.length < 2) return null;
     return {
-      at: coordAtFraction(charted, scrub.at),
+      at: coordAtFraction(charted, scrub.at, skipped),
       band:
         scrub.from === null
           ? null
-          : sliceBetween(charted, scrub.from, scrub.at),
+          : sliceBetween(charted, scrub.from, scrub.at, skipped),
     };
-  }, [scrub, mode, reading, points]);
+  }, [scrub, mode, reading, points, crossed]);
 
   // A fraction along one segment means nothing along the next, and the chart
   // only reports its own end of that when a pointer leaves it — which a finger
   // lifting off a phone does not reliably do.
   useEffect(() => setScrub(null), [selected, mode]);
+
+  /** Whether the network has anything on it nobody rides, for the key. */
+  const crossings = useMemo(
+    () =>
+      graph
+        ? [...graph.segments.values()].some((segment) => segment.crossing)
+        : false,
+    [graph],
+  );
 
   /** The pins on the segments chosen so far, in the order they are ridden
    *  past. */
@@ -226,6 +242,7 @@ export function MapPage() {
             and the top-left would read as belonging to it. */}
         <MapLegend
           encoding={encoding}
+          crossings={crossings}
           className="absolute top-14 left-3 z-10 md:top-auto md:bottom-9"
         />
         <MapControls

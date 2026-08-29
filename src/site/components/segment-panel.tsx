@@ -1,4 +1,4 @@
-import { Binoculars, type Icon } from "@phosphor-icons/react";
+import { Binoculars, Boat, type Icon } from "@phosphor-icons/react";
 import { useUnits, type Units } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { Badge } from "@/widgets/badge";
@@ -83,7 +83,9 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
           {segment ? spoken(segment, units) : ""}
         </p>
 
-        {segment ? (
+        {segment?.crossing ? (
+          <CrossingNote />
+        ) : segment ? (
           // Chart and caption together, because the caption is about the
           // chart. Both are gone while the sheet is down, where all the chart
           // could show is its own top inch — and a sentence explaining a
@@ -191,10 +193,19 @@ function Reading({ segment }: { segment: SiteSegment }) {
             this size a ↑ in the same wash as the digits reads as a 1, and it is
             nudged off them by less than a space so the pair still reads as one
             figure. */}
+        {/* No climb on a crossing, and the distance is qualified rather than
+            stated: eight miles that read like the other eight miles on this
+            panel would be eight miles a rider plans to pedal. */}
         <p className="tabular text-sand/70 mt-2 text-xs md:mt-2.5 md:text-sm">
-          {distance(segment.meters)} ·{" "}
-          <span className="text-sand mr-0.5">↑</span>
-          {climb(climbOf(segment))}
+          {segment.crossing ? (
+            <>{distance(segment.meters)} across, not ridden</>
+          ) : (
+            <>
+              {distance(segment.meters)} ·{" "}
+              <span className="text-sand mr-0.5">↑</span>
+              {climb(climbOf(segment))}
+            </>
+          )}
         </p>
       </div>
 
@@ -222,32 +233,78 @@ function Reading({ segment }: { segment: SiteSegment }) {
           these are three short lines that are either all there or not worth
           showing, and they are the reason anyone is in this mode. */}
       <dl className="border-sand/10 flex flex-col border-t">
-        {ATTRIBUTES.map(({ key, label }) => {
-          const Mark = ENCODING_ICONS[key];
-          return (
-            <div
-              key={key}
-              className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5"
-            >
-              <Mark
-                aria-hidden
-                weight="bold"
-                className="text-sand/45 h-3.5 w-3.5 shrink-0 md:h-4 md:w-4"
-              />
-              <dt className="eyebrow text-sand/60">{label}</dt>
-              <dd className="ml-auto">
-                <Badge
-                  tone={TONES[key][segment[key]]}
-                  className="py-0 text-sm md:py-0.5 md:text-base"
+        {/* One row instead of three. The three scales are answers about riding
+            a road, and there is no lane, no hill and no scenery to judge on a
+            boat — so the panel answers the question it can, which is what this
+            line is. */}
+        {segment.crossing ? (
+          <div className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5">
+            <Boat
+              aria-hidden
+              weight="bold"
+              className="text-sand/45 h-3.5 w-3.5 shrink-0 md:h-4 md:w-4"
+            />
+            <dt className="eyebrow text-sand/60">Crossing</dt>
+            <dd className="ml-auto">
+              <Badge
+                tone="neutral"
+                className="py-0 text-sm md:py-0.5 md:text-base"
+              >
+                {humanize(segment.crossing)}
+              </Badge>
+            </dd>
+          </div>
+        ) : null}
+        {segment.crossing
+          ? null
+          : ATTRIBUTES.map(({ key, label }) => {
+              const Mark = ENCODING_ICONS[key];
+              return (
+                <div
+                  key={key}
+                  className="border-sand/10 flex items-center gap-2 border-b py-1 last:border-b-0 md:py-2.5"
                 >
-                  {humanize(segment[key])}
-                </Badge>
-              </dd>
-            </div>
-          );
-        })}
+                  <Mark
+                    aria-hidden
+                    weight="bold"
+                    className="text-sand/45 h-3.5 w-3.5 shrink-0 md:h-4 md:w-4"
+                  />
+                  <dt className="eyebrow text-sand/60">{label}</dt>
+                  <dd className="ml-auto">
+                    <Badge
+                      tone={TONES[key][segment[key]]}
+                      className="py-0 text-sm md:py-0.5 md:text-base"
+                    >
+                      {humanize(segment[key])}
+                    </Badge>
+                  </dd>
+                </div>
+              );
+            })}
       </dl>
     </div>
+  );
+}
+
+/**
+ * What the panel says where the chart would be, on a segment nobody rides.
+ *
+ * The chart is the whole of what this mode adds over a hover label, and on a
+ * crossing there is nothing for it to draw: the recorder was below deck, so the
+ * elevations are interpolated between two docks and would come out as a flat
+ * line labelled sea level. That is not a quiet chart, it is a made-up one.
+ */
+function CrossingNote() {
+  return (
+    <section className="flex flex-col gap-2 max-md:group-data-[collapsed]/sheet:hidden">
+      <h2 className="eyebrow text-sand/70">On the boat</h2>
+      <p className="text-sand/75 text-[0.8125rem] leading-relaxed">
+        You ride on at one end and off at the other, so none of this stretch is
+        pedalled. It joins the two halves of the map, and it is left out of a
+        route&rsquo;s distance, its climbing and its mix — those are numbers
+        about riding.
+      </p>
+    </section>
   );
 }
 
@@ -329,6 +386,12 @@ function climbOf(segment: SiteSegment): number {
  * listener that they answer three different questions.
  */
 function spoken(segment: SiteSegment, units: Units): string {
+  if (segment.crossing) {
+    return (
+      `${segment.name ?? "Unnamed segment"}. ` +
+      `${units.distance(segment.meters)} by ${segment.crossing}, not ridden.`
+    );
+  }
   const attributes = ATTRIBUTES.map(
     ({ key, label }) => `${label} ${humanize(segment[key])}`,
   ).join(". ");

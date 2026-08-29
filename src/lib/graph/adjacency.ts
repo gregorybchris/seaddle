@@ -57,9 +57,10 @@ export function otherEnd(segment: Edge, node: NodeId): NodeId {
 /**
  * Islands in the graph, largest first.
  *
- * The source rides cover Everett, Edmonds and Burien as well as Seattle, and
- * those almost certainly never touch the main network. That is a normal
- * condition rather than a bug, but it has to be visible.
+ * A ride imported from somewhere nothing else reaches is an island until
+ * something joins it. That is a normal condition rather than a bug, but it has
+ * to be visible — the network came down to two pieces for a long time, and the
+ * second was Bainbridge, which no road could ever have reached.
  */
 export function connectedComponents(segments: Edge[]): NodeId[][] {
   const adjacency = buildAdjacency(segments);

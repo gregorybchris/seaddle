@@ -4,6 +4,7 @@ import { buildAdjacency, type Adjacency } from "@/lib/graph/adjacency";
 import type { Bounds, Coord, ElevCoord } from "@/lib/models/geo";
 import {
   isPinKind,
+  type Crossing,
   type PinKind,
   type Protection,
   type NodeId,
@@ -30,6 +31,8 @@ export type SiteSegment = {
   steepness: Steepness;
   protection: Protection;
   surroundings: Surroundings;
+  /** Set where the segment is covered rather than ridden — the ferry. */
+  crossing: Crossing | null;
 };
 
 export type SiteGraph = {
@@ -71,6 +74,7 @@ function parseSegment(feature: Feature<LineString>): SiteSegment | null {
     steepness: p.steepness as Steepness,
     protection: p.protection as Protection,
     surroundings: p.surroundings as Surroundings,
+    crossing: (p.crossing ?? null) as Crossing | null,
   };
 }
 

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { breakdown, LIGHTEST_STEP, lightnessOf, RAMPS } from "./encoding";
+import {
+  breakdown,
+  CROSSING_COLOR,
+  LIGHTEST_STEP,
+  lightnessOf,
+  RAMPS,
+} from "./encoding";
 import { siteSegment as segment } from "./test-fixtures";
 
 describe("breakdown", () => {
@@ -37,6 +43,29 @@ describe("breakdown", () => {
   it("has nothing to divide up for an empty route", () => {
     expect(breakdown([], "steepness")).toEqual([]);
   });
+
+  it("gives a crossing no share of anything", () => {
+    // Eight miles of Puget Sound would be the longest bar on the chart, and
+    // it would be describing a boat as an unprotected road.
+    const route = [
+      segment({ protection: "bikePath", meters: 1000 }),
+      segment({
+        id: "s2",
+        protection: "unprotected",
+        meters: 13000,
+        crossing: "ferry",
+      }),
+    ];
+    expect(breakdown(route, "protection")).toEqual([
+      { value: "bikePath", meters: 1000, share: 1 },
+    ]);
+  });
+
+  it("has nothing to divide up for a route that is only a crossing", () => {
+    expect(breakdown([segment({ crossing: "ferry" })], "steepness")).toEqual(
+      [],
+    );
+  });
 });
 
 describe("the color ramps", () => {
@@ -64,6 +93,16 @@ describe("the color ramps", () => {
       const descending = steps.every((v, i) => i === 0 || v < steps[i - 1]);
       expect(descending).toBe(true);
     }
+  });
+
+  it("keep the crossing in the same band, rather than in ink", () => {
+    // It is one more kind of line on the same map, not a heavier category:
+    // between the darkest and lightest steps the scales themselves use.
+    const steps = Object.values(RAMPS).flatMap((scale) =>
+      Object.values(scale).map(lightnessOf),
+    );
+    expect(lightnessOf(CROSSING_COLOR)).toBeGreaterThan(Math.min(...steps));
+    expect(lightnessOf(CROSSING_COLOR)).toBeLessThan(Math.max(...steps));
   });
 
   it("stay dark enough to see against a nearly white basemap", () => {

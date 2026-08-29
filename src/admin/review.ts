@@ -1,4 +1,5 @@
 import type {
+  Crossing,
   GraphFile,
   Protection,
   Surroundings,
@@ -18,6 +19,9 @@ export type AttributePatch = {
   steepness?: Steepness;
   protection?: Protection;
   surroundings?: Surroundings;
+  /** Null puts a segment back to being road, which is what almost all of them
+   *  are. Absent leaves it as it is. */
+  crossing?: Crossing | null;
 };
 
 /**
@@ -49,6 +53,9 @@ function patched(segment: SegmentRecord, patch: AttributePatch): SegmentRecord {
     steepness: patch.steepness ?? segment.steepness,
     protection: patch.protection ?? segment.protection,
     surroundings: patch.surroundings ?? segment.surroundings,
+    // Null is an answer here rather than an absence, so it cannot be written
+    // with `??` — that would make "this is road after all" unsayable.
+    crossing: patch.crossing === undefined ? segment.crossing : patch.crossing,
     reviewed: true,
   };
 }

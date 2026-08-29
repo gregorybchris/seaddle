@@ -2,6 +2,7 @@ import { cn } from "@/lib/utilities/style-utils";
 import { humanize } from "@/lib/utilities/words";
 import { STEEPEST_GRADE } from "../grade";
 import {
+  CROSSING_COLOR,
   ENCODING_VALUES,
   GRADE_STOPS,
   isAttribute,
@@ -25,9 +26,18 @@ import {
  */
 export function MapLegend({
   encoding,
+  crossings,
   className,
 }: {
   encoding: Encoding;
+  /**
+   * Whether the map has anything on it that is crossed rather than ridden.
+   *
+   * Asked rather than assumed, because a key is a promise that the thing it
+   * names is out there somewhere: a dashed line explained on a map with no
+   * ferry on it is a rider hunting for one.
+   */
+  crossings: boolean;
   className?: string;
 }) {
   return (
@@ -57,6 +67,21 @@ export function MapLegend({
         </ul>
       ) : (
         <GradeLegend />
+      )}
+      {/* Under a rule and under every encoding, because it is not one of the
+          steps of whichever scale is on — it is the one line on the map that
+          the scale does not apply to. */}
+      {crossings && (
+        <div className="border-forest-deep/15 mt-1.5 flex items-center gap-1.5 border-t pt-1.5">
+          <span
+            aria-hidden
+            className="h-0 w-4 shrink-0 border-t-2 border-dashed"
+            style={{ borderColor: CROSSING_COLOR }}
+          />
+          <span className="text-ink/75 text-[0.6875rem] leading-tight">
+            ferry
+          </span>
+        </div>
       )}
     </div>
   );

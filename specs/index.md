@@ -53,7 +53,9 @@ they are not drawn. Routes without timestamps are exempt: a drawn route's long s
 deliberate, and coordinates alone cannot tell the two apart.
 
 The marked points stay in the array rather than being removed, so every index — and therefore
-every segment already cut from that ride — keeps meaning what it did.
+every segment already cut from that ride — keeps meaning what it did. One of those gaps is now a
+segment: the Bainbridge crossing is cut from exactly the span the recorder never saw, and §2 says
+how the graph carries it.
 
 Import therefore normalizes both: every ride is **resampled to a maximum 15 m vertex spacing**. On
 a drawn route the line between two vertices already is the route, so interpolating along it adds
@@ -68,10 +70,11 @@ spacing and scatter, so a fresh clone passes without them.
 
 Two consequences worth stating up front:
 
-- **The graph will have several disconnected components.** The Everett and Burien tracks almost
-  certainly won't touch the Seattle network. This is fine and must not be treated as an error —
-  but the admin needs to _see_ components, and the site must never imply you can chain across a
-  gap that doesn't exist.
+- **The graph may have several disconnected components.** This is fine and must not be treated as
+  an error — but the admin needs to _see_ components, and the site must never imply you can chain
+  across a gap that doesn't exist. It is currently one piece: Everett, Edmonds and Burien turned
+  out to join Seattle after all, and the Bainbridge crossing in §2 closed the last gap. The rule
+  stands anyway, for the next import that lands on an island.
 - **Raw GPX is far too heavy to ship.** Full-resolution tracks stay in dev for extraction only.
   Extracted segments are simplified (Douglas–Peucker, **1 m tolerance**) and coordinates rounded to
   6 decimal places (~11 cm) before they reach the browser.
@@ -121,6 +124,8 @@ type Segment = {
 
   // provenance — which source track this geometry was cropped from
   source: { track: string; startIndex: number; endIndex: number };
+
+  crossing: "ferry" | null; // set where the segment is covered rather than ridden
 
   // authored attributes
   steepness: Steepness; // undirected: the same hill whichever way you meet it
@@ -172,6 +177,45 @@ the right way — a contraflow lane, a descent miserable to climb. It is gone. I
 was never once set, because the elevation profile already says which way the hill runs and the
 attributes are undirected on purpose; the field cost a control in the editor, a column in the
 data, and a trip through the compile step, and nothing on the site ever read it.
+
+### Crossings
+
+**One segment in the graph is not road, and the model says so rather than pretending.** The ferry
+from Colman Dock to Bainbridge is the only thing joining the island to the city, and none of its
+eight miles is pedalled: you wheel the bike aboard at one end and off at the other. Without it the
+network is two pieces; drawn as an ordinary segment it is a lie about the two numbers this site
+exists to tell the truth about.
+
+So a segment carries `crossing`, and where it is set:
+
+- **It is an edge of the graph like any other.** It is picked, it is filled through, it is cased
+  when it is in a route, and the shortest-path search weights it at its real thirteen kilometers —
+  a free edge would be a wormhole the moment a second boat is added and there are two ways round.
+- **It is not in any number about riding.** Distance, the attribute breakdown, the elevation
+  profile and the climb all leave it out; the panel names it on its own line instead — _"Colman
+  Dock to Bainbridge — 8.2 mi aboard the ferry, which is not in the distance or the mix above."_
+  The build report splits the same two ways: `304.4 mi ridden · 8.2 mi crossed`.
+- **Its three attributes are inert.** They stay on the record so that every segment answers the
+  same questions in the same shape, and nothing reads them: there is no lane, no hill and no
+  scenery to judge on a boat. The hover label, the explore panel and the admin editor all swap
+  them for what a crossing does have to say, and the map draws it dashed under every encoding.
+- **It is left out of the exported GPX**, which becomes one `trkseg` per continuous stretch of
+  riding. A file carrying a straight line across Puget Sound is a file that will navigate somebody
+  into it.
+
+The geometry is cut from a real ride like everything else — the recording gap in §1 *is* the
+crossing, which is what makes its provenance honest. Because the recorder was off, the points are
+interpolated between the two docks, so a crossing's elevation is arithmetic and its climb is
+forced to zero at build time.
+
+Everything measured along an assembled route — the profile, the scrub, the band under a drag —
+takes the crossed legs as costing zero distance (`cumulativeMeters`, `Uncounted`). That is what
+keeps the length of the chart and the distance on the panel the same number, without the chart
+having to learn what a ferry is.
+
+`crossing` is a union of one rather than a boolean because the water taxi and a bike hook on the
+Link are the same fact about a route, and a `ferry: true` would have to be renamed the day either
+arrives.
 
 ### Geometry storage
 
@@ -263,8 +307,10 @@ round, which is what picking it meant.
 
 Two visual states while building where there were three: **in the route** (cased in dark) and
 **everywhere it can be ridden to** (full colour, clickable). The third survives only for a segment
-on a *different connected component* — Everett, Edmonds, Burien, which no ride joins to Seattle.
-Those stay dimmed and answer a tap with why. On most routes that is nothing at all.
+on a *different connected component*. Those stay dimmed and answer a tap with why — and since the
+ferry joined Bainbridge to the city the network is one piece, so today that is nothing at all. It
+stays because the next ride imported from somewhere new will arrive as an island, and a beginner
+tapping one has no way to guess it.
 
 **A pick is previewed before it is a pick.** Hovering a segment ghosts the whole chain that click
 would add, in the route's own casing at a third of its weight. One click can now be worth a dozen
@@ -336,7 +382,8 @@ and their first pick.
 **Route stats** (only these — deliberately not an estimated ride time, which would be a guess
 dressed up as authority):
 
-- Total distance and total elevation gain
+- Total distance and total elevation gain, both of them about riding — a crossing is named on its
+  own line rather than added in
 - An elevation profile chart across the whole assembled route
 - An aggregate attribute summary: stacked bars showing the route's mix — _"73% good or great bike
   lane · 1.2 mi hard · 84% asphalt"_. This is the feature that turns segment metadata into a real
@@ -524,8 +571,9 @@ string is a Blob download. No serverless function, no latency, no cold start, wo
 first draft of this spec assumed a Vercel function for this — it isn't needed and shouldn't be
 built.)_
 
-Exported GPX is a single `<trk>` with one `<trkseg>`, elevation included, named from the saved
-route name or generated from distance.
+Exported GPX is a single `<trk>` with one `<trkseg>` per continuous stretch of riding, elevation
+included, named from the saved route name or generated from distance. A route that takes the ferry
+is two segments with the crossing left out, which is what a `trkseg` boundary means.
 
 ### Mobile
 

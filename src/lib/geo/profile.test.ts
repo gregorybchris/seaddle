@@ -58,6 +58,38 @@ describe("elevationProfile", () => {
   });
 });
 
+describe("elevationProfile across a leg nobody rides", () => {
+  /** Two short climbs with a long jump between them, the way a route reads
+   *  when it takes the ferry. */
+  const ferried: ElevCoord[] = [
+    [-122.33, 47.68, 0],
+    [-122.3299, 47.68, 10],
+    [-122.24, 47.68, 10],
+    [-122.2399, 47.68, 20],
+  ];
+
+  it("draws the jump to no width at all", () => {
+    const profile = elevationProfile(ferried, 20, new Set([2]));
+    // Without this the crossing is nine tenths of the line, and both climbs
+    // are squashed into the ends of the chart.
+    expect(profile.meters).toBeCloseTo(
+      elevationProfile(ferried.slice(0, 2), 2).meters +
+        elevationProfile(ferried.slice(2), 2).meters,
+      6,
+    );
+  });
+
+  it("still starts and ends where the route does", () => {
+    const profile = elevationProfile(ferried, 20, new Set([2]));
+    expect(profile.samples[0]).toBeCloseTo(0, 6);
+    expect(profile.samples[19]).toBeCloseTo(20, 6);
+  });
+
+  it("gives a line that is nothing but a crossing no length", () => {
+    expect(elevationProfile(ferried, 8, new Set([1, 2, 3])).meters).toBe(0);
+  });
+});
+
 describe("sampleAt", () => {
   const profile = elevationProfile(unevenClimb(), 21);
 

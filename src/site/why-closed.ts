@@ -11,11 +11,14 @@ import { isEmpty, reachable, type Route } from "./route";
  * being already ridden, or for leaving the route with nowhere to go are all
  * simply picked.
  *
- * What is left is the network not being all one piece. The source rides cover
- * Everett, Edmonds and Burien as well as Seattle, and no amount of riding joins
- * those to a route started downtown. That is a normal condition rather than a
- * bug, and a beginner tapping one of those lines has no way to guess it — so it
- * is the one thing still drawn faded, and the one thing still owed an answer.
+ * What is left is the network not being all one piece: a ride imported from
+ * somewhere nothing else reaches arrives as an island, and no amount of riding
+ * joins it to a route started downtown. That is a normal condition rather than
+ * a bug, and a beginner tapping one of those lines has no way to guess it — so
+ * it is the one thing still drawn faded, and the one thing still owed an
+ * answer. As it stands nothing on the map is one: the ferry to Bainbridge was
+ * the last gap, and closing it left the whole network reachable from anywhere
+ * in it.
  */
 export type ClosedReason = "unreachable";
 

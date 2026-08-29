@@ -25,6 +25,7 @@ export function siteSegment(over: Partial<SiteSegment> = {}): SiteSegment {
     steepness: "flat",
     protection: "unprotected",
     surroundings: "pleasant",
+    crossing: null,
     ...over,
   };
 }

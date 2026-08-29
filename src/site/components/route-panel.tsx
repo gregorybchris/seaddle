@@ -1,6 +1,7 @@
 import {
   ArrowUUpLeft,
   ArrowUUpRight,
+  Boat,
   DownloadSimple,
   Trash,
 } from "@phosphor-icons/react";
@@ -14,14 +15,16 @@ import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding } from "../encoding";
-import type { SiteGraph } from "../graph-data";
+import type { SiteGraph, SiteSegment } from "../graph-data";
 import {
   continuations,
   encodeRoute,
   isEmpty,
+  riddenLegs,
+  routeCrossings,
   routeGain,
+  routeLine,
   routeMeters,
-  routePoints,
   routeSegments,
   type Route,
 } from "../route";
@@ -79,13 +82,17 @@ export function RoutePanel({
   const units = useUnits();
   // Every point of the route, and the reader drags along the chart: recomputing
   // it on each of those renders is walking the whole route per pointer move.
-  const points = useMemo(() => routePoints(route, graph), [route, graph]);
+  const { points, crossed } = useMemo(
+    () => routeLine(route, graph),
+    [route, graph],
+  );
   const meters = routeMeters(route, graph);
   const gain = routeGain(route, graph);
   const started = !isEmpty(route);
   const onward = started ? continuations(route, graph).size : 0;
   const stuck = started && onward === 0;
   const ridden = routeSegments(route, graph);
+  const crossings = routeCrossings(route, graph);
 
   // Held rather than acted on: a route is a long run of picks and there is one
   // button that throws all of them away at once. Redo can bring it back, but
@@ -188,11 +195,14 @@ export function RoutePanel({
                 top inch of itself under the buttons. */}
             <ElevationProfile
               points={points}
+              crossed={crossed}
               onScrub={onScrub}
               className="max-md:group-data-[collapsed]/sheet:hidden"
             />
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
+
+            {crossings.length > 0 && <Crossings crossings={crossings} />}
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
@@ -261,7 +271,7 @@ export function RoutePanel({
         {started && (
           <SaveRoute
             route={route}
-            points={points}
+            legs={riddenLegs(route, graph)}
             meters={meters}
             saved={saved.routes}
             onSave={saved.save}
@@ -352,13 +362,13 @@ function HowBuildingWorks() {
  */
 function SaveRoute({
   route,
-  points,
+  legs,
   meters,
   saved,
   onSave,
 }: {
   route: Route;
-  points: ElevCoord[];
+  legs: ElevCoord[][];
   meters: number;
   /** What is already kept, to see whether this name is spoken for. */
   saved: SavedRoute[];
@@ -413,7 +423,7 @@ function SaveRoute({
         aria-label="Download as GPX"
         title="Download as GPX"
         onClick={() =>
-          downloadGpx(points, name.trim() || `Seaddle ${distance(meters)}`)
+          downloadGpx(legs, name.trim() || `Seaddle ${distance(meters)}`)
         }
       >
         <DownloadSimple weight="bold" className="h-4 w-4" />
@@ -432,6 +442,48 @@ function SaveRoute({
         it.
       </ConfirmDialog>
     </div>
+  );
+}
+
+/**
+ * The part of the route nobody rides.
+ *
+ * It is kept out of the distance and out of the breakdown, which is the honest
+ * way to count it and also a silence: without this, a route across the Sound
+ * reads as a route that teleports, and the fourteen miles in the pinned slot
+ * look like a mistake to anyone who knows how far Bainbridge is. So the boat
+ * says so itself, under the chart rather than in the slot beside the numbers —
+ * it is a fact about the route rather than a figure to be compared, and the
+ * slot is two figures wide on purpose.
+ *
+ * Counted where it repeats. An out-and-back sails twice and pays twice, and a
+ * line naming the crossing once would be describing half the day.
+ */
+function Crossings({ crossings }: { crossings: SiteSegment[] }) {
+  const { distance } = useUnits();
+  const taken = new Map<SegmentId, { segment: SiteSegment; times: number }>();
+  for (const segment of crossings) {
+    const seen = taken.get(segment.id);
+    if (seen) seen.times += 1;
+    else taken.set(segment.id, { segment, times: 1 });
+  }
+
+  const meters = crossings.reduce((sum, segment) => sum + segment.meters, 0);
+  const named = [...taken.values()]
+    .map(
+      ({ segment, times }) =>
+        `${segment.name ?? "ferry"}${times > 1 ? ` \u00d7${times}` : ""}`,
+    )
+    .join(", ");
+
+  return (
+    <p className="border-sand/15 bg-sand/5 text-sand/80 flex items-start gap-2 rounded-lg border px-3 py-2 text-xs leading-relaxed">
+      <Boat weight="bold" className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+      <span>
+        <span className="text-sand">{named}</span> — {distance(meters)} aboard
+        the ferry, which is not in the distance or the mix above.
+      </span>
+    </p>
   );
 }
 

@@ -42,6 +42,21 @@ describe("cumulativeMeters", () => {
   });
 });
 
+describe("cumulativeMeters across a leg nobody rides", () => {
+  it("counts a named leg for nothing", () => {
+    const cumulative = cumulativeMeters(LINE, new Set([1]));
+    expect(cumulative[1]).toBe(0);
+    expect(cumulative[2]).toBeCloseTo(
+      polylineMeters(LINE) - polylineMeters(LINE.slice(0, 2)),
+      6,
+    );
+  });
+
+  it("leaves a line with nothing named exactly as it was", () => {
+    expect(cumulativeMeters(LINE, new Set())).toEqual(cumulativeMeters(LINE));
+  });
+});
+
 describe("elevationGain", () => {
   it("adds up the climbs", () => {
     expect(elevationGain(pts([0, 5, 10]))).toBe(10);

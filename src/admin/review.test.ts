@@ -71,6 +71,30 @@ describe("applyAttributes", () => {
   });
 });
 
+describe("applyAttributes on a crossing", () => {
+  it("marks a segment as one", () => {
+    const after = applyAttributes(THREE, ["s001"], { crossing: "ferry" });
+    expect(after.segments[0].crossing).toBe("ferry");
+  });
+
+  it("takes it back off again", () => {
+    // Null is an answer here rather than an absence: without it there would be
+    // no way to say a segment is road after all.
+    const ferry = applyAttributes(THREE, ["s001"], { crossing: "ferry" });
+    expect(
+      applyAttributes(ferry, ["s001"], { crossing: null }).segments[0].crossing,
+    ).toBeNull();
+  });
+
+  it("leaves it alone when the patch says nothing about it", () => {
+    const ferry = applyAttributes(THREE, ["s001"], { crossing: "ferry" });
+    expect(
+      applyAttributes(ferry, ["s001"], { steepness: "steep" }).segments[0]
+        .crossing,
+    ).toBe("ferry");
+  });
+});
+
 describe("markUnreviewed", () => {
   it("puts one back in the queue without changing what it says", () => {
     const after = markUnreviewed(THREE, "s002");

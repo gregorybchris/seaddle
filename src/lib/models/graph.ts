@@ -4,6 +4,22 @@ export type NodeId = string; // "n017"
 export type SegmentId = string; // "s042"
 export type PinId = string; // "p003"
 
+/**
+ * A stretch of the map covered without riding it.
+ *
+ * The ferry to Bainbridge is eight miles of line on this map and not one of
+ * them is pedalled: you wheel the bike aboard at Colman Dock and off again at
+ * Eagle Harbor. It is still an edge of the graph — it is the only thing joining
+ * the island to the city, and choosing it is a real decision — but every number
+ * a segment carries is a number about riding, so the two have to be told apart
+ * before any of them are added up.
+ *
+ * Named for what the rider does rather than for the boat, because the water
+ * taxi and a bike hook on the Link are the same fact about a route and would
+ * otherwise each arrive as a new one.
+ */
+export type Crossing = "ferry";
+
 export type Steepness = "flat" | "rolling" | "steep";
 export type Protection = "unprotected" | "bikeLane" | "bikePath";
 export type Surroundings = "plain" | "pleasant" | "beautiful";
@@ -47,6 +63,18 @@ export type SegmentRecord = {
 
   /** Which source track this geometry was cropped from, and where. */
   source: { track: string; startIndex: number; endIndex: number };
+
+  /**
+   * How it is covered, where that is not by riding it. Null for road, which is
+   * all but a handful of segments.
+   *
+   * The three attributes below are inert on a crossing — there is no lane and
+   * no hill on a boat — and nothing reads them there. They stay on the record
+   * rather than becoming optional so that every segment answers the same
+   * questions in the same shape, and so the site never has to render a
+   * nothing.
+   */
+  crossing: Crossing | null;
 
   /** How much climbing it involves, ridden either way. */
   steepness: Steepness;
@@ -147,6 +175,7 @@ export type GraphFile = {
  */
 export const SEGMENT_DEFAULTS = {
   name: null,
+  crossing: null,
   steepness: "flat",
   protection: "unprotected",
   surroundings: "plain",
