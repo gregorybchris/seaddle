@@ -308,7 +308,15 @@ export function Sheet({
           separate elements is three numbers to keep in step. */}
       <div ref={pinned} className="shrink-0">
         {/* The bar is four pixels of it and the rest is padding, because what has
-          to be 44px is the thing a thumb aims at, not the thing it can see. */}
+          to be 44px is the thing a thumb aims at, not the thing it can see.
+          The strip reaching above it is another 16px of the same target, out
+          past the sheet's own top edge — a thumb going for the handle misses
+          high, onto the map, and that miss now grabs the panel instead of
+          picking whatever was under it. Padding cannot buy that room: it would
+          push the whole panel down, and growing downward instead would put the
+          target over the pinned slot, where there are controls to steal taps
+          from. The card floating above the edge is `pointer-events-none`, so
+          the only thing given up is a hairline of map. */}
         <div
           role="separator"
           aria-label="Resize panel"
@@ -324,9 +332,9 @@ export function Sheet({
             else return;
             event.preventDefault();
           }}
-          className="group flex cursor-grab touch-none justify-center py-5 outline-none active:cursor-grabbing md:hidden"
+          className="group relative flex cursor-grab touch-none justify-center py-5 outline-none before:absolute before:inset-x-0 before:-top-4 before:h-4 before:content-[''] active:cursor-grabbing md:hidden"
         >
-          {/* The ring goes on the bar, not on the 44px box around it — the box is
+          {/* The ring goes on the bar, not on the hit box around it — the box is
             the full width of the panel, and a ring on that reads as two rules
             across the panel rather than as a control being focused. */}
           <span className="bg-sand/30 group-active:bg-sand/60 group-focus-visible:ring-blaze h-1 w-10 rounded-full transition-colors group-focus-visible:ring-2 group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-[var(--color-forest)]" />
