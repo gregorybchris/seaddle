@@ -517,11 +517,6 @@
       "coord": [-122.181795, 47.632542]
     },
     {
-      "id": "n114",
-      "name": null,
-      "coord": [-122.181877, 47.632379]
-    },
-    {
       "id": "n115",
       "name": null,
       "coord": [-122.183624, 47.622702]
@@ -2516,28 +2511,13 @@
     {
       "id": "s140",
       "from": "n113",
-      "to": "n114",
-      "source": {
-        "track": "afternoon-ride",
-        "startIndex": 4425,
-        "endIndex": 4431
-      },
-      "name": "Northup to Bellevue Connector N",
-      "steepness": "flat",
-      "protection": "bikeLane",
-      "surroundings": "plain",
-      "reviewed": true
-    },
-    {
-      "id": "s141",
-      "from": "n114",
       "to": "n115",
       "source": {
         "track": "afternoon-ride",
         "startIndex": 4458,
         "endIndex": 4602
       },
-      "name": "Northup to Bellevue Connector S",
+      "name": "Northup to Bellevue Connector",
       "steepness": "flat",
       "protection": "bikeLane",
       "surroundings": "plain",
