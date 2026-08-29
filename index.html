@@ -22,13 +22,18 @@
       to this file, under any path at all. One canonical points the whole lot at
       the root rather than letting a crawler index someone's 32-mile loop as a
       page of its own.
+
+      A search engine only. There is deliberately no `og:url` beside it: a chat
+      app reads that as where the link goes, not merely as which page it is, so
+      a route sent to a friend arrived as the bare map with the route stripped
+      off it. Without one, the scraper takes the URL it was handed — which is
+      the route — and Facebook does not read this tag as a substitute.
     -->
     <link rel="canonical" href="https://seaddle.com/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Seaddle" />
-    <meta property="og:url" content="https://seaddle.com/" />
     <meta
       property="og:title"
       content="Seaddle — Seattle bike routes for new cyclists"
