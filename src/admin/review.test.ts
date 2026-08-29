@@ -21,10 +21,10 @@ describe("applyAttributes", () => {
   it("sets what it was given", () => {
     const after = applyAttributes(THREE, ["s001"], {
       steepness: "rolling",
-      surroundings: "scenic",
+      surroundings: "beautiful",
     });
     expect(after.segments[0].steepness).toBe("rolling");
-    expect(after.segments[0].surroundings).toBe("scenic");
+    expect(after.segments[0].surroundings).toBe("beautiful");
   });
 
   it("leaves everything it was not given alone", () => {
@@ -43,7 +43,9 @@ describe("applyAttributes", () => {
 
   it("marks whatever it touches as reviewed", () => {
     // Deciding is the review, so there is no separate button to forget.
-    const after = applyAttributes(THREE, ["s001"], { surroundings: "scenic" });
+    const after = applyAttributes(THREE, ["s001"], {
+      surroundings: "beautiful",
+    });
     expect(after.segments[0].reviewed).toBe(true);
   });
 
@@ -63,7 +65,7 @@ describe("applyAttributes", () => {
   });
 
   it("leaves the input alone", () => {
-    applyAttributes(THREE, ["s001"], { surroundings: "scenic" });
+    applyAttributes(THREE, ["s001"], { surroundings: "beautiful" });
     expect(THREE.segments[0].surroundings).toBe("plain");
     expect(THREE.segments[0].reviewed).toBe(false);
   });

@@ -100,7 +100,7 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
     bikeLane: "#b04a86",
     bikePath: "#533178",
   },
-  surroundings: { plain: "#97967f", pleasant: "#6d9464", scenic: "#2f6b48" },
+  surroundings: { plain: "#97967f", pleasant: "#6d9464", beautiful: "#2f6b48" },
 };
 
 /**
@@ -126,7 +126,7 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
 export const TONES: Record<Attribute, Record<string, Tone>> = {
   steepness: { flat: "good", rolling: "caution", steep: "poor" },
   protection: { unprotected: "poor", bikeLane: "good", bikePath: "good" },
-  surroundings: { plain: "neutral", pleasant: "good", scenic: "good" },
+  surroundings: { plain: "neutral", pleasant: "good", beautiful: "good" },
 };
 
 /**

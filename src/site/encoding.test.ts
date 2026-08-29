@@ -52,9 +52,9 @@ describe("the color ramps", () => {
       "unprotected",
     ]);
     expect(Object.keys(RAMPS.surroundings).sort()).toEqual([
+      "beautiful",
       "plain",
       "pleasant",
-      "scenic",
     ]);
   });
 

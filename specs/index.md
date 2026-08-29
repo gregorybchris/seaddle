@@ -111,7 +111,7 @@ type Node = {
 
 type Steepness = "flat" | "rolling" | "steep";
 type Protection = "unprotected" | "bikeLane" | "bikePath";
-type Surroundings = "plain" | "pleasant" | "scenic";
+type Surroundings = "plain" | "pleasant" | "beautiful";
 
 type Segment = {
   id: SegmentId;

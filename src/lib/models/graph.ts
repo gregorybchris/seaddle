@@ -6,7 +6,7 @@ export type PinId = string; // "p003"
 
 export type Steepness = "flat" | "rolling" | "steep";
 export type Protection = "unprotected" | "bikeLane" | "bikePath";
-export type Surroundings = "plain" | "pleasant" | "scenic";
+export type Surroundings = "plain" | "pleasant" | "beautiful";
 
 export const STEEPNESSES: Steepness[] = ["flat", "rolling", "steep"];
 export const PROTECTIONS: Protection[] = [
@@ -14,7 +14,7 @@ export const PROTECTIONS: Protection[] = [
   "bikeLane",
   "bikePath",
 ];
-export const SURROUNDINGS: Surroundings[] = ["plain", "pleasant", "scenic"];
+export const SURROUNDINGS: Surroundings[] = ["plain", "pleasant", "beautiful"];
 
 export type GraphNode = {
   id: NodeId;
