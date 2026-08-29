@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { typingIn } from "@/lib/utilities/keys";
 import type { SiteGraph } from "./graph-data";
 import { readLink, writeLink } from "./link";
+import type { Mode } from "./mode";
 import { decodeStages, EMPTY_ROUTE, encodeRoute, type Route } from "./route";
 
 /**
@@ -33,8 +34,12 @@ const START: Timeline = { entries: [EMPTY_ROUTE], index: 0 };
  * that the buttons and ⌘Z walk — a rider who undoes with the buttons and then
  * reaches for Back gets the next sensible thing, not a second stack quietly
  * disagreeing with the first.
+ *
+ * The keys it binds answer in build mode only — the mode is passed in for that
+ * alone. The timeline itself keeps running either way: a route survives a trip
+ * into explore, and a link opened there still has to be unpacked into one.
  */
-export function useRouteHistory(graph: SiteGraph | null) {
+export function useRouteHistory(graph: SiteGraph | null, mode: Mode) {
   const [timeline, setTimeline] = useState<Timeline>(START);
   const [framing, setFraming] = useState<Framing>({ mode: "route", at: 0 });
 
@@ -137,6 +142,12 @@ export function useRouteHistory(graph: SiteGraph | null) {
   // than in the panel so the keys cannot drift from the buttons. ⌘Z belongs to
   // the text field while someone is in one.
   useEffect(() => {
+    // Nothing to take back while exploring: the buttons these keys double are
+    // off the screen with the panel, and undoing there would pull segments off
+    // a route the reader is not looking at, with nothing on screen to say what
+    // just happened or how to get them back.
+    if (mode !== "build") return;
+
     const onKey = (event: KeyboardEvent) => {
       if (typingIn(event.target)) return;
 
@@ -169,7 +180,7 @@ export function useRouteHistory(graph: SiteGraph | null) {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo]);
+  }, [mode, undo, redo]);
 
   return {
     route: timeline.entries[timeline.index],

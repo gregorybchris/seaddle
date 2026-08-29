@@ -33,23 +33,6 @@ import { useSelection } from "@/site/use-selection";
 export function MapPage() {
   const { graph, pins, error } = useGraph();
   /**
-   * The route, and every route it was on the way here.
-   *
-   * Each move leaves a history entry too, so the back button keeps undoing —
-   * free on a desktop, and where an Android thumb already is.
-   */
-  const {
-    route,
-    framing,
-    change: changeRoute,
-    load,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-  } = useRouteHistory(graph);
-  const [scrub, setScrub] = useState<Scrub | null>(null);
-  /**
    * What a click on a segment does, and which segment is being read if it
    * reads.
    *
@@ -63,6 +46,26 @@ export function MapPage() {
    * into mid-route, which is exactly when the question it answers comes up.
    */
   const [mode, setMode] = useMode();
+  /**
+   * The route, and every route it was on the way here.
+   *
+   * Each move leaves a history entry too, so the back button keeps undoing —
+   * free on a desktop, and where an Android thumb already is.
+   *
+   * The mode goes in because the keys it binds are build-mode keys: there is
+   * no undoing a pick in a mode where nothing is being picked.
+   */
+  const {
+    route,
+    framing,
+    change: changeRoute,
+    load,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useRouteHistory(graph, mode);
+  const [scrub, setScrub] = useState<Scrub | null>(null);
   /**
    * The segment being read, which the link carries so it can be sent to
    * someone. Kept across a trip into build mode and back, but only named in the

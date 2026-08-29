@@ -9,8 +9,11 @@ import { ChipGroup } from "@/widgets/chip-group";
 import { Keycap } from "@/widgets/keycap";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Switch } from "@/widgets/switch";
+import type { Mode } from "../mode";
 
 type SettingsPanelProps = {
+  /** Which half of the key list applies right now. */
+  mode: Mode;
   basemap: BasemapId;
   onBasemap: (id: BasemapId) => void;
   autoZoom: boolean;
@@ -33,6 +36,7 @@ type SettingsPanelProps = {
  * annoyed by the default.
  */
 export function SettingsPanel({
+  mode,
   basemap,
   onBasemap,
   autoZoom,
@@ -72,7 +76,7 @@ export function SettingsPanel({
         />
       </div>
 
-      <Shortcuts />
+      <Shortcuts mode={mode} />
 
       <Colophon />
     </div>
@@ -92,15 +96,23 @@ export function SettingsPanel({
  * Route first, then map, which is the order the site itself is in: the panel
  * builds a route and the buttons in the corner change what it is read against.
  *
+ * Only the keys the current mode answers. A key bound to a button that is not
+ * on screen does nothing when it is pressed, and a list promising otherwise
+ * teaches a rider that the shortcuts are unreliable rather than that they are
+ * building or reading — the one key that switches between the two is on the
+ * list in both.
+ *
  * Not on a phone, where there is no keyboard to press any of them with and the
  * dialog has three real settings to get to.
  */
-function Shortcuts() {
+function Shortcuts({ mode }: { mode: Mode }) {
+  const keys = SHORTCUTS.filter((key) => !key.mode || key.mode === mode);
+
   return (
     <div className="border-sand/10 hidden border-t pt-4 md:block">
       <span className="eyebrow text-sand/70">Keyboard</span>
       <ul className="mt-2.5 flex flex-col gap-2">
-        {SHORTCUTS.map(({ chords, does }) => (
+        {keys.map(({ chords, does }) => (
           <li key={does} className="flex items-center justify-between gap-3">
             <span className="text-sand/80 text-xs leading-snug">{does}</span>
             {/* Right-aligned and never wrapping: the keys are the column being
@@ -147,15 +159,18 @@ const RUBOUT = IS_MAC ? "Delete" : "Backspace";
  *
  * So a key bound in one of those and left out of this list is a key nobody
  * finds. Change either end and change this one with it.
+ *
+ * A `mode` is the mode that key answers in, and it has to match the gate at
+ * the binding — the three map keys answer in both and carry none.
  */
-const SHORTCUTS: { chords: string[][]; does: string }[] = [
-  { chords: [[CMD, "Z"], [RUBOUT]], does: "Undo" },
-  { chords: [[CMD, "Shift", "Z"]], does: "Redo" },
-  { chords: [[CMD, RUBOUT]], does: "Start over" },
+const SHORTCUTS: { chords: string[][]; does: string; mode?: Mode }[] = [
+  { chords: [[CMD, "Z"], [RUBOUT]], does: "Undo", mode: "build" },
+  { chords: [[CMD, "Shift", "Z"]], does: "Redo", mode: "build" },
+  { chords: [[CMD, RUBOUT]], does: "Start over", mode: "build" },
   { chords: [["E"], ["M"]], does: "Switch mode" },
   { chords: [["C"]], does: "Next segment color" },
   { chords: [["T"]], does: "Next map style" },
-  { chords: [["Esc"]], does: "Deselect" },
+  { chords: [["Esc"]], does: "Deselect", mode: "explore" },
 ];
 
 /**

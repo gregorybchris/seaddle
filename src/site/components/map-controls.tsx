@@ -171,6 +171,7 @@ export function MapControls({
         title="Settings"
       >
         <SettingsPanel
+          mode={mode}
           basemap={basemap}
           onBasemap={onBasemap}
           autoZoom={autoZoom}
