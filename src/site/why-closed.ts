@@ -1,6 +1,6 @@
 import type { SegmentId } from "@/lib/models/graph";
 import type { SiteGraph } from "./graph-data";
-import { continuations, liveEnds, type Route } from "./route";
+import { continuations, isEmpty, liveEnds, type Route } from "./route";
 
 /**
  * Why a road cannot be picked right now.
@@ -66,4 +66,27 @@ export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
             : "A route can't have breaks in it. Pick a segment directly next to your last selected segment.",
       };
   }
+}
+
+/**
+ * What the map says about a tap that landed on no road at all.
+ *
+ * The ground between roads is the other way a build-mode tap can come to
+ * nothing, and it needs an answer for the same reason a faded road does: a tap
+ * that changes nothing reads as a map that has stopped working. It is also
+ * where a rider goes to undo everything — tapping the background is how most
+ * maps drop what is selected, and here it does not, so the message points at
+ * the button that does rather than leaving someone tapping harder.
+ */
+export function groundNotice(route: Route): ClosedNotice {
+  return isEmpty(route)
+    ? {
+        headline: "Oops! That's not a road",
+        detail: "Only the roads can be picked. Pick one to start your ride.",
+      }
+    : {
+        headline: "Oops! That's not a road",
+        detail:
+          "Only the roads can be picked. To clear your ride, use the Start over button.",
+      };
 }

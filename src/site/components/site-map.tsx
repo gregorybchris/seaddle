@@ -36,7 +36,7 @@ import {
 } from "../route";
 import type { Framing } from "../use-route-history";
 import { PICK } from "../pointing";
-import { closedNotice, whyClosed } from "../why-closed";
+import { closedNotice, groundNotice, whyClosed } from "../why-closed";
 import { MapNotice, type Notice } from "./map-notice";
 
 /**
@@ -637,17 +637,14 @@ export function SiteMap({
 
           // Nothing pickable was under the tap. If a road was, say why it did
           // nothing — that a route has to join up is the one rule of this map,
-          // and a beginner has no way to guess it from a line going faint.
+          // and a beginner has no way to guess it from a line going faint. If
+          // no road was, the ground answers for itself.
           const missed = nearestOf(hitsIn(event, CLOSED), at, graph);
           const reason = missed ? whyClosed(route, missed, graph) : null;
-          setNotice(
-            missed && reason
-              ? {
-                  ...closedNotice(reason, route),
-                  at: Date.now(),
-                }
-              : null,
-          );
+          setNotice({
+            ...(reason ? closedNotice(reason, route) : groundNotice(route)),
+            at: Date.now(),
+          });
         }}
       >
         <Source id="graph" type="geojson" data={data}>

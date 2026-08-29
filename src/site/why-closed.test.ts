@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { SiteGraph } from "./graph-data";
 import { siteGraph, siteSegment } from "./test-fixtures";
 import { append, EMPTY_ROUTE, startRoute } from "./route";
-import { closedNotice, whyClosed } from "./why-closed";
+import { closedNotice, groundNotice, whyClosed } from "./why-closed";
 
 /**
  * A fork, a bend, and a dead end:
@@ -77,5 +77,15 @@ describe("what the map says about it", () => {
     const route = append(startRoute(seg("s1")), seg("s5"), G);
     const notice = closedNotice("elsewhere", route);
     expect(notice.detail).toContain("your last selected segment");
+  });
+
+  it("sends a tap on bare ground to the button that clears the ride", () => {
+    expect(groundNotice(startRoute(seg("s1"))).detail).toContain("Start over");
+  });
+
+  it("invites a first pick instead when there is no ride to clear", () => {
+    const notice = groundNotice(EMPTY_ROUTE);
+    expect(notice.detail).not.toContain("Start over");
+    expect(notice.detail).toContain("start your ride");
   });
 });
