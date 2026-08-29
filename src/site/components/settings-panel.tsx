@@ -65,7 +65,7 @@ export function SettingsPanel({
           checked={autoZoom}
           onChange={onAutoZoom}
           label="Auto-zoom"
-          hint="After each pick, move the map to the roads you can take next."
+          hint="After each pick, move the map to the segments you can take next."
         />
       </div>
 
@@ -93,7 +93,20 @@ function Colophon() {
             text's own middle — it is the last word of "Made in Seattle", and a
             glyph hung off the end of the line would read as a control. */}
         <p className="text-sand/40 mt-0.5 flex items-center gap-1 text-[0.6875rem] leading-tight">
-          &copy; 2026 Chris Gregory &middot; Made in Seattle
+          {/* One flex item, not three: the gap belongs between the sentence
+              and the tree, not around the link. */}
+          <span>
+            &copy; 2026{" "}
+            {/* Faintly underlined rather than bare: a mailto with no
+                affordance in a byline is a link nobody finds. */}
+            <a
+              href="mailto:christopher.b.gregory@gmail.com"
+              className="decoration-sand/25 hover:text-sand/70 hover:decoration-sand/50 focus-visible:ring-blaze rounded-sm underline underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
+            >
+              Chris Gregory
+            </a>{" "}
+            &middot; Made in Seattle
+          </span>
           <TreeEvergreen
             aria-hidden
             weight="fill"
