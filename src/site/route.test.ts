@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { boundsOf } from "@/lib/geo/bounds";
 import { flat } from "@/lib/geo/distance";
+import { cumulativeMeters } from "@/lib/geo/polyline";
 import type { ElevCoord } from "@/lib/models/geo";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 import { siteGraph, siteSegment } from "./test-fixtures";
@@ -19,7 +20,11 @@ import {
   previewOf,
   reachable,
   respell,
+  riddenLegs,
   routeBounds,
+  routeCrossings,
+  routeLine,
+  routeFinish,
   routeGain,
   routeMeters,
   riddenOrder,
@@ -39,8 +44,8 @@ import {
  *            |
  *           nE
  *
- * nB and nD are forks. nC carries exactly two segments, so arriving there
- * leaves nothing to decide — it is a bend, not a choice.
+ * nB and nD are forks. nC carries exactly two segments, so it is the one
+ * junction where a route arriving has a single way on.
  */
 function segment(
   id: string,
@@ -148,13 +153,12 @@ describe("picking a segment that is not next door", () => {
     // nB, and on. Nothing about that is a decision, so none of it is one.
     const route = append(startRoute(seg("s001")), seg("s004"), G);
     const reached = append(route, seg("s002"), G);
-    expect(ids(reached)).toEqual(["s001", "s004", "s004", "s002", "s003"]);
+    expect(ids(reached)).toEqual(["s001", "s004", "s004", "s002"]);
     expect(reached.steps.map((step) => step.auto)).toEqual([
       false,
       false,
       true,
       false,
-      true,
     ]);
   });
 
@@ -242,6 +246,40 @@ describe("where the route set off from", () => {
   });
 });
 
+describe("where the route has got to", () => {
+  it("says nothing while the direction is still undecided", () => {
+    // The flag is the other half of the start dot and appears on the same
+    // terms: one segment has two live ends and no direction to report.
+    expect(routeFinish(EMPTY_ROUTE, G)).toBeNull();
+    expect(routeFinish(startRoute(seg("s001")), G)).toBeNull();
+  });
+
+  it("marks the end the route is currently growing from", () => {
+    const route = append(startRoute(seg("s001")), seg("s004"), G);
+    const points = G.segments.get("s004")!.points;
+    expect(routeFinish(route, G)).toEqual(flat(points[points.length - 1]));
+  });
+
+  it("follows the last segment when it is ridden backwards", () => {
+    // s003 is ridden nD to nC on the way to s001, so the route finishes at the
+    // end s001 is stored as starting from.
+    const route = append(startRoute(seg("s003")), seg("s001"), G);
+    expect(routeFinish(route, G)).toEqual(
+      flat(G.segments.get("s001")!.points[0]),
+    );
+  });
+
+  it("tracks the end of the drawn line as the route grows", () => {
+    // Checked against the assembled line rather than a coordinate: the fixture
+    // segments all share their three points, so only the walk can tell the
+    // route's far end from any other segment's.
+    const two = append(startRoute(seg("s003")), seg("s001"), G);
+    const more = append(two, seg("s004"), G);
+    const points = routePoints(more, G);
+    expect(routeFinish(more, G)).toEqual(flat(points[points.length - 1]));
+  });
+});
+
 describe("what a pick would reach, and what it would add", () => {
   it("opens the whole network before a route starts", () => {
     expect(reachable(EMPTY_ROUTE, G).size).toBe(6);
@@ -268,9 +306,9 @@ describe("what a pick would reach, and what it would add", () => {
     expect([...reachable(route, split)]).toEqual(["s001"]);
   });
 
-  it("shows every segment the pick would add, run-on included", () => {
+  it("shows every segment the pick would add, the way there included", () => {
     const route = append(startRoute(seg("s001")), seg("s004"), G);
-    expect(previewOf(route, seg("s002"), G)).toEqual(["s004", "s002", "s003"]);
+    expect(previewOf(route, seg("s002"), G)).toEqual(["s004", "s002"]);
   });
 
   it("shows nothing for a segment that cannot be reached", () => {
@@ -283,45 +321,18 @@ describe("what a pick would reach, and what it would add", () => {
   });
 });
 
-describe("junctions with nothing to decide", () => {
-  it("runs on through a two-segment junction", () => {
-    // Picking s2 from nB lands at nC, where s3 is the only way on, so the
-    // route carries through rather than asking for a click to confirm it.
+describe("a junction with one way on", () => {
+  it("stops there rather than taking the only way on", () => {
+    // Picking s2 from nB lands at nC, where s3 is the only way on. It is still
+    // the rider's to take: a pick means the segment picked and no more.
     const route = append(startRoute(seg("s001")), seg("s002"), G);
-    expect(ids(route)).toEqual(["s001", "s002", "s003"]);
-    expect(liveEnds(route)).toEqual(["nD"]);
+    expect(ids(route)).toEqual(["s001", "s002"]);
+    expect(liveEnds(route)).toEqual(["nC"]);
   });
 
-  it("marks what it added itself, and what was chosen", () => {
+  it("offers the one way on as the next choice", () => {
     const route = append(startRoute(seg("s001")), seg("s002"), G);
-    expect(route.steps.map((step) => step.auto)).toEqual([false, false, true]);
-  });
-
-  it("stops at the next real fork", () => {
-    const route = append(startRoute(seg("s001")), seg("s002"), G);
-    expect([...continuations(route, G)].sort()).toEqual(["s005", "s006"]);
-  });
-
-  it("counts the distance and climb of everything it ran through", () => {
-    const route = append(startRoute(seg("s001")), seg("s002"), G);
-    expect(routeMeters(route, G)).toBe(3000);
-    expect(routeGain(route, G)).toEqual({ min: 60, max: 60 });
-  });
-
-  it("does not circle forever around a ring with no forks", () => {
-    // Every junction on a loop can carry exactly two segments, in which case
-    // there is never a fork to stop at.
-    const looped = siteGraph([
-      segment("r1", "n1", "n2", [0, 0]),
-      segment("r2", "n2", "n3", [0, 0]),
-      segment("r3", "n3", "n1", [0, 0]),
-    ]);
-    const route = append(
-      startRoute(looped.segments.get("r1")!),
-      looped.segments.get("r2")!,
-      looped,
-    );
-    expect(ids(route)).toEqual(["r1", "r2", "r3"]);
+    expect([...continuations(route, G)]).toEqual(["s003"]);
   });
 });
 
@@ -332,11 +343,16 @@ describe("the history a link carries", () => {
   });
 
   it("steps back one decision, not one segment", () => {
-    // s3 came along with the choice of s2, so it goes back with it — otherwise
-    // one click would need two presses to undo.
-    const stages = decodeStages("1-2", G);
-    expect(ids(stages[stages.length - 1])).toEqual(["s001", "s002", "s003"]);
-    expect(ids(stages[stages.length - 2])).toEqual(["s001"]);
+    // The ride back down s4 came along with the choice of s2, so it goes back
+    // with it — otherwise one click would need two presses to undo.
+    const stages = decodeStages("1-4-2", G);
+    expect(ids(stages[stages.length - 1])).toEqual([
+      "s001",
+      "s004",
+      "s004",
+      "s002",
+    ]);
+    expect(ids(stages[stages.length - 2])).toEqual(["s001", "s004"]);
   });
 
   it("starts at nothing, so the opening segment can be taken back too", () => {
@@ -377,6 +393,77 @@ describe("what the route measures", () => {
   it("counts the climb of the direction actually ridden", () => {
     const downhill = append(startRoute(seg("s004")), seg("s001"), G);
     expect(routeGain(downhill, G)).toEqual({ min: 0, max: 0 });
+  });
+});
+
+/**
+ * The same shape with a ferry in the middle of it:
+ *
+ *   nH —s101— nI ==s102== nJ —s103— nK
+ *
+ * s102 is crossed rather than ridden, which is the one thing on this map that
+ * is part of a route and not part of the riding.
+ */
+const F: SiteGraph = siteGraph([
+  segment("s101", "nH", "nI", [0, 10]),
+  { ...segment("s102", "nI", "nJ", [0, 0]), crossing: "ferry" },
+  segment("s103", "nJ", "nK", [0, 10]),
+]);
+const ferried = append(
+  startRoute(F.segments.get("s101")!),
+  F.segments.get("s103")!,
+  F,
+);
+
+describe("a route that takes the ferry", () => {
+  it("rides across it like anything else", () => {
+    expect(ids(ferried)).toEqual(["s101", "s102", "s103"]);
+  });
+
+  it("leaves the crossing out of the distance", () => {
+    // Two ridden segments of a thousand meters each, and a mile of water that
+    // nobody pedalled.
+    expect(routeMeters(ferried, F)).toBe(2000);
+  });
+
+  it("names the crossings instead, in the order they are taken", () => {
+    expect(routeCrossings(ferried, F).map((s) => s.id)).toEqual(["s102"]);
+    expect(routeCrossings(startRoute(F.segments.get("s101")!), F)).toEqual([]);
+  });
+
+  it("counts a crossing once per sailing", () => {
+    expect(routeCrossings(outAndBack(ferried), F)).toHaveLength(2);
+  });
+
+  it("marks the legs of the line that are crossed rather than ridden", () => {
+    const { points, crossed } = routeLine(ferried, F);
+    expect(points).toHaveLength(7);
+    // Both legs of s102, including the one leading into it from the shore.
+    expect([...crossed].sort()).toEqual([3, 4]);
+  });
+
+  it("measures nothing along those legs", () => {
+    const { points, crossed } = routeLine(ferried, F);
+    const meters = cumulativeMeters(points, crossed);
+    expect(meters[meters.length - 1]).toBeCloseTo(
+      cumulativeMeters(points)[2] * 2,
+      0,
+    );
+  });
+
+  it("cuts the route into the stretches that are ridden", () => {
+    const legs = riddenLegs(ferried, F);
+    expect(legs).toHaveLength(2);
+    // The second leg starts where the boat put the rider down, not a point
+    // further on.
+    expect(legs[0][legs[0].length - 1]).toEqual(
+      routeLine(ferried, F).points[2],
+    );
+    expect(legs[1][0]).toEqual(routeLine(ferried, F).points[4]);
+  });
+
+  it("has no leg to export for a route that is only a crossing", () => {
+    expect(riddenLegs(startRoute(F.segments.get("s102")!), F)).toEqual([]);
   });
 });
 

@@ -14,10 +14,9 @@ export type Step = {
   /**
    * Ridden through on the way to something, rather than picked.
    *
-   * Two things fill steps in: a junction with nothing to decide at it, and the
-   * way to a segment picked from further off. Neither is a decision, so neither
-   * is written into a link — they come back on their own when the decisions are
-   * replayed.
+   * What fills steps in is the way to a segment picked from further off. That
+   * is not a decision, so it is not written into a link — it comes back on its
+   * own when the decisions are replayed.
    *
    * Recorded rather than worked out later, because whether a segment was a
    * choice depends on the state of the route when it was added, not on the
@@ -77,8 +76,8 @@ export function liveEnds(route: Route): NodeId[] {
  * Not what may be clicked — every segment on the map may be clicked, and
  * anything further off is reached by `append` filling in the way there. This is
  * the smaller question of what leads directly on from here, which is what the
- * camera frames after a pick, what the panel counts, what the spoken list reads
- * out, and what `runOn` consults to decide whether there was a choice at all.
+ * camera frames after a pick, what the panel counts, and what the spoken list
+ * reads out.
  *
  * With nothing started, that is everything. Otherwise it is whatever touches a
  * live end, minus the segment already occupying it.
@@ -158,17 +157,14 @@ export function append(
         ]
       : route.steps;
 
-  return runOn(
-    {
-      steps: [
-        ...opening,
-        ...way.map((leg) => ({ ...leg, auto: true })),
-        orient(segment, arrival),
-      ],
-      ambiguous: false,
-    },
-    graph,
-  );
+  return {
+    steps: [
+      ...opening,
+      ...way.map((leg) => ({ ...leg, auto: true })),
+      orient(segment, arrival),
+    ],
+    ambiguous: false,
+  };
 }
 
 /**
@@ -188,11 +184,11 @@ function nearerEnd(reach: Reach, segment: SiteSegment): NodeId | null {
  * Every segment a pick could still reach, which is everything until a route
  * starts.
  *
- * The one thing left that the map has to draw as out of play. The network is
- * not all one piece — the source rides cover Everett, Edmonds and Burien, and
- * those never touch Seattle — so once a route is under way there are segments
- * no amount of riding joins it to, and a rider who taps one is owed that answer
- * rather than silence.
+ * The one thing left that the map has to draw as out of play. A ride imported
+ * from somewhere nothing else reaches arrives as an island, and once a route is
+ * under way there are then segments no amount of riding joins it to — a rider
+ * who taps one is owed that answer rather than silence. Nothing is currently
+ * on one: the ferry to Bainbridge closed the last gap in the network.
  */
 export function reachable(route: Route, graph: SiteGraph): Set<SegmentId> {
   if (isEmpty(route)) return new Set(graph.segments.keys());
@@ -213,7 +209,7 @@ export function reachable(route: Route, graph: SiteGraph): Set<SegmentId> {
  * A pick can now be worth a dozen segments, and a map that only reveals that
  * afterwards is asking to be undone. Defined as what the route would gain
  * rather than worked out separately, so it cannot drift from what the pick
- * actually does — and so it picks up the run-on through junctions too.
+ * actually does — the way there included.
  *
  * The first pick answers the same way, with the one segment it would start
  * from. It says nothing the cursor does not, which was the argument for leaving
@@ -229,44 +225,6 @@ export function previewOf(
   const next = append(route, segment, graph);
   if (next === route) return [];
   return next.steps.slice(route.steps.length).map((step) => step.segment);
-}
-
-/**
- * Carry on through junctions that offer nothing to decide.
- *
- * A junction where two segments meet is a bend, not a fork, and asking someone
- * to click through it is asking them to confirm the only thing they could have
- * done. So the route runs on by itself until it reaches somewhere with a real
- * choice, or nowhere left to go.
- *
- * Not done from the opening segment: while both its ends are still live the
- * choice on offer is which way to ride, which is a real one even where each end
- * has a single segment leading off it.
- *
- * Stops on a segment already ridden. A ring of two-segment junctions has no
- * fork to arrive at, and without this it would circle forever.
- */
-function runOn(route: Route, graph: SiteGraph): Route {
-  let current = route;
-  const ridden = new Set(current.steps.map((step) => step.segment));
-
-  for (;;) {
-    if (current.ambiguous) break;
-    const onward = [...continuations(current, graph)];
-    if (onward.length !== 1) break;
-
-    const segment = graph.segments.get(onward[0]);
-    if (!segment || ridden.has(segment.id)) break;
-    ridden.add(segment.id);
-
-    const last = current.steps[current.steps.length - 1];
-    current = {
-      steps: [...current.steps, { ...orient(segment, last.to), auto: true }],
-      ambiguous: false,
-    };
-  }
-
-  return current;
 }
 
 function orient(segment: SiteSegment, from: NodeId): Step {
@@ -369,9 +327,9 @@ export function respell(encoded: string): string {
 /**
  * The route as the decisions that made it, which is all a link has to carry.
  *
- * Only what was chosen: everything the route ran through by itself comes back
- * on its own when the choices are replayed, so storing it would be storing
- * something the graph already knows.
+ * Only what was chosen: the way filled in to each pick comes back on its own
+ * when the choices are replayed, so storing it would be storing something the
+ * graph already knows.
  */
 export function encodeRoute(route: Route): string {
   return route.steps
@@ -385,9 +343,9 @@ export function encodeRoute(route: Route): string {
  *
  * Replayed through the same append that a rider's clicks go through, so a
  * shared route is put together by exactly the rules that built it — including
- * running on through junctions with nothing to decide. Anything that no longer
- * fits is dropped rather than throwing: segments get recut, and a stale link
- * should give back as much of the route as still exists.
+ * the way filled in to each segment picked from further off. Anything that no
+ * longer fits is dropped rather than throwing: segments get recut, and a stale
+ * link should give back as much of the route as still exists.
  */
 export function decodeRoute(encoded: string, graph: SiteGraph): Route {
   const stages = decodeStages(encoded, graph);
@@ -465,11 +423,35 @@ export function riddenOrder(
   }));
 }
 
+/**
+ * How far the route is ridden.
+ *
+ * A crossing is not in it. The ferry to Bainbridge is eight miles of line on
+ * the map and not one of them is pedalled, so a rider told they have
+ * twenty-two miles ahead of them when fourteen are under their own legs has
+ * been told the wrong thing — and the whole point of the numbers on this site
+ * is that a beginner can trust them. The crossings are reported beside this
+ * instead, by `routeCrossings`, where they can say what they are.
+ */
 export function routeMeters(route: Route, graph: SiteGraph): number {
   return ridden(route, graph).reduce(
-    (total, { segment }) => total + segment.meters,
+    (total, { segment }) => total + (segment.crossing ? 0 : segment.meters),
     0,
   );
+}
+
+/**
+ * The crossings the route takes, in the order they are taken.
+ *
+ * Listed rather than counted, because a rider needs to know *which* boat: the
+ * one line the panel has room for is worth more spent on "ferry to Bainbridge"
+ * than on "1 crossing". Repeats are kept — an out-and-back rides the ferry
+ * twice, and both are journeys to be caught.
+ */
+export function routeCrossings(route: Route, graph: SiteGraph): SiteSegment[] {
+  return ridden(route, graph)
+    .map(({ segment }) => segment)
+    .filter((segment) => segment.crossing !== null);
 }
 
 /** Climbing in the direction each segment is actually being ridden. */
@@ -513,15 +495,71 @@ export function routeGain(
  * of itself and add a zero-length step to the elevation profile.
  */
 export function routePoints(route: Route, graph: SiteGraph): ElevCoord[] {
+  return routeLine(route, graph).points;
+}
+
+/**
+ * The assembled line, and which of its legs are crossed rather than ridden.
+ *
+ * One walk answers both, because they are the same walk: `crossed` holds the
+ * index of every point whose leg back from the point before it belongs to a
+ * crossing. Handed to `cumulativeMeters` and the things built on it, those legs
+ * measure zero — so the elevation chart runs from the Seattle shore straight on
+ * to the Bainbridge one, the scrub under a finger stays on the road it is
+ * pointing at, and the length of the chart is the distance on the panel.
+ *
+ * The points themselves stay in. The map still has to draw the crossing, the
+ * camera still has to frame it, and a route whose two halves are eight miles
+ * apart has to know that about itself.
+ */
+export function routeLine(
+  route: Route,
+  graph: SiteGraph,
+): { points: ElevCoord[]; crossed: Set<number> } {
   const points: ElevCoord[] = [];
+  const crossed = new Set<number>();
   for (const { step, segment } of ridden(route, graph)) {
     const ordered =
       step.from === segment.from
         ? segment.points
         : [...segment.points].reverse();
-    points.push(...(points.length === 0 ? ordered : ordered.slice(1)));
+    const added = points.length === 0 ? ordered : ordered.slice(1);
+    if (segment.crossing) {
+      // Every leg of it, including the one joining it to the segment before —
+      // that join is the same water.
+      const first = Math.max(1, points.length);
+      for (let i = first; i < points.length + added.length; i++) crossed.add(i);
+    }
+    points.push(...added);
   }
-  return points;
+  return { points, crossed };
+}
+
+/**
+ * The route cut into the stretches that are ridden, dropping the crossings.
+ *
+ * What a GPX has to say: a file with a straight line drawn eight miles over
+ * open water is a file that will happily navigate somebody into Elliott Bay.
+ * GPX has a shape for exactly this — one track, one segment per continuous
+ * stretch — so the boat becomes the space between two of them.
+ */
+export function riddenLegs(route: Route, graph: SiteGraph): ElevCoord[][] {
+  const { points, crossed } = routeLine(route, graph);
+  const legs: ElevCoord[][] = [];
+  let leg: ElevCoord[] = [];
+  for (let i = 0; i < points.length; i++) {
+    if (crossed.has(i)) {
+      if (leg.length > 1) legs.push(leg);
+      // The next leg starts wherever the boat put the rider down, which is the
+      // last point the crossing covers — so each reset carries the point with
+      // it and the last one to run wins.
+      leg = [points[i]];
+      continue;
+    }
+    leg.push(points[i]);
+  }
+  if (leg.length > 1) legs.push(leg);
+  return legs;
 }
 
 /**
@@ -574,20 +612,43 @@ export function focusAnchor(route: Route, graph: SiteGraph): Coord | null {
  * one is the start is exactly what has not been decided. Marking one anyway
  * would be the map picking a direction and presenting it as fact, which is the
  * same lie the climbing range exists to avoid.
- *
- * No mark at the far end to match it. The end of a route being built is where
- * the next choice is, it already has the rider's attention, and a flag planted
- * on it would say the route was finished when it is the one part still moving.
  */
 export function routeStart(route: Route, graph: SiteGraph): Coord | null {
   if (isEmpty(route) || route.ambiguous) return null;
-  const step = route.steps[0];
+  return endOf(route.steps[0], graph, "from");
+}
+
+/**
+ * Where the route has got to, once it is settled which end that is.
+ *
+ * The checkered flag to the start's green dot, and the same pair the admin and
+ * the explore panel use — a rider reading one segment and a rider building out
+ * of a dozen are asking the same question of the line, which way does it run,
+ * and answering it two ways would be two things to learn instead of one.
+ *
+ * Null on the same condition as `routeStart`: a single segment has two live
+ * ends and no direction to report, so it gets neither mark.
+ */
+export function routeFinish(route: Route, graph: SiteGraph): Coord | null {
+  if (isEmpty(route) || route.ambiguous) return null;
+  return endOf(route.steps[route.steps.length - 1], graph, "to");
+}
+
+/** The coordinate at one end of a step, taken the way the step is ridden. */
+function endOf(
+  step: Step,
+  graph: SiteGraph,
+  which: "from" | "to",
+): Coord | null {
   const segment = graph.segments.get(step.segment);
   if (!segment || segment.points.length === 0) return null;
-  const point =
-    step.from === segment.from
-      ? segment.points[0]
-      : segment.points[segment.points.length - 1];
+  // A step ridden against the segment's own direction meets each of its ends at
+  // the other end of the drawn line.
+  const forwards = step[which] === segment[which];
+  const head = which === "from" ? forwards : !forwards;
+  const point = head
+    ? segment.points[0]
+    : segment.points[segment.points.length - 1];
   return [point[0], point[1]];
 }
 
