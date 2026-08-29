@@ -33,10 +33,10 @@ export function modeNotice(mode: Mode, pick: string) {
   return mode === "explore"
     ? {
         headline: "Explore mode",
-        detail: `${pick} any road to read what it is like. Nothing is added to your ride.`,
+        detail: `${pick} any road to read about it.`,
       }
     : {
         headline: "Build mode",
-        detail: `${pick} a bright road to add it to your ride.`,
+        detail: `${pick} a road to add it to your ride.`,
       };
 }

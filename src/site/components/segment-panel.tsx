@@ -99,8 +99,9 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
                 rather than describing a direction in words: a reader can look
                 at a green dot, and cannot look at "the way it was recorded". */}
             <p className="text-sand/70 text-[0.8125rem] leading-relaxed">
-              The chart runs from the green dot to the checkered flag. You can
-              ride it either way.
+              The elevation chart runs from the green dot to the checkered flag.
+              You can ride it either way, of course. But this direction may be
+              recommended.
             </p>
           </div>
         ) : (
