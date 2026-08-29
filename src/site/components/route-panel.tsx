@@ -14,7 +14,7 @@ import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding } from "../encoding";
-import type { SiteGraph, SiteSegment } from "../graph-data";
+import type { SiteGraph } from "../graph-data";
 import {
   continuations,
   encodeRoute,
@@ -207,7 +207,7 @@ export function RoutePanel({
 
             <RouteBreakdown segments={ridden} encoding={encoding} />
 
-            {crossings.length > 0 && <Crossings crossings={crossings} />}
+            {crossings.length > 0 && <Crossings />}
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
@@ -451,42 +451,26 @@ function SaveRoute({
 }
 
 /**
- * The part of the route nobody rides.
+ * The part of the route that is booked rather than ridden.
  *
- * It is kept out of the distance and out of the breakdown, which is the honest
- * way to count it and also a silence: without this, a route across the Sound
- * reads as a route that teleports, and the fourteen miles in the pinned slot
- * look like a mistake to anyone who knows how far Bainbridge is. So the boat
- * says so itself, under the chart rather than in the slot beside the numbers —
- * it is a fact about the route rather than a figure to be compared, and the
- * slot is two figures wide on purpose.
+ * A line on a map says nothing about a fare or a timetable, and a beginner
+ * planning their way across the Sound needs both: without them a rider arrives
+ * at Colman Dock with a bike, no ticket, and an hour to wait. That is what is
+ * worth a line under the chart — not the arithmetic, which the panel has
+ * already handled by keeping the crossing out of the distance and out of the
+ * mix.
  *
- * Counted where it repeats. An out-and-back sails twice and pays twice, and a
- * line naming the crossing once would be describing half the day.
+ * It names Bainbridge outright because that is the only crossing on this map. A
+ * second one would have to take its name off the segment, the way the version
+ * of this that reported the distance aboard did.
  */
-function Crossings({ crossings }: { crossings: SiteSegment[] }) {
-  const { distance } = useUnits();
-  const taken = new Map<SegmentId, { segment: SiteSegment; times: number }>();
-  for (const segment of crossings) {
-    const seen = taken.get(segment.id);
-    if (seen) seen.times += 1;
-    else taken.set(segment.id, { segment, times: 1 });
-  }
-
-  const meters = crossings.reduce((sum, segment) => sum + segment.meters, 0);
-  const named = [...taken.values()]
-    .map(
-      ({ segment, times }) =>
-        `${segment.name ?? "ferry"}${times > 1 ? ` \u00d7${times}` : ""}`,
-    )
-    .join(", ");
-
+function Crossings() {
   return (
     <p className="border-sand/15 bg-sand/5 text-sand/80 flex items-start gap-2 rounded-lg border px-3 py-2 text-xs leading-relaxed">
       <Boat weight="bold" className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
       <span>
-        <span className="text-sand">{named}</span> — {distance(meters)} aboard
-        the ferry, which is not in the distance or the mix above.
+        This route includes a ferry crossing to Bainbridge Island. You must buy
+        a ticket to ride. Check the ferry schedule before embarking.
       </span>
     </p>
   );
