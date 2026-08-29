@@ -67,7 +67,7 @@ describe("gradeRuns", () => {
 
   it("covers every piece of the line exactly once", () => {
     // Runs are drawn instead of the segment, so a gap between two of them is a
-    // gap in the road.
+    // gap in the segment.
     const points = line([0, 1, 4, 9, 16, 20, 20, 20]);
     const runs = gradeRuns(points);
     const pieces = runs.reduce((n, run) => n + run.points.length - 1, 0);

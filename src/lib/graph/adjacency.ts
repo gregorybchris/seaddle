@@ -3,9 +3,9 @@ import type { NodeId, SegmentId } from "@/lib/models/graph";
 /**
  * The topology of a segment and nothing else.
  *
- * Adjacency has no business knowing what a road is paved with, and asking for
- * a whole segment record would stop the site — which holds a different shape —
- * from using the same traversal the admin does.
+ * Adjacency has no business knowing what a segment is paved with, and asking
+ * for a whole segment record would stop the site — which holds a different
+ * shape — from using the same traversal the admin does.
  */
 export type Edge = { id: SegmentId; from: NodeId; to: NodeId };
 

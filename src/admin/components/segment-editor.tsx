@@ -36,7 +36,7 @@ type SegmentEditorProps = {
 };
 
 /**
- * Judging a road: how hard, how safe, how pretty, what it is made of.
+ * Judging a segment: how hard, how safe, how pretty, what it is made of.
  *
  * Built for the pass rather than the single edit — a hundred and forty-five of
  * these have to be decided, so the panel keeps the count in view and hands over

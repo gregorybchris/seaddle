@@ -38,7 +38,7 @@ export type SegmentRecord = {
    *
    * Started as an admin-only audit label and earned its way out: "Ballard
    * Locks to Golden Gardens" tells someone deciding far more than any
-   * attribute can. Still optional — an unnamed road is described by its
+   * attribute can. Still optional — an unnamed segment is described by its
    * numbers alone rather than by an id nobody outside the editor can use.
    */
   name: string | null;
@@ -138,11 +138,12 @@ export type GraphFile = {
 };
 
 /**
- * What a segment looks like the moment it is extracted, before anyone has judged it.
+ * What a segment looks like the moment it is extracted, before anyone has
+ * judged it.
  *
- * Extraction should be cheap and fast; deciding whether a road is pleasant is a
- * separate pass. `reviewed` is what keeps "asphalt because I checked" distinct
- * from "asphalt because nobody has looked at this yet".
+ * Extraction should be cheap and fast; deciding whether a segment is pleasant
+ * is a separate pass. `reviewed` is what keeps "asphalt because I checked"
+ * distinct from "asphalt because nobody has looked at this yet".
  */
 export const SEGMENT_DEFAULTS = {
   name: null,

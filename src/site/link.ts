@@ -5,16 +5,16 @@ import { decodeSegmentId, encodeSegmentId } from "./route";
  * What the address bar says, which is also what a rider sends a friend.
  *
  * Two things worth putting in a link, and they are written by different hooks:
- * the ride by the route history, the road being read by the selection. So the
- * search string has one owner rather than two. The version where each hook
+ * the route by the route history, the segment being read by the selection. So
+ * the search string has one owner rather than two. The version where each hook
  * rebuilt the whole of it had the second writer quietly drop what the first had
- * just put there — a rider who stepped into explore mid-build lost the ride out
- * of their own URL, which is the one place this site keeps it.
+ * just put there — a rider who stepped into explore mid-build lost the route
+ * out of their own URL, which is the one place this site keeps it.
  */
 export type Link = {
-  /** The ride, as the list of decisions that made it. Empty for no ride. */
+  /** The route, as the list of decisions that made it. Empty for no route. */
   route: string;
-  /** The road being read, while someone is reading one. */
+  /** The segment being read, while someone is reading one. */
   selected: SegmentId | null;
 };
 
@@ -27,7 +27,7 @@ export function parseLink(search: string): Link {
   const named = params.get(SEGMENT);
   return {
     route: params.get(ROUTE) ?? "",
-    // Spelled the way the roads in a ride are, because a link carrying both
+    // Spelled the way the segments in a route are, because a link carrying both
     // reading two conventions at once is a link nobody would write by hand.
     selected: named ? decodeSegmentId(named) : null,
   };

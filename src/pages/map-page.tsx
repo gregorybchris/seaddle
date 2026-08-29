@@ -49,7 +49,8 @@ export function MapPage() {
   } = useRouteHistory(graph);
   const [scrub, setScrub] = useState<number | null>(null);
   /**
-   * What a click on a road does, and which road is being read if it reads.
+   * What a click on a segment does, and which segment is being read if it
+   * reads.
    *
    * Exploring is where a rider arrives who has never said otherwise: the first
    * question a map of a strange city gets is what its lines are, not which of
@@ -57,41 +58,42 @@ export function MapPage() {
    * off — the mode is kept in the browser like the choice of ground.
    *
    * Switching away leaves the route alone — it is still there on the map and
-   * still there when the shovel comes back — so exploring costs nothing to
-   * step into mid-ride, which is exactly when the question it answers comes up.
+   * still there when the shovel comes back — so exploring costs nothing to step
+   * into mid-route, which is exactly when the question it answers comes up.
    */
   const [mode, setMode] = useMode();
   /**
-   * The road being read, which the link carries so it can be sent to someone.
-   * Kept across a trip into build mode and back, but only named in the URL
-   * while exploring — see `use-selection`.
+   * The segment being read, which the link carries so it can be sent to
+   * someone. Kept across a trip into build mode and back, but only named in the
+   * URL while exploring — see `use-selection`.
    */
   const [selected, setSelected] = useSelection(mode, graph);
   /**
    * What the map is colored by before anyone asks for something else.
    *
-   * Steepness rather than grade: grade is the finer reading, but it is drawn
-   * as a continuous ramp along each road, and a rider opening the map is
-   * deciding which roads to take rather than reading a hill. Three named steps
-   * answer that at a glance.
+   * Steepness rather than grade: grade is the finer reading, but it is drawn as
+   * a continuous ramp along each segment, and a rider opening the map is
+   * deciding which segments to take rather than reading a hill. Three named
+   * steps answer that at a glance.
    */
   const [encoding, setEncoding] = useState<Encoding>("steepness");
   const [basemap, setBasemap] = useBasemapChoice();
   const [autoZoom, setAutoZoom] = useAutoZoom();
   /**
-   * The road the panel is pointing at, and where the map is looking.
+   * The segment the panel is pointing at, and where the map is looking.
    *
-   * Both exist so the list of roads in the panel and the lines on the map are
-   * the same conversation: the map says which part of the city the list is
-   * about, and the list says which road on it is under the reader's attention.
+   * Both exist so the list of segments in the panel and the lines on the map
+   * are the same conversation: the map says which part of the city the list is
+   * about, and the list says which segment on it is under the reader's
+   * attention.
    */
   const [highlighted, setHighlighted] = useState<SegmentId | null>(null);
   const [center, setCenter] = useState<Coord | null>(null);
 
   /**
-   * Only the list of roads reads where the map is looking, and this fires every
-   * time the map settles — so with the list off there is a re-render here for
-   * every pan and nothing on the other end of it.
+   * Only the list of segments reads where the map is looking, and this fires
+   * every time the map settles — so with the list off there is a re-render here
+   * for every pan and nothing on the other end of it.
    */
   const noteCenter = useCallback((coord: Coord) => {
     if (SHOW_TURNINGS) setCenter(coord);
@@ -120,10 +122,10 @@ export function MapPage() {
   /**
    * The place on the map the reader is pointing at on the elevation chart.
    *
-   * Measured along whatever the visible panel is charting — the whole ride, or
-   * the one road being read. There are two charts, so which line the fraction
-   * runs along has to follow which panel is open, or scrubbing one road would
-   * put the marker somewhere along a ride nobody is looking at.
+   * Measured along whatever the visible panel is charting — the whole route, or
+   * the one segment being read. There are two charts, so which line the
+   * fraction runs along has to follow which panel is open, or scrubbing one
+   * segment would put the marker somewhere along a route nobody is looking at.
    */
   const scrubbed = useMemo(() => {
     const charted = mode === "explore" ? (reading?.points ?? []) : points;
@@ -132,22 +134,23 @@ export function MapPage() {
       : coordAtFraction(charted, scrub);
   }, [scrub, mode, reading, points]);
 
-  // A fraction along one road means nothing along the next, and the chart only
-  // reports its own end of that when a pointer leaves it — which a finger
+  // A fraction along one segment means nothing along the next, and the chart
+  // only reports its own end of that when a pointer leaves it — which a finger
   // lifting off a phone does not reliably do.
   useEffect(() => setScrub(null), [selected, mode]);
 
-  /** The pins on the roads chosen so far, in the order they are ridden past. */
+  /** The pins on the segments chosen so far, in the order they are ridden
+   *  past. */
   const routePins = useMemo(
     () => (graph ? pinsAlong(pins, riddenOrder(route, graph)) : []),
     [pins, route, graph],
   );
 
   /**
-   * The roads that can be taken next, in words, for whoever is not clicking.
+   * The segments that can be taken next, in words, for whoever is not clicking.
    *
-   * Not worked out at all while the list is off: before a ride starts it means
-   * measuring the distance from the middle of the map to every road in the
+   * Not worked out at all while the list is off: before a route starts it means
+   * measuring the distance from the middle of the map to every segment in the
    * network, every time the map settles, for something nobody is going to see.
    */
   const choices = useMemo(
@@ -172,7 +175,7 @@ export function MapPage() {
           canUndo={canUndo}
           canRedo={canRedo}
           onClear={() => changeRoute(EMPTY_ROUTE)}
-          // A saved ride is finished, so it is shown whole rather than framed
+          // A saved route is finished, so it is shown whole rather than framed
           // on wherever it could still go.
           onLoad={load}
           onScrub={setScrub}
@@ -204,9 +207,9 @@ export function MapPage() {
         />
 
         <MapWatermark />
-        {/* Under the mark on a phone, where the only free edge is; down with the
-            map's own credits on desktop, where the sidebar has just ended and
-            the top-left would read as belonging to it. */}
+        {/* Under the mark on a phone, where the only free edge is; down with
+            the map's own credits on desktop, where the sidebar has just ended
+            and the top-left would read as belonging to it. */}
         <MapLegend
           encoding={encoding}
           className="absolute top-14 left-3 z-10 md:top-auto md:bottom-9"

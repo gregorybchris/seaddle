@@ -68,7 +68,7 @@ type SheetProps = {
    *
    * Different for a panel being worked in and one being glanced at: the admin
    * wants candidates fully in view, while the site is a map first — throwing
-   * the panel over most of it the instant a road is picked hides the very
+   * the panel over most of it the instant a segment is picked hides the very
    * change the pick just made.
    */
   raisedTo?: Detent;
@@ -127,7 +127,7 @@ export function Sheet({
    * The resting heights are fractions of the viewport and the thing they have
    * to clear is measured in pixels, which are two different scales: 22% of a
    * tall phone is a comfortable strip and 22% of a short one is 147px, and the
-   * road being read needs about 190. So the panel's lowest height is a floor
+   * segment being read needs about 190. So the panel's lowest height is a floor
    * under the vh rather than the vh itself — whichever is taller wins. Nothing
    * up here decides what is worth showing; the pinned slot is by definition the
    * part that is always visible, and this is what keeps that promise on a
@@ -158,9 +158,9 @@ export function Sheet({
    */
   const collapsed = visibleVh <= PEEK_VH;
 
-  // Watched rather than measured once: the pinned slot holds whatever road was
-  // last tapped, and a name that wraps to two lines is a taller floor than the
-  // one before it.
+  // Watched rather than measured once: the pinned slot holds whatever segment
+  // was last tapped, and a name that wraps to two lines is a taller floor than
+  // the one before it.
   useEffect(() => {
     const node = pinned.current;
     if (!node) return;

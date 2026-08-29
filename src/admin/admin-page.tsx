@@ -85,7 +85,7 @@ export default function AdminPage() {
    *
    * The sidebar lists this and the step buttons walk it, so during a review
    * pass "next" is the segment you would have ridden onto — which is what
-   * makes it possible to judge how protected a road is without zooming out
+   * makes it possible to judge how protected a segment is without zooming out
    * first to remember where it was. Ids record when a segment was extracted
    * and say nothing about where it is.
    *
@@ -113,7 +113,7 @@ export default function AdminPage() {
     if (!index) return;
     setHint(null);
 
-    // Dropping a pin asks which road and how far along at once, so it comes
+    // Dropping a pin asks which segment and how far along at once, so it comes
     // before anything that only wants the coordinate.
     if (dropping) {
       const target = pinTarget(data.geometry, coord);
@@ -290,8 +290,8 @@ export default function AdminPage() {
     locateSegment(to);
   }
 
-  // A and D walk the pass, the same two steps as the caret buttons. A review
-  // is a hand on the mouse to pick roads apart and a hand on the keys to judge
+  // A and D walk the pass, the same two steps as the caret buttons. A review is
+  // a hand on the mouse to pick segments apart and a hand on the keys to judge
   // them, so moving on shouldn't cost a trip back to a 20px button. Bound here
   // rather than in the panel so the keys cannot drift from the buttons; no
   // dependency list, since the effect closes over the selection it steps from.

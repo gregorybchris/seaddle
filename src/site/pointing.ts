@@ -1,5 +1,5 @@
 /**
- * What picking a road is called on this machine, and what it is done with.
+ * What picking a segment is called on this machine, and what it is done with.
  *
  * The one instruction a first-time rider is given should name the gesture they
  * actually have. Decided by whether the pointer can hover rather than by screen

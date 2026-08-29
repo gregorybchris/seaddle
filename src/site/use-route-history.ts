@@ -8,7 +8,7 @@ import { decodeStages, EMPTY_ROUTE, encodeRoute, type Route } from "./route";
  * What the map should frame next.
  *
  * Building a route and looking at one want different views: mid-build the
- * question is where to turn, but a ride opened from a link or from the saved
+ * question is where to turn, but a route opened from a link or from the saved
  * list is finished, and the answer is what it looks like end to end.
  */
 export type Framing = { mode: "choices" | "route"; at: number };
@@ -19,7 +19,7 @@ export type Framing = { mode: "choices" | "route"; at: number };
  * Held as one list rather than as a past and a future, because that is what an
  * undone route is: still on the list, just behind the cursor. Making a new
  * choice from there drops everything ahead, the same way taking a different
- * turning means the road you were on is no longer where you are going.
+ * turning means the segment you were on is no longer where you are going.
  */
 type Timeline = { entries: Route[]; index: number };
 
@@ -48,7 +48,7 @@ export function useRouteHistory(graph: SiteGraph | null) {
       setTimeline(next);
       setFraming({ mode, at: Date.now() });
 
-      // Only the ride: whichever road is being read is the selection's to
+      // Only the route: whichever segment is being read is the selection's to
       // write, and it survives a pick rather than being cleared by one.
       writeLink({ route: encodeRoute(next.entries[next.index]) }, write, {
         index: next.index,
@@ -71,11 +71,11 @@ export function useRouteHistory(graph: SiteGraph | null) {
   );
 
   /**
-   * A ride that was built elsewhere — a link, or one off the saved list.
+   * A route that was built elsewhere — a link, or one off the saved list.
    *
    * It arrives with its decisions intact, so it is unpacked into a timeline
    * rather than dropped on as a single lump. Undo then trims the last turn of
-   * a shared ride, which is the obvious thing to want to do with one.
+   * a shared route, which is the obvious thing to want to do with one.
    */
   const adopt = useCallback(
     (encoded: string, write: "push" | "replace") => {
@@ -138,8 +138,24 @@ export function useRouteHistory(graph: SiteGraph | null) {
   // the text field while someone is in one.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
       if (typingIn(event.target)) return;
+
+      // ⌫ on its own, which is what every other route builder spells as "take
+      // back the last segment" — and what a rider who has never met ⌘Z reaches
+      // for first. Starting over wears the same key with a modifier, so the
+      // habit lands on the reversible one.
+      if (
+        event.key === "Backspace" &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !event.altKey
+      ) {
+        event.preventDefault();
+        undo();
+        return;
+      }
+
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
 
       const key = event.key.toLowerCase();
       const redoing = key === "y" || (key === "z" && event.shiftKey);

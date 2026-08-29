@@ -11,7 +11,7 @@ export type Step = {
   from: NodeId;
   to: NodeId;
   /**
-   * Added by following the road rather than by being picked.
+   * Added by following the segment rather than by being picked.
    *
    * Recorded rather than worked out later, because whether a segment was a
    * choice depends on the state of the route when it was added, not on the
@@ -21,9 +21,9 @@ export type Step = {
   /**
    * The step that turned the route around.
    *
-   * Riding back down the road you arrived on is the one thing `append` refuses,
-   * so a link cannot describe an out-and-back as another segment — it has to
-   * say "and back", and this is what remembers that it did.
+   * Riding back down the segment you arrived on is the one thing `append`
+   * refuses, so a link cannot describe an out-and-back as another segment — it
+   * has to say "and back", and this is what remembers that it did.
    */
   turn?: boolean;
 };
@@ -110,8 +110,8 @@ export function canAppend(
  *
  * Refuses anything that is not a legal continuation. The rule lives here rather
  * than in each caller, because a version that merely checked whether a segment
- * touched the live end would let a route double straight back down the road it
- * arrived on — which the highlighting says is not allowed.
+ * touched the live end would let a route double straight back down the segment
+ * it arrived on — which the highlighting says is not allowed.
  */
 export function append(
   route: Route,
@@ -150,14 +150,14 @@ export function append(
 /**
  * Carry on through junctions that offer nothing to decide.
  *
- * A junction where two segments meet is a bend in the road, not a fork, and
- * asking someone to click through it is asking them to confirm the only thing
- * they could have done. So the route runs on by itself until it reaches
- * somewhere with a real choice, or nowhere left to go.
+ * A junction where two segments meet is a bend, not a fork, and asking someone
+ * to click through it is asking them to confirm the only thing they could have
+ * done. So the route runs on by itself until it reaches somewhere with a real
+ * choice, or nowhere left to go.
  *
  * Not done from the opening segment: while both its ends are still live the
  * choice on offer is which way to ride, which is a real one even where each end
- * has a single road leading off it.
+ * has a single segment leading off it.
  *
  * Stops on a segment already ridden. A ring of two-segment junctions has no
  * fork to arrive at, and without this it would circle forever.
@@ -232,8 +232,8 @@ export function outAndBack(route: Route): Route {
  * and the padding makes the link shorter than the format that kept them:
  * `17-42-43-88` against `s017,s042,s043,s088`.
  *
- * The turn is a letter for the same reason. It is not a road, and every other
- * token is a number, so there is nothing for it to be confused with.
+ * The turn is a letter for the same reason. It is not a segment, and every
+ * other token is a number, so there is nothing for it to be confused with.
  */
 const SEPARATOR = "-";
 const TURN = "t";
@@ -241,7 +241,7 @@ const TURN = "t";
 /**
  * The spellings a link may arrive in, which is more than the one it leaves in.
  *
- * Links outlive their formats. Rides written `s017,s042` with `~` for the turn
+ * Links outlive their formats. Routes written `s017,s042` with `~` for the turn
  * are in bookmarks, in messages, and in the saved list in people's browsers,
  * and a prettier URL is not worth losing one to. Reading both costs a character
  * class and a `replace`; every link is written back out in the current spelling
@@ -256,10 +256,10 @@ export function encodeSegmentId(id: SegmentId): string {
 }
 
 /**
- * A link's spelling of a road back into the id the graph knows it by.
+ * A link's spelling of a segment back into the id the graph knows it by.
  *
  * Null for anything that is not one, rather than an id built out of nonsense —
- * a hand-trimmed URL should give back a shorter ride, never a different one.
+ * a hand-trimmed URL should give back a shorter route, never a different one.
  */
 export function decodeSegmentId(token: string): SegmentId | null {
   const digits = token.replace(/^s/, "");
@@ -269,8 +269,8 @@ export function decodeSegmentId(token: string): SegmentId | null {
 /**
  * The same link in the current spelling, whatever spelling it arrived in.
  *
- * Only used on the saved list, where the rides are strings that were written
- * down before the format changed — and where two spellings of one ride would
+ * Only used on the saved list, where the routes are strings that were written
+ * down before the format changed — and where two spellings of one route would
  * otherwise stop `save` from recognising it as one it already has.
  */
 export function respell(encoded: string): string {
@@ -307,7 +307,7 @@ export function encodeRoute(route: Route): string {
  * shared route is put together by exactly the rules that built it — including
  * running on through junctions with nothing to decide. Anything that no longer
  * fits is dropped rather than throwing: segments get recut, and a stale link
- * should give back as much of the ride as still exists.
+ * should give back as much of the route as still exists.
  */
 export function decodeRoute(encoded: string, graph: SiteGraph): Route {
   const stages = decodeStages(encoded, graph);
@@ -318,7 +318,7 @@ export function decodeRoute(encoded: string, graph: SiteGraph): Route {
  * Every route the link passed through on the way to the one it names.
  *
  * A list of decisions is also a history, so replaying it a token at a time says
- * what the route was after each of them. That is what lets Undo work on a ride
+ * what the route was after each of them. That is what lets Undo work on a route
  * that arrived from a link or the saved list: it was built out of decisions
  * like any other, just not in this browser, and they are all still here.
  *
@@ -346,11 +346,11 @@ function replay(route: Route, token: string, graph: SiteGraph): Route {
 }
 
 /**
- * Each step beside the road it names.
+ * Each step beside the segment it names.
  *
  * One place resolves a step against the graph, and one place decides what to do
  * about a step the graph no longer has — it is dropped, because a link outlives
- * the segments it was cut from and half a remembered ride beats an exception.
+ * the segments it was cut from and half a remembered route beats an exception.
  */
 function ridden(
   route: Route,
@@ -362,13 +362,14 @@ function ridden(
   });
 }
 
-/** The roads of the ride, in the order they are taken. */
+/** The segments of the route, in the order they are taken. */
 export function routeSegments(route: Route, graph: SiteGraph): SiteSegment[] {
   return ridden(route, graph).map(({ segment }) => segment);
 }
 
 /**
- * Which way round each road is ridden, for anything laid out along the route.
+ * Which way round each segment is ridden, for anything laid out along the
+ * route.
  *
  * A segment is stored one way and can be taken either, so anything placed at a
  * fraction along it — a pin, a marker — needs to be told which end that
@@ -447,10 +448,10 @@ export function routePoints(route: Route, graph: SiteGraph): ElevCoord[] {
  * The area the choices occupy: every segment the route could grow into.
  *
  * This, rather than the route so far, is what the map should be showing. The
- * road already ridden is settled; the decision in front of the rider is which
- * way to go next, and a view framed on twenty miles of history can leave the
- * turnings too small to tell apart. Null when the route has not started, or has
- * run out of road — in both cases there is nothing to frame.
+ * segment already ridden is settled; the decision in front of the rider is
+ * which way to go next, and a view framed on twenty miles of history can leave
+ * the turnings too small to tell apart. Null when the route has not started, or
+ * has run out of segment — in both cases there is nothing to frame.
  */
 export function choiceBounds(route: Route, graph: SiteGraph): Bounds | null {
   if (isEmpty(route)) return null;
@@ -475,7 +476,7 @@ export function focusAnchor(route: Route, graph: SiteGraph): Coord | null {
   return [last[0], last[1]];
 }
 
-/** The whole ride, for when it is being looked at rather than built. */
+/** The whole route, for when it is being looked at rather than built. */
 export function routeBounds(route: Route, graph: SiteGraph): Bounds | null {
   const points = routePoints(route, graph);
   return points.length > 0 ? boundsOf(points) : null;

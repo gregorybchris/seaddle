@@ -12,3 +12,16 @@ export function typingIn(target: EventTarget | null): boolean {
     target instanceof HTMLTextAreaElement
   );
 }
+
+/**
+ * What the modifier key is called on this machine, for anything that shows a
+ * shortcut rather than answers one.
+ *
+ * `navigator.platform` is deprecated and still the only thing every browser
+ * agrees on; getting it wrong costs a tooltip the wrong symbol, which is why
+ * a sniff is tolerable here and would not be anywhere else.
+ */
+export const MOD =
+  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+    ? "\u2318"
+    : "Ctrl+";

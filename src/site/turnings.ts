@@ -6,28 +6,29 @@ import type { SiteGraph, SiteSegment } from "./graph-data";
 import { continuations, isEmpty, liveEnds, type Route } from "./route";
 
 /**
- * How many roads to offer before a ride has started.
+ * How many segments to offer before a route has started.
  *
- * With nothing picked every road in the network is a legal first choice, and a
- * list of a hundred and fifty is not a list anyone reads — it is the map again,
- * worse. Eight is a screenful, and the map moving under the reader is what
- * changes which eight: panning is how you say where you mean, exactly as it is
- * for someone pointing at it.
+ * With nothing picked every segment in the network is a legal first choice, and
+ * a list of a hundred and fifty is not a list anyone reads — it is the map
+ * again, worse. Eight is a screenful, and the map moving under the reader is
+ * what changes which eight: panning is how you say where you mean, exactly as
+ * it is for someone pointing at it.
  */
 export const NEARBY = 8;
 
 /**
- * A road that could be taken next, described from where the rider is standing.
+ * A segment that could be taken next, described from where the rider is
+ * standing.
  *
  * The map answers this by highlighting; this answers it in words, because a
- * road on a canvas cannot be reached with a keyboard and cannot be read aloud.
- * Everything here is what you would tell someone at a junction: which way it
- * goes, how far, how much of a climb that way, and what it is like.
+ * segment on a canvas cannot be reached with a keyboard and cannot be read
+ * aloud. Everything here is what you would tell someone at a junction: which
+ * way it goes, how far, how much of a climb that way, and what it is like.
  */
 export type Turning = {
   segment: SiteSegment;
   /**
-   * The compass point you set off in, or null before a ride has a direction —
+   * The compass point you set off in, or null before a route has a direction —
    * where the list is nearest-first rather than a junction being read round.
    */
   heading: ReturnType<typeof compassPoint> | null;
@@ -35,7 +36,7 @@ export type Turning = {
   climbMeters: number;
 };
 
-/** The road oriented the way it leaves `node`. */
+/** The segment oriented the way it leaves `node`. */
 function leaving(segment: SiteSegment, node: NodeId) {
   return segment.from === node ? segment.points : reversed(segment.points);
 }
@@ -45,14 +46,14 @@ function climbFrom(segment: SiteSegment, node: NodeId): number {
 }
 
 /**
- * The roads on offer right now, in the order they are worth hearing.
+ * The segments on offer right now, in the order they are worth hearing.
  *
- * Once a ride is under way that is the junction read clockwise from north, so
- * two roads keep their relative order however the map is moved — a list that
+ * Once a route is under way that is the junction read clockwise from north, so
+ * two segments keep their relative order however the map is moved — a list that
  * reshuffled under a rider's fingers would make the same key mean a different
  * turn each time. Before it starts there is no junction to read round, so the
- * roads nearest the middle of the map come first and `near` is what the reader
- * has panned to.
+ * segments nearest the middle of the map come first and `near` is what the
+ * reader has panned to.
  */
 export function turnings(
   route: Route,
@@ -66,9 +67,10 @@ export function turnings(
 }
 
 /**
- * The roads closest to the middle of the map, before a ride has a direction.
+ * The segments closest to the middle of the map, before a route has a
+ * direction.
  *
- * Every road in the network is a legal first pick, so the list is cut to a
+ * Every segment in the network is a legal first pick, so the list is cut to a
  * screenful and panning is how the reader says which screenful they mean.
  */
 function nearest(
@@ -99,7 +101,8 @@ function nearest(
     }));
 }
 
-/** The arms of the junction the rider is standing at, read clockwise from north. */
+/** The arms of the junction the rider is standing at, read clockwise from
+ *  north. */
 function atJunction(
   route: Route,
   open: Set<SegmentId>,
@@ -141,7 +144,8 @@ function order(heading: Turning["heading"]): number {
   return heading === null ? ORDER.length : ORDER.indexOf(heading);
 }
 
-/** Two roads leaving the same way are settled by id, so the order is stable. */
+/** Two segments leaving the same way are settled by id, so the order is
+ *  stable. */
 function compare(a: Turning, b: Turning): number {
   return a.segment.id.localeCompare(b.segment.id);
 }

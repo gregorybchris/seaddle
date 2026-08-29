@@ -11,7 +11,7 @@ import { STEEPEST_GRADE } from "./grade";
 import type { SiteSegment } from "./graph-data";
 
 /**
- * An attribute someone wrote down about a road.
+ * An attribute someone wrote down about a segment.
  *
  * Every one of these is a small ordered or unordered set, which is what lets a
  * route be broken down by it and a legend list what the colors mean.
@@ -19,7 +19,7 @@ import type { SiteSegment } from "./graph-data";
 export type Attribute = "steepness" | "protection" | "surroundings";
 
 /**
- * What the map colors roads by.
+ * What the map colors segments by.
  *
  * Grade is the odd one and deliberately so: it is not an attribute of a
  * segment at all but of the ground under it, read off the recorded elevation
@@ -54,9 +54,9 @@ export function isAttribute(encoding: Encoding): encoding is Attribute {
  * list to keep in step. These earn it because no rule turns "surroundings" into
  * a tree, and because the picker offers all four at once — a rider choosing
  * between them is comparing four questions, and the names alone do not say that
- * grade is read along a road while the other three are one word about the whole
- * of it. Keyed on `Encoding`, so a fifth cannot be added without these failing
- * to compile.
+ * grade is read along a segment while the other three are one word about the
+ * whole of it. Keyed on `Encoding`, so a fifth cannot be added without these
+ * failing to compile.
  */
 export const ENCODING_ICONS: Record<Encoding, Icon> = {
   grade: ChartLineUp,
@@ -66,9 +66,9 @@ export const ENCODING_ICONS: Record<Encoding, Icon> = {
 };
 
 export const ENCODING_BLURBS: Record<Encoding, string> = {
-  grade: "The slope of the ground, read along each road.",
-  steepness: "One word for the whole road.",
-  protection: "How much of the road is yours.",
+  grade: "The slope of the ground, read along each segment.",
+  steepness: "One word for the whole segment.",
+  protection: "How much of the segment is yours.",
   surroundings: "Whether it is worth looking at.",
 };
 
@@ -107,10 +107,10 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
  * Whether a value is good news, for the badges in the explore panel.
  *
  * A second reading of the same three scales, and deliberately not the same one
- * as `RAMPS`. A ramp answers "which step of this scale is this road on", which
- * is what a map needs — every value distinct, the order carried by lightness.
- * A badge answers "is this in my favour", which is a different question and one
- * that two values can answer the same way.
+ * as `RAMPS`. A ramp answers "which step of this scale is this segment on",
+ * which is what a map needs — every value distinct, the order carried by
+ * lightness. A badge answers "is this in my favour", which is a different
+ * question and one that two values can answer the same way.
  *
  * That is why protection reads red-then-green-then-green here while the map
  * draws it tan, magenta, violet: a bike lane and a bike path are both a yes to
@@ -120,8 +120,8 @@ export const RAMPS: Record<Attribute, Record<string, string>> = {
  * ran green-amber-red and gray-green-green on the map, and the badges keep it.
  *
  * The cost is that "bike lane" is a green pill beside a magenta line. Worth it:
- * a rider reading one road wants the verdict, and a rider reading the whole map
- * wants the categories.
+ * a rider reading one segment wants the verdict, and a rider reading the whole
+ * map wants the categories.
  */
 export const TONES: Record<Attribute, Record<string, Tone>> = {
   steepness: { flat: "good", rolling: "caution", steep: "poor" },
@@ -151,7 +151,7 @@ export const GRADE_STOPS: [number, string][] = [
  * The grade ramp as CSS gradient stops.
  *
  * Shared by the key on the map and the card that turns it on, so the bar a
- * rider picks from is the bar they then read the roads against. Scaled to
+ * rider picks from is the bar they then read the segments against. Scaled to
  * `STEEPEST_GRADE`, which is where the ramp stops distinguishing anyway.
  */
 export function gradeRamp(): string {

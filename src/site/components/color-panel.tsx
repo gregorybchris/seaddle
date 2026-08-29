@@ -13,7 +13,7 @@ import {
 import { STEEPEST_GRADE } from "../grade";
 
 /**
- * What the map colors roads by, offered as the four maps it makes.
+ * What the map colors segments by, offered as the four maps it makes.
  *
  * A row of chips said the names and nothing else, which left the choice to be
  * made by guessing what "surroundings" would look like and then closing the
@@ -23,9 +23,9 @@ import { STEEPEST_GRADE } from "../grade";
  * and the card is the key to the map before the map has changed.
  *
  * Four cards down a column rather than a grid of two. They are read one after
- * another — four answers to "what do you want to know about these roads" — and
- * a column is the shape of a list of answers. Each is wide enough for a ramp
- * whose steps can be told apart, which two columns are not.
+ * another — four answers to "what do you want to know about these segments" —
+ * and a column is the shape of a list of answers. Each is wide enough for a
+ * ramp whose steps can be told apart, which two columns are not.
  */
 export function ColorPanel({
   value,
@@ -59,7 +59,7 @@ export function ColorPanel({
  * a list of swatches inside one would be invalid, and a screen reader given a
  * nested list inside a radio reads the furniture rather than the choice. The
  * value words are inside the button on purpose, so what is announced is
- * "steepness, one word for the whole road, flat rolling steep".
+ * "steepness, one word for the whole segment, flat rolling steep".
  */
 function Choice({
   encoding,
@@ -120,9 +120,9 @@ function Choice({
  * The scale itself, drawn the way the map will draw it.
  *
  * Stepped for an attribute and continuous for grade, which is the one real
- * difference between them — a road is one steepness end to end, and the ground
- * under it changes the whole way. The swatches keep a ring for the same reason
- * the key on the map does: the dark end of every ramp is tuned against a
+ * difference between them — a segment is one steepness end to end, and the
+ * ground under it changes the whole way. The swatches keep a ring for the same
+ * reason the key on the map does: the dark end of every ramp is tuned against a
  * near-white basemap and would otherwise sink into this dialog's forest.
  */
 function Ramp({ encoding }: { encoding: Encoding }) {

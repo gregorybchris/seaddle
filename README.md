@@ -135,4 +135,4 @@ style; without it both maps fall back to the stock light style.
 
 Visits are counted by GoatCounter, loaded from `index.html`. No cookies, and
 nothing about a rider leaves the page: the route they build is in their own URL
-and their saved rides are in their own browser.
+and their saved routes are in their own browser.

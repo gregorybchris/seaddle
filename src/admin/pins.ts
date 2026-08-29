@@ -14,8 +14,8 @@ import type {
  * Which segment a click meant, and how far along it.
  *
  * A pin belongs to a segment rather than floating on the map, so dropping one
- * is really two questions — which road, and where on it — answered by the same
- * click. Returns nothing when the click is too far from any segment to be
+ * is really two questions — which segment, and where on it — answered by the
+ * same click. Returns nothing when the click is too far from any segment to be
  * about one.
  */
 export function pinTarget(
@@ -43,8 +43,8 @@ export function pinTarget(
 /**
  * Put a pin on a segment.
  *
- * Its position is stored twice on purpose: `at` says how far along the road it
- * is, which is what orders it against the rest of a ride, and `coord` says
+ * Its position is stored twice on purpose: `at` says how far along the segment
+ * it is, which is what orders it against the rest of a ride, and `coord` says
  * where the thing itself stands — a fountain sits in the park beside the trail,
  * not on the center line.
  */

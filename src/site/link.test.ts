@@ -17,11 +17,11 @@ describe("parseLink", () => {
     expect(parseLink("?s=")).toEqual({ route: "", selected: null });
   });
 
-  it("still reads a road spelled the way links used to spell it", () => {
+  it("still reads a segment spelled the way links used to spell it", () => {
     expect(parseLink("?s=s009").selected).toBe("s009");
   });
 
-  it("keeps a road it cannot make an id out of out of the link", () => {
+  it("keeps a segment it cannot make an id out of out of the link", () => {
     expect(parseLink("?s=north").selected).toBeNull();
   });
 });

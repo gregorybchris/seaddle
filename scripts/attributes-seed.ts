@@ -4,10 +4,10 @@
  * Steepness is not a matter of opinion — the geometry already knows how much a
  * segment climbs — so it is seeded rather than reviewed by hand. It is also
  * undirected: one value describing the segment however it is ridden, taking
- * whichever direction climbs more. A road that is a wall going up and a coast
- * coming down is a steep road, and calling it flat because you happened to
- * store the downhill direction first was the trap the old two-sided field kept
- * walking into.
+ * whichever direction climbs more. A segment that is a wall going up and a
+ * coast coming down is a steep segment, and calling it flat because you
+ * happened to store the downhill direction first was the trap the old two-sided
+ * field kept walking into.
  *
  * Protection is seeded too, but only as a placeholder: nothing in the data
  * implies it, and it stays uniform until someone rides these roads and says.

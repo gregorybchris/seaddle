@@ -11,10 +11,10 @@ import { cn } from "@/lib/utilities/style-utils";
  * Picking becomes recognising rather than remembering, which is the move the
  * color dialog next door already makes.
  *
- * Every one of them carries a ride, cased and green. That is not decoration:
+ * Every one of them carries a route, cased and green. That is not decoration:
  * the note `basemap.ts` opens with is that the one thing a ground has to
  * survive is the route drawn on top of it, and a rider choosing between these
- * is choosing what their ride will be read against rather than a wallpaper.
+ * is choosing what their route will be read against rather than a wallpaper.
  *
  * Two by two, with the name over the drawing rather than beside it. The four
  * are being compared rather than read down, and a square block puts every
@@ -187,8 +187,8 @@ function Thumbnail({
         <path d={LAKE} />
       </g>
 
-      {/* A ride: cased in the dark and left its own color, which is how the map
-          draws one and the whole of what a ground has to survive. */}
+      {/* A route: cased in the dark and left its own color, which is how the
+          map draws one and the whole of what a ground has to survive. */}
       <g fill="none" strokeLinecap="round" strokeLinejoin="round">
         <path d={ROUTE} stroke="var(--color-forest-deep)" strokeWidth="4.6" />
         <path d={ROUTE} stroke="var(--color-moss)" strokeWidth="2.4" />

@@ -2,8 +2,8 @@
  * An order to visit every segment in, that follows the roads.
  *
  * Reviewing is done one segment at a time, and the cost of the order they
- * arrive in is paid in attention: judging how protected a road is means
- * knowing which road it is, and by id that means re-orienting on the map
+ * arrive in is paid in attention: judging how protected a segment is means
+ * knowing which segment it is, and by id that means re-orienting on the map
  * roughly every second segment, because ids record the order segments were
  * cut, not where they are.
  *

@@ -20,10 +20,10 @@ type ConfirmDialogProps = {
  * and not a styling one: it takes focus to the cancel, it will not close by
  * clicking away from it, and it announces itself rather than waiting to be
  * found. Clicking beside a panel is how someone dismisses a thing they opened
- * by accident, and that gesture must not be the one that deletes a ride.
+ * by accident, and that gesture must not be the one that deletes a route.
  *
  * Only for what costs more to rebuild than to reconsider: forgetting a saved
- * ride, which lives in this browser and nowhere else, or starting over, which
+ * route, which lives in this browser and nowhere else, or starting over, which
  * takes back an afternoon of picks in one click even though Undo can return
  * them.
  */

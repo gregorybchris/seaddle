@@ -22,11 +22,12 @@ type PinEditorProps = {
 };
 
 /**
- * The things worth knowing about along a road.
+ * The things worth knowing about along a segment.
  *
  * Dropping one is armed rather than modal: pick what you are adding, then click
- * the road. The click answers which segment and how far along at once, so a pin
- * belongs to a road from the moment it exists rather than floating near one.
+ * the segment. The click answers which one and how far along it at once, so a
+ * pin belongs to a segment from the moment it exists rather than floating near
+ * one.
  */
 export function PinEditor({
   pins,
@@ -43,7 +44,7 @@ export function PinEditor({
     <section className="flex flex-col gap-3">
       <div className="border-sand/15 bg-forest-deep/30 flex flex-col gap-2 rounded-lg border p-2.5">
         <ChipGroup
-          label={dropping ? "Now click the road" : "Add a pin"}
+          label={dropping ? "Now click the segment" : "Add a pin"}
           options={PIN_KINDS}
           value={dropping}
           onChange={(kind: PinKind) =>

@@ -13,7 +13,7 @@ function at(north: number, east: number, ele = 0): ElevCoord {
   return [HUB[0] + east / LON, HUB[1] + north / LAT, ele];
 }
 
-function road(
+function segment(
   id: string,
   from: string,
   to: string,
@@ -33,17 +33,17 @@ function road(
 }
 
 /**
- * A crossroads at nB, with a road leaving in each direction.
+ * A crossroads at nB, with a segment leaving in each direction.
  *
- * The west road is stored running towards the hub rather than away from it, so
- * that reading it from nB means reading its points backwards — which is the
+ * The west segment is stored running towards the hub rather than away from it,
+ * so that reading it from nB means reading its points backwards — which is the
  * case a version that trusted `from` would get exactly wrong.
  */
 const G: SiteGraph = siteGraph([
-  road("sIn", "nS", "nB", [at(-200, 0), at(-100, 0), at(0, 0)]),
-  road("sNorth", "nB", "nN", [at(0, 0), at(100, 0, 30), at(200, 0, 60)]),
-  road("sEast", "nB", "nE", [at(0, 0), at(0, 100), at(0, 200)]),
-  road("sWest", "nW", "nB", [at(0, -200, 40), at(0, -100, 20), at(0, 0)]),
+  segment("sIn", "nS", "nB", [at(-200, 0), at(-100, 0), at(0, 0)]),
+  segment("sNorth", "nB", "nN", [at(0, 0), at(100, 0, 30), at(200, 0, 60)]),
+  segment("sEast", "nB", "nE", [at(0, 0), at(0, 100), at(0, 200)]),
+  segment("sWest", "nW", "nB", [at(0, -200, 40), at(0, -100, 20), at(0, 0)]),
 ]);
 const seg = (id: string) => G.segments.get(id)!;
 const headings = (list: ReturnType<typeof turnings>) =>
@@ -53,7 +53,7 @@ describe("reading a junction", () => {
   // Arrive at nB from the south, so the three other arms are the choice.
   const arrived = append(startRoute(seg("sIn")), seg("sNorth"), G);
 
-  it("names the way each road sets off from where the rider is", () => {
+  it("names the way each segment sets off from where the rider is", () => {
     // Back at nB after riding north then turning round is not a case here:
     // this is the fork itself, read from the junction it fans out of.
     const list = turnings(startRoute(seg("sIn")), G, null);
@@ -68,7 +68,7 @@ describe("reading a junction", () => {
     expect(list.map((t) => t.heading)).toEqual(["north", "east", "west"]);
   });
 
-  it("does not offer the road just ridden", () => {
+  it("does not offer the segment just ridden", () => {
     expect(
       turnings(startRoute(seg("sIn")), G, null).map((t) => t.segment.id),
     ).not.toContain("sIn");
@@ -93,14 +93,14 @@ describe("reading a junction", () => {
 
   it("offers only the live end once direction is settled", () => {
     // Two segments in, the far end of the chain is the one place to grow from,
-    // so the roads off the start are no longer on offer.
+    // so the segments off the start are no longer on offer.
     expect(arrived.ambiguous).toBe(false);
     expect(turnings(arrived, G, null)).toEqual([]);
   });
 });
 
-describe("before a ride has started", () => {
-  it("offers the roads nearest where the map is looking", () => {
+describe("before a route has started", () => {
+  it("offers the segments nearest where the map is looking", () => {
     const nearWest: Coord = [HUB[0] - 190 / LON, HUB[1]];
     expect(turnings(EMPTY_ROUTE, G, nearWest)[0].segment.id).toBe("sWest");
 
@@ -122,7 +122,7 @@ describe("before a ride has started", () => {
 
   it("stays a list rather than becoming the map again", () => {
     const crowd = Array.from({ length: 40 }, (_, i) =>
-      road(`x${i}`, `p${i}`, `q${i}`, [at(i, 0), at(i, 100), at(i, 200)]),
+      segment(`x${i}`, `p${i}`, `q${i}`, [at(i, 0), at(i, 100), at(i, 200)]),
     );
     const many = siteGraph([...G.segments.values(), ...crowd]);
     expect(turnings(EMPTY_ROUTE, many, HUB)).toHaveLength(NEARBY);

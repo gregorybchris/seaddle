@@ -8,17 +8,17 @@ const LINE: ElevCoord[] = trackThrough("line", [at(0, 0), at(1000, 0)]).points;
 const GEOMETRY = new Map([["s001", LINE]]);
 
 describe("pinTarget", () => {
-  it("answers which road and how far along from one click", () => {
+  it("answers which segment and how far along from one click", () => {
     const hit = pinTarget(GEOMETRY, at(500, 5))!;
     expect(hit.segment).toBe("s001");
     expect(hit.at).toBeCloseTo(0.5, 2);
   });
 
-  it("ignores a click too far from any road to be about one", () => {
+  it("ignores a click too far from any segment to be about one", () => {
     expect(pinTarget(GEOMETRY, at(500, 300))).toBeNull();
   });
 
-  it("picks the nearer road where two run close together", () => {
+  it("picks the nearer segment where two run close together", () => {
     const near = trackThrough("near", [at(0, 30), at(1000, 30)]).points;
     const both = new Map([
       ["s001", LINE],
@@ -29,7 +29,7 @@ describe("pinTarget", () => {
 });
 
 describe("addPin", () => {
-  it("stores where it is on the road and where the thing stands", () => {
+  it("stores where it is on the segment and where the thing stands", () => {
     // A fountain sits in the park beside the trail, not on the center line.
     const beside = at(500, 12);
     const { pin } = addPin(emptyGraph(), "s001", 0.5, "drinkingWater", beside);
@@ -50,7 +50,7 @@ describe("addPin", () => {
     expect([first.pin.id, second.pin.id]).toEqual(["p001", "p002"]);
   });
 
-  it("keeps a position on the road even from a click past its end", () => {
+  it("keeps a position on the segment even from a click past its end", () => {
     expect(
       addPin(emptyGraph(), "s001", 1.4, "viewpoint", at(0, 0)).pin.at,
     ).toBe(1);

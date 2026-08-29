@@ -3,21 +3,21 @@ import type { SiteGraph } from "./graph-data";
 import { continuations, isEmpty, liveEnds, type Route } from "./route";
 
 /**
- * Why a road cannot be picked right now.
+ * Why a segment cannot be picked right now.
  *
  * Three states on the map, and only one of them is clickable — but a beginner
  * reading a faded line has no way to tell whether it is faded because their
- * ride does not reach it, because they have already ridden it, or because of a
+ * route does not reach it, because they have already ridden it, or because of a
  * filter they set ten minutes ago. The map can say which; it just has to be
  * asked, and a tap is how someone asks.
  */
 export type ClosedReason = "ridden" | "stranded" | "elsewhere";
 
 /**
- * The reason, or null if the road is in fact pickable.
+ * The reason, or null if the segment is in fact pickable.
  *
  * "Ridden" is checked before the rest because it is the more precise answer:
- * the road at the end of a ride that has run out of road is both already
+ * the segment at the end of a route that has run out of segment is both already
  * ridden and at a dead end, and being told it is already yours is what the
  * person tapping it needs to hear.
  */
@@ -38,27 +38,27 @@ export type ClosedNotice = { headline: string; detail: string };
 /**
  * The reason in words.
  *
- * Every one of them names the way out — undo, or pick a bright road — because
- * a message that only says no leaves the rider exactly where they were.
+ * Every one of them names the way out — undo, or pick a bright segment —
+ * because a message that only says no leaves the rider exactly where they were.
  */
 export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
   switch (reason) {
     case "ridden":
       return {
-        headline: "Already in your ride",
-        detail: "Undo back to this road to take a different turn from it.",
+        headline: "Already in your route",
+        detail: "Undo back to this segment to take a different turn from it.",
       };
     case "stranded":
       return {
         headline: "Nowhere left to go",
         detail:
-          "No road continues from the end of your ride. Undo the last one to try another way.",
+          "No segment continues from the end of your route. Undo the last one to try another way.",
       };
     case "elsewhere":
       return {
         headline: "Oops! Can't add this segment",
         detail:
-          // Both ends are live until a second road says which way the first
+          // Both ends are live until a second segment says which way the first
           // is being ridden. Pointing at the last segment while there are two
           // of them teaches a beginner a rule the map does not follow.
           liveEnds(route).length > 1
@@ -69,11 +69,11 @@ export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
 }
 
 /**
- * What the map says about a tap that landed on no road at all.
+ * What the map says about a tap that landed on no segment at all.
  *
- * The ground between roads is the other way a build-mode tap can come to
- * nothing, and it needs an answer for the same reason a faded road does: a tap
- * that changes nothing reads as a map that has stopped working. It is also
+ * The ground between segments is the other way a build-mode tap can come to
+ * nothing, and it needs an answer for the same reason a faded segment does: a
+ * tap that changes nothing reads as a map that has stopped working. It is also
  * where a rider goes to undo everything — tapping the background is how most
  * maps drop what is selected, and here it does not, so the message points at
  * the button that does rather than leaving someone tapping harder.
@@ -81,12 +81,12 @@ export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
 export function groundNotice(route: Route): ClosedNotice {
   return isEmpty(route)
     ? {
-        headline: "Oops! That's not a road",
-        detail: "Only the roads can be picked. Pick one to start your ride.",
+        headline: "Oops! That's not a segment",
+        detail: "Only segments can be picked. Pick one to start your route.",
       }
     : {
-        headline: "Oops! That's not a road",
+        headline: "Oops! That's not a segment",
         detail:
-          "Only the roads can be picked. To clear your ride, use the Start over button.",
+          "Only segments can be picked. To clear your route, use the Start over button.",
       };
 }

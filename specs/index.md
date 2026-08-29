@@ -195,15 +195,15 @@ public/pins.geojson            FeatureCollection, one Point per pin
 
 Handing Mapbox a pre-built FeatureCollection means **color-coding and reachability are data-driven
 style expressions**, not React state. Recoloring the whole map by a different attribute, or fading
-every road the ride cannot reach, is a paint-property change on the GPU — instant with hundreds of
-segments, and no per-segment React components to reconcile.
+every segment the route cannot reach, is a paint-property change on the GPU — instant with hundreds
+of segments, and no per-segment React components to reconcile.
 
 ```js
 // color by the currently selected attribute
 "line-color": ["match", ["get", "protection"],
   "poor", C.poor, "fair", C.fair, "good", C.good, "great", C.great, C.unknown]
 
-// the roads a ride can still take, bright and wider than the rest
+// the segments a route can still take, bright and wider than the rest
 "filter": ["in", ["get", "id"], ["literal", continuations]]
 ```
 
@@ -250,8 +250,8 @@ should never have to wonder which click is legal.
 
 The route is **cased, not recoloured**. Painting it a flat accent said "chosen" by throwing away the
 steepness or the bike lane that made it worth choosing — which is the one thing this map exists to
-show — so instead a dark casing is drawn underneath and the road keeps its own colour. The ride and
-the choices leading off it can then be compared on the encoding while the ride stays obvious.
+show — so instead a dark casing is drawn underneath and the segment keeps its own colour. The route
+and the choices leading off it can then be compared on the encoding while the route stays obvious.
 
 Segments may repeat — a route is a walk through the graph, not a simple path. That's what makes
 out-and-backs work.
@@ -276,20 +276,20 @@ try to be clever.
 
 Three things, in this order: the route being built, the stats, and what can be done with it.
 
-**Before a ride starts, the stats stand down.** Distance and gain hold the sidebar's pinned slot —
-the one strip visible at every sheet detent — and before the first pick they are two zeros, which
-is not a reading but the absence of one. So the empty state gives that slot to the invitation
-instead: one amber-bordered line, _"Tap any road on the map to start building your route,"_ naming
-the gesture the machine at hand actually has (a tap without a hovering pointer, a click with one).
-The numbers take the slot back on the first pick, which is the moment they begin to mean something.
+**Before a route starts, the stats stand down.** Distance and gain hold the sidebar's pinned slot —
+the one strip visible at every sheet detent — and before the first pick they are two zeros, which is
+not a reading but the absence of one. So the empty state gives that slot to the invitation instead:
+one amber-bordered line, _"Build your route — tap any segment on the map to add it,"_ naming the
+gesture the machine at hand actually has (a tap without a hovering pointer, a click with one). The
+numbers take the slot back on the first pick, which is the moment they begin to mean something.
 
 It is set to wrap and sized to fill both lines. The sentence wants more width than the sidebar's
 text column has at any size worth reading, so one line is not on offer; balancing the two lines
 without also growing the type just empties the right half of the band. Balanced and large is what
 makes the break look chosen.
 
-Under it, in the scrolling body, the model in three lines — roads chain, the bright ones are the
-legal next moves, and a finished ride can be kept or exported. None of that is readable off a map
+Under it, in the scrolling body, the model in three lines — segments chain, the bright ones are the
+legal next moves, and a finished route can be kept or exported. None of that is readable off a map
 of lines, and all of it is what a beginner is missing. Three is the budget: the body is below the
 fold on a phone at rest, so it has to reward a drag without being homework standing between anyone
 and their first pick.
@@ -303,16 +303,17 @@ dressed up as authority):
   lane · 1.2 mi hard · 84% asphalt"_. This is the feature that turns segment metadata into a real
   safety read, and it's the reason a beginner would use this site over Strava.
 
-**Segment detail** is a **mode**, not a second meaning for the same click. A click on a road cannot
-both add it and describe it, so the map has two: **build** (a shovel) and **explore** (binoculars),
-toggled from the first of three buttons on the map — mode, colors, settings. The choice is kept in `localStorage` like the
-choice of basemap — it is a setting rather than a step in anything, and being put back into a mode
-you deliberately left is the kind of small insult a reload should not be able to deliver. Which road
-was being read is *not* kept: that is where the reader had got to, not a preference, and restoring it
-would open a panel of details about a road nobody just tapped.
+**Segment detail** is a **mode**, not a second meaning for the same click. A click on a segment
+cannot both add it and describe it, so the map has two: **build** (a shovel) and **explore**
+(binoculars), toggled from the first of three buttons on the map — mode, colors, settings. The
+choice is kept in `localStorage` like the choice of basemap — it is a setting rather than a step in
+anything, and being put back into a mode you deliberately left is the kind of small insult a reload
+should not be able to deliver. Which segment was being read is *not* kept: that is where the reader
+had got to, not a preference, and restoring it would open a panel of details about a segment nobody
+just tapped.
 
-Switching either way raises a short notice over the map — _"Explore mode. Tap any road to read what
-it is like. Nothing is added to your ride."_ — in the same slot that explains why a tapped road did
+Switching either way raises a short notice over the map — _"Explore mode. Tap any segment to learn
+about it."_ — in the same slot that explains why a tapped segment did
 nothing. A mode is the one change here that alters what a click means while showing almost nothing
 for it: the icon swaps and the panel swaps, and neither says the rules just changed. It lingers four
 seconds rather than the six a refusal gets, because it confirms something the rider did on purpose
@@ -321,69 +322,69 @@ instead of teaching a rule they did not know.
 Every notice can be **put away early** — an X, a swipe either way, or a tap anywhere on it. The card
 therefore has to receive pointer events, where everything around it stays transparent to the map; a
 tap counts as a dismissal precisely because of that, since while the card is up it is in the way of
-the road beneath it and a tap that did nothing would read as the map having stopped working.
+the segment beneath it and a tap that did nothing would read as the map having stopped working.
 
 Exploring is where a rider arrives who has never chosen otherwise — the first question a map of a
 strange city gets is what its lines are, not which of them to chain, and building answers a question
-that has not been asked yet. A link carrying a ride is the exception: that rider was sent something
-to look at, and the panel holding its distance, climb, profile, and GPX button is the route panel. It
-overrides the default only, never a stored choice. Exploring frees the whole network to be
-clicked — not just the roads that continue the route — and swaps the sidebar for the one road being
-read: its name, its length, its climb, its three attributes, and its elevation profile. Clicking the
-ground between roads puts it down again. The route is left alone throughout and comes back untouched
-under the shovel, so exploring is free to step into mid-ride, which is when the question it answers
-actually comes up.
+that has not been asked yet. A link carrying a route is the exception: that rider was sent something
+to look at, and the panel holding its distance, climb, profile, and GPX button is the route panel.
+It overrides the default only, never a stored choice. Exploring frees the whole network to be
+clicked — not just the segments that continue the route — and swaps the sidebar for the one segment
+being read: its name, its length, its climb, its three attributes, and its elevation profile.
+Clicking the ground between segments puts it down again. The route is left alone throughout and
+comes back untouched under the shovel, so exploring is free to step into mid-route, which is when
+the question it answers actually comes up.
 
-That the whole network goes live is the point. In build mode a rider can only interrogate the roads
-that happen to join their ride, which is exactly backwards: the roads worth reading about are the
-ones you have not committed to. And hovering — the only way to read a road while building — does not
-exist on a phone and is gone the moment the pointer moves, so it can neither be read at leisure nor
-compared between two roads.
+That the whole network goes live is the point. In build mode a rider can only interrogate the
+segments that happen to join their route, which is exactly backwards: the segments worth reading
+about are ones you have not committed to. And hovering — the only way to read a segment while
+building — does not exist on a phone and is gone the moment the pointer moves, so it can neither be
+read at leisure nor compared between two segments.
 
-The panel **comes up to meet a tapped road**, which is the opposite of what it does while building
-and for the same reason. A pick while building is a change on the map, so rising would cover the
-answer; here the panel _is_ the answer, and delivering it below the fold on a phone is delivering
-nothing. What the map has to say — the casing and the two end marks — stays above the sheet. Putting
-the road down drops the panel back.
+The panel **comes up to meet a tapped segment**, which is the opposite of what it does while
+building and for the same reason. A pick while building is a change on the map, so rising would
+cover the answer; here the panel _is_ the answer, and delivering it below the fold on a phone is
+delivering nothing. What the map has to say — the casing and the two end marks — stays above the
+sheet. Putting the segment down drops the panel back.
 
 The three attributes are the largest thing in it, name aside, ruled like a spec sheet: quiet labels,
-large answers, the same three rows in the same three places every time, so a rider tapping road after
-road reads only the words that changed. They ran together as _"flat · unprotected · plain"_ at first,
-which reads as three adjectives about one thing rather than three answers to three different
-questions — and nobody new can tell which scale "plain" came off.
+large answers, the same three rows in the same three places every time, so a rider tapping segment
+after segment reads only the words that changed. They ran together as _"flat · unprotected · plain"_
+at first, which reads as three adjectives about one thing rather than three answers to three
+different questions — and nobody new can tell which scale "plain" came off.
 
-Each answer is a **filled badge in the color of its verdict**: green for good, amber for caution, red
-for poor, muted sand for the merely unremarkable. That is a *second* reading of these three scales
-and deliberately not the one `RAMPS` gives the map. A ramp answers "which step of this scale is this
-road on", so every value is distinct and the order is carried by lightness; a badge answers "is this
-in my favour", which two values can answer the same way. Hence protection reads red-green-green here
-while the map draws it tan, magenta, violet — a bike lane and a bike path are both a yes to a
-beginner asking whether they will be in traffic, and ranking them is the map's job, where there is a
-legend. The cost is that "bike lane" is a green pill beside a magenta line; the benefit is that the
-right-hand column can be read without being read at all.
+Each answer is a **filled badge in the color of its verdict**: green for good, amber for caution,
+red for poor, muted sand for the merely unremarkable. That is a *second* reading of these three
+scales and deliberately not the one `RAMPS` gives the map. A ramp answers "which step of this scale
+is this segment on", so every value is distinct and the order is carried by lightness; a badge
+answers "is this in my favour", which two values can answer the same way. Hence protection reads
+red-green-green here while the map draws it tan, magenta, violet — a bike lane and a bike path are
+both a yes to a beginner asking whether they will be in traffic, and ranking them is the map's job,
+where there is a legend. The cost is that "bike lane" is a green pill beside a magenta line; the
+benefit is that the right-hand column can be read without being read at all.
 
-They are built the way everything filled on this site is built — a deeper edge around the color's own
-fill, with forest or paper type on top, whichever clears the contrast floor. That is the button's
-construction minus the parts that promise a press: no offset shadow to drop into, no fingertip
-height, and the chips' radius rather than the buttons'. `neutral` is the outline button and the
-unchosen chip, because a value whose whole meaning is that it is unremarkable should not arrive with
-the weight of the three that mean something. Filling moss needed a `moss-deep` edge, which blaze and
-clay already had.
+They are built the way everything filled on this site is built — a deeper edge around the color's
+own fill, with forest or paper type on top, whichever clears the contrast floor. That is the
+button's construction minus the parts that promise a press: no offset shadow to drop into, no
+fingertip height, and the chips' radius rather than the buttons'. `neutral` is the outline button
+and the unchosen chip, because a value whose whole meaning is that it is unremarkable should not
+arrive with the weight of the three that mean something. Filling moss needed a `moss-deep` edge,
+which blaze and clay already had.
 
 Names _are_ shown here, reversing an earlier decision. They were called an admin audit field on the
 grounds that segments are identified visually, which holds while building — the highlight says which
-road — but not while reading one, where matching the line under your finger to the street you know
-is most of what the reader came for.
+segment — but not while reading one, where matching the line under your finger to the street you
+know is most of what the reader came for.
 
-The selected road is cased in forest-deep and drawn under every other line — the same mark the route
-carries while building, for the same reason, and never both at once: over here the ride is not the
-subject, and casing it too would leave the one road being read nothing to stand out from. The pale
-highlighter used for keyboard attention could not do that job over a near-white basemap.
+The selected segment is cased in forest-deep and drawn under every other line — the same mark the
+route carries while building, for the same reason, and never both at once: over here the route is
+not the subject, and casing it too would leave the one segment being read nothing to stand out from.
+The pale highlighter used for keyboard attention could not do that job over a near-white basemap.
 
-Its two ends carry the admin's **green dot and checkered flag**. The panel's chart is one road laid
-out left to right and a line on a map has no visible direction, so without them nothing says which
-end the climb starts from — and the direction shown is the recorded one, which is not necessarily
-the one anybody would ride.
+Its two ends carry the admin's **green dot and checkered flag**. The panel's chart is one segment
+laid out left to right and a line on a map has no visible direction, so without them nothing says
+which end the climb starts from — and the direction shown is the recorded one, which is not
+necessarily the one anybody would ride.
 
 **Color encoding** is user-selectable: steepness, protection, surroundings, or grade. Grade is the
 one that is not a segment attribute: it is read from the recorded elevation point by point and
@@ -398,8 +399,8 @@ the dialog to find out. The card is the key to the map before the map has change
 **Filters are gone.** They were threshold controls over the same three scales — "nothing steeper
 than rolling," "at least a bike lane" — dimming rather than hiding, since hiding would fragment the
 graph and strand a rider in a disconnected island with no way to see why. They worked, and almost
-nobody opened them: the roads a beginner would have filtered out are already colored on the map,
-already badged in the explore panel, and already counted in the breakdown of their own ride, so the
+nobody opened them: the segments a beginner would have filtered out are already colored on the map,
+already badged in the explore panel, and already counted in the breakdown of their own route, so the
 dialog was a second, slower way to learn what the map says at a glance. A control nobody opens is
 not free — it is a button in a row that every other button then has to be told apart from.
 
@@ -414,7 +415,7 @@ using it.
   ground here is land above 90% lightness and the quiet ones part company mainly in what the water
   does, so a swatch had to invent a color that was nowhere in the palette to tell them apart at all.
   Each option draws its own map instead — the same shoreline, street web, and park, painted from its
-  own table — and carries a ride across it, cased and green, because surviving a route drawn on top
+  own table — and carries a route across it, cased and green, because surviving a route drawn on top
   is the one thing every ground on this site has to do. The four are being compared rather than read
   down, which is what puts them in a block and the name above each drawing rather than beside it —
   and the drawings are letterboxed, because four previews are most of what stands between this
@@ -422,22 +423,22 @@ using it.
 - **Units** are one choice covering distance and height together — miles & feet, or km & meters —
   because nobody holds "miles, with the climbing in meters". The default is imperial, since this is
   a map of Seattle, unless the browser names a region that rides in kilometers.
-- **Auto-zoom** is on by default: a rider who has just added a road is looking for what comes after
-  it. Turning it off stops the camera following a ride being built, but still frames a finished one
-  arriving from a link or the saved list — that one is being *shown* to them.
+- **Auto-zoom** is on by default: a rider who has just added a segment is looking for what comes
+  after it. Turning it off stops the camera following a route being built, but still frames a
+  finished one arriving from a link or the saved list — that one is being *shown* to them.
 - The dialog ends in a **colophon**: the mark, the byline, and the year. Worth finding, not worth a
   permanent line of the screen, and whoever went looking for the settings is already the person who
   wondered where this came from.
 
 Surface is gone entirely — from the color encodings, from the admin editor, and from the stored
-record. Every road in the network is asphalt, so the attribute only ever had one honest answer, and
-an editor field nobody ever changes is a field that eventually gets set wrong.
+record. Every segment in the network is asphalt, so the attribute only ever had one honest answer,
+and an editor field nobody ever changes is a field that eventually gets set wrong.
 
 
 ### Sharing and saving
 
 The segment chain lives in the **URL**: `seaddle.com/?r=17-42-43-88`. Copy-paste shares a route,
-refresh is lossless, and a bookmark is a saved ride. No accounts, no backend.
+refresh is lossless, and a bookmark is a saved route. No accounts, no backend.
 
 Spelled for the address bar rather than for the parser. A query string is written in form encoding,
 which leaves alone exactly the letters, digits and `*-._` — so the comma this used to join on
@@ -446,27 +447,28 @@ and send read like a mistake. Hyphens survive, and dropping the `s` and the zero
 link *shorter* than the format that kept them. Ids are reconstructed by padding back to three
 digits, which is what `nextId` writes and is a no-op above 999 — so there is no ceiling to walk into
 and no build-time guard to remember. The decoder reads the old spelling too: links outlive their
-formats, and rides written `s017,s042` are in bookmarks and in the saved list in people's browsers.
+formats, and routes written `s017,s042` are in bookmarks and in the saved list in people's browsers.
 
 Because appends push history entries, back-navigating past the empty route leaves the site
 normally — history is undo _within_ a route, never a trap.
 
-A second parameter shares a **road** rather than a ride: `?s=42` is the one being read in explore
-mode, written on every tap and spelled the same way the roads in a ride are. It is only ever
-*replaced* into the current history entry, never pushed — back and forward walk the route timeline,
-and spending them on un-selecting roads would bury the turns worth taking back. Both parameters coexist, so stepping into explore mid-build does not cost a
-rider the ride out of their own address bar; `?s=` is dropped while building, because it would
-otherwise open a stranger on a road nobody is looking at.
+A second parameter shares a **segment** rather than a route: `?s=42` is the one being read in
+explore mode, written on every tap and spelled the same way the segments in a route are. It is only
+ever *replaced* into the current history entry, never pushed — back and forward walk the route
+timeline, and spending them on un-selecting segments would bury the turns worth taking back. Both
+parameters coexist, so stepping into explore mid-build does not cost a rider the route out of their
+own address bar; `?s=` is dropped while building, because it would otherwise open a stranger on a
+segment nobody is looking at.
 
 **The link outranks what the browser remembers.** Mode is stored in `localStorage`, but a link that
 names something is somebody handing over a specific thing to look at, so it is read first: `?s=`
-opens in explore on that road, `?r=` alone opens in build on the route panel, and only a link
+opens in explore on that segment, `?r=` alone opens in build on the route panel, and only a link
 carrying neither falls back to the stored choice. Arriving on someone else's link never writes that
-mode back to storage. A link naming a road also frames the map on it, ahead of any ride it carries —
-the road is what the panel is about.
+mode back to storage. A link naming a segment also frames the map on it, ahead of any route it
+carries — the segment is what the panel is about.
 
-On top of that, **named saves in localStorage**: "Save this ride," give it a name, and it lists in
-the sidebar on return visits. Each saved ride is just its URL plus a name and a timestamp.
+On top of that, **named saves in localStorage**: "Name this route," give it a name, and it lists in
+the sidebar on return visits. Each saved route is just its URL plus a name and a timestamp.
 
 ### GPX export
 
@@ -476,7 +478,7 @@ first draft of this spec assumed a Vercel function for this — it isn't needed 
 built.)_
 
 Exported GPX is a single `<trk>` with one `<trkseg>`, elevation included, named from the saved
-ride name or generated from distance.
+route name or generated from distance.
 
 ### Mobile
 
@@ -568,8 +570,8 @@ with visible hairline gaps), simplified, rounded, and written to `geometry/<id>.
 recommended direction, optional name. Saving it sets `reviewed: true`. Autosaves.
 
 Judging ~200 segments one form at a time is the real cost of this project, so the admin also
-supports **multi-select bulk editing** — lasso or shift-click several segments and set surroundings or
-lane quality across all of them at once. Whole trails share attributes; the Burke-Gilman is one
+supports **multi-select bulk editing** — lasso or shift-click several segments and set surroundings
+or lane quality across all of them at once. Whole trails share attributes; the Burke-Gilman is one
 answer, not forty.
 
 **Step 6 — Pins.** Click along a segment to drop a pin; `at` is computed by projecting the click

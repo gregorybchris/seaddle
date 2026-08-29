@@ -1,6 +1,7 @@
 import type { SegmentId } from "../models/graph";
 
-/** Enough of a pin to place it along a road. Both halves of the app have more. */
+/** Enough of a pin to place it along a segment. Both halves of the app have
+ *  more. */
 type Placed = { segment: SegmentId; at: number };
 
 /**

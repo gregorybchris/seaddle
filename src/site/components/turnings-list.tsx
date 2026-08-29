@@ -5,16 +5,17 @@ import { humanize } from "@/lib/utilities/words";
 import type { Turning } from "../turnings";
 
 /**
- * The roads on offer, as a list you can reach with a keyboard.
+ * The segments on offer, as a list you can reach with a keyboard.
  *
- * The map is where this decision is normally made, and it is a canvas: a road
- * drawn on it is not a thing that can be tabbed to, focused, or read aloud, so
- * on the map alone a rider who does not use a mouse cannot build a route at
- * all. This is the same set of roads the map is highlighting at that moment —
- * not a reduced version of it — described in the words someone would use at a
- * junction, and picking one here is the same act as clicking it there.
+ * The map is where this decision is normally made, and it is a canvas: a
+ * segment drawn on it is not a thing that can be tabbed to, focused, or read
+ * aloud, so on the map alone a rider who does not use a mouse cannot build a
+ * route at all. This is the same set of segments the map is highlighting at
+ * that moment — not a reduced version of it — described in the words someone
+ * would use at a junction, and picking one here is the same act as clicking it
+ * there.
  *
- * Focusing a row lights the road up on the map, which is what keeps the two
+ * Focusing a row lights the segment up on the map, which is what keeps the two
  * halves of the interface talking to each other: the list says which way,
  * the map says where.
  */
@@ -34,7 +35,9 @@ export function TurningsList({
   return (
     <section className="flex flex-col gap-2">
       <h2 className="eyebrow text-sand/70">
-        {started ? "Where you can go next" : "Roads near the middle of the map"}
+        {started
+          ? "Where you can go next"
+          : "Segments near the middle of the map"}
       </h2>
       {!started && (
         <p className="text-sand/70 text-xs leading-relaxed">
@@ -74,7 +77,7 @@ function Row({
   // The compass point is already the words it should be read as: running it
   // through `humanize` turns "south-west" into "south west", which is two
   // directions rather than one.
-  const lead = heading ?? segment.name ?? "Unnamed road";
+  const lead = heading ?? segment.name ?? "Unnamed segment";
   const under = heading ? segment.name : null;
 
   return (

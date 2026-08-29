@@ -19,7 +19,7 @@ export const GRADE_WINDOW_METERS = 60;
 /**
  * The steepest the ramp bothers to distinguish, in percent.
  *
- * Past about twelve percent a road is simply beyond a beginner on a loaded
+ * Past about twelve percent a segment is simply beyond a beginner on a loaded
  * bike, and spending color on the difference between that and fifteen would
  * take resolution away from the three-to-eight range where the interesting
  * decisions actually are.

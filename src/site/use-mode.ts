@@ -14,16 +14,16 @@ const STORE_KEY = "seaddle:mode";
  * point: a link is somebody handing over something specific to look at, while a
  * stored mode is a preference from whenever they were last here. The version
  * that consulted the link only when nothing was stored meant a friend who had
- * once pressed the binoculars was sent a ride and shown the wrong panel about
- * it, with no sign that the ride on the map had a distance and a GPX button
+ * once pressed the binoculars was sent a route and shown the wrong panel about
+ * it, with no sign that the route on the map had a distance and a GPX button
  * behind it.
  *
- * Which mode it asks for follows what it carries. A road named in the link is a
- * road somebody wanted read, so it wins over a ride carried alongside it — that
- * pairing is what a rider copies after stepping into explore mid-build, and the
- * road they tapped is the thing they were pointing at. A ride on its own opens
- * on the route panel, which is where its distance, its climb, its profile and
- * its GPX button are.
+ * Which mode it asks for follows what it carries. A segment named in the link
+ * is a segment somebody wanted read, so it wins over a route carried alongside
+ * it — that pairing is what a rider copies after stepping into explore
+ * mid-build, and the segment they tapped is the thing they were pointing at. A
+ * route on its own opens on the route panel, which is where its distance, its
+ * climb, its profile and its GPX button are.
  *
  * Nothing here is written back to storage. Arriving on someone else's link is
  * not choosing a mode, and it should not quietly replace the one you chose.
@@ -49,16 +49,17 @@ function remembered(): Mode | null {
  * they may not know, and the question they have is what these lines are — not
  * which of them to string together. Building answers a question they have not
  * asked yet, and until they ask it the shovel puts most of the map out of reach
- * of the one gesture they have: in build mode only the roads that continue the
- * ride can be tapped, so the site's own data is hidden behind a commitment.
- * Exploring costs nothing to leave, and the notice on the way out says so.
+ * of the one gesture they have: in build mode only the segments that continue
+ * the route can be tapped, so the site's own data is hidden behind a
+ * commitment. Exploring costs nothing to leave, and the notice on the way out
+ * says so.
  */
 function opening(): Mode {
   return fromLink() ?? remembered() ?? "explore";
 }
 
 /**
- * What a click on a road does, remembered between visits.
+ * What a click on a segment does, remembered between visits.
  *
  * Held like the basemap and for the same reason: it is a setting rather than a
  * step in anything, and being put back into a mode you deliberately left is the
@@ -66,9 +67,9 @@ function opening(): Mode {
  * outranks it, but only ever a link that carries something — a rider reloading
  * their own map with nothing named in it stays where they were.
  *
- * Only the mode. Which road was being read is not a setting either, but it is
- * not stored here: it is where the reader had got to, which is what the link is
- * for, and `use-selection` keeps it there.
+ * Only the mode. Which segment was being read is not a setting either, but it
+ * is not stored here: it is where the reader had got to, which is what the link
+ * is for, and `use-selection` keeps it there.
  */
 export function useMode(): [Mode, (mode: Mode) => void] {
   const [mode, setMode] = useState<Mode>(opening);

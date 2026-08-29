@@ -58,7 +58,7 @@ export function formatMeters(meters: number): string {
  *
  * Both scales get one decimal rather than a rule per unit. A tenth of a mile
  * and a tenth of a kilometer are both about the resolution a rider plans at,
- * and rounding kilometers to whole numbers would make a short ride read as two
+ * and rounding kilometers to whole numbers would make a short route read as two
  * or three of the same figure while it grew.
  */
 export function formatDistance(meters: number, system: UnitSystem): string {

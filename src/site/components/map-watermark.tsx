@@ -11,8 +11,8 @@ import { SeaddleMark } from "@/widgets/seaddle-mark";
  * White with a traced dark outline rather than the sand it wears in the
  * sidebar: the corner it sits in is whatever the map puts there, and a dark
  * fill that reads on a pale road disappears over a park or a satellite tile.
- * `pointer-events-none` because it is a label and the roads underneath it are
- * the interface — a tap here has to reach the map.
+ * `pointer-events-none` because it is a label and the segments underneath it
+ * are the interface — a tap here has to reach the map.
  */
 export function MapWatermark() {
   return (

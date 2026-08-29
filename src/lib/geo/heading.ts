@@ -48,13 +48,13 @@ export function compassPoint(degrees: number): CompassPoint {
 }
 
 /**
- * The direction a road sets off in, rather than where it ends up.
+ * The direction a segment sets off in, rather than where it ends up.
  *
  * A turn is chosen on the first few meters of it — the question at a junction
- * is which way you point, not where the road eventually lands. Measuring end
- * to end would call a road that leaves north and curves back south "south",
+ * is which way you point, not where the segment eventually lands. Measuring end
+ * to end would call a segment that leaves north and curves back south "south",
  * which is the opposite of what the rider is being asked to picture. Falls
- * back to the far end when the road is shorter than the window.
+ * back to the far end when the segment is shorter than the window.
  */
 export function departureHeading(
   points: (Coord | ElevCoord)[],

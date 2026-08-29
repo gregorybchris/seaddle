@@ -54,7 +54,7 @@ describe("compassPoint", () => {
 describe("departureHeading", () => {
   const at = (coord: Coord, ele = 0): ElevCoord => [coord[0], coord[1], ele];
 
-  it("reports the way the road sets off, not where it ends up", () => {
+  it("reports the way the segment sets off, not where it ends up", () => {
     // Leaves due north, then bends right round and finishes south of where it
     // started. End to end this reads "south", which is the opposite of the
     // turn a rider at the junction would be making.
@@ -68,7 +68,7 @@ describe("departureHeading", () => {
     expect(compassPoint(departureHeading(hooked)!)).toBe("north");
   });
 
-  it("uses the far end when the road is shorter than the window", () => {
+  it("uses the far end when the segment is shorter than the window", () => {
     const stub = [at(HUB), at(from(0, 12))];
     expect(compassPoint(departureHeading(stub, 40)!)).toBe("east");
   });

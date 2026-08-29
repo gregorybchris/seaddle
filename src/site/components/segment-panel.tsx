@@ -11,21 +11,22 @@ import { PICK } from "../pointing";
 import { StartHere } from "./start-here";
 
 type SegmentPanelProps = {
-  /** The road being read, or nothing if the last click landed on the ground. */
+  /** The segment being read, or nothing if the last click landed on the
+   *  ground. */
   segment: SiteSegment | null;
   onScrub: (fraction: number | null) => void;
 };
 
 /**
- * What one road is like, for a rider who is not building anything yet.
+ * What one segment is like, for a rider who is not building anything yet.
  *
  * The same three attributes and two numbers the hover label gives on a desktop,
  * except that here they hold still — which is what makes them readable on a
- * phone, where there is no hover, and comparable between two roads, where a
+ * phone, where there is no hover, and comparable between two segments, where a
  * label that vanishes on the way to the second one is no help at all.
  *
- * The chart is what the label could never carry. A road's steepness is one word
- * for the whole of it, and "rolling" covers both an even drag and a wall
+ * The chart is what the label could never carry. A segment's steepness is one
+ * word for the whole of it, and "rolling" covers both an even drag and a wall
  * followed by a descent; the profile is the only thing that tells them apart.
  */
 export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
@@ -33,19 +34,20 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
 
   return (
     <Sheet
-      label="This road"
+      label="This segment"
       headerAt="desktop"
-      // Low until a road is tapped, and then up to meet it.
+      // Low until a segment is tapped, and then up to meet it.
       //
       // The opposite of the route panel, and for the same reason it stays down
       // over there: a pick while building is a change on the *map*, so rising
-      // would cover the answer. Here the panel is the answer — tapping a road
-      // is a request to read about it, and delivering that below the fold on a
-      // phone is delivering nothing. What the map has to say about the road is
-      // its casing and its two end marks, and both stay above the sheet.
+      // would cover the answer. Here the panel is the answer — tapping a
+      // segment is a request to read about it, and delivering that below the
+      // fold on a phone is delivering nothing. What the map has to say about
+      // the segment is its casing and its two end marks, and both stay above
+      // the sheet.
       //
       // Putting it down again drops the panel back, so a rider tapping between
-      // roads to compare them is not left holding half a screen of nothing.
+      // segments to compare them is not left holding half a screen of nothing.
       restingAt="peek"
       raisedWhen={segment !== null}
       raisedTo="half"
@@ -61,7 +63,7 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
         </div>
       }
       /* Everything the hover label says, in the one slot that is visible at
-         every resting height — so reading a road on a phone costs a tap and
+         every resting height — so reading a segment on a phone costs a tap and
          nothing else. The chart is below, because it is the part worth a drag
          and the part there is no room for here. */
       peek={
@@ -75,8 +77,8 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
       }
     >
       <div className="flex flex-col gap-5">
-        {/* Picking a road is a click on a canvas: nothing about it lands in the
-            document, so without this the whole interaction is silent. */}
+        {/* Picking a segment is a click on a canvas: nothing about it lands in
+            the document, so without this the whole interaction is silent. */}
         <p role="status" aria-live="polite" className="sr-only">
           {segment ? spoken(segment, units) : ""}
         </p>
@@ -87,17 +89,19 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
           // could show is its own top inch — and a sentence explaining a
           // picture that is not on screen is worse than either of them alone.
           <div className="flex flex-col gap-2 max-md:group-data-[collapsed]/sheet:hidden">
-            {/* Keyed on the road, so the marker and the reading under the chart
-                start again rather than carrying over from the last one. */}
+            {/* Keyed on the segment, so the marker and the reading under
+                the chart start again rather than carrying over from the
+                last one. */}
             <ElevationProfile
               key={segment.id}
               points={segment.points}
               onScrub={onScrub}
             />
-            {/* The chart is a road laid out left to right and the map is not,
-                so this is the sentence that joins them. It names the two marks
-                rather than describing a direction in words: a reader can look
-                at a green dot, and cannot look at "the way it was recorded". */}
+            {/* The chart is a segment laid out left to right and the map is
+                not, so this is the sentence that joins them. It names the two
+                marks rather than describing a direction in words: a reader can
+                look at a green dot, and cannot look at "the way it was
+                recorded". */}
             <p className="text-sand/70 text-[0.8125rem] leading-relaxed">
               The elevation chart runs from the green dot to the checkered flag.
               You can ride it either way, of course. But this direction may be
@@ -131,14 +135,14 @@ const ATTRIBUTES: { key: Attribute; label: string }[] = [
 ];
 
 /**
- * The road: what it is called, how big it is, and what it is like.
+ * The segment: what it is called, how big it is, and what it is like.
  *
- * The name leads and it leads at size, because in this mode the road is the
+ * The name leads and it leads at size, because in this mode the segment is the
  * subject rather than a step in something else — everything under it is a
  * property of the thing the name has just introduced.
  *
- * Then the two numbers, small and on one line. They are the least of it here:
- * a rider reading a road they have not committed to is asking what it is like,
+ * Then the two numbers, small and on one line. They are the least of it here: a
+ * rider reading a segment they have not committed to is asking what it is like,
  * and the chart below says the same two things in more detail anyway.
  *
  * Then the three attributes, each named. They used to run together as
@@ -150,7 +154,7 @@ const ATTRIBUTES: { key: Attribute; label: string }[] = [
  * question and the value is the answer.
  *
  * They are also the largest thing here, name aside. This is the mode for
- * reading roads, and these three words are the reading.
+ * reading segments, and these three words are the reading.
  */
 function Reading({ segment }: { segment: SiteSegment }) {
   const { distance, climb } = useUnits();
@@ -170,10 +174,10 @@ function Reading({ segment }: { segment: SiteSegment }) {
           title={segment.name ?? undefined}
           className="text-sand truncate text-lg leading-tight md:text-xl"
         >
-          {segment.name ?? "Unnamed road"}
+          {segment.name ?? "Unnamed segment"}
         </h2>
         {/* Held well off the name rather than sitting straight under it: they
-            are a different question — how big is this road, not which road is
+            are a different question — how big is this segment, not which segment is
             this — and butted together at these two sizes they read as one
             wrapped heading. The gap is what says the name has finished.
 
@@ -195,13 +199,13 @@ function Reading({ segment }: { segment: SiteSegment }) {
       </div>
 
       {/* Ruled like a spec sheet, because that is what it is. Three rows in the
-          same three places every time is what lets a rider tap road after road
+          same three places every time is what lets a rider tap segment after segment
           and read only the words that changed — so the labels are set quiet and
           small and the answers are set large, and the eye can run straight down
           the right-hand column without reading a label twice.
 
           The answers are badged in the color of their verdict, so that column
-          can be read without being read at all: three green pills is a road
+          can be read without being read at all: three green pills is a segment
           that suits a beginner, and the red one is the thing to look at.
 
           A step larger on a wide screen, where the sidebar is a full-height
@@ -255,11 +259,11 @@ function Reading({ segment }: { segment: SiteSegment }) {
  * their half-built route with it. Short, because it sits below the fold on a
  * phone: it has to reward a drag rather than be homework.
  *
- * The way out is named three ways — the word, the mark, and the corner — because
- * a beginner has none of them. The button carries the mode it is *in* rather
- * than the one a press would reach, so the icon to look for while exploring is
- * the binoculars, and telling anyone to find a shovel sends them hunting for a
- * picture that is not on the screen.
+ * The way out is named three ways — the word, the mark, and the corner —
+ * because a beginner has none of them. The button carries the mode it is *in*
+ * rather than the one a press would reach, so the icon to look for while
+ * exploring is the binoculars, and telling anyone to find a shovel sends them
+ * hunting for a picture that is not on the screen.
  */
 function HowExploringWorks() {
   return (
@@ -307,11 +311,11 @@ function ControlMark({ Mark }: { Mark: Icon }) {
 }
 
 /**
- * How much climbing this road holds.
+ * How much climbing this segment holds.
  *
  * Undirected, like the steepness it agrees with: the bigger of the two climbs,
- * since a road being read has not been ridden in either direction yet and the
- * harder answer is the one worth planning around.
+ * since a segment being read has not been ridden in either direction yet and
+ * the harder answer is the one worth planning around.
  */
 function climbOf(segment: SiteSegment): number {
   return Math.max(segment.gainForward, segment.gainBackward);
@@ -329,7 +333,7 @@ function spoken(segment: SiteSegment, units: Units): string {
     ({ key, label }) => `${label} ${humanize(segment[key])}`,
   ).join(". ");
   return (
-    `${segment.name ?? "Unnamed road"}. ` +
+    `${segment.name ?? "Unnamed segment"}. ` +
     `${units.distance(segment.meters)}, ${units.climb(climbOf(segment))} of climbing. ` +
     `${attributes}.`
   );

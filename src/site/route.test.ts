@@ -37,7 +37,7 @@ import {
  *           nE
  *
  * nB and nD are forks. nC carries exactly two segments, so arriving there
- * leaves nothing to decide — it is a bend in the road, not a choice.
+ * leaves nothing to decide — it is a bend, not a choice.
  */
 function segment(
   id: string,
@@ -91,7 +91,7 @@ describe("starting a route", () => {
 
   it("does not run on from the opening segment", () => {
     // Both ends are still live, so the choice on offer is which way to ride —
-    // a real one, even where each end has a single road leading off it.
+    // a real one, even where each end has a single segment leading off it.
     expect(ids(startRoute(seg("s002")))).toEqual(["s002"]);
   });
 
@@ -137,7 +137,7 @@ describe("growing a route", () => {
     expect(append(route, seg("s002"), G)).toEqual(route);
   });
 
-  it("refuses to double back down the road it arrived on", () => {
+  it("refuses to double back down the segment it arrived on", () => {
     // The highlighting says this is not allowed, so the model must agree —
     // otherwise the two disagree the moment a caller forgets to check.
     const route = append(startRoute(seg("s001")), seg("s004"), G);
@@ -265,14 +265,15 @@ describe("route geometry", () => {
   });
 });
 
-describe("the roads of a ride", () => {
+describe("the segments of a route", () => {
   it("lists them in the order they are taken", () => {
     const route = append(startRoute(seg("s001")), seg("s004"), G);
     expect(routeSegments(route, G).map((s) => s.id)).toEqual(["s001", "s004"]);
   });
 
   it("says which way round each one is ridden", () => {
-    // s1 is stored nA → nB, so arriving at nB from s4 means riding it backwards.
+    // s1 is stored nA → nB, so arriving at nB from s4 means riding it
+    // backwards.
     const route = append(startRoute(seg("s004")), seg("s001"), G);
     expect(riddenOrder(route, G)).toEqual([
       { segment: "s004", reversed: true },
@@ -280,7 +281,7 @@ describe("the roads of a ride", () => {
     ]);
   });
 
-  it("drops a step whose road the graph no longer has", () => {
+  it("drops a step whose segment the graph no longer has", () => {
     const route = decodeRoute("1-4", G);
     const thinner = siteGraph(
       [...G.segments.values()].filter((s) => s.id !== "s004"),
@@ -290,7 +291,7 @@ describe("the roads of a ride", () => {
 });
 
 describe("what the map should be framing", () => {
-  it("frames the choices, not the road already ridden", () => {
+  it("frames the choices, not the segment already ridden", () => {
     // Standing at nD after running through nC, the choices are s5 and s6.
     const route = append(startRoute(seg("s001")), seg("s002"), G);
     const covering = boundsOf([...seg("s005").points, ...seg("s006").points]);
@@ -359,13 +360,13 @@ describe("carrying a route in a link", () => {
     expect(encodeRoute(route)).toBe("1-2");
   });
 
-  it("comes back as the same ride", () => {
+  it("comes back as the same route", () => {
     const route = append(startRoute(seg("s001")), seg("s002"), G);
     expect(decodeRoute(encodeRoute(route), G)).toEqual(route);
   });
 
-  it("says 'and back' rather than naming the road twice", () => {
-    // Riding back down the road you arrived on is the one thing append
+  it("says 'and back' rather than naming the segment twice", () => {
+    // Riding back down the segment you arrived on is the one thing append
     // refuses, so a link cannot describe it as another segment.
     const there = outAndBack(append(startRoute(seg("s001")), seg("s004"), G));
     expect(encodeRoute(there)).toBe("1-4-t");
@@ -378,7 +379,7 @@ describe("carrying a route in a link", () => {
   });
 
   it("gives back what still exists when a link has gone stale", () => {
-    // Segments get recut, and half a remembered ride beats an error.
+    // Segments get recut, and half a remembered route beats an error.
     expect(ids(decodeRoute("1-404-4", G))).toEqual(["s001", "s004"]);
   });
 
@@ -434,7 +435,7 @@ describe("where the map should hold still", () => {
     expect(routeBounds(EMPTY_ROUTE, G)).toBeNull();
   });
 
-  it("covers the whole ride when it is being looked at rather than built", () => {
+  it("covers the whole route when it is being looked at rather than built", () => {
     const route = append(startRoute(seg("s001")), seg("s004"), G);
     expect(routeBounds(route, G)).toEqual(boundsOf(routePoints(route, G)));
   });

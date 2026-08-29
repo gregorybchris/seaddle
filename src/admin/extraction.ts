@@ -172,7 +172,7 @@ export type AddedSegment = {
  * Turn a chosen candidate into a stored segment.
  *
  * Attributes come in defaulted and unreviewed on purpose: extraction should be
- * fast, and deciding whether a road is pleasant is a separate pass.
+ * fast, and deciding whether a segment is pleasant is a separate pass.
  */
 export function addSegment(
   graph: GraphFile,

@@ -73,6 +73,12 @@ one comparison decides between them. The bundle is 131 kB gzipped against a
 ## Conventions
 
 - **kebab-case filenames**, named exports, `@/` alias for `src/`.
+- **Four words, one meaning each.** A **segment** is an edge of the graph; a
+  **route** is what a rider builds out of them. "Road" is only ever the physical
+  roadway or the basemap's own road web, and "ride" is only ever a source GPX
+  ride or the verb. This holds in copy, comments, identifiers and filenames
+  alike — the two pairs were used interchangeably once and it read as two
+  different models of the same thing.
 - **Comments explain _why_**, not what — usually the alternative that was
   rejected and the reason. The existing comments are the house style; match their
   density and their tone rather than adding narration.

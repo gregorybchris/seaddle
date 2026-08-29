@@ -191,7 +191,7 @@ describe("addSegment", () => {
   });
 
   it("arrives defaulted and unreviewed", () => {
-    // Extraction is meant to be cheap; judging the road is a separate pass.
+    // Extraction is meant to be cheap; judging the segment is a separate pass.
     const { segment } = addSegment(base, candidate, nodeA, nodeB);
     expect(segment.reviewed).toBe(false);
     expect(segment.steepness).toBe("flat");

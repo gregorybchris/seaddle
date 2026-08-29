@@ -6,7 +6,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
-import { typingIn } from "@/lib/utilities/keys";
+import { MOD, typingIn } from "@/lib/utilities/keys";
 import { cn } from "@/lib/utilities/style-utils";
 import { useUnits, type Units } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
@@ -32,17 +32,11 @@ import type { ElevCoord } from "@/lib/models/geo";
 import type { SegmentId } from "@/lib/models/graph";
 import { SHOW_TURNINGS } from "../flags";
 import type { Turning } from "../turnings";
-import { useSavedRides, type SavedRide } from "../use-saved-rides";
+import { useSavedRoutes, type SavedRoute } from "../use-saved-routes";
 import { RouteBreakdown } from "./route-breakdown";
 import { PICK } from "../pointing";
 import { StartHere } from "./start-here";
 import { TurningsList } from "./turnings-list";
-
-/** What the undo keys are called on this machine, for the button tooltips. */
-const MOD =
-  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
-    ? "\u2318"
-    : "Ctrl+";
 
 type RoutePanelProps = {
   graph: SiteGraph;
@@ -55,7 +49,7 @@ type RoutePanelProps = {
   onClear: () => void;
   onLoad: (encoded: string) => void;
   onScrub: (fraction: number | null) => void;
-  /** The roads that can be taken next, for picking without the map. */
+  /** The segments that can be taken next, for picking without the map. */
   turnings: Turning[];
   onPick: (id: SegmentId) => void;
   onHighlight: (id: SegmentId | null) => void;
@@ -78,9 +72,9 @@ export function RoutePanel({
 }: RoutePanelProps) {
   // One owner for the saved list: a copy per component would let saving in one
   // place leave the other showing a stale list.
-  const saved = useSavedRides();
+  const saved = useSavedRoutes();
   const units = useUnits();
-  // Every point of the ride, and the reader drags along the chart: recomputing
+  // Every point of the route, and the reader drags along the chart: recomputing
   // it on each of those renders is walking the whole route per pointer move.
   const points = useMemo(() => routePoints(route, graph), [route, graph]);
   const meters = routeMeters(route, graph);
@@ -90,21 +84,25 @@ export function RoutePanel({
   const stuck = started && onward === 0;
   const ridden = routeSegments(route, graph);
 
-  // Held rather than acted on: a ride is a long run of picks and there is one
+  // Held rather than acted on: a route is a long run of picks and there is one
   // button that throws all of them away at once. Redo can bring it back, but
-  // nobody who has just watched their ride vanish thinks to reach for Redo.
+  // nobody who has just watched their route vanish thinks to reach for Redo.
   const [clearing, setClearing] = useState(false);
 
-  // Delete, which asks the same question the button does rather than clearing
-  // outright — a single key is far too short a walk to an empty map. Bound
-  // beside the button so the two cannot drift apart, and stood aside from
-  // while someone is naming a ride, where Delete is a rubout.
+  // ⌘⌫, which asks the same question the button does rather than clearing
+  // outright — a single key is far too short a walk to an empty map. The
+  // modifier is also what keeps this apart from the bare ⌫ that takes back one
+  // segment: the same key throws away every segment, so it costs a thumb more.
+  // Both spellings of the key, since the one labelled "delete" sends Backspace
+  // on a laptop and Delete on a full keyboard. Bound beside the button so the
+  // two cannot drift apart, and stood aside from while someone is naming a
+  // route, where ⌘⌫ is a rubout.
   useEffect(() => {
     if (!started) return;
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Delete" && event.key !== "Backspace") return;
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
       if (typingIn(event.target)) return;
 
       event.preventDefault();
@@ -122,21 +120,21 @@ export function RoutePanel({
    */
   const announcement = !started
     ? canRedo
-      ? "Ride cleared."
+      ? "Route cleared."
       : ""
     : stuck
-      ? `${units.distance(meters)}, ${climbText(gain, units)} of climbing. No roads continue from here.`
+      ? `${units.distance(meters)}, ${climbText(gain, units)} of climbing. No segments continue from here.`
       : `${units.distance(meters)}, ${climbText(gain, units)} of climbing. ` +
-        `${onward} ${onward === 1 ? "road" : "roads"} on from here.`;
+        `${onward} ${onward === 1 ? "segment" : "segments"} on from here.`;
 
   return (
     <Sheet
-      label="Your ride"
+      label="Your route"
       headerAt="desktop"
       // The map is the thing here, and the first pick is a change on the map:
-      // rising to meet it would cover the very road that was just chosen. The
-      // panel stays low and the pinned slot carries the reading, so the ride
-      // is read where it is being drawn and the panel comes up when it is
+      // rising to meet it would cover the very segment that was just chosen.
+      // The panel stays low and the pinned slot carries the reading, so the
+      // route is read where it is being drawn and the panel comes up when it is
       // asked for.
       restingAt="peek"
       header={
@@ -151,7 +149,7 @@ export function RoutePanel({
         </div>
       }
       /* The one slot pinned at every resting height, so whatever sits here is
-         what a rider sees without touching anything. Before a ride starts that
+         what a rider sees without touching anything. Before a route starts that
          should be how to start one: two zeros are not a reading, they are the
          absence of one, and they were holding the most visible place on the
          screen against the only sentence that had somewhere to send anybody. */
@@ -170,8 +168,9 @@ export function RoutePanel({
     >
       <div className="flex flex-col gap-5">
         {/* What just happened, for a reader who cannot see the map redraw.
-            Picking a road is a click on a canvas: nothing about it lands in the
-            document, so without this the whole interaction is silent. */}
+            Picking a segment is a click on a canvas: nothing about it lands
+            in the document, so without this the whole interaction is
+            silent. */}
         <p role="status" aria-live="polite" className="sr-only">
           {announcement}
         </p>
@@ -203,7 +202,7 @@ export function RoutePanel({
             low and everything below the fold costs a drag: taking a pick back
             is the move a rider makes most, so it is the one that should be in
             reach without one. The sidebar has no fold to be under, so there it
-            stays where it reads — after the ride it acts on.
+            stays where it reads — after the route it acts on.
 
             Still here once a route has been undone away to nothing, because
             that is exactly the moment Redo is the thing being reached for. */}
@@ -214,7 +213,7 @@ export function RoutePanel({
               className="flex-1"
               onClick={onUndo}
               disabled={!canUndo}
-              title={`Undo (${MOD}Z)`}
+              title={`Undo (${MOD}Z or \u232b)`}
             >
               <ArrowUUpLeft weight="bold" className="h-4 w-4" />
               Undo
@@ -234,7 +233,7 @@ export function RoutePanel({
                 variant="danger"
                 className="px-2 text-xs"
                 onClick={() => setClearing(true)}
-                title="Start over (Delete)"
+                title={`Start over (${MOD}\u232b)`}
               >
                 <Trash weight="bold" className="h-4 w-4" />
                 Start over
@@ -253,7 +252,7 @@ export function RoutePanel({
         )}
 
         {started && (
-          <SaveRide
+          <SaveRoute
             route={route}
             points={points}
             meters={meters}
@@ -261,8 +260,8 @@ export function RoutePanel({
           />
         )}
 
-        <SavedRides
-          rides={saved.rides}
+        <SavedRoutes
+          routes={saved.routes}
           onForget={saved.remove}
           onLoad={onLoad}
           current={encodeRoute(route)}
@@ -288,8 +287,8 @@ export function RoutePanel({
 /**
  * The whole of how this works, in three lines.
  *
- * A rider who has never seen the site does not know that roads chain, that the
- * bright ones are the legal next moves, or that a ride can leave here as a
+ * A rider who has never seen the site does not know that segments chain, that
+ * the bright ones are the legal next moves, or that a route can leave here as a
  * file — and none of that is discoverable from a map of lines. Three lines is
  * the budget: it is under the fold on a phone at rest, so it has to be worth
  * finding without being what anyone has to read before their first pick.
@@ -300,7 +299,7 @@ export function RoutePanel({
 const STEPS = [
   "Select a segment and unreachable segments will dim",
   "Keep picking to add on to the route",
-  "Save or export the ride",
+  "Save or export the route",
 ];
 
 function HowBuildingWorks() {
@@ -335,12 +334,12 @@ function HowBuildingWorks() {
 }
 
 /**
- * Keep this ride, and export it as a file.
+ * Keep this route, and export it as a file.
  *
  * Both are the same act from a rider's side — "I want this later" — so they sit
  * together rather than being scattered around the panel.
  */
-function SaveRide({
+function SaveRoute({
   route,
   points,
   meters,
@@ -368,8 +367,8 @@ function SaveRide({
         onKeyDown={(event) => {
           if (event.key === "Enter") keep();
         }}
-        placeholder="Name this ride"
-        aria-label="Name this ride"
+        placeholder="Name this route"
+        aria-label="Name this route"
         className="border-sand/15 bg-forest-deep/40 text-sand placeholder:text-sand/70 focus:border-blaze/60 focus:ring-blaze min-h-11 min-w-0 flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors focus:ring-2 focus:outline-none"
       />
       <Button variant="outline" className="px-2 text-xs" onClick={keep}>
@@ -391,57 +390,57 @@ function SaveRide({
   );
 }
 
-/** Rides kept in this browser, newest first. */
-function SavedRides({
-  rides,
+/** Routes kept in this browser, newest first. */
+function SavedRoutes({
+  routes,
   onForget,
   onLoad,
   current,
 }: {
-  rides: SavedRide[];
+  routes: SavedRoute[];
   onForget: (id: string) => void;
   onLoad: (encoded: string) => void;
   current: string;
 }) {
-  // Held rather than acted on: a saved ride lives in this browser and nowhere
+  // Held rather than acted on: a saved route lives in this browser and nowhere
   // else, so the X asks before it is the end of one.
-  const [forgetting, setForgetting] = useState<SavedRide | null>(null);
+  const [forgetting, setForgetting] = useState<SavedRoute | null>(null);
 
-  if (rides.length === 0) return null;
+  if (routes.length === 0) return null;
 
   return (
     <section className="flex flex-col gap-2">
       <h2 className="eyebrow text-sand/70 flex items-center gap-1.5">
-        Your rides
-        <InfoPopover label="About saved rides">
+        Your routes
+        <InfoPopover label="About saved routes">
           These live in this browser only — not in an account. Clearing your
           site data, or opening Seaddle somewhere else, will not bring them with
-          you. Download a ride as GPX to keep it for good.
+          you. Download a route as GPX to keep it for good.
         </InfoPopover>
       </h2>
       <ul className="flex flex-col">
-        {rides.map((ride) => (
+        {routes.map((saved) => (
           <li
-            key={ride.id}
+            key={saved.id}
             className="border-sand/10 group flex items-center gap-2 border-b py-1.5 last:border-b-0"
           >
             <button
               type="button"
-              onClick={() => onLoad(ride.route)}
-              aria-current={ride.route === current ? "true" : undefined}
+              onClick={() => onLoad(saved.route)}
+              aria-current={saved.route === current ? "true" : undefined}
               className={cn(
                 "hover:text-blaze focus-visible:ring-blaze min-h-11 min-w-0 flex-1 truncate",
                 "rounded text-left text-xs transition-colors",
                 "focus-visible:ring-2 focus-visible:outline-none",
-                ride.route === current ? "text-blaze" : "text-sand",
+                saved.route === current ? "text-blaze" : "text-sand",
               )}
             >
-              {ride.name}
+              {saved.name}
             </button>
             <button
               type="button"
-              onClick={() => setForgetting(ride)}
-              aria-label={`Forget ${ride.name}`}
+              onClick={() => setForgetting(saved)}
+              aria-label={`Forget ${saved.name}`}
               className="text-sand/70 hover:text-blaze focus-visible:ring-blaze flex h-11 w-11 shrink-0 items-center justify-center rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <X weight="bold" aria-hidden className="h-3.5 w-3.5" />
@@ -453,7 +452,7 @@ function SavedRides({
       <ConfirmDialog
         open={forgetting !== null}
         onOpenChange={(open) => !open && setForgetting(null)}
-        title="Forget this ride?"
+        title="Forget this route?"
         confirm="Forget"
         onConfirm={() => {
           if (forgetting) onForget(forgetting.id);

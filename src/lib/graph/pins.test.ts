@@ -25,7 +25,7 @@ describe("pinsAlong", () => {
     ).toEqual(["p2", "p1"]);
   });
 
-  it("ignores pins on roads the route does not use", () => {
+  it("ignores pins on segments the route does not use", () => {
     expect(
       pinsAlong(PINS, [{ segment: "s2", reversed: false }]).map((p) => p.id),
     ).toEqual(["p3"]);

@@ -9,16 +9,16 @@
  */
 
 /**
- * List the roads that can be picked next, in words, beside the map.
+ * List the segments that can be picked next, in words, beside the map.
  *
- * Off by default. It exists because roads are drawn on a canvas, which cannot
- * be tabbed to or read aloud, so without it a rider who is not pointing at the
- * map has no way to build a route at all. It is off because this is a map
- * first: anyone using it is almost certainly looking at one, and a standing
- * list of eight roads is a large, permanent cost to the panel for a case that
- * the map itself already serves better.
+ * Off by default. It exists because segments are drawn on a canvas, which
+ * cannot be tabbed to or read aloud, so without it a rider who is not pointing
+ * at the map has no way to build a route at all. It is off because this is a
+ * map first: anyone using it is almost certainly looking at one, and a standing
+ * list of eight segments is a large, permanent cost to the panel for a case
+ * that the map itself already serves better.
  *
- * Everything else from the same pass — what gets announced when a road is
+ * Everything else from the same pass — what gets announced when a segment is
  * picked, focus rings, targets sized for a thumb, honouring reduced motion —
  * is unconditional. This is the one piece that changes what the panel looks
  * like for everybody.

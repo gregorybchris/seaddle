@@ -20,6 +20,7 @@ import { PIN_LABELS } from "@/lib/models/graph";
 import type { BasemapId } from "@/lib/basemap";
 import { useBasemapPaint } from "@/lib/use-basemap";
 import { PinMark } from "@/widgets/pin-mark";
+import { typingIn } from "@/lib/utilities/keys";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
 import { useUnits } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
@@ -40,37 +41,39 @@ import { closedNotice, groundNotice, whyClosed } from "../why-closed";
 import { MapNotice, type Notice } from "./map-notice";
 
 /**
- * The two invisible bands a pointer actually hits: one over the roads that can
- * be picked, one over the roads that cannot.
+ * The two invisible bands a pointer actually hits: one over the segments that
+ * can be picked, one over the segments that cannot.
  *
  * Two rather than one, because a hit on either has a different answer — a pick,
  * or an explanation of why not — and because the open band being consulted
- * first is what keeps a closed road running a few meters away from stealing a
- * click meant for the bright one beside it.
+ * first is what keeps a closed segment running a few meters away from stealing
+ * a click meant for the bright one beside it.
  */
 const CLICKABLE = "segments-hit";
 const CLOSED = "segments-hit-closed";
 
-/** Every line on this map is a road, and a road has rounded ends and corners. */
+/** Every line on this map is a segment, and a segment has rounded ends and
+ *  corners. */
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
 
 /**
- * Wider once a ride is under way, when the open roads are the few to pick from.
+ * Wider once a route is under way, when the open segments are the few to pick
+ * from.
  *
- * Never while exploring: there every road is open, so the wider line would say
- * nothing about which ones are in play and only make a map of the whole network
- * heavier to read.
+ * Never while exploring: there every segment is open, so the wider line would
+ * say nothing about which ones are in play and only make a map of the whole
+ * network heavier to read.
  */
 function openWidth(route: Route, exploring: boolean): number {
   return exploring || isEmpty(route) ? 3.5 : 4.5;
 }
 
 /**
- * How wide the invisible target around each road is, in screen pixels.
+ * How wide the invisible target around each segment is, in screen pixels.
  *
  * A four-pixel line is a four-pixel target, which is unreasonable with a mouse
  * and hopeless with a thumb. This is the figure the spec sets for touch, and
- * the ambiguity a band this wide creates — two roads a few meters apart both
+ * the ambiguity a band this wide creates — two segments a few meters apart both
  * being hit — is resolved by picking the nearest rather than the first.
  */
 const HIT_WIDTH = 22;
@@ -80,17 +83,17 @@ const HIT_WIDTH = 22;
  *
  * Around a neighborhood rather than a city: at the opening view the whole
  * network is on screen and a pin for every fountain would be a rash of marks
- * over roads too small to pick out.
+ * over segments too small to pick out.
  */
 const PINS_FROM_ZOOM = 12.5;
 
 /**
- * What a road says about itself when the cursor is on it.
+ * What a segment says about itself when the cursor is on it.
  *
  * The map can only be one color at a time, so a rider choosing between two
- * roads can compare them on the attribute currently encoded and has to take
+ * segments can compare them on the attribute currently encoded and has to take
  * the other two on trust. Hovering answers all three at once, plus the two
- * numbers — how far, how much climbing — that decide whether a road is worth
+ * numbers — how far, how much climbing — that decide whether a segment is worth
  * taking at all.
  */
 type Hovered = {
@@ -102,29 +105,31 @@ type Hovered = {
   surroundings: string;
   x: number;
   y: number;
-  /** Whether the label has to sit left of / above the cursor to stay on the map. */
+  /** Whether the label has to sit left of / above the cursor to stay on the
+   *  map. */
   flipX: boolean;
   flipY: boolean;
 };
 
-/** Roughly the label's footprint, used to decide which side of the cursor it takes. */
+/** Roughly the label's footprint, used to decide which side of the cursor it
+ *  takes. */
 const TIP_WIDTH = 210;
 const TIP_HEIGHT = 56;
 
 type SiteMapProps = {
   graph: SiteGraph;
   route: Route;
-  /** What a click on a road means here: add it to the ride, or read it. */
+  /** What a click on a segment means here: add it to the route, or read it. */
   mode: Mode;
   encoding: Encoding;
   /** Which ground to draw everything on. Chosen elsewhere; painted here,
    *  because painting it needs the map instance and choosing it does not. */
   basemap: BasemapId;
-  /** Whether a pick moves the camera to the roads that could come next. */
+  /** Whether a pick moves the camera to the segments that could come next. */
   autoZoom: boolean;
   /** Every point of interest on the graph. */
   allPins: SitePin[];
-  /** Those on the roads already chosen, which are shown at any zoom. */
+  /** Those on the segments already chosen, which are shown at any zoom. */
   pins: SitePin[];
   /** Where the reader is pointing on the elevation chart, if anywhere. */
   scrubbed: Coord | null;
@@ -132,20 +137,21 @@ type SiteMapProps = {
    * What the map should be showing, and a nonce so asking twice works.
    *
    * "choices" while a route is being built, "route" when one is being looked
-   * at — arriving on a shared link, or opening a saved ride.
+   * at — arriving on a shared link, or opening a saved route.
    */
   framing: Framing;
-  /** The road the panel is pointing at, drawn so a keyboard can see where it is. */
+  /** The segment the panel is pointing at, drawn so a keyboard can see where it
+   *  is. */
   highlighted: SegmentId | null;
-  /** The road being read while exploring, if any. */
+  /** The segment being read while exploring, if any. */
   selected: SegmentId | null;
   onPick: (id: SegmentId) => void;
-  /** A road to read, or nothing when the click landed on the ground. */
+  /** A segment to read, or nothing when the click landed on the ground. */
   onSelect: (id: SegmentId | null) => void;
   /**
    * Where the map is looking, once it has settled.
    *
-   * Before a ride starts every road is a legal first pick, and this is what
+   * Before a route starts every segment is a legal first pick, and this is what
    * says which handful of them the panel should offer — panning is how a
    * reader who is not clicking says "around here".
    */
@@ -153,8 +159,8 @@ type SiteMapProps = {
 };
 
 /**
- * The roads one of the hit bands caught, which is not the same as the roads
- * caught in total.
+ * The segments one of the hit bands caught, which is not the same as the
+ * segments caught in total.
  *
  * Sorted by which layer they came from rather than checked against the list of
  * open segments afterwards, because the layers already hold that distinction
@@ -172,9 +178,9 @@ function pointOf(event: MapLayerMouseEvent): [number, number] {
 }
 
 /**
- * Which road the tap meant, when a wide target caught more than one.
+ * Which segment the tap meant, when a wide target caught more than one.
  *
- * Two roads running a few meters apart both fall inside a 22-pixel band, and
+ * Two segments running a few meters apart both fall inside a 22-pixel band, and
  * taking whichever Mapbox listed first would pick by draw order — so it picks
  * by distance instead, which is what the person aiming meant.
  */
@@ -229,13 +235,14 @@ export function SiteMap({
   const mapRef = useRef<MapRef>(null);
   useBasemapPaint(mapRef, basemap);
   const wrap = useRef<HTMLDivElement>(null);
-  const [overRoad, setOverRoad] = useState(false);
+  const [overSegment, setOverSegment] = useState(false);
   const [hovered, setHovered] = useState<Hovered | null>(null);
   const [zoom, setZoom] = useState(10);
-  /** Whether the map exists yet, which is not the same as this having rendered. */
+  /** Whether the map exists yet, which is not the same as this having
+   *  rendered. */
   const [ready, setReady] = useState(false);
   const [openPin, setOpenPin] = useState<string | null>(null);
-  /** Why the last tap landed on nothing, if it landed on a road at all. */
+  /** Why the last tap landed on nothing, if it landed on a segment at all. */
   const [notice, setNotice] = useState<Notice | null>(null);
   const clearNotice = useCallback(() => setNotice(null), []);
 
@@ -245,9 +252,9 @@ export function SiteMap({
    * Every fountain in the city at once buries a view of the whole network, so
    * away from the map they appear only once it is zoomed in far enough to be
    * looking at a neighborhood. Pins on the chosen route show at any zoom: they
-   * are part of the ride being built rather than scenery around it — and
-   * showing them only after a road is picked would mean a rider could never use
-   * a water stop to decide where to go.
+   * are part of the route being built rather than scenery around it — and
+   * showing them only after a segment is picked would mean a rider could never
+   * use a water stop to decide where to go.
    */
   const shown = useMemo(() => {
     const onRoute = new Set(pins.map((pin) => pin.id));
@@ -255,7 +262,7 @@ export function SiteMap({
       zoom >= PINS_FROM_ZOOM
         ? allPins.filter((pin) => !onRoute.has(pin.id))
         : [];
-    // Off-route first, so a pin on the ride is drawn over one that is not.
+    // Off-route first, so a pin on the route is drawn over one that is not.
     return [...nearby, ...pins].map((pin) => ({
       pin,
       onRoute: onRoute.has(pin.id),
@@ -268,10 +275,10 @@ export function SiteMap({
       features: [...graph.segments.values()].map((segment) => ({
         type: "Feature",
         id: segment.id,
-        // The attributes travel with the feature, because the color of a road
-        // is decided by a style expression on the GPU rather than in React.
-        // Carrying only the id — which this did — left every expression
-        // matching against nothing and every road drawn in the fallback.
+        // The attributes travel with the feature, because the color of a
+        // segment is decided by a style expression on the GPU rather than in
+        // React. Carrying only the id — which this did — left every expression
+        // matching against nothing and every segment drawn in the fallback.
         properties: {
           id: segment.id,
           steepness: segment.steepness,
@@ -287,9 +294,10 @@ export function SiteMap({
     [graph],
   );
 
-  // A road is drawn in the color of whatever the map is currently about.
-  // Elevation is not one of these: it varies along a road rather than across
-  // roads, so it cannot be a color per feature and is drawn separately below.
+  // A segment is drawn in the color of whatever the map is currently about.
+  // Elevation is not one of these: it varies along a segment rather than across
+  // segments, so it cannot be a color per feature and is drawn separately
+  // below.
   const attribute = isAttribute(encoding) ? encoding : null;
   const color = useMemo(
     () =>
@@ -337,13 +345,13 @@ export function SiteMap({
   );
 
   /**
-   * The roads a click may land on.
+   * The segments a click may land on.
    *
    * Exploring drops the rule that a route has to join up, because nothing is
    * being joined: the whole network goes live, which is the only way a rider
-   * mid-route can read a road that does not happen to continue it. That falls
-   * straight out of the layers — the open band, the bright lines and the wider
-   * stroke are all filtered on this one list.
+   * mid-route can read a segment that does not happen to continue it. That
+   * falls straight out of the layers — the open band, the bright lines and the
+   * wider stroke are all filtered on this one list.
    */
   const open = useMemo(
     () =>
@@ -356,19 +364,19 @@ export function SiteMap({
   );
 
   /**
-   * The roads carrying the dark casing: the ride so far, or the one road being
-   * read.
+   * The segments carrying the dark casing: the route so far, or the one segment
+   * being read.
    *
    * One mark for both, because both are the same statement — *this* is what the
-   * panel is about — and because it is the mark that does not cost a road its
-   * colour. The route used to be repainted deep forest, which said "chosen" by
-   * throwing away the steepness or the bike lane that made it worth choosing;
-   * now the ride and the roads around it can be compared on the encoding while
-   * the ride is still obvious.
+   * panel is about — and because it is the mark that does not cost a segment
+   * its colour. The route used to be repainted deep forest, which said "chosen"
+   * by throwing away the steepness or the bike lane that made it worth
+   * choosing; now the route and the segments around it can be compared on the
+   * encoding while the route is still obvious.
    *
    * Nothing while exploring with nothing selected, and never both at once: the
-   * ride is not the subject over there, and casing it as well would give the
-   * one road being read no way to stand out from it.
+   * route is not the subject over there, and casing it as well would give the
+   * one segment being read no way to stand out from it.
    */
   const marked = useMemo(
     () => (exploring ? (selected ? [selected] : []) : chosen),
@@ -376,11 +384,11 @@ export function SiteMap({
   );
 
   /**
-   * The roads drawn in full colour, which is not the same as the roads that
-   * can be clicked.
+   * The segments drawn in full colour, which is not the same as the segments
+   * that can be clicked.
    *
-   * The ride belongs here whether or not it can be appended to — with the
-   * casing carrying "chosen" instead of a repaint, a road left out of this
+   * The route belongs here whether or not it can be appended to — with the
+   * casing carrying "chosen" instead of a repaint, a segment left out of this
    * would be drawn at the faded weight of the network behind it, and the route
    * would come out fainter than the choices leading off it.
    */
@@ -390,10 +398,10 @@ export function SiteMap({
   );
 
   /**
-   * Which way the road being read runs, drawn on its two ends.
+   * Which way the segment being read runs, drawn on its two ends.
    *
-   * The chart in the panel is one road laid out left to right, and a line on a
-   * map has no visible direction — so without these there is nothing saying
+   * The chart in the panel is one segment laid out left to right, and a line on
+   * a map has no visible direction — so without these there is nothing saying
    * which end of it the climb starts from. The same green dot and checkered
    * flag the admin uses, because it is the same question being answered.
    */
@@ -404,20 +412,20 @@ export function SiteMap({
   }, [exploring, selected, graph]);
 
   /**
-   * The road the link named, if it named one.
+   * The segment the link named, if it named one.
    *
    * Read once and held, because its only job is to settle the opening view.
-   * Every selection after this one is the reader tapping a road already on
+   * Every selection after this one is the reader tapping a segment already on
    * their screen, and refitting the camera around each of those would take the
    * map away from someone who is using it.
    */
   const arrivedOn = useRef(selected);
 
-  // Frame what the link was about on arrival: the road it named, or the whole
-  // network if it named none. There is no geolocation, so the network fit is
-  // the only thing that tells a first-time visitor what is covered — and a
-  // link to one road that opened on all of it would be showing them the wrong
-  // thing entirely.
+  // Frame what the link was about on arrival: the segment it named, or the
+  // whole network if it named none. There is no geolocation, so the network fit
+  // is the only thing that tells a first-time visitor what is covered — and a
+  // link to one segment that opened on all of it would be showing them the
+  // wrong thing entirely.
   //
   // Waits for the map to say it is there rather than trusting the ref to be
   // populated by the time this runs — it is not, reliably, and the version
@@ -443,14 +451,14 @@ export function SiteMap({
     onCenter([middle.lng, middle.lat]);
   }, [graph, ready, onCenter]);
 
-  /** Whether the opening view belongs to a road the link named. */
-  const openedOnRoad = useRef(selected !== null);
+  /** Whether the opening view belongs to a segment the link named. */
+  const openedOnSegment = useRef(selected !== null);
 
   // Frame where the route can go next, not where it has been.
   //
-  // The road already ridden is settled; the decision in front of the rider is
-  // which way to turn, and a view fitted to twenty miles of history leaves the
-  // turnings too small to tell apart. Refits on every pick rather than only
+  // The segment already ridden is settled; the decision in front of the rider
+  // is which way to turn, and a view fitted to twenty miles of history leaves
+  // the turnings too small to tell apart. Refits on every pick rather than only
   // when the choices have left the screen: the pick is a deliberate act, and
   // answering it by moving the camera is the point.
   //
@@ -461,10 +469,10 @@ export function SiteMap({
     if (!mapRef.current) return;
 
     const looking = framing.mode === "route";
-    // A rider who turned the camera off still gets a finished ride framed —
+    // A rider who turned the camera off still gets a finished route framed —
     // one arriving from a link or off the saved list is being *shown* to them,
     // and leaving it half off the screen would be showing them nothing. What
-    // they turned off is the map moving out from under a ride they are
+    // they turned off is the map moving out from under a route they are
     // building, which is the other half of this.
     if (!autoZoom && !looking) return;
 
@@ -473,12 +481,12 @@ export function SiteMap({
       : choiceBounds(route, graph);
     if (!target) return;
 
-    // A link that named a road opens on that road, and a ride carried in the
-    // same link arrives a beat later — unchecked, it would pull the camera
-    // straight off the road the panel is talking about. Only that first
+    // A link that named a segment opens on that segment, and a route carried in
+    // the same link arrives a beat later — unchecked, it would pull the camera
+    // straight off the segment the panel is talking about. Only that first
     // framing gives way; every one after it is something the rider just did.
-    if (openedOnRoad.current) {
-      openedOnRoad.current = false;
+    if (openedOnSegment.current) {
+      openedOnSegment.current = false;
       return;
     }
 
@@ -491,7 +499,7 @@ export function SiteMap({
         [bounds.maxLon, bounds.maxLat],
       ],
       {
-        // Generous padding so the road just ridden stays partly in frame and
+        // Generous padding so the segment just ridden stays partly in frame and
         // the choices do not sit against the edge of the screen.
         padding: 140,
         // The flight is what says the camera moved rather than cut; for a
@@ -503,10 +511,42 @@ export function SiteMap({
     );
   }, [framing, route, graph, autoZoom]);
 
-  // No message outlives the ride it was about. Undoing back to a junction can
-  // make the road it named perfectly pickable, and a note still insisting
+  // No message outlives the route it was about. Undoing back to a junction can
+  // make the segment it named perfectly pickable, and a note still insisting
   // otherwise is worse than no note at all.
   useEffect(() => setNotice(null), [route]);
+
+  /**
+   * Escape puts the segment down, the way a click on the ground does.
+   *
+   * Clicking off is the gesture this map already has, and it asks for a bare
+   * pixel — which a dense stretch of the network, at the zoom a rider reads a
+   * segment at, may not have anywhere in reach. The note goes with it: it is
+   * the other thing on screen nobody asked to keep.
+   *
+   * Only while exploring, where there is something being read. Anything that
+   * answers Escape itself — a dialog, the elevation chart mid-drag — says so
+   * by preventing the default, and a dialog holds focus besides.
+   */
+  useEffect(() => {
+    if (!exploring) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      if (typingIn(event.target)) return;
+      if (
+        event.target instanceof HTMLElement &&
+        event.target.closest('[role="dialog"]')
+      )
+        return;
+
+      onSelect(null);
+      setNotice(null);
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [exploring, onSelect]);
 
   /**
    * Say which mode this now is, every time that changes and never on arrival.
@@ -525,8 +565,8 @@ export function SiteMap({
    * gone by the time the second one asked, and the banner it exists to prevent
    * was the one every visit opened with.
    *
-   * It replaces whatever was up rather than queueing behind it. A refusal
-   * about a road that just became pickable is the message least worth keeping.
+   * It replaces whatever was up rather than queueing behind it. A refusal about
+   * a segment that just became pickable is the message least worth keeping.
    */
   const announced = useRef(mode);
   useEffect(() => {
@@ -544,13 +584,13 @@ export function SiteMap({
   const opened = shown.find(({ pin }) => pin.id === openPin)?.pin ?? null;
 
   /**
-   * What the cursor is over, if it is over a road that can be picked.
+   * What the cursor is over, if it is over a segment that can be picked.
    *
    * Resolved with the same nearest-of rule as the click, so what the label
-   * describes is always the road a click would take. Reading the first hit
-   * instead would let the label name one road and the click take another.
+   * describes is always the segment a click would take. Reading the first hit
+   * instead would let the label name one segment and the click take another.
    */
-  function roadUnder(event: MapLayerMouseEvent): Hovered | null {
+  function segmentUnder(event: MapLayerMouseEvent): Hovered | null {
     const id = nearestOf(hitsIn(event, CLICKABLE), pointOf(event), graph);
     const segment = id ? graph.segments.get(id) : null;
     if (!segment) return null;
@@ -585,20 +625,21 @@ export function SiteMap({
         // compact is the smallest form they allow — the earlier codebase turns
         // it off outright, which is not something to copy.
         attributionControl={false}
-        // Only a road is clickable, so only a road says so. Claiming every pixel
-        // is clickable teaches a beginner nothing about where they may go.
-        cursor={overRoad ? "pointer" : "grab"}
+        // Only a segment is clickable, so only a segment says so. Claiming
+        // every pixel is clickable teaches a beginner nothing about where they
+        // may go.
+        cursor={overSegment ? "pointer" : "grab"}
         onLoad={() => setReady(true)}
         interactiveLayerIds={[CLICKABLE, CLOSED]}
         onMouseMove={(event: MapLayerMouseEvent) => {
-          // Only the open band counts. A road that is out of play is now under
-          // a hit target too, and answering a hover on it with a pointer and a
-          // label would say it can be picked at the moment it cannot.
-          setOverRoad(hitsIn(event, CLICKABLE).length > 0);
-          setHovered(roadUnder(event));
+          // Only the open band counts. A segment that is out of play is now
+          // under a hit target too, and answering a hover on it with a pointer
+          // and a label would say it can be picked at the moment it cannot.
+          setOverSegment(hitsIn(event, CLICKABLE).length > 0);
+          setHovered(segmentUnder(event));
         }}
         onMouseOut={() => {
-          setOverRoad(false);
+          setOverSegment(false);
           setHovered(null);
         }}
         // The camera moving under a still cursor leaves the label describing
@@ -608,22 +649,23 @@ export function SiteMap({
           setHovered(null);
         }}
         // On settling rather than on every frame: the panel's list of nearby
-        // roads is read, and a list that reshuffles mid-pan is not.
+        // segments is read, and a list that reshuffles mid-pan is not.
         onMoveEnd={(event) =>
           onCenter([event.viewState.longitude, event.viewState.latitude])
         }
         onClick={(event: MapLayerMouseEvent) => {
           setOpenPin(null);
-          // A tap fires this without ever hovering, and the label would then sit
-          // over the map with nothing under it until something else cleared it.
+          // A tap fires this without ever hovering, and the label would then
+          // sit over the map with nothing under it until something else cleared
+          // it.
           setHovered(null);
           const at = pointOf(event);
 
           const picked = nearestOf(hitsIn(event, CLICKABLE), at, graph);
 
-          // Exploring, a road is something to read rather than something to
-          // add, and the ground between roads is how it gets put down again —
-          // so a miss is an answer here instead of a refusal to explain.
+          // Exploring, a segment is something to read rather than something to
+          // add, and the ground between segments is how it gets put down again
+          // — so a miss is an answer here instead of a refusal to explain.
           if (exploring) {
             onSelect(picked);
             return;
@@ -635,10 +677,10 @@ export function SiteMap({
             return;
           }
 
-          // Nothing pickable was under the tap. If a road was, say why it did
-          // nothing — that a route has to join up is the one rule of this map,
-          // and a beginner has no way to guess it from a line going faint. If
-          // no road was, the ground answers for itself.
+          // Nothing pickable was under the tap. If a segment was, say why it
+          // did nothing — that a route has to join up is the one rule of this
+          // map, and a beginner has no way to guess it from a line going faint.
+          // If no segment was, the ground answers for itself.
           const missed = nearestOf(hitsIn(event, CLOSED), at, graph);
           const reason = missed ? whyClosed(route, missed, graph) : null;
           setNotice({
@@ -649,13 +691,13 @@ export function SiteMap({
       >
         <Source id="graph" type="geojson" data={data}>
           {/* What the panel is about, cased in the panel's own dark rather than
-            repainted in it. What a road is colored is the whole of what it has
+            repainted in it. What a segment is colored is the whole of what it has
             to say for itself, so the mark goes underneath and widens it into
             something findable at a glance — which the pale highlighter above
             could not do over a near-white basemap.
 
             First, so every line on this map draws over it: it is a casing, and
-            a casing that covered the grade running along the road it marks
+            a casing that covered the grade running along the segment it marks
             would hide the reading it was pointing at. */}
           <Layer
             id="segments-marked"
@@ -694,7 +736,7 @@ export function SiteMap({
           />
           {/* The same wide band over everything that cannot be picked, and
             underneath the one that can. Nothing here is ever selected — it is
-            only what lets a tap on a faded road be answered with a reason
+            only what lets a tap on a faded segment be answered with a reason
             rather than with silence. */}
           <Layer
             id={CLOSED}
@@ -708,7 +750,7 @@ export function SiteMap({
             layout={ROUNDED}
           />
           {/* Invisible and wide: the thing a finger actually has to hit. Only
-            what may be picked is in it, so a fat target cannot catch a road
+            what may be picked is in it, so a fat target cannot catch a segment
             that is out of play. */}
           <Layer
             id={CLICKABLE}
@@ -721,11 +763,12 @@ export function SiteMap({
             }}
             layout={ROUNDED}
           />
-          {/* The road the panel is pointing at, drawn like a highlighter over
-            the top rather than as another color of line: it has to be findable
-            without hiding what the road already says about itself, and a
-            keyboard has no cursor to follow. Pale and soft-edged so it reads
-            as attention rather than as a fourth state of the network. */}
+          {/* The segment the panel is pointing at, drawn like a highlighter
+              over the top rather than as another color of line: it has to be
+              findable without hiding what the segment already says about
+              itself, and a keyboard has no cursor to follow. Pale and
+              soft-edged so it reads as attention rather than as a fourth state
+              of the network. */}
           <Layer
             id="segments-highlighted"
             type="line"
@@ -741,10 +784,10 @@ export function SiteMap({
         </Source>
 
         {/* Elevation, drawn as its own set of lines rather than as a color on
-          the ones above. The steepness of a road changes along it, and a
-          feature can only hold one color, so the road is cut into stretches
+          the ones above. The steepness of a segment changes along it, and a
+          feature can only hold one color, so the segment is cut into stretches
           that are each one steepness. Kept under the hit target and the chosen
-          route, so neither picking nor reading your own ride is affected. */}
+          route, so neither picking nor reading your own route is affected. */}
         {!attribute && (
           <Source id="grade" type="geojson" data={gradeData}>
             <Layer
@@ -797,29 +840,28 @@ export function SiteMap({
           </Popup>
         )}
 
-        {/* Which end of the road the chart in the panel starts from. The green
-          dot and the flag are the admin's, unchanged: it is the same question
-          — which way does this line run — and answering it two ways would be
-          two things to learn instead of one. */}
+        {/* Which end of the segment the chart in the panel starts from. The
+            green dot and the flag are the admin's, unchanged: it is the same
+            question — which way does this line run — and answering it two ways
+            would be two things to learn instead of one. */}
         {ends && (
           <>
             <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
               <span
-                aria-label="Road start"
+                aria-label="Segment start"
                 className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
               />
             </Marker>
             <Marker longitude={ends.finish[0]} latitude={ends.finish[1]}>
-              <span aria-label="Road finish" className="checkered block" />
+              <span aria-label="Segment finish" className="checkered block" />
             </Marker>
           </>
         )}
 
-        {/* The same place the chart is reporting, so a height on the graph has a
-          somewhere on the map.
-          Dark core, pale ring — deliberately not the chart's amber, because the
-          route it sits on is amber and a marker has to be visible against the
-          thing it marks. */}
+        {/* The same place the chart is reporting, so a height on the graph has
+            a somewhere on the map. Dark core, pale ring — deliberately not the
+            chart's amber, because the route it sits on is amber and a marker
+            has to be visible against the thing it marks. */}
         {scrubbed && (
           <Marker longitude={scrubbed[0]} latitude={scrubbed[1]}>
             <span
@@ -831,7 +873,7 @@ export function SiteMap({
         <AttributionControl compact />
       </Map>
 
-      {hovered && <RoadTip hovered={hovered} />}
+      {hovered && <SegmentTip hovered={hovered} />}
       <MapNotice notice={notice} onDone={clearNotice} />
     </div>
   );
@@ -843,7 +885,8 @@ export function SiteMap({
  * Hover on a mouse, tap on a phone — and the two have to be told apart. A tap
  * fires the enter handler before the click, so a toggle would close what the
  * enter had just opened; hovering is therefore limited to pointers that can
- * actually hover. Clicking must not fall through to the road underneath either.
+ * actually hover. Clicking must not fall through to the segment underneath
+ * either.
  */
 function PinMarkers({
   pins,
@@ -887,8 +930,9 @@ function PinMarkers({
           onOpen(openPin === pin.id ? null : pin.id);
         }}
       >
-        {/* A pin on the ride is drawn full strength, one merely nearby is
-            smaller and faded: the ride is the subject and the rest is context. */}
+        {/* A pin on the route is drawn full strength, one merely nearby is
+            smaller and faded: the route is the subject and the rest is
+            context. */}
         <PinMark
           decorative
           kind={pin.kind}
@@ -900,13 +944,13 @@ function PinMarkers({
 }
 
 /**
- * What the road under the cursor says about itself.
+ * What the segment under the cursor says about itself.
  *
  * Offset off the cursor so the label never sits under the pointer, and thrown
  * to the other side near an edge so it cannot run off the map — which it
  * otherwise would, since the map reaches the window.
  */
-function RoadTip({ hovered }: { hovered: Hovered }) {
+function SegmentTip({ hovered }: { hovered: Hovered }) {
   const { distance, climb } = useUnits();
 
   return (

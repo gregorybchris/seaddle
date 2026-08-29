@@ -14,7 +14,7 @@ import {
  *
  * On the map rather than in the panel that used to hold it, and rather than in
  * the dialog that now sets it. A key is only worth anything beside the thing it
- * explains: closing a dialog to look at the roads would take the key away at
+ * explains: closing a dialog to look at the segments would take the key away at
  * exactly the moment it was wanted.
  *
  * Pale, because it sits on the basemap now instead of on the sheet — and
@@ -66,9 +66,9 @@ export function MapLegend({
  * A bar rather than a row of swatches, because grade is continuous.
  *
  * Only the ends are labeled. The exact percentage under any one stretch of
- * road is not a thing anyone is going to read off a legend, and the elevation
- * chart gives the real number for a route once one is built; what this has to
- * say is which end of the bar is the hard one.
+ * segment is not a thing anyone is going to read off a legend, and the
+ * elevation chart gives the real number for a route once one is built; what
+ * this has to say is which end of the bar is the hard one.
  */
 function GradeLegend() {
   const ramp = GRADE_STOPS.map(

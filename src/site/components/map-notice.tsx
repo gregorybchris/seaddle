@@ -9,7 +9,7 @@ import { PEEK_VH } from "@/widgets/sheet";
  * Long enough to read two lines twice, because the reader is a beginner who
  * has just been told a rule they did not know existed. It goes by itself
  * rather than waiting to be dismissed — a rider who has understood it should
- * not have to close anything before carrying on tapping roads.
+ * not have to close anything before carrying on tapping segments.
  *
  * A message confirming something the reader did on purpose does not need that
  * long, and outstays its welcome at it — flipping modes twice should not mean
@@ -33,9 +33,9 @@ const SWIPE_PX = 64;
  * A message, plus when it arrived.
  *
  * The stamp is what makes the same refusal twice read as twice: without it the
- * second tap on the same dead road changes no text, replays no animation, and
- * looks exactly like a tap that did nothing at all — which is the thing this
- * whole message exists to stop happening.
+ * second tap on the same dead segment changes no text, replays no animation,
+ * and looks exactly like a tap that did nothing at all — which is the thing
+ * this whole message exists to stop happening.
  */
 export type Notice = {
   headline: string;
@@ -48,10 +48,10 @@ export type Notice = {
 /**
  * Whatever the map has to say about what just happened.
  *
- * Two kinds so far: why the road you tapped did nothing, and which mode you
+ * Two kinds so far: why the segment you tapped did nothing, and which mode you
  * have just switched into. Both belong here rather than in a dialog, because
  * both are about the lines underneath — which ones are bright, which end of
- * the ride they leave from, what a click on one now does — and a modal would
+ * the route they leave from, what a click on one now does — and a modal would
  * cover the very thing it was describing while demanding a click to get out of
  * the way.
  *
@@ -59,9 +59,9 @@ export type Notice = {
  * or a tap anywhere on it. Everything around the card stays transparent to the
  * map, but the card itself no longer can be — a thing you can swipe is a thing
  * that has to receive the swipe. That is what the tap is for: while the card
- * is up it is in the way of the road under it, and a tap that did nothing at
+ * is up it is in the way of the segment under it, and a tap that did nothing at
  * all would read as the map having stopped working, where one that clears the
- * message leaves the road a second tap away.
+ * message leaves the segment a second tap away.
  */
 export function MapNotice({
   notice,

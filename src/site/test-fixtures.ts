@@ -3,7 +3,7 @@ import { buildAdjacency } from "@/lib/graph/adjacency";
 import type { SiteGraph, SiteSegment } from "./graph-data";
 
 /**
- * A road with everything filled in, so a test only writes what it is about.
+ * A segment with everything filled in, so a test only writes what it is about.
  *
  * The site's tests each want a different corner of a segment — an elevation
  * pair, a set of points, an attribute — and each was carrying its own copy of

@@ -1,9 +1,12 @@
 import { TreeEvergreen } from "@phosphor-icons/react";
+import { Fragment } from "react";
 import type { BasemapId } from "@/lib/basemap";
+import { MOD } from "@/lib/utilities/keys";
 import { useUnits } from "@/lib/use-units";
 import { UNIT_LABELS, UNIT_SYSTEMS } from "@/lib/utilities/units";
 import { BasemapChoices } from "@/widgets/basemap-choices";
 import { ChipGroup } from "@/widgets/chip-group";
+import { Keycap } from "@/widgets/keycap";
 import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Switch } from "@/widgets/switch";
 
@@ -19,7 +22,7 @@ type SettingsPanelProps = {
  *
  * Which is the line this dialog is drawn on, and the reason the ground moved
  * here out of the color dialog next door: what the map is *colored by* is a
- * question about the roads and gets asked again whenever the rider wants to
+ * question about the segments and gets asked again whenever the rider wants to
  * know something else about them, while the ground under them, the units, and
  * whether the camera moves are all set once by taste and then forgotten. The
  * palette is a reading of the network; this is the shape of the site.
@@ -69,10 +72,70 @@ export function SettingsPanel({
         />
       </div>
 
+      <Shortcuts />
+
       <Colophon />
     </div>
   );
 }
+
+/**
+ * Every key the site answers, in the one dialog that is already the shape of
+ * the site rather than a step in anything.
+ *
+ * A list of keys is the thing a rider looks up once and then never opens
+ * again, which is the same shelf the ground and the units sit on. It earns a
+ * place there because four of these keys are named nowhere else: a tooltip is
+ * a hover, and the two that need explaining most — the bare rubout, and escape
+ * — hang off no button at all.
+ *
+ * Route first, then map, which is the order the site itself is in: the panel
+ * builds a route and the buttons in the corner change what it is read against.
+ *
+ * Not on a phone, where there is no keyboard to press any of them with and the
+ * dialog has three real settings to get to.
+ */
+function Shortcuts() {
+  return (
+    <div className="border-sand/10 hidden border-t pt-4 md:block">
+      <span className="eyebrow text-sand/70">Keyboard</span>
+      <ul className="mt-2.5 flex flex-col gap-2">
+        {SHORTCUTS.map(({ keys, does }) => (
+          <li key={does} className="flex items-center justify-between gap-3">
+            <span className="text-sand/80 text-xs leading-snug">{does}</span>
+            {/* Right-aligned and never wrapping: the keys are the column being
+                scanned, and a cap that drops to its own line stops being one. */}
+            <span className="flex shrink-0 items-center gap-1.5">
+              {keys.map((key, at) => (
+                <Fragment key={key}>
+                  {at > 0 && (
+                    <span className="text-sand/40 text-[0.625rem]">or</span>
+                  )}
+                  <Keycap>{key}</Keycap>
+                </Fragment>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * What each key does, in the words the button already uses where there is one
+ * — a list of shortcuts is read down rather than across, and a sentence per
+ * row makes that a paragraph.
+ */
+const SHORTCUTS: { keys: string[]; does: string }[] = [
+  { keys: [`${MOD}Z`, "\u232b"], does: "Undo" },
+  { keys: [`${MOD}\u21e7Z`], does: "Redo" },
+  { keys: [`${MOD}\u232b`], does: "Start over" },
+  { keys: ["E"], does: "Switch mode" },
+  { keys: ["C"], does: "Next segment color" },
+  { keys: ["T"], does: "Next map style" },
+  { keys: ["Esc"], does: "Deselect" },
+];
 
 /**
  * Who made this, at the foot of the one dialog nobody opens by accident.

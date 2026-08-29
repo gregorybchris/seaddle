@@ -19,23 +19,23 @@ const HEIGHT = 64;
 const MIN_BAND = 3;
 
 /**
- * The shape of the ride, drawn to scale along its length, and readable at any
+ * The shape of the route, drawn to scale along its length, and readable at any
  * point along it.
  *
- * Seattle decides a ride by its hills, so this is the one picture worth showing
- * a rider before they set off — and "how high is that bit in the middle" is the
- * question the picture immediately provokes. The vertical range is held to a
- * floor so a flat trail does not draw like a mountain range just because the
- * axis was fitted to three meters of noise.
+ * Seattle decides a route by its hills, so this is the one picture worth
+ * showing a rider before they set off — and "how high is that bit in the
+ * middle" is the question the picture immediately provokes. The vertical range
+ * is held to a floor so a flat trail does not draw like a mountain range just
+ * because the axis was fitted to three meters of noise.
  *
  * A press that travels reads a stretch rather than a point, and only while it
- * is held. The caption keeps its two slots — a distance on the left and a
- * climb on the right — and they answer about the band instead of the ride: how
- * long is that hill, and how much climbing is in it. The climb is the one the
- * drag was going in, so sweeping back across a hill you just measured gives
- * you the other side of it rather than the same number again. The question is
- * asked of a piece of road with no name, so there is nowhere to put a lasting
- * answer and nothing to dismiss afterwards.
+ * is held. The caption keeps its two slots — a distance on the left and a climb
+ * on the right — and they answer about the band instead of the route: how long
+ * is that hill, and how much climbing is in it. The climb is the one the drag
+ * was going in, so sweeping back across a hill you just measured gives you the
+ * other side of it rather than the same number again. The question is asked of
+ * a piece of segment with no name, so there is nowhere to put a lasting answer
+ * and nothing to dismiss afterwards.
  */
 export function ElevationProfile({
   points,
@@ -47,7 +47,7 @@ export function ElevationProfile({
   className?: string;
   minRangeMeters?: number;
   /**
-   * Where along the ride the reader is looking, 0 to 1, or null once they
+   * Where along the route the reader is looking, 0 to 1, or null once they
    * stop. Lets the map put the same place under a marker — a height without a
    * "where" only answers half the question.
    */
@@ -90,7 +90,7 @@ export function ElevationProfile({
   /**
    * Measured off the real points, not the ninety-six drawn samples, which would
    * quietly shave the climbing off every band. Anchor first and pointer second,
-   * so a drag back down the chart is measured back down the road.
+   * so a drag back down the chart is measured back down the segment.
    */
   function bandOf(start: number, end: number): Span | null {
     if (Math.abs(start - end) < MIN_BAND) return null;
@@ -127,7 +127,7 @@ export function ElevationProfile({
         // moved and read, which is exactly what arrow keys should do here.
         role="slider"
         tabIndex={0}
-        aria-label="Elevation along the ride"
+        aria-label="Elevation profile"
         aria-valuemin={0}
         aria-valuemax={Math.round(profile.meters)}
         aria-valuenow={Math.round(reading?.meters ?? 0)}
@@ -238,7 +238,7 @@ export function ElevationProfile({
       {/* Same two slots either way, so reading the hill does not shift the
           panel under the pointer — and the same two questions, distance on the
           left and climb on the right, whether the subject is a point on the
-          ride or a band of it. */}
+          route or a band of it. */}
       <figcaption className="tabular flex justify-between text-[0.625rem]">
         {band ? (
           <>
