@@ -104,8 +104,8 @@ export function SavedRoutes({
           setForgetting(null);
         }}
       >
-        “{forgetting?.name}” is saved in this browser only, so forgetting it
-        here is the end of it.
+        “{forgetting?.name}” is saved in this browser only. Once you forget it,
+        it's gone. You sure?
       </ConfirmDialog>
     </section>
   );
