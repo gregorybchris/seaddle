@@ -46,7 +46,7 @@ export function closedNotice(reason: ClosedReason, route: Route): ClosedNotice {
     case "ridden":
       return {
         headline: "Already in your route",
-        detail: "Undo back to this segment to take a different turn from it.",
+        detail: "Undo this segment to try a different route.",
       };
     case "stranded":
       return {
