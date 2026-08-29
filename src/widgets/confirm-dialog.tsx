@@ -22,9 +22,10 @@ type ConfirmDialogProps = {
  * found. Clicking beside a panel is how someone dismisses a thing they opened
  * by accident, and that gesture must not be the one that deletes a ride.
  *
- * Only for what cannot be undone. Clearing a route is redoable and asks
- * nothing; a saved ride lives in this browser and nowhere else, so forgetting
- * it is the end of it.
+ * Only for what costs more to rebuild than to reconsider: forgetting a saved
+ * ride, which lives in this browser and nowhere else, or starting over, which
+ * takes back an afternoon of picks in one click even though Undo can return
+ * them.
  */
 export function ConfirmDialog({
   open,

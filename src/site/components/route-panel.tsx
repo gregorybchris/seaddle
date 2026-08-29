@@ -5,7 +5,8 @@ import {
   Trash,
   X,
 } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { typingIn } from "@/lib/utilities/keys";
 import { cn } from "@/lib/utilities/style-utils";
 import { useUnits, type Units } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
@@ -88,6 +89,31 @@ export function RoutePanel({
   const onward = started ? continuations(route, graph).size : 0;
   const stuck = started && onward === 0;
   const ridden = routeSegments(route, graph);
+
+  // Held rather than acted on: a ride is a long run of picks and there is one
+  // button that throws all of them away at once. Redo can bring it back, but
+  // nobody who has just watched their ride vanish thinks to reach for Redo.
+  const [clearing, setClearing] = useState(false);
+
+  // Delete, which asks the same question the button does rather than clearing
+  // outright — a single key is far too short a walk to an empty map. Bound
+  // beside the button so the two cannot drift apart, and stood aside from
+  // while someone is naming a ride, where Delete is a rubout.
+  useEffect(() => {
+    if (!started) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Delete" && event.key !== "Backspace") return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (typingIn(event.target)) return;
+
+      event.preventDefault();
+      setClearing(true);
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [started]);
 
   /**
    * Nothing on first arrival — there is no news in a page having just loaded,
@@ -207,7 +233,8 @@ export function RoutePanel({
               <Button
                 variant="danger"
                 className="px-2 text-xs"
-                onClick={onClear}
+                onClick={() => setClearing(true)}
+                title="Start over (Delete)"
               >
                 <Trash weight="bold" className="h-4 w-4" />
                 Start over
@@ -240,6 +267,19 @@ export function RoutePanel({
           onLoad={onLoad}
           current={encodeRoute(route)}
         />
+
+        <ConfirmDialog
+          open={clearing}
+          onOpenChange={setClearing}
+          title="Start over?"
+          confirm="Start over"
+          onConfirm={() => {
+            setClearing(false);
+            onClear();
+          }}
+        >
+          You'll lose all the beautiful mapping you've done! Are you sure?
+        </ConfirmDialog>
       </div>
     </Sheet>
   );
