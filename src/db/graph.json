@@ -1360,12 +1360,12 @@
     },
     {
       "id": "s059",
-      "from": "n079",
-      "to": "n078",
+      "from": "n078",
+      "to": "n079",
       "source": {
         "track": "burien",
-        "startIndex": 1177,
-        "endIndex": 700
+        "startIndex": 700,
+        "endIndex": 1177
       },
       "name": "Colman Dock to West Seattle Bridge",
       "steepness": "flat",
@@ -1375,12 +1375,12 @@
     },
     {
       "id": "s060",
-      "from": "n078",
-      "to": "n076",
+      "from": "n076",
+      "to": "n078",
       "source": {
         "track": "2026-06-28-afternoon-ride",
-        "startIndex": 2312,
-        "endIndex": 2402
+        "startIndex": 2402,
+        "endIndex": 2312
       },
       "name": "Pike Place to Colman Dock",
       "steepness": "flat",
@@ -1390,12 +1390,12 @@
     },
     {
       "id": "s061",
-      "from": "n076",
-      "to": "n077",
+      "from": "n077",
+      "to": "n076",
       "source": {
         "track": "2026-07-06-morning-ride",
-        "startIndex": 913,
-        "endIndex": 929
+        "startIndex": 929,
+        "endIndex": 913
       },
       "name": "Pike Place to Centennial Park",
       "steepness": "flat",
@@ -1405,12 +1405,12 @@
     },
     {
       "id": "s062",
-      "from": "n077",
-      "to": "n009",
+      "from": "n009",
+      "to": "n077",
       "source": {
         "track": "magnolia-belltown",
-        "startIndex": 2109,
-        "endIndex": 1569
+        "startIndex": 1569,
+        "endIndex": 2109
       },
       "name": "Interbay Through Centennial Park",
       "steepness": "flat",
@@ -1480,12 +1480,12 @@
     },
     {
       "id": "s067",
-      "from": "n081",
-      "to": "n079",
+      "from": "n079",
+      "to": "n081",
       "source": {
         "track": "burien",
-        "startIndex": 4998,
-        "endIndex": 5103
+        "startIndex": 5103,
+        "endIndex": 4998
       },
       "name": "West Seattle Bridge to West Seattle",
       "steepness": "flat",
@@ -1495,12 +1495,12 @@
     },
     {
       "id": "s068",
-      "from": "n076",
-      "to": "n049",
+      "from": "n049",
+      "to": "n076",
       "source": {
         "track": "2026-07-06-morning-ride",
-        "startIndex": 626,
-        "endIndex": 327
+        "startIndex": 327,
+        "endIndex": 626
       },
       "name": "SLU to Pike Place",
       "steepness": "flat",
@@ -1525,12 +1525,12 @@
     },
     {
       "id": "s070",
-      "from": "n070",
-      "to": "n083",
+      "from": "n083",
+      "to": "n070",
       "source": {
         "track": "2025-06-04-afternoon-ride",
-        "startIndex": 3651,
-        "endIndex": 3666
+        "startIndex": 3666,
+        "endIndex": 3651
       },
       "name": "Montlake Crossing South",
       "steepness": "flat",
@@ -1540,12 +1540,12 @@
     },
     {
       "id": "s071",
-      "from": "n083",
-      "to": "n084",
+      "from": "n084",
+      "to": "n083",
       "source": {
         "track": "2025-06-04-afternoon-ride",
-        "startIndex": 3666,
-        "endIndex": 3676
+        "startIndex": 3676,
+        "endIndex": 3666
       },
       "name": "Montlake Crossing Central",
       "steepness": "flat",
@@ -1765,12 +1765,12 @@
     },
     {
       "id": "s087",
-      "from": "n095",
-      "to": "n066",
+      "from": "n066",
+      "to": "n095",
       "source": {
         "track": "lake-sammamish-mine",
-        "startIndex": 3921,
-        "endIndex": 2736
+        "startIndex": 2736,
+        "endIndex": 3921
       },
       "name": "West Lake Sammamish",
       "steepness": "flat",
@@ -1780,12 +1780,12 @@
     },
     {
       "id": "s088",
-      "from": "n063",
-      "to": "n096",
+      "from": "n096",
+      "to": "n063",
       "source": {
         "track": "may-valley-loop",
-        "startIndex": 3370,
-        "endIndex": 1401
+        "startIndex": 1401,
+        "endIndex": 3370
       },
       "name": "Mill Valley",
       "steepness": "flat",
@@ -1810,12 +1810,12 @@
     },
     {
       "id": "s090",
-      "from": "n096",
-      "to": "n068",
+      "from": "n068",
+      "to": "n096",
       "source": {
         "track": "lake-sammamish-loop",
-        "startIndex": 1782,
-        "endIndex": 3293
+        "startIndex": 3293,
+        "endIndex": 1782
       },
       "name": "East Lake Sammamish",
       "steepness": "flat",
@@ -1840,12 +1840,12 @@
     },
     {
       "id": "s093",
-      "from": "n098",
-      "to": "n044",
+      "from": "n044",
+      "to": "n098",
       "source": {
         "track": "lake-sammamish-mine",
-        "startIndex": 372,
-        "endIndex": 259
+        "startIndex": 259,
+        "endIndex": 372
       },
       "name": "Redmond to Marymoor",
       "steepness": "flat",
@@ -1885,12 +1885,12 @@
     },
     {
       "id": "s096",
-      "from": "n062",
-      "to": "n102",
+      "from": "n102",
+      "to": "n062",
       "source": {
         "track": "2026-05-31-afternoon-ride",
-        "startIndex": 2483,
-        "endIndex": 2287
+        "startIndex": 2287,
+        "endIndex": 2483
       },
       "name": "West Seward Park",
       "steepness": "flat",
@@ -1900,12 +1900,12 @@
     },
     {
       "id": "s097",
-      "from": "n103",
-      "to": "n062",
+      "from": "n062",
+      "to": "n103",
       "source": {
         "track": "across-seattle",
-        "startIndex": 2845,
-        "endIndex": 2950
+        "startIndex": 2950,
+        "endIndex": 2845
       },
       "name": "South Seward Park",
       "steepness": "rolling",
@@ -1930,12 +1930,12 @@
     },
     {
       "id": "s099",
-      "from": "n062",
-      "to": "n104",
+      "from": "n104",
+      "to": "n062",
       "source": {
         "track": "bikes-on-the-boulevard",
-        "startIndex": 1857,
-        "endIndex": 1552
+        "startIndex": 1552,
+        "endIndex": 1857
       },
       "name": "Genesee Park to Seward Park",
       "steepness": "flat",
@@ -1945,12 +1945,12 @@
     },
     {
       "id": "s100",
-      "from": "n104",
-      "to": "n061",
+      "from": "n061",
+      "to": "n104",
       "source": {
         "track": "bikes-on-the-boulevard",
-        "startIndex": 2186,
-        "endIndex": 2388
+        "startIndex": 2388,
+        "endIndex": 2186
       },
       "name": "Colman Park to Genesee Park",
       "steepness": "flat",
@@ -1960,12 +1960,12 @@
     },
     {
       "id": "s101",
-      "from": "n060",
-      "to": "n061",
+      "from": "n061",
+      "to": "n060",
       "source": {
         "track": "bikes-on-the-boulevard",
-        "startIndex": 2506,
-        "endIndex": 2388
+        "startIndex": 2388,
+        "endIndex": 2506
       },
       "name": "Colman Park Turns",
       "steepness": "steep",
@@ -2125,12 +2125,12 @@
     },
     {
       "id": "s112",
-      "from": "n035",
-      "to": "n033",
+      "from": "n033",
+      "to": "n035",
       "source": {
         "track": "bikes-on-the-boulevard",
-        "startIndex": 401,
-        "endIndex": 395
+        "startIndex": 395,
+        "endIndex": 401
       },
       "name": "UW Green to Ramp N",
       "steepness": "flat",
@@ -2290,12 +2290,12 @@
     },
     {
       "id": "s125",
-      "from": "n111",
-      "to": "n046",
+      "from": "n046",
+      "to": "n111",
       "source": {
         "track": "sammamish-river-trail",
-        "startIndex": 196,
-        "endIndex": 153
+        "startIndex": 153,
+        "endIndex": 196
       },
       "name": "Gas Works to Corliss Crossing Northlake",
       "steepness": "flat",
@@ -2305,12 +2305,12 @@
     },
     {
       "id": "s126",
-      "from": "n112",
-      "to": "n046",
+      "from": "n046",
+      "to": "n112",
       "source": {
         "track": "two-bridges-mercer-and-bellevue",
-        "startIndex": 5236,
-        "endIndex": 5274
+        "startIndex": 5274,
+        "endIndex": 5236
       },
       "name": "Gas Works to Corliss Crossing",
       "steepness": "flat",
@@ -2425,12 +2425,12 @@
     },
     {
       "id": "s134",
-      "from": "n089",
-      "to": "n097",
+      "from": "n097",
+      "to": "n089",
       "source": {
         "track": "2026-07-03-afternoon-ride",
-        "startIndex": 1718,
-        "endIndex": 1875
+        "startIndex": 1875,
+        "endIndex": 1718
       },
       "name": "South Bellevue",
       "steepness": "flat",
@@ -2440,12 +2440,12 @@
     },
     {
       "id": "s135",
-      "from": "n066",
-      "to": "n097",
+      "from": "n097",
+      "to": "n066",
       "source": {
         "track": "2026-07-03-afternoon-ride",
-        "startIndex": 4533,
-        "endIndex": 5255
+        "startIndex": 5255,
+        "endIndex": 4533
       },
       "name": "Bellevue to Issaquah",
       "steepness": "rolling",
@@ -2485,12 +2485,12 @@
     },
     {
       "id": "s138",
-      "from": "n116",
-      "to": "n101",
+      "from": "n101",
+      "to": "n116",
       "source": {
         "track": "afternoon-ride",
-        "startIndex": 7239,
-        "endIndex": 6430
+        "startIndex": 6430,
+        "endIndex": 7239
       },
       "name": "SW Lake Washington",
       "steepness": "flat",
@@ -2500,12 +2500,12 @@
     },
     {
       "id": "s139",
-      "from": "n062",
-      "to": "n116",
+      "from": "n116",
+      "to": "n062",
       "source": {
         "track": "across-seattle",
-        "startIndex": 2591,
-        "endIndex": 2455
+        "startIndex": 2455,
+        "endIndex": 2591
       },
       "name": "SW Lake Washington to Seward",
       "steepness": "rolling",
@@ -2560,12 +2560,12 @@
     },
     {
       "id": "s144",
-      "from": "n117",
-      "to": "n051",
+      "from": "n051",
+      "to": "n117",
       "source": {
         "track": "2026-07-21-evening-ride",
-        "startIndex": 260,
-        "endIndex": 39
+        "startIndex": 39,
+        "endIndex": 260
       },
       "name": "Fremont to Palatine",
       "steepness": "rolling",
@@ -2605,12 +2605,12 @@
     },
     {
       "id": "s147",
-      "from": "n051",
-      "to": "n118",
+      "from": "n118",
+      "to": "n051",
       "source": {
         "track": "2026-07-19-afternoon-ride",
-        "startIndex": 56,
-        "endIndex": 9
+        "startIndex": 9,
+        "endIndex": 56
       },
       "name": "Bellevue to 520 Trail",
       "steepness": "flat",
@@ -2680,12 +2680,12 @@
     },
     {
       "id": "s152",
-      "from": "n120",
-      "to": "n119",
+      "from": "n119",
+      "to": "n120",
       "source": {
         "track": "2026-07-19-afternoon-ride",
-        "startIndex": 533,
-        "endIndex": 315
+        "startIndex": 315,
+        "endIndex": 533
       },
       "name": "Phinney to Greenwood",
       "steepness": "flat",
@@ -2695,12 +2695,12 @@
     },
     {
       "id": "s153",
-      "from": "n038",
-      "to": "n045",
+      "from": "n045",
+      "to": "n038",
       "source": {
         "track": "2026-07-22-evening-ride",
-        "startIndex": 373,
-        "endIndex": 114
+        "startIndex": 114,
+        "endIndex": 373
       },
       "name": "Stone Way",
       "steepness": "rolling",
@@ -2830,12 +2830,12 @@
     },
     {
       "id": "s162",
-      "from": "n123",
-      "to": "n031",
+      "from": "n031",
+      "to": "n123",
       "source": {
         "track": "bikes-on-the-boulevard",
-        "startIndex": 3599,
-        "endIndex": 3552
+        "startIndex": 3552,
+        "endIndex": 3599
       },
       "name": "UW Bridge",
       "steepness": "flat",
@@ -2935,12 +2935,12 @@
     },
     {
       "id": "s169",
-      "from": "n112",
-      "to": "n110",
+      "from": "n110",
+      "to": "n112",
       "source": {
         "track": "sammamish-river-trail",
-        "startIndex": 6027,
-        "endIndex": 6016
+        "startIndex": 6016,
+        "endIndex": 6027
       },
       "name": "Corliss Crossing North",
       "steepness": "flat",
@@ -3042,7 +3042,7 @@
       "segment": "s062",
       "kind": "restroom",
       "note": "Very nice new restrooms. Thanks, Melinda and MacKenzie!",
-      "at": 0.5092831674185818,
+      "at": 0.4907168325814182,
       "coord": [-122.371942, 47.625583]
     },
     {
@@ -3050,7 +3050,7 @@
       "segment": "s062",
       "kind": "restStop",
       "note": "A good place to get a snack",
-      "at": 0.5116351505035209,
+      "at": 0.48836484949647907,
       "coord": [-122.372079, 47.625651]
     },
     {
@@ -3066,7 +3066,7 @@
       "segment": "s059",
       "kind": "restStop",
       "note": "Get some ice cream with a view",
-      "at": 0.9810268932846078,
+      "at": 0.018973106715392207,
       "coord": [-122.336094, 47.600933]
     },
     {
