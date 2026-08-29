@@ -73,9 +73,9 @@ export function markUnreviewed(graph: GraphFile, id: SegmentId): GraphFile {
 /**
  * The next segment still carrying defaults, wrapping around.
  *
- * Reviewing 145 segments is only bearable if finishing one hands you the next,
- * so this drives a button rather than making someone hunt the list for what
- * they have not done yet.
+ * Reviewing a hundred and seventy segments is only bearable if finishing one
+ * hands you the next, so this drives a button rather than making someone hunt
+ * the list for what they have not done yet.
  *
  * "Next" is a position in the list it is handed, not the next id: the caller
  * orders segments along the roads, and a queue that jumped back to id order

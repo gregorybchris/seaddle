@@ -19,6 +19,7 @@ import type { SiteGraph, SitePin } from "../graph-data";
 import { PIN_LABELS } from "@/lib/models/graph";
 import type { BasemapId } from "@/lib/basemap";
 import { useBasemapPaint } from "@/lib/use-basemap";
+import { LineEnds } from "@/widgets/line-ends";
 import { PinMark } from "@/widgets/pin-mark";
 import { typingIn } from "@/lib/utilities/keys";
 import { prefersReducedMotion } from "@/lib/utilities/motion";
@@ -45,7 +46,7 @@ import {
 } from "../route";
 import type { Framing } from "../use-route-history";
 import { PICK } from "../pointing";
-import { closedNotice, groundNotice, whyClosed } from "../why-closed";
+import { closedNotice, groundNotice } from "../why-closed";
 import { MapNotice, type Notice } from "./map-notice";
 
 /**
@@ -65,6 +66,17 @@ const CLOSED = "segments-hit-closed";
 /** Every line on this map is a segment, and a segment has rounded ends and
  *  corners. */
 const ROUNDED = { "line-cap": "round", "line-join": "round" } as const;
+
+/**
+ * The same, switched off.
+ *
+ * Under the grade encoding these two layers have nothing to say — the color
+ * they paint is a per-segment attribute and grade is not one, so it is drawn as
+ * its own lines below. They used to stay in the style at zero opacity, which
+ * still asks Mapbox to filter and lay out every segment in the network twice on
+ * every frame to paint nothing. Hidden, it does neither.
+ */
+const HIDDEN = { ...ROUNDED, visibility: "none" } as const;
 
 /**
  * Road, and not-road.
@@ -88,6 +100,27 @@ const CROSSED = ["to-boolean", ["get", "crossing"]] as never;
  * it.
  */
 const OPEN_WIDTH = 3.5;
+
+/**
+ * The pale highlighter that says "this is what you are looking at".
+ *
+ * One table for the two things that say it: the segment the panel is pointing
+ * at, and the stretch of road under a drag on the elevation chart. They are the
+ * same statement made about different amounts of line, and drawn even slightly
+ * apart they would read as two marks with two meanings — so the widths, the
+ * wash and the blur are agreed here rather than beside each layer.
+ *
+ * Soft-edged and under half strength, so it reads as attention rather than as
+ * another state of the network. The color is `--color-sand` — the panel's own
+ * — spelled out because a Mapbox paint value is not CSS and cannot reach a
+ * theme token.
+ */
+const HIGHLIGHT = {
+  "line-color": "#e9e0d0",
+  "line-opacity": 0.5,
+  "line-width": 14,
+  "line-blur": 2,
+} as const;
 
 /**
  * How wide the invisible target around each segment is, in screen pixels.
@@ -573,19 +606,26 @@ export function SiteMap({
     // building, which is the other half of this.
     if (!autoZoom && !looking) return;
 
-    const target = looking
-      ? routeBounds(route, graph)
-      : choiceBounds(route, graph);
-    if (!target) return;
-
     // A link that named a segment opens on that segment, and a route carried in
     // the same link arrives a beat later — unchecked, it would pull the camera
     // straight off the segment the panel is talking about. Only that first
     // framing gives way; every one after it is something the rider just did.
-    if (openedOnSegment.current) {
+    //
+    // Spent on the arrival itself rather than on the first framing that turned
+    // out to have somewhere to point. A link naming only a segment carries no
+    // route, so the bounds below came back null and this was left standing —
+    // and it then swallowed the camera move for the rider's own first pick,
+    // which is the one move worth making. A "choices" framing is always a pick
+    // that was just made, so it is never what this is guarding against.
+    if (looking && openedOnSegment.current) {
       openedOnSegment.current = false;
       return;
     }
+
+    const target = looking
+      ? routeBounds(route, graph)
+      : choiceBounds(route, graph);
+    if (!target) return;
 
     const anchor = looking ? null : focusAnchor(route, graph);
     const bounds = anchor ? centeredOn(anchor, target) : target;
@@ -783,10 +823,14 @@ export function SiteMap({
           // another island of the network, which is the one thing left that a
           // pick cannot reach and the one thing a beginner cannot guess from a
           // line going faint. If no segment was, the ground answers for itself.
+          //
+          // The band asked here holds exactly the segments `open` leaves out,
+          // so a hit in it is unreachable by construction — asking again would
+          // be a second search of the whole graph inside a click, to be told
+          // what the layer filter already decided.
           const missed = nearestOf(hitsIn(event, CLOSED), at, graph);
-          const reason = missed ? whyClosed(route, missed, graph) : null;
           setNotice({
-            ...(reason ? closedNotice(reason) : groundNotice(route)),
+            ...(missed ? closedNotice("unreachable") : groundNotice(route)),
             at: Date.now(),
           });
         }}
@@ -829,18 +873,18 @@ export function SiteMap({
             layout={ROUNDED}
           />
           {/* Out of play: still drawn, so the shape of the network stays
-            readable and an island is visibly an island. Drawn at no opacity
-            at all under the grade encoding, which has its own lines below. */}
+            readable and an island is visibly an island. Switched off entirely
+            under the grade encoding, which has its own lines below. */}
           <Layer
             id="segments-closed"
             type="line"
             filter={ROAD}
             paint={{
               "line-color": color as never,
-              "line-opacity": attribute ? 0.45 : 0,
+              "line-opacity": 0.45,
               "line-width": 3,
             }}
-            layout={ROUNDED}
+            layout={attribute ? ROUNDED : HIDDEN}
           />
           <Layer
             id="segments-open"
@@ -850,10 +894,10 @@ export function SiteMap({
             }
             paint={{
               "line-color": color as never,
-              "line-opacity": attribute ? 1 : 0,
+              "line-opacity": 1,
               "line-width": OPEN_WIDTH,
             }}
-            layout={ROUNDED}
+            layout={attribute ? ROUNDED : HIDDEN}
           />
           {/* A pale bed under the dashes, and the reason there are two layers
             here rather than one. A crossing has to read as a crossing over the
@@ -934,12 +978,7 @@ export function SiteMap({
             id="segments-highlighted"
             type="line"
             filter={["==", ["get", "id"], highlighted ?? ""]}
-            paint={{
-              "line-color": "#e9e0d0",
-              "line-opacity": 0.5,
-              "line-width": 14,
-              "line-blur": 2,
-            }}
+            paint={HIGHLIGHT}
             layout={ROUNDED}
           />
         </Source>
@@ -954,12 +993,7 @@ export function SiteMap({
           <Layer
             id="scrub-band-line"
             type="line"
-            paint={{
-              "line-color": "#e9e0d0",
-              "line-opacity": 0.5,
-              "line-width": 14,
-              "line-blur": 2,
-            }}
+            paint={HIGHLIGHT}
             layout={ROUNDED}
           />
         </Source>
@@ -1021,36 +1055,18 @@ export function SiteMap({
           </Popup>
         )}
 
-        {/* Which end of the segment the chart in the panel starts from. The
-            green dot and the flag are the admin's, unchanged: it is the same
-            question — which way does this line run — and answering it two ways
-            would be two things to learn instead of one. */}
+        {/* Which end of the segment the chart in the panel starts from, and
+            which end the route being built set off from. The same pair of marks
+            the admin draws, out of the same widget: it is one question — which
+            way does this line run — and drawing it three ways would be three
+            things to learn instead of one. Never both at once, since exploring
+            and building are the two branches that set these. */}
         {ends && (
-          <>
-            <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
-              <span
-                aria-label="Segment start"
-                className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
-              />
-            </Marker>
-            <Marker longitude={ends.finish[0]} latitude={ends.finish[1]}>
-              <span aria-label="Segment finish" className="checkered block" />
-            </Marker>
-          </>
+          <LineEnds start={ends.start} finish={ends.finish} subject="Segment" />
         )}
 
         {built && (
-          <>
-            <Marker longitude={built.start[0]} latitude={built.start[1]}>
-              <span
-                aria-label="Route start"
-                className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
-              />
-            </Marker>
-            <Marker longitude={built.finish[0]} latitude={built.finish[1]}>
-              <span aria-label="Route finish" className="checkered block" />
-            </Marker>
-          </>
+          <LineEnds start={built.start} finish={built.finish} subject="Route" />
         )}
 
         {/* The same place the chart is reporting, so a height on the graph has

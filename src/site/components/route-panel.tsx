@@ -6,12 +6,11 @@ import {
   Trash,
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
-import { MOD, typingIn } from "@/lib/utilities/keys";
+import { isRubout, MOD, typingIn } from "@/lib/utilities/keys";
 import { useUnits } from "@/lib/use-units";
 import { Button } from "@/widgets/button";
 import { ConfirmDialog } from "@/widgets/confirm-dialog";
 import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
-import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
 import { downloadGpx } from "../download-gpx";
 import type { Encoding } from "../encoding";
@@ -38,6 +37,7 @@ import {
   useSavedRoutes,
   type SavedRoute,
 } from "../use-saved-routes";
+import { PanelHeader } from "./panel-header";
 import { RouteBreakdown } from "./route-breakdown";
 import { SavedRoutes } from "./saved-routes";
 import { PICK } from "../pointing";
@@ -80,19 +80,34 @@ export function RoutePanel({
   // place leave the other showing a stale list.
   const saved = useSavedRoutes();
   const units = useUnits();
-  // Every point of the route, and the reader drags along the chart: recomputing
-  // it on each of those renders is walking the whole route per pointer move.
-  const { points, crossed } = useMemo(
-    () => routeLine(route, graph),
-    [route, graph],
-  );
-  const meters = routeMeters(route, graph);
-  const gain = routeGain(route, graph);
   const started = !isEmpty(route);
-  const onward = started ? continuations(route, graph).size : 0;
+  /**
+   * Everything this panel reads off the route, worked out once per route.
+   *
+   * All of it together, because all of it is the same walk: the reader drags
+   * along the elevation chart, every pointer move sets state a component above
+   * this one, and each of those renders was walking the whole route seven times
+   * over to arrive at numbers that had not changed since the last pick. Only
+   * the line was held; the rest ran on every frame of a drag.
+   *
+   * `route` is replaced rather than mutated on every change, so it and the
+   * graph are the whole of what these depend on.
+   */
+  const { points, crossed, meters, gain, onward, ridden, crossings, legs } =
+    useMemo(() => {
+      const line = routeLine(route, graph);
+      return {
+        points: line.points,
+        crossed: line.crossed,
+        meters: routeMeters(route, graph),
+        gain: routeGain(route, graph),
+        onward: isEmpty(route) ? 0 : continuations(route, graph).size,
+        ridden: routeSegments(route, graph),
+        crossings: routeCrossings(route, graph),
+        legs: riddenLegs(route, graph),
+      };
+    }, [route, graph]);
   const stuck = started && onward === 0;
-  const ridden = routeSegments(route, graph);
-  const crossings = routeCrossings(route, graph);
 
   // Held rather than acted on: a route is a long run of picks and there is one
   // button that throws all of them away at once. Redo can bring it back, but
@@ -112,7 +127,7 @@ export function RoutePanel({
     if (!started) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Delete" && event.key !== "Backspace") return;
+      if (!isRubout(event)) return;
       if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
       if (typingIn(event.target)) return;
 
@@ -148,17 +163,7 @@ export function RoutePanel({
       // route is read where it is being drawn and the panel comes up when it is
       // asked for.
       restingAt="peek"
-      header={
-        <div className="flex items-center gap-3">
-          <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
-          <div className="min-w-0 flex-1">
-            <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
-              Seaddle
-            </h1>
-            <p className="eyebrow text-sand/70 mt-1">Seattle cycling routes</p>
-          </div>
-        </div>
-      }
+      header={<PanelHeader />}
       /* The one slot pinned at every resting height, so whatever sits here is
          what a rider sees without touching anything. Before a route starts that
          should be how to start one: two zeros are not a reading, they are the
@@ -271,7 +276,7 @@ export function RoutePanel({
         {started && (
           <SaveRoute
             route={route}
-            legs={riddenLegs(route, graph)}
+            legs={legs}
             meters={meters}
             saved={saved.routes}
             onSave={saved.save}
@@ -318,9 +323,9 @@ export function RoutePanel({
  * telling them to pick is already pinned above this and always in view.
  */
 const STEPS = [
-  "Pick any segment — the way there fills itself in",
-  "Keep picking to add on to the route",
-  "Save or export the route",
+  `${PICK} any segment to begin your route`,
+  `${PICK} more segments to extend your route around Seattle`,
+  "Save or export when you're done",
 ];
 
 function HowBuildingWorks() {

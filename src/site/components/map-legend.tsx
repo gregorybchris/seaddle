@@ -4,7 +4,7 @@ import { STEEPEST_GRADE } from "../grade";
 import {
   CROSSING_COLOR,
   ENCODING_VALUES,
-  GRADE_STOPS,
+  gradeRamp,
   isAttribute,
   RAMPS,
   type Encoding,
@@ -96,16 +96,12 @@ export function MapLegend({
  * this has to say is which end of the bar is the hard one.
  */
 function GradeLegend() {
-  const ramp = GRADE_STOPS.map(
-    ([grade, color]) => `${color} ${(grade / STEEPEST_GRADE) * 100}%`,
-  ).join(", ");
-
   return (
     <div className="flex w-24 flex-col gap-1">
       <span
         aria-hidden
         className="ring-forest-deep/20 h-1.5 w-full rounded-full ring-1"
-        style={{ backgroundImage: `linear-gradient(to right, ${ramp})` }}
+        style={{ backgroundImage: `linear-gradient(to right, ${gradeRamp()})` }}
       />
       <div className="text-ink/75 flex justify-between text-[0.6875rem]">
         <span>flat</span>

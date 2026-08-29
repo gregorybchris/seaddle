@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { typingIn } from "@/lib/utilities/keys";
+import { isRubout, typingIn } from "@/lib/utilities/keys";
 import type { SiteGraph } from "./graph-data";
 import { readLink, writeLink } from "./link";
 import type { Mode } from "./mode";
@@ -154,10 +154,12 @@ export function useRouteHistory(graph: SiteGraph | null, mode: Mode) {
       // ⌫ on its own, which is what every other route builder spells as "take
       // back the last segment" — and what a rider who has never met ⌘Z reaches
       // for first. Starting over wears the same key with a modifier, so the
-      // habit lands on the reversible one. Undo, redo and this one are listed
-      // in `SHORTCUTS` in the settings dialog: bind a key here, name it there.
+      // habit lands on the reversible one, and both read the key through
+      // `isRubout` so the pair cannot answer on different keyboards. Undo, redo
+      // and this one are listed in `SHORTCUTS` in the settings dialog: bind a
+      // key here, name it there.
       if (
-        event.key === "Backspace" &&
+        isRubout(event) &&
         !event.metaKey &&
         !event.ctrlKey &&
         !event.altKey

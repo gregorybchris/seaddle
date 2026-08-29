@@ -1,6 +1,4 @@
-import type { SegmentId } from "@/lib/models/graph";
-import type { SiteGraph } from "./graph-data";
-import { isEmpty, reachable, type Route } from "./route";
+import { isEmpty, type Route } from "./route";
 
 /**
  * Why a segment cannot be picked right now.
@@ -19,18 +17,16 @@ import { isEmpty, reachable, type Route } from "./route";
  * answer. As it stands nothing on the map is one: the ferry to Bainbridge was
  * the last gap, and closing it left the whole network reachable from anywhere
  * in it.
+ *
+ * A type of one, and it stays a type: the map asks for a notice by naming a
+ * reason, so a second island condition is a case added here and a case added
+ * below rather than a shape to invent again. There is no function working the
+ * reason out. The map keeps the closed segments in a hit band of their own —
+ * the complement of the ones it will accept — so a tap that lands in it is
+ * unreachable by construction, and asking the graph to confirm that was a
+ * second search of the whole network inside a click handler.
  */
 export type ClosedReason = "unreachable";
-
-/** The reason, or null if the segment is in fact pickable. */
-export function whyClosed(
-  route: Route,
-  id: SegmentId,
-  graph: SiteGraph,
-): ClosedReason | null {
-  if (isEmpty(route)) return null;
-  return reachable(route, graph).has(id) ? null : "unreachable";
-}
 
 /** What the map says about it: a headline to read at a glance, then the rule. */
 export type ClosedNotice = { headline: string; detail: string };

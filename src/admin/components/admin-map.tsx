@@ -23,6 +23,7 @@ import { useBasemapChoice, useBasemapPaint } from "@/lib/use-basemap";
 import { BasemapChoices } from "@/widgets/basemap-choices";
 import { Dialog } from "@/widgets/dialog";
 import { MapButton } from "@/widgets/map-button";
+import { LineEnds } from "@/widgets/line-ends";
 import { PinMark } from "@/widgets/pin-mark";
 import { formatFeet, formatMiles } from "@/lib/utilities/units";
 import {
@@ -311,17 +312,7 @@ export function AdminMap({
         ))}
 
         {ends && (
-          <>
-            <Marker longitude={ends.start[0]} latitude={ends.start[1]}>
-              <span
-                aria-label="Segment start"
-                className="border-forest-deep bg-moss block h-3.5 w-3.5 rounded-full border-2 shadow"
-              />
-            </Marker>
-            <Marker longitude={ends.finish[0]} latitude={ends.finish[1]}>
-              <span aria-label="Segment finish" className="checkered block" />
-            </Marker>
-          </>
+          <LineEnds start={ends.start} finish={ends.finish} subject="Segment" />
         )}
         <AttributionControl compact />
       </Map>

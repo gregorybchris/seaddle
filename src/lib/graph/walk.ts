@@ -7,15 +7,18 @@
  * roughly every second segment, because ids record the order segments were
  * cut, not where they are.
  *
- * Measured over the 158 segments here, by id the median step turns 41 degrees
- * and 30 of the 61 discontinuities cross more than 3 km of city. The walk
- * below turns 23 degrees and leaves 7.
+ * Measured once, over the 158-segment cut this was written against: by id the
+ * median step turned 41 degrees and 30 of the 61 discontinuities crossed more
+ * than 3 km of city, where the walk below turned 23 degrees and left 7. The
+ * graph has grown since and those figures have not been taken again — they are
+ * kept as the size of the difference that justified this, not as a claim about
+ * today's cut.
  *
  * Two rules produce that, and the second is the one that is easy to leave out:
  *
  * 1. At a junction, carry straight on. A plain depth-first search takes
- *    whichever segment it happens to hold first, which on a graph with 76
- *    junctions against 6 dead ends means turning off the road at nearly every
+ *    whichever segment it happens to hold first, which on a graph with 88
+ *    junctions against 4 dead ends means turning off the road at nearly every
  *    opportunity. Choosing the smallest change of heading is what makes a run
  *    feel like riding rather than teleporting.
  *

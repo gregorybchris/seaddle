@@ -14,6 +14,22 @@ export function typingIn(target: EventTarget | null): boolean {
 }
 
 /**
+ * Whether this is the key a rider reaches for to take something back.
+ *
+ * Both spellings, because one key sends two of them: the key labelled "delete"
+ * on a Mac laptop sends Backspace, and the one labelled "delete" on a full
+ * keyboard sends Delete. Asking for Backspace alone left the bare rubout
+ * answering on a laptop and silent on a desk, while the modified one beside it
+ * — which had always tested for both — answered on either.
+ *
+ * One place, because the two bindings are the same key wearing a modifier, and
+ * the settings dialog lists them under one cap.
+ */
+export function isRubout(event: KeyboardEvent): boolean {
+  return event.key === "Backspace" || event.key === "Delete";
+}
+
+/**
  * Whether this is a Mac, which names two of these keys differently to
  * everywhere else — and draws the modifier as a mark rather than a word.
  *

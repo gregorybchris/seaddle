@@ -3,11 +3,11 @@ import { useUnits, type Units } from "@/lib/use-units";
 import { humanize } from "@/lib/utilities/words";
 import { Badge } from "@/widgets/badge";
 import { ElevationProfile, type Scrub } from "@/widgets/elevation-profile";
-import { SeaddleMark } from "@/widgets/seaddle-mark";
 import { Sheet } from "@/widgets/sheet";
 import { ENCODING_ICONS, TONES, type Attribute } from "../encoding";
 import type { SiteSegment } from "../graph-data";
 import { PICK } from "../pointing";
+import { PanelHeader } from "./panel-header";
 import { StartHere } from "./start-here";
 
 type SegmentPanelProps = {
@@ -51,17 +51,7 @@ export function SegmentPanel({ segment, onScrub }: SegmentPanelProps) {
       restingAt="peek"
       raisedWhen={segment !== null}
       raisedTo="half"
-      header={
-        <div className="flex items-center gap-3">
-          <SeaddleMark className="text-sand h-8 w-8 shrink-0" />
-          <div className="min-w-0 flex-1">
-            <h1 className="text-sand text-base leading-none tracking-[0.18em] uppercase">
-              Seaddle
-            </h1>
-            <p className="eyebrow text-sand/70 mt-1">Seattle cycling routes</p>
-          </div>
-        </div>
-      }
+      header={<PanelHeader />}
       /* Everything the hover label says, in the one slot that is visible at
          every resting height — so reading a segment on a phone costs a tap and
          nothing else. The chart is below, because it is the part worth a drag

@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { spanBetween, type Span, type Uncounted } from "@/lib/geo/polyline";
 import { elevationProfile, sampleAt } from "@/lib/geo/profile";
 import type { ElevCoord } from "@/lib/models/geo";
@@ -95,28 +95,49 @@ export function ElevationProfile({
   // Above the early return below, where a hook cannot go.
   const { distance, climb, climbRate } = useUnits();
 
-  const profile = elevationProfile(points, 96, crossed);
+  /**
+   * The route sampled, and the shape that draws.
+   *
+   * Held, because a press on this chart sets state on every pointer move and
+   * every one of those renders was re-walking the whole route to sample it and
+   * then rebuilding the path string out of the result — for a picture that
+   * cannot change until the route does. What moves under a drag is the marker
+   * and the caption, and neither is in here.
+   *
+   * `heightOf` comes out with the path rather than beside it: the marker has to
+   * sit on the line, and a second copy of the scaling is a second chance for it
+   * to sit slightly off.
+   */
+  const profile = useMemo(
+    () => elevationProfile(points, 96, crossed),
+    [points, crossed],
+  );
+  const { heightOf, line } = useMemo(() => {
+    const range = Math.max(
+      profile.maxMeters - profile.minMeters,
+      minRangeMeters,
+    );
+    const floor = (profile.maxMeters + profile.minMeters) / 2 - range / 2;
+    const scaled = (meters: number) =>
+      Math.max(
+        2,
+        Math.min(HEIGHT - 2, HEIGHT - ((meters - floor) / range) * HEIGHT),
+      );
+    const span = Math.max(1, profile.samples.length - 1);
+    return {
+      heightOf: scaled,
+      line: profile.samples
+        .map((meters, i) => {
+          const x = ((i / span) * WIDTH).toFixed(1);
+          return `${i === 0 ? "M" : "L"}${x} ${scaled(meters).toFixed(1)}`;
+        })
+        .join(" "),
+    };
+  }, [profile, minRangeMeters]);
+
   // A chart of nothing, which a route that is only a ferry crossing would draw
   // as a flat line across the panel with no distance under it.
   if (profile.samples.length < 2 || profile.meters === 0) return null;
-
-  const range = Math.max(profile.maxMeters - profile.minMeters, minRangeMeters);
-  const middle = (profile.maxMeters + profile.minMeters) / 2;
-  const floor = middle - range / 2;
-  const heightOf = (meters: number) =>
-    Math.max(
-      2,
-      Math.min(HEIGHT - 2, HEIGHT - ((meters - floor) / range) * HEIGHT),
-    );
-
-  const coordinates = profile.samples.map((meters, i) => {
-    const x = (i / (profile.samples.length - 1)) * WIDTH;
-    return [x, heightOf(meters)] as const;
-  });
-
-  const line = coordinates
-    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`)
-    .join(" ");
 
   const steps = profile.samples.length - 1;
   const reading = at === null ? null : sampleAt(profile, at / steps);

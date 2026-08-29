@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { SiteGraph } from "./graph-data";
 import { siteGraph, siteSegment } from "./test-fixtures";
-import { append, EMPTY_ROUTE, startRoute } from "./route";
-import { closedNotice, groundNotice, whyClosed } from "./why-closed";
+import { append, EMPTY_ROUTE, reachable, startRoute } from "./route";
+import { closedNotice, groundNotice } from "./why-closed";
 
 /**
  * Two islands, which is the only thing left that a pick cannot cross:
@@ -25,35 +25,47 @@ const G: SiteGraph = siteGraph([
 ]);
 const seg = (id: string) => G.segments.get(id)!;
 
-describe("why a segment cannot be picked", () => {
-  it("has no complaint before a route starts", () => {
+/**
+ * What the map's closed hit band would catch, which is what a notice is owed
+ * about.
+ *
+ * The band is the complement of what `reachable` returns, so asking it here is
+ * asking exactly what the layer filter asks. There is no `whyClosed` to test
+ * against any more — a tap that lands in this band is unreachable by
+ * construction, and the reason it gets is the only one there is.
+ */
+const closed = (route: Parameters<typeof reachable>[0], id: string) =>
+  !reachable(route, G).has(id);
+
+describe("what a pick is refused", () => {
+  it("refuses nothing before a route starts", () => {
     // Every segment is a legal first pick, the far island included.
-    expect(whyClosed(EMPTY_ROUTE, "s4", G)).toBeNull();
-    expect(whyClosed(EMPTY_ROUTE, "s1", G)).toBeNull();
+    expect(closed(EMPTY_ROUTE, "s4")).toBe(false);
+    expect(closed(EMPTY_ROUTE, "s1")).toBe(false);
   });
 
-  it("says nothing about a segment next door", () => {
-    expect(whyClosed(startRoute(seg("s1")), "s2", G)).toBeNull();
-    expect(whyClosed(startRoute(seg("s1")), "s5", G)).toBeNull();
+  it("takes a segment next door", () => {
+    expect(closed(startRoute(seg("s1")), "s2")).toBe(false);
+    expect(closed(startRoute(seg("s1")), "s5")).toBe(false);
   });
 
-  it("says nothing about a segment further off, which now fills in", () => {
-    expect(whyClosed(startRoute(seg("s1")), "s3", G)).toBeNull();
+  it("takes a segment further off, which now fills in", () => {
+    expect(closed(startRoute(seg("s1")), "s3")).toBe(false);
   });
 
-  it("says nothing about a segment already ridden, which is picked again", () => {
+  it("takes a segment already ridden, which is picked again", () => {
     const route = append(startRoute(seg("s1")), seg("s5"), G);
-    expect(whyClosed(route, "s1", G)).toBeNull();
-    expect(whyClosed(route, "s5", G)).toBeNull();
+    expect(closed(route, "s1")).toBe(false);
+    expect(closed(route, "s5")).toBe(false);
   });
 
-  it("says nothing at a dead end, which a pick rides back out of", () => {
+  it("takes a segment at a dead end, which a pick rides back out of", () => {
     const route = append(startRoute(seg("s1")), seg("s5"), G);
-    expect(whyClosed(route, "s3", G)).toBeNull();
+    expect(closed(route, "s3")).toBe(false);
   });
 
-  it("calls out a segment on another island", () => {
-    expect(whyClosed(startRoute(seg("s1")), "s4", G)).toBe("unreachable");
+  it("leaves a segment on another island closed", () => {
+    expect(closed(startRoute(seg("s1")), "s4")).toBe(true);
   });
 });
 

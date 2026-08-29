@@ -49,6 +49,16 @@ export function routeNamed(
   );
 }
 
+/**
+ * How many routes this page has saved, which is what makes two ids different.
+ *
+ * The clock alone is not enough. Two saves landing in the same millisecond —
+ * which a held Enter manages — would put two rows in the list under one id, and
+ * then renaming or forgetting either would take both. Reset by a reload, which
+ * is harmless: the millisecond it is appended to has moved on by then.
+ */
+let saves = 0;
+
 export function useSavedRoutes() {
   const [routes, setRoutes] = useState<SavedRoute[]>([]);
 
@@ -86,7 +96,7 @@ export function useSavedRoutes() {
       const replaced = routeNamed(current, chosen);
       const next: SavedRoute[] = [
         {
-          id: `${Date.now()}`,
+          id: `${Date.now()}-${saves++}`,
           name: chosen,
           route,
           savedAt: Date.now(),

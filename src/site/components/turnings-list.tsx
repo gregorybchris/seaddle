@@ -13,7 +13,7 @@ import type { Turning } from "../turnings";
  * route at all. This is the junction in front of them, described in the words
  * someone would use standing at one, and picking a row is the same act as
  * clicking that segment on the map. The map will take a pick from anywhere and
- * fill in the way there; a list cannot, because a hundred and fifty rows is the
+ * fill in the way there; a list cannot, because a hundred and seventy rows is the
  * map again in a worse form.
  *
  * Focusing a row lights the segment up on the map, which is what keeps the two

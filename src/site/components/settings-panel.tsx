@@ -165,7 +165,17 @@ const RUBOUT = IS_MAC ? "Delete" : "Backspace";
  */
 const SHORTCUTS: { chords: string[][]; does: string; mode?: Mode }[] = [
   { chords: [[CMD, "Z"], [RUBOUT]], does: "Undo", mode: "build" },
-  { chords: [[CMD, "Shift", "Z"]], does: "Redo", mode: "build" },
+  // Both spellings of redo, because both are bound: ⌘⇧Z is what the button's
+  // tooltip teaches, and ⌘Y is what a rider arriving from Windows presses
+  // first. A key that answers and is not on this list is a key nobody finds.
+  {
+    chords: [
+      [CMD, "Shift", "Z"],
+      [CMD, "Y"],
+    ],
+    does: "Redo",
+    mode: "build",
+  },
   { chords: [[CMD, RUBOUT]], does: "Start over", mode: "build" },
   { chords: [["E"], ["M"]], does: "Switch mode" },
   { chords: [["C"]], does: "Next segment color" },

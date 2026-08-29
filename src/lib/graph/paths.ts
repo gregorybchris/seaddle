@@ -35,10 +35,10 @@ export type Leg = { segment: SegmentId; from: NodeId; to: NodeId };
  * segment can grow from either end, and seeding both at zero lets one search
  * settle which end is nearer instead of running two and comparing.
  *
- * The minimum is found by scanning rather than by a heap. This graph is 117
- * nodes, which makes a scan some thousands of comparisons — far below anything
- * a click could notice — and a heap here would be twenty lines of apparatus
- * bought with nothing.
+ * The minimum is found by scanning rather than by a heap. This graph is a
+ * hundred-odd nodes, which makes a scan some thousands of comparisons — far
+ * below anything a click could notice — and a heap here would be twenty lines
+ * of apparatus bought with nothing.
  *
  * Ties are broken deterministically, and that is load-bearing rather than
  * tidiness: a link replays through the same search that built it, so two equally

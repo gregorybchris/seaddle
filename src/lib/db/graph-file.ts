@@ -40,7 +40,7 @@ export function serializeGraph(graph: GraphFile): string {
  *
  * The ids matter as much as the message: a warning that names a duplicate is
  * only useful if the thing it names can be found, and hunting an id through a
- * list of a hundred and fifty is how a warning gets ignored.
+ * list of a hundred and seventy is how a warning gets ignored.
  */
 export type GraphProblem = {
   level: "error" | "warning";

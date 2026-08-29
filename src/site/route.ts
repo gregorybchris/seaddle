@@ -29,6 +29,9 @@ export type Step = {
    * Riding back down the segment you arrived on is the one thing `append`
    * refuses, so a link cannot describe an out-and-back as another segment — it
    * has to say "and back", and this is what remembers that it did.
+   *
+   * Only ever set by `outAndBack`, which only a link can currently reach — see
+   * the note there.
    */
   turn?: boolean;
 };
@@ -238,6 +241,14 @@ function orient(segment: SiteSegment, from: NodeId): Step {
 
 /**
  * Ride back the way you came.
+ *
+ * **Nothing in the site calls this.** There is no out-and-back control on the
+ * panel or the map, and `append` cannot produce a turn step — the only way in
+ * is `replay` meeting a `t` or `~` in a link. It is kept because those links
+ * exist: routes written before the control went away are in bookmarks and in
+ * the saved list in people's browsers, and a stored route that decoded to half
+ * of itself would be worse than one this cannot be asked for any more. Bringing
+ * the gesture back is a button away, and everything under it still works.
  *
  * Nothing else needs to know about it: mirroring the chain is just more steps,
  * so the distance, the climb and the profile all come out right without a

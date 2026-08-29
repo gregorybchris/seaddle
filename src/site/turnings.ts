@@ -9,7 +9,7 @@ import { continuations, isEmpty, liveEnds, type Route } from "./route";
  * How many segments to offer before a route has started.
  *
  * With nothing picked every segment in the network is a legal first choice, and
- * a list of a hundred and fifty is not a list anyone reads — it is the map
+ * a list of a hundred and seventy is not a list anyone reads — it is the map
  * again, worse. Eight is a screenful, and the map moving under the reader is
  * what changes which eight: panning is how you say where you mean, exactly as
  * it is for someone pointing at it.
@@ -26,7 +26,7 @@ export const NEARBY = 8;
  * way it goes, how far, how much of a climb that way, and what it is like.
  *
  * The junction only, where a pick on the map may land anywhere. Reading out a
- * hundred and fifty segments is not reading out a list, and the turn in front
+ * hundred and seventy segments is not reading out a list, and the turn in front
  * of the rider is the decision they are actually at.
  */
 export type Turning = {

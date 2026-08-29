@@ -325,9 +325,13 @@ function Measurements({ reading }: { reading: Reading }) {
 /**
  * The two small acts a saved route offers, drawn the same size as each other.
  *
- * Always visible rather than appearing on hover: there is no hover on a phone,
- * and a control that only exists for a mouse is a control half the riders here
- * do not have.
+ * Out of the way until the row is being dealt with, which is the cluster above
+ * doing the hiding rather than this — two icons on every row is a column of
+ * chrome down a panel that is about the routes, not about editing them. What
+ * makes that safe is that "hover" is not the only way back: focus anywhere in
+ * the row brings them out for a keyboard, and a coarse pointer never hides them
+ * at all, because there is no hover on a phone and a control that only exists
+ * for a mouse is a control half the riders here do not have.
  */
 function RowButton({
   label,
