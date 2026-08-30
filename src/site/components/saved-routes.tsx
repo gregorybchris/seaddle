@@ -97,14 +97,14 @@ export function SavedRoutes({
       <ConfirmDialog
         open={forgetting !== null}
         onOpenChange={(open) => !open && setForgetting(null)}
-        title="Forget this route?"
-        confirm="Forget"
+        title="Delete this route?"
+        confirm="Delete"
         onConfirm={() => {
           if (forgetting) onForget(forgetting.id);
           setForgetting(null);
         }}
       >
-        “{forgetting?.name}” is saved in this browser only. Once you forget it,
+        “{forgetting?.name}” is saved in this browser only. Once you delete it,
         it's gone. You sure?
       </ConfirmDialog>
     </section>
@@ -290,7 +290,7 @@ function Row({
         }}
       >
         “{taken?.name}” is already saved under that name. Renaming this one to “
-        {taking}” takes the name and forgets the route that had it.
+        {taking}” will replace the existing route.
       </ConfirmDialog>
     </li>
   );

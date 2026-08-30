@@ -160,7 +160,7 @@ export function RoutePanel({
       ? "Route cleared."
       : ""
     : stuck
-      ? `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. Nothing continues from here — pick any segment and the way there fills in.`
+      ? `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. This is a dead end.`
       : `${units.distance(meters)}, ${units.climbRange(gain.min, gain.max)} of climbing. ` +
         `${onward} ${onward === 1 ? "segment" : "segments"} on from here.`;
 
@@ -222,8 +222,7 @@ export function RoutePanel({
 
             {stuck && (
               <p className="border-blaze/40 bg-blaze/10 text-blaze rounded-lg border px-3 py-2 text-xs leading-relaxed">
-                This is as far as the map goes that way. Pick a segment anywhere
-                and the way there fills in.
+                This is a dead end.
               </p>
             )}
           </>
@@ -504,8 +503,7 @@ function SaveRoute({
         onConfirm={commit}
       >
         “{overwrites?.name}” is already saved under that name. Saving this route
-        as “{chosenName(name)}” takes the name and forgets the route that had
-        it.
+        as “{chosenName(name)}” will replace the existing route.
       </ConfirmDialog>
     </div>
   );

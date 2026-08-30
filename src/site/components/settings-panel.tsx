@@ -72,7 +72,7 @@ export function SettingsPanel({
           checked={autoZoom}
           onChange={onAutoZoom}
           label="Auto-zoom"
-          hint="After each pick, move the map to the segments you can take next."
+          hint="Automatically move the map to the segments you can select next."
         />
       </div>
 

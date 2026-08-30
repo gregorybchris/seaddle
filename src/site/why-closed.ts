@@ -65,11 +65,12 @@ export function groundNotice(route: Route): ClosedNotice {
   return isEmpty(route)
     ? {
         headline: "Oops! That's not a segment",
-        detail: "Only segments can be picked. Pick one to start your route.",
+        detail:
+          "Only segments can be selected. Choose one to start your route.",
       }
     : {
         headline: "Oops! That's not a segment",
         detail:
-          "Only segments can be picked. To clear your route, use the Start over button.",
+          "Only segments can be selected. To clear your route, use the Start over button.",
       };
 }
