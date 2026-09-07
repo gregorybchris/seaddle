@@ -650,6 +650,31 @@
       "id": "n144",
       "name": null,
       "coord": [-122.33789, 47.8315]
+    },
+    {
+      "id": "n145",
+      "name": null,
+      "coord": [-122.41517, 47.65983]
+    },
+    {
+      "id": "n146",
+      "name": null,
+      "coord": [-122.41469, 47.66076]
+    },
+    {
+      "id": "n147",
+      "name": null,
+      "coord": [-122.408808, 47.660289]
+    },
+    {
+      "id": "n148",
+      "name": null,
+      "coord": [-122.43401, 47.66147]
+    },
+    {
+      "id": "n149",
+      "name": null,
+      "coord": [-122.403602, 47.658393]
     }
   ],
   "segments": [
@@ -663,22 +688,6 @@
         "endIndex": 758
       },
       "name": "Arboretum West",
-      "steepness": "rolling",
-      "protection": "bikePath",
-      "surroundings": "beautiful",
-      "reviewed": true,
-      "crossing": null
-    },
-    {
-      "id": "s002",
-      "from": "n006",
-      "to": "n007",
-      "source": {
-        "track": "magnolia-2",
-        "startIndex": 626,
-        "endIndex": 730
-      },
-      "name": "Discovery Lower Path",
       "steepness": "rolling",
       "protection": "bikePath",
       "surroundings": "beautiful",
@@ -822,26 +831,10 @@
         "startIndex": 500,
         "endIndex": 569
       },
-      "name": "From Locks Over Train Tracks",
+      "name": "Locks Train Tracks Bridge",
       "steepness": "steep",
       "protection": "unprotected",
       "surroundings": "beautiful",
-      "reviewed": true,
-      "crossing": null
-    },
-    {
-      "id": "s013",
-      "from": "n024",
-      "to": "n006",
-      "source": {
-        "track": "magnolia-2",
-        "startIndex": 493,
-        "endIndex": 626
-      },
-      "name": "Discovery Climb",
-      "steepness": "steep",
-      "protection": "unprotected",
-      "surroundings": "pleasant",
       "reviewed": true,
       "crossing": null
     },
@@ -3516,6 +3509,134 @@
       "protection": "unprotected",
       "surroundings": "pleasant",
       "reviewed": true
+    },
+    {
+      "id": "s204",
+      "from": "n145",
+      "to": "n007",
+      "source": {
+        "track": "2026-07-18-evening-ride",
+        "startIndex": 609,
+        "endIndex": 675
+      },
+      "name": "Discovery Lower Path South",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikePath",
+      "surroundings": "beautiful",
+      "reviewed": true
+    },
+    {
+      "id": "s205",
+      "from": "n149",
+      "to": "n024",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 619,
+        "endIndex": 569
+      },
+      "name": "Government to Discovery",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "unprotected",
+      "surroundings": "plain",
+      "reviewed": false
+    },
+    {
+      "id": "s206",
+      "from": "n149",
+      "to": "n147",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 619,
+        "endIndex": 681
+      },
+      "name": "Discovery East Climb",
+      "crossing": null,
+      "steepness": "steep",
+      "protection": "unprotected",
+      "surroundings": "beautiful",
+      "reviewed": true
+    },
+    {
+      "id": "s207",
+      "from": "n147",
+      "to": "n146",
+      "source": {
+        "track": "seaddle-3",
+        "startIndex": 42,
+        "endIndex": 109
+      },
+      "name": "Discovery Lighthouse Road Connector",
+      "crossing": null,
+      "steepness": "rolling",
+      "protection": "unprotected",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s208",
+      "from": "n006",
+      "to": "n147",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 715,
+        "endIndex": 681
+      },
+      "name": "Discovery Climb",
+      "crossing": null,
+      "steepness": "rolling",
+      "protection": "bikePath",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s209",
+      "from": "n006",
+      "to": "n145",
+      "source": {
+        "track": "magnolia-1",
+        "startIndex": 715,
+        "endIndex": 757
+      },
+      "name": "Discovery Lower Path North",
+      "crossing": null,
+      "steepness": "rolling",
+      "protection": "bikePath",
+      "surroundings": "beautiful",
+      "reviewed": true
+    },
+    {
+      "id": "s210",
+      "from": "n146",
+      "to": "n145",
+      "source": {
+        "track": "seaddle-3",
+        "startIndex": 459,
+        "endIndex": 469
+      },
+      "name": "Discovery Lower Path Connector",
+      "crossing": null,
+      "steepness": "flat",
+      "protection": "bikePath",
+      "surroundings": "pleasant",
+      "reviewed": true
+    },
+    {
+      "id": "s211",
+      "from": "n146",
+      "to": "n148",
+      "source": {
+        "track": "seaddle-3",
+        "startIndex": 459,
+        "endIndex": 282
+      },
+      "name": "Discovery Lighthouse Road",
+      "crossing": null,
+      "steepness": "steep",
+      "protection": "unprotected",
+      "surroundings": "beautiful",
+      "reviewed": true
     }
   ],
   "pins": [
@@ -3712,14 +3833,6 @@
       "coord": [-122.412135, 47.660034]
     },
     {
-      "id": "p027",
-      "segment": "s002",
-      "kind": "viewpoint",
-      "note": null,
-      "at": 0.5935907563190902,
-      "coord": [-122.41606, 47.657677]
-    },
-    {
       "id": "p028",
       "segment": "s006",
       "kind": "viewpoint",
@@ -3846,6 +3959,14 @@
       "note": "Turn off here to use the restrooms at Montlake Playfield",
       "at": 0.5293264045474283,
       "coord": [-122.308993, 47.639581]
+    },
+    {
+      "id": "p044",
+      "segment": "s211",
+      "kind": "viewpoint",
+      "note": "View at Discovery Park Lighthouse (West Point Light)",
+      "at": 0.9981437263183058,
+      "coord": [-122.433969, 47.661462]
     }
   ]
 }
